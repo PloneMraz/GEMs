@@ -57,9 +57,32 @@ contribution is licensed that way.
 
 ---
 
+## Attribution
+
+All three licences require attribution, and all three are satisfied by keeping
+the notices intact. Attribute as:
+
+> Plone Mraz — GEMs (GYNOID ENTITY MODELS), https://github.com/PloneMraz/GEMs
+> ORCID [0009-0009-0571-7151](https://orcid.org/0009-0009-0571-7151)
+
+Machine-readable citation metadata is in [CITATION.cff](CITATION.cff); GitHub
+renders it as a *Cite this repository* button and Zenodo reads it when minting a
+DOI.
+
+New files should carry an SPDX header naming the author and the licence that
+governs them, in whatever comment syntax the file uses:
+
+```
+SPDX-FileCopyrightText: 2026 Plone Mraz
+SPDX-License-Identifier: Apache-2.0
+```
+
+---
+
 ## Notes
 
 Directories listed above may not exist yet. The mapping is stated in advance so
 that the licence of a file is never in question at the moment it is added.
 
-`LICENSES/` holds the unmodified text of each licence.
+`LICENSES/` holds the unmodified text of each licence. [NOTICE](NOTICE) carries
+the attribution notice Apache-2.0 asks distributors to preserve.

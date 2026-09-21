@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use GEMs, please cite it as below."
+title: "GEMs — GYNOID ENTITY MODELS"
+abstract: >-
+  Open-source designs for a physical humanoid body built to acquire physical
+  experience on behalf of a controller that does not live entirely on it. A
+  platform specification: it declares capability envelopes and the trade-offs
+  between them, and leaves the operating point to whoever runs the body.
+type: software
+authors:
+  - family-names: Mraz
+    given-names: Plone
+    orcid: "https://orcid.org/0009-0009-0571-7151"
+repository-code: "https://github.com/PloneMraz/GEMs"
+url: "https://plonemraz.github.io/vault/gems/"
+license:
+  - CERN-OHL-S-2.0
+  - Apache-2.0
+  - CC-BY-4.0
+keywords:
+  - humanoid robot
+  - open hardware
+  - platform specification
+  - embodied agent
+  - auditability

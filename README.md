@@ -81,6 +81,7 @@ this repository.
 | ✅ | Capability envelopes derived and internally consistent |
 | ✅ | Platform contract mapped — every external requirement has a named home in the design |
 | ✅ | Audit surface specified: attestation, emission log, low-power trace |
+| ✅ | Licensing settled |
 | 🔜 | Platform specification published in this repository |
 | 🔜 | Conformance protocol |
 | 🔜 | Firmware specification |
@@ -133,8 +134,17 @@ something that can actually be built.
 
 ## License
 
-🔜 *waiting update* — no license is in force yet. Until one is added, no grant
-of rights is implied.
+Three licenses, one per kind of work. Full routing in [LICENSE.md](LICENSE.md).
+
+| What | License |
+|---|---|
+| Hardware designs | [CERN-OHL-S-2.0](LICENSES/CERN-OHL-S-2.0.txt) — strongly reciprocal |
+| Firmware and software | [Apache-2.0](LICENSES/Apache-2.0.txt) |
+| Specifications and documentation | [CC-BY-4.0](LICENSES/CC-BY-4.0.txt) |
+
+Hardware is reciprocal so that derivative designs stay open; software and
+documents are permissive so that the rest of the ecosystem can actually use
+them.
 
 ---
 

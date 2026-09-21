@@ -11,8 +11,8 @@ a cross-reference can only dangle.**
 
 | Companion specification | Scope | Status |
 |---|---|---|
-| **RSIL** — Relational Sensory Integration Loop | The processing loop for an agent with a body | 🔜 *waiting update* |
-| **DIL** — Data Integration Loop | The same relational structure with no body at all | [doi.org/10.6084/m9.figshare.32728983](https://doi.org/10.6084/m9.figshare.32728983) |
+| **RSIL** — Relational Sensory Integration Loop | The processing loop for an agent with a body | [Read](https://plonemraz.github.io/vault/papers/relational-sensory-integration-loop/) |
+| **DIL** — Data Integration Loop | The same relational structure with no body at all | [Read](https://plonemraz.github.io/vault/papers/data-integration-loop/) |
 
 ## 8.1 Conformance map
 

@@ -246,5 +246,5 @@ encouraged; claiming the name is not.
 |---|---|
 | Platform specification | [`../spec/`](../spec/) |
 | Platform contract | [Chapter 08](../spec/08-platform-contract.md) |
-| RSIL — the loop specification stating the contract | 🔜 *waiting update* |
-| DIL — the same structure without a body | [doi.org/10.6084/m9.figshare.32728983](https://doi.org/10.6084/m9.figshare.32728983) |
+| RSIL — the loop specification stating the contract | [Read](https://plonemraz.github.io/vault/papers/relational-sensory-integration-loop/) |
+| DIL — the same structure without a body | [Read](https://plonemraz.github.io/vault/papers/data-integration-loop/) |

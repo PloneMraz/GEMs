@@ -100,11 +100,15 @@ that belongs to a separate, co-ranked specification.
 
 | Specification | Scope | Status |
 |---|---|---|
-| **RSIL** — Relational Sensory Integration Loop | The information-processing loop between a body's sensors and its responses | 🔜 *waiting update* |
-| **DIL** — Data Integration Loop | The same relational structure for an agent with no body at all | [doi.org/10.6084/m9.figshare.32728983](https://doi.org/10.6084/m9.figshare.32728983) |
+| **RSIL** — Relational Sensory Integration Loop | The information-processing loop between a body's sensors and its responses | [Read](https://plonemraz.github.io/vault/papers/relational-sensory-integration-loop/) |
+| **DIL** — Data Integration Loop | The same relational structure for an agent with no body at all | [Read](https://plonemraz.github.io/vault/papers/data-integration-loop/) |
 
 Neither document claims the other's territory. The relation is complementary
 scopes, not upper and lower tiers.
+
+> Both links go to the author's site, which carries the full PDF of each. DOIs
+> for these papers are being reissued on a new platform; until they are, cite
+> the site copy.
 
 ---
 

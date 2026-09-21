@@ -93,7 +93,7 @@ Two separate requirements land on it:
   body's own motion, or the experience being acquired is corrupted at source.
 - **The platform contract.** An external processing loop requires that every
   change be classified as self-caused or not *before* it is interpreted — see
-  [07](07-platform-contract.md). Without adequate proprioceptive hardware that
+  [08](08-platform-contract.md). Without adequate proprioceptive hardware that
   requirement cannot be enforced, and every layer above it reads wrong.
 
 The same hardware serves a third purpose in [06.3](06-audit-surface.md#63-three-tiers-of-attestation).
@@ -109,7 +109,7 @@ The split is a dial with **two hard ends and a soft middle**.
 | Minimum compression | **2 : 1 → 8 : 1** (5.4) |
 | Balance loop | **≥ 500 Hz** |
 | Fast reaction loop | **≤ 10 ms** |
-| Traced appraisal on every emission | per emission ([07](07-platform-contract.md)) |
+| Traced appraisal on every emission | per emission ([08](08-platform-contract.md)) |
 
 Link round-trip is ~1 ms at ideal short range, but at kilometre range with beam
 tracking it cannot be relied on for ≤10 ms. **Balance and reflex are therefore

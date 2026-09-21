@@ -53,7 +53,7 @@ sourced from published work it is marked as such; where it is derived inside thi
 specification, the derivation is shown.
 
 **No constant is invented to look complete.** A specification that fills in its
-own underived numbers trades honesty for the appearance of finish. Chapter 08
+own underived numbers trades honesty for the appearance of finish. Chapter 09
 lists every value left open and says why.
 
 ## Out of scope
@@ -61,6 +61,6 @@ lists every value left open and says why.
 | Not specified here | Where it belongs |
 |---|---|
 | The controller — its design, its reasoning, how it will behave | Not in this repository |
-| How acquired signal becomes structured information | A companion loop specification — see [07](07-platform-contract.md) |
+| How acquired signal becomes structured information | A companion loop specification — see [08](08-platform-contract.md) |
 | The standard against which a body's conduct is judged | A third party: the deploying or certifying party |
 | Earlier speculative material about GEMs | [/vault/fiction/](https://plonemraz.github.io/vault/fiction/) |

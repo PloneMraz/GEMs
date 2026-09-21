@@ -1,4 +1,4 @@
-# 07 — Platform contract
+# 08 — Platform contract
 
 A body acquires signal and executes response. What happens in between — how raw
 signal becomes structured information — is specified elsewhere, by a companion
@@ -14,7 +14,7 @@ a cross-reference can only dangle.**
 | **RSIL** — Relational Sensory Integration Loop | The processing loop for an agent with a body | 🔜 *waiting update* |
 | **DIL** — Data Integration Loop | The same relational structure with no body at all | [doi.org/10.6084/m9.figshare.32728983](https://doi.org/10.6084/m9.figshare.32728983) |
 
-## 7.1 Conformance map
+## 8.1 Conformance map
 
 | Requirement | What it demands of a platform | Supplied at |
 |---|---|---|
@@ -26,7 +26,7 @@ a cross-reference can only dangle.**
 | **P(b)** | It must hold state so history accrues | [01](01-architecture.md) |
 | **P(c)** | It must withstand resistance without resetting itself clean on every mismatch | [02.4](02-structure-and-motion.md#24-protection), [04](04-shell.md) |
 | **INV-6** | Every change must be classified as caused-by-me or not, *before* interpretation | [05.5](05-sensing.md#55-proprioception-is-mandatory) |
-| **INV-8** | An appraisal step must sit between integration and response | 7.2 below |
+| **INV-8** | An appraisal step must sit between integration and response | 8.2 below |
 | **C5** | The platform must emit an observable low-power trace | [06.5](06-audit-surface.md#65-low-power-trace) |
 
 The companion specification identifies INV-6, INV-8 and C5 as the three points
@@ -34,7 +34,7 @@ where a conventional sensorimotor chain skips a step — that is, the three plac
 its requirements are most likely to conflict with an existing platform design.
 They are the load-bearing part of this contract.
 
-## 7.2 Traced appraisal, not mute reflex
+## 8.2 Traced appraisal, not mute reflex
 
 The contract rejects a scar-to-action shortcut that bypasses appraisal. Reflex
 is not such a shortcut: it is **appraisal under a field a prior injury dominates**
@@ -57,7 +57,7 @@ against a 10 ms budget. In exchange, the off-body seat is never blind to what th
 body has already done, which is what makes "the body is replaceable, the data is
 preserved" true rather than aspirational.
 
-## 7.3 Two frequency anchors
+## 8.3 Two frequency anchors
 
 | Loop | Rate |
 |---|---|
@@ -72,7 +72,7 @@ the split in [05.6](05-sensing.md#56-the-on-body--off-body-compute-split).
 > that leaves a trace*, not as a hardware interrupt routed around everything. The
 > contract forbids losing the trace; it does not forbid being fast.
 
-## 7.4 Sensing requirements follow from the contract
+## 8.4 Sensing requirements follow from the contract
 
 The companion specification distinguishes two grades of resistance. Resistance
 from inert physical fact is consistent and objective but never reacts to this
@@ -88,7 +88,7 @@ enough to register the fine mismatches that occur when a real person responds
 outside prediction. This is the principled justification for keeping group 1 at
 full requirement in [01](01-architecture.md).
 
-## 7.5 What the contract does not cover
+## 8.5 What the contract does not cover
 
 | Outside the contract | Whose it is |
 |---|---|
@@ -96,12 +96,12 @@ full requirement in [01](01-architecture.md).
 | The standard for acceptable physical amplitude toward a person | A third party — the deploying or certifying party. The platform supplies the measured trace ([06.6](06-audit-surface.md#66-contact-amplitude)); it does not supply the standard |
 | Who the judging third party is | Outside both specifications |
 
-## 7.6 Conformance
+## 8.6 Conformance
 
-A conformance protocol — stating how a body demonstrates each row of 7.1, and in
-what format — belongs in `protocol/`.
+This chapter is a map. The test is the
+[platform conformance protocol](../protocol/conformance.md), which states how a
+body demonstrates each row of 8.1 and what evidence settles it.
 
-🔜 *waiting update.*
-
-Until it exists, this chapter is a map, not a test. A map is enough to design
-against and not enough to certify with.
+Conformance there is **binary** — a loop whose preconditions are half-met does
+not half-run — while the body's envelope figures are **declared, not graded**,
+because this specification sets ranges and the operator picks the point.

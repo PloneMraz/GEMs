@@ -1,7 +1,7 @@
 # 06 — Audit surface
 
 This chapter does not come from reducing an earlier ambition. It comes from the
-platform contract of [07](07-platform-contract.md): two requirements the body
+platform contract of [08](08-platform-contract.md): two requirements the body
 must satisfy, and two that an external processing specification explicitly
 declares **outside its own scope and belonging to the platform**.
 

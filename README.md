@@ -64,8 +64,8 @@ this repository.
 
 | Path | Contents | Status |
 |---|---|---|
-| [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ nine chapters |
-| `protocol/` | Platform conformance protocol — how a body demonstrates it satisfies the contract | 🔜 *waiting update* |
+| [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ ten chapters |
+| [`protocol/`](protocol/) | Platform conformance protocol — how a body demonstrates it satisfies the contract | ✅ v0.1 draft |
 | `firmware/` | Device-level and real-time code on the body: sensor and actuator drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | 🔜 *waiting update* |
 | `software/` | Processing of the information and data the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | 🔜 *waiting update* |
 | `mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 *waiting update* |
@@ -83,7 +83,7 @@ this repository.
 | ✅ | Audit surface specified: attestation, emission log, low-power trace |
 | ✅ | Licensing settled |
 | ✅ | Platform specification published in this repository |
-| 🔜 | Conformance protocol |
+| ✅ | Conformance protocol (v0.1 draft) |
 | 🔜 | Firmware specification |
 | 🔜 | Software specification |
 | 🔜 | Mechanical CAD |
@@ -150,5 +150,6 @@ them.
 
 ## Status
 
-The [platform specification](spec/) is published here in nine chapters. Hardware
-designs, firmware and software are not published yet.
+The [platform specification](spec/) is published here in ten chapters, and the
+[conformance protocol](protocol/) in draft. Hardware designs, firmware and
+software are not published yet.

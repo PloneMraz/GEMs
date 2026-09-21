@@ -20,21 +20,24 @@ whoever runs the body, not here.
 | 04 | [Shell](04-shell.md) | hardware | Programmable stiffness, self-healing, colour, and the three-layer division |
 | 05 | [Sensing](05-sensing.md) | hardware | Per-channel envelopes, aggregate rate, and the on-body/off-body compute split |
 | 06 | [Audit surface](06-audit-surface.md) | hardware | Attestation, emission log, low-power trace, contact amplitude |
-| 07 | [Platform contract](07-platform-contract.md) | protocols | What an external processing loop requires of a body, and where this body supplies it |
-| 08 | [Open constants](08-open-constants.md) | resources | Values deliberately left unfilled, and why |
+| 07 | [Firmware and software](07-firmware-and-software.md) | software | What runs on the body: responsibilities, rates, guarantees, and link-loss behaviour |
+| 08 | [Platform contract](08-platform-contract.md) | protocols | What an external processing loop requires of a body, and where this body supplies it |
+| 09 | [Open constants](09-open-constants.md) | resources | Values deliberately left unfilled, and why |
 
 ## Reading order
 
 Chapters 00 and 01 set the terms; read them first. Chapters 02, 03 and 05 are
 mutually dependent — mass determines power, power determines endurance,
 endurance determines mass — and each states where it hands off to the others.
-Chapter 07 is the one to read if you are checking this body against an external
-specification rather than building it.
+Chapter 07 states what the on-body stack must do; chapter 08 is the one to read
+if you are checking this body against an external specification rather than
+building it.
 
 ## Status
 
-All nine chapters are written. Every capability cluster is closed: no chapter is
+All ten chapters are written. Every capability cluster is closed: no chapter is
 still at the level of a sketch.
 
-What is not here yet is the conformance protocol that turns chapter 07 from a
-map into a test — that lives in `protocol/` and is 🔜 *waiting update*.
+What is not here yet is the conformance protocol that turns chapter 08 from a
+map into a test — that lives in [`../protocol/`](../protocol/) and is
+🔜 *waiting update*.

@@ -1,4 +1,4 @@
-# 08 — Open constants
+# 09 — Open constants
 
 Every value this specification cannot yet derive is left marked rather than
 filled with a guess. A specification that invents its own constants trades

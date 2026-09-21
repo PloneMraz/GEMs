@@ -3,6 +3,10 @@
 Structure, actuation and energy are one coupled loop. They cannot be specified
 separately, and cutting the loop anywhere leaves the other ends meaningless.
 
+> Every figure in this chapter is reproducible:
+> `python scripts/gems_budget.py --check` recomputes them and confirms each one
+> still appears here. See [`scripts/`](../scripts/).
+
 ## 2.1 The mass loop
 
 Body mass divides into two kinds:
@@ -165,17 +169,21 @@ per-arm loads in the tens of kilograms at short to medium reach.
 
 ## 2.7 Peak power is limited by the source, not the actuators
 
-The actuator mass of a 130 kg body at `f_act`=0.30 is ~39 kg. At 3–5 kW/kg those
-actuators **accept 117–195 kW**. The battery delivers:
+Actuators and pack both scale with the body, so both operating points of 2.5
+have to be priced separately:
 
-| Pack | @3C | @5C | @10C |
-|---|---|---|---|
-| 4 kWh | 12 kW | 20 kW | 40 kW |
-| 6 kWh | 18 kW | 30 kW | 60 kW |
+| Operating point | Body | Actuators accept | Pack | @3C | @5C | @10C |
+|---|---|---|---|---|---|---|
+| 2 h, durable | ~93 kg | **83–139 kW** | 3.7 kWh | 11 kW | 19 kW | 37 kW |
+| 4 h, durable | ~130 kg | **117–194 kW** | 10.4 kWh | 31 kW | 52 kW | 104 kW |
 
-**A 3–10× shortfall, on the source side.** The actuators' 3–5 kW/kg ceiling is
-not reachable from the battery, and high-energy-density chemistries generally
-trade away C-rate — so choosing the ceiling-grade pack widens the gap.
+**The source falls short in every cell — by between 1.1× and 12.5×.** The
+actuators' 3–5 kW/kg ceiling is not reachable from the battery at any point on
+this table, and high-energy-density chemistries generally trade away C-rate, so
+choosing the ceiling-grade pack widens the gap rather than closing it.
+
+Only the most favourable corner — the larger pack at 10C against the low end of
+the actuator band — comes close, at 1.1×. Everywhere else the margin is wide.
 
 > Supercapacitors are listed as an option in [03](03-energy.md). These figures
 > say it more precisely: **without them, the body's peak power is set by the

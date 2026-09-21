@@ -108,25 +108,32 @@ Components of the floor:
 
 **But the vigilance circuit is not the dominant term.** Cell self-discharge runs
 **1–3% per month** *(sourced; automotive standards require under 2%/month, and
-solid-state is expected to be lower but has yet to demonstrate it)*. On a 4 kWh
-pack:
+solid-state is expected to be lower but has yet to demonstrate it)*. On the
+10.4 kWh pack of the 4-hour reference body
+([02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators)):
 
 | Self-discharge | Equivalent power |
 |---|---|
-| 1%/month | **56 mW** |
-| 2%/month | **111 mW** |
-| 3%/month | **167 mW** |
+| 1%/month | **144 mW** |
+| 2%/month | **289 mW** |
+| 3%/month | **433 mW** |
 
-A deep-sleeping vigilance circuit costs **tens of µW** — about **three orders of
+A deep-sleeping vigilance circuit costs **tens of µW** — about **four orders of
 magnitude below self-discharge**.
 
-Sleep duration on a 4 kWh pack at 2%/month, linear approximation:
+Sleep duration at 2%/month, linear approximation:
 
 | Mode | Total floor | Duration |
 |---|---|---|
-| Deep — wake-up receiver and retention only | ~112 mW *(99% of it self-discharge)* | **~4 years** |
-| Plus passive spatial sensing | ~130 mW | ~3.5 years |
-| Plus full-CSI spatial sensing | ~310 mW | **~1.5 years** |
+| Deep — wake-up receiver and retention only | ~290 mW *(over 99% of it self-discharge)* | **~4.1 years** |
+| Plus passive spatial sensing | ~307 mW | ~3.9 years |
+| Plus full-CSI spatial sensing | ~490 mW | **~2.4 years** |
+
+> **Deep-sleep duration does not depend on pack size.** Energy and drain scale
+> together, so a 4 kWh pack and a 20 kWh pack both reach ~4.1 years at 2%/month.
+> A larger pack buys sleep duration only once there is a **fixed** load beside
+> self-discharge: with full-CSI sensing running, 4 kWh gives ~1.5 years where
+> 10.4 kWh gives ~2.4.
 
 > **Two design consequences.**
 >

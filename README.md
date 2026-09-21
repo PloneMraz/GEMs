@@ -33,6 +33,9 @@ trade-off**, not a chosen point on it.
 | Compute | Split between body and external system. Balance loop ≥500 Hz and reflex ≤10 ms **must** be on-body |
 | Audit surface | Signed sensor–actuator trace; a readable trace remains emittable at floor power while the body sleeps |
 
+Every figure above is reproducible — `python scripts/gems_budget.py --check`
+recomputes them against the chapters that state them.
+
 > [!NOTE]
 > Several of these envelopes are bounded by something other than the obvious
 > candidate. Peak power is capped by the battery rather than the actuators;
@@ -66,6 +69,7 @@ this repository.
 |---|---|---|
 | [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ ten chapters |
 | [`protocol/`](protocol/) | Platform conformance protocol — how a body demonstrates it satisfies the contract | ✅ v0.1 draft |
+| [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |
 | `firmware/` | Device-level and real-time code on the body: sensor and actuator drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | 🔜 *waiting update* |
 | `software/` | Processing of the information and data the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | 🔜 *waiting update* |
 | `mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 *waiting update* |
@@ -82,6 +86,7 @@ this repository.
 | ✅ | Platform contract mapped — every external requirement has a named home in the design |
 | ✅ | Audit surface specified: attestation, emission log, low-power trace |
 | ✅ | Licensing settled |
+| ✅ | Budget model, and a check that holds `spec/` to its own arithmetic |
 | ✅ | Platform specification published in this repository |
 | ✅ | Conformance protocol (v0.1 draft) |
 | 🔜 | Firmware specification |

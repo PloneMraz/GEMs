@@ -45,13 +45,18 @@ trade-off**, not a chosen point on it.
 
 ## What is where
 
-This repository holds the source: hardware designs, firmware, and the
-specifications they implement. Issues, pull requests and releases belong here.
+This repository holds the source: hardware designs, the firmware and software
+that run on them, and the specifications they implement. Issues, pull requests
+and releases belong here.
 
 The documentation pages are built and published from
 [plonemraz.github.io](https://github.com/PloneMraz/plonemraz.github.io) so that
 they share the site's navigation and theme. GitHub Pages is intentionally
 disabled on this repository — `/vault/gems/` is served by the main site.
+
+Earlier speculative material about GEMs lives under
+[/vault/fiction/](https://plonemraz.github.io/vault/fiction/) and is not part of
+this repository.
 
 ---
 
@@ -61,7 +66,8 @@ disabled on this repository — `/vault/gems/` is served by the main site.
 |---|---|---|
 | `spec/` | Platform specification — the capability envelopes and their derivations | 🔜 *waiting update* |
 | `protocol/` | Platform conformance protocol — how a body demonstrates it satisfies the contract | 🔜 *waiting update* |
-| `firmware/` | On-body controller: balance loop, traced appraisal, link-loss core, energy states | 🔜 *waiting update* |
+| `firmware/` | Device-level and real-time code on the body: sensor and actuator drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | 🔜 *waiting update* |
+| `software/` | Processing of the information and data the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | 🔜 *waiting update* |
 | `mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 *waiting update* |
 | `electrical/` | Power distribution, bus topology, sensor harness | 🔜 *waiting update* |
 | `sim-model/` | Simulation model | 🔜 *waiting update* |
@@ -77,7 +83,8 @@ disabled on this repository — `/vault/gems/` is served by the main site.
 | ✅ | Audit surface specified: attestation, emission log, low-power trace |
 | 🔜 | Platform specification published in this repository |
 | 🔜 | Conformance protocol |
-| 🔜 | On-body controller specification |
+| 🔜 | Firmware specification |
+| 🔜 | Software specification |
 | 🔜 | Mechanical CAD |
 | 🔜 | Electrical schematics |
 | 🔜 | Simulation model |
@@ -102,10 +109,25 @@ scopes, not upper and lower tiers.
 
 ## Scope boundary
 
-GEMs specifies a body and the controller that runs *on* that body. It does not
-specify the intelligence that operates it, and makes no claim about how that
-intelligence will behave. Hardware declares capability and states its
-trade-offs; what is done with that capability is not settled here.
+One division runs through everything here: **the body grants capability and
+declares what it costs; the controller decides what to do with it.** Nothing is
+cut at the level of the body for reasons that belong to whoever operates it, and
+where a value is left blank, the blank is deliberate — it marks a decision that
+is not the body's to make.
+
+This repository is the body's side of that division, and only that side. It
+covers hardware, the firmware that runs it, the software that turns what the
+hardware acquires into information, and the protocols that carry signal between
+them. **The controller is not specified here** — not its design, not its
+reasoning, not how it will behave. It is addressed in the written introduction,
+not in this source tree.
+
+Two conditions hold across everything in this repository. Nothing may call for
+physics that does not exist — laboratory work that is expensive, unscaled or not
+yet on the market is allowed; invented physics is not. And every capability has
+to earn its place by serving what the body is for: gathering physical
+experience. Each mechanism carries a mark saying how far it stands from
+something that can actually be built.
 
 ---
 

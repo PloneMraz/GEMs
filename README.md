@@ -2,7 +2,7 @@
 
 Open-source designs for building a physical robot body.
 
-**Documentation:** https://plonemraz.github.io/gems/
+**Documentation:** https://plonemraz.github.io/vault/gems/
 
 ## What is where
 
@@ -12,7 +12,7 @@ specifications they implement. Issues, pull requests and releases belong here.
 The documentation pages are built and published from
 [plonemraz.github.io](https://github.com/PloneMraz/plonemraz.github.io) so that
 they share the site's navigation and theme. GitHub Pages is intentionally
-disabled on this repository — `/gems/` is served by the main site.
+disabled on this repository — `/vault/gems/` is served by the main site.
 
 ## Status
 

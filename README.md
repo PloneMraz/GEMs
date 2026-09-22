@@ -72,9 +72,7 @@ this repository.
 | [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |
 | [`firmware/`](firmware/) | Device-level and real-time code on the body: drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
 | [`software/`](software/) | Processing of the information and data the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | ◐ emission log implemented |
-| `mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 *waiting update* |
-| `electrical/` | Power distribution, bus topology, sensor harness | 🔜 *waiting update* |
-| `sim-model/` | Simulation model | 🔜 *waiting update* |
+| [`hardware/`](hardware/) | The body itself: kinematic configuration now; mechanical CAD, electrical design and simulation model to follow | ◐ kinematics declared |
 
 ---
 
@@ -91,11 +89,12 @@ this repository.
 | ✅ | Conformance protocol (v0.1 draft) |
 | ✅ | Firmware architecture and the reflex budget split across stages |
 | ✅ | Emission log: format, hash chain, batch signing, verifier |
+| ✅ | Kinematic configuration — DOF, arrangement, reach |
 | 🔜 | Firmware source (awaits a target board) |
 | 🔜 | Feature extraction, fusion, link management |
-| 🔜 | Mechanical CAD |
-| 🔜 | Electrical schematics |
-| 🔜 | Simulation model |
+| 🔜 | Simulation model (needs inertias only) |
+| 🔜 | Mechanical CAD (needs part selection) |
+| 🔜 | Electrical schematics (needs part selection) |
 
 ---
 

@@ -64,7 +64,8 @@ Two tiers, matching the two-seat architecture of [01](01-architecture.md):
 
 Budget:
 
-- **Full tier:** 40 DOF × 4 channels × 4 bytes × 500 Hz ≈ **320 kB/s ≈ 2.6 Mbps
+- **Full tier:** 40 DOF ([declared configuration](../hardware/kinematics.md))
+  × 4 channels × 4 bytes × 500 Hz ≈ **320 kB/s ≈ 2.6 Mbps
   ≈ 1.15 GB/hour**. Against an 8 Gbps link: **0.03%**. On a 2 TB on-body SSD:
   ~1700 hours.
 - **Anchored tier:** orders of magnitude smaller. A compact context record costs

@@ -251,7 +251,7 @@ def collect_claims():
         c.append(("sleep %s" % label, "spec/03-energy.md", "~%.1f years" % yrs,
                   "sleep duration, %s" % label))
 
-    # 06.4 log rate
+    # 06.4 log rate at the declared joint count
     bps = log_bytes_per_s()
     c.append(("log kB/s", "spec/06-audit-surface.md", "%d kB/s" % round(bps / 1000),
               "full-tier log rate"))
@@ -259,6 +259,15 @@ def collect_claims():
               "full-tier log rate in Mbps"))
     c.append(("log GB/h", "spec/06-audit-surface.md", "%.2f GB/hour" % (bps * 3600 / 1e9),
               "full-tier log volume per hour"))
+
+    # hardware/kinematics.md — the three joint-count configurations
+    for dof, label in ((30, "core only"), (40, "core + minimum hands"),
+                       (72, "core + anthropomorphic hands")):
+        b = log_bytes_per_s(dof=dof)
+        c.append(("log %d DOF" % dof, "hardware/kinematics.md",
+                  "%d kB/s · %.1f Mbps · %.2f GB/h"
+                  % (round(b / 1000), gbps(b) * 1000, b * 3600 / 1e9),
+                  "log rate at %s (%d joints)" % (label, dof)))
     return c
 
 

@@ -152,7 +152,8 @@ magnitude.
 | Adhesion | gecko-type dry adhesive, moderate load | **LAB** |
 
 Shoulder torque for a load `M` at reach `L` is `τ = M·g·L`. In brackets, the
-corresponding actuator mass at 33 Nm/kg:
+corresponding actuator mass at 33 Nm/kg. Full reach for this body is **0.70 m**,
+declared at [`hardware/kinematics.md`](../hardware/kinematics.md):
 
 | Load | reach 0.40 m | reach 0.55 m | reach 0.70 m |
 |---|---|---|---|

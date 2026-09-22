@@ -12,6 +12,23 @@ body.
 
 ---
 
+> [!IMPORTANT]
+> **This is a paper design. Nothing here has been built.**
+>
+> The project is unfunded. No component has been procured, nothing has been
+> assembled, and no figure in this repository has been measured on hardware.
+> What exists is a specification, a conformance protocol, executable models, and
+> a component selection drawn from published sources.
+>
+> Every number below is therefore a **derivation or a citation, never a
+> measurement**. The models check their own arithmetic and hold the
+> specification to it; what they cannot do is check either against a physical
+> body. No amount of internal consistency substitutes for that, and the figures
+> should be read as what a body of this description would require — not as what
+> one has been observed to do.
+
+---
+
 ## Design envelopes
 
 GEMs does not publish one configuration. Structure, actuation and energy sit on
@@ -186,6 +203,11 @@ them.
 
 The [platform specification](spec/) is published here in ten chapters, the
 [conformance protocol](protocol/) in draft, and the parts of the stack that do
-not need a target board — the [budget model](scripts/) and the
-[emission log](software/) — are implemented and tested. Hardware designs are not
-published yet.
+not need a target board — the [budget model](scripts/), the
+[emission log](software/) and the [simulation model](hardware/sim-model/) — are
+implemented and tested. Component selection is sourced and recorded; mechanical
+CAD and electrical schematics are not drawn.
+
+**No part of this has been built or physically validated**, for the reason given
+at the top of this file. The work is complete as a paper design and untested as
+a body.

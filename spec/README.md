@@ -33,6 +33,12 @@ Chapter 07 states what the on-body stack must do; chapter 08 is the one to read
 if you are checking this body against an external specification rather than
 building it.
 
+> [!NOTE]
+> **Nothing specified here has been built.** The project is unfunded; every
+> figure in these chapters is derived or cited, none is measured on hardware.
+> See the [repository README](../README.md) for what that does and does not
+> mean.
+
 ## Status
 
 All ten chapters are written. Every capability cluster is closed: no chapter is

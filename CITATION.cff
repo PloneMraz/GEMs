@@ -2,10 +2,11 @@ cff-version: 1.2.0
 message: "If you use GEMs, please cite it as below."
 title: "GEMs — GYNOID ENTITY MODELS"
 abstract: >-
-  Open-source designs for a physical humanoid body built to acquire physical
+  Open-source designs of a physical humanoid body, meant to acquire physical
   experience on behalf of a controller that does not live entirely on it. A
   platform specification: it declares capability envelopes and the trade-offs
-  between them, and leaves the operating point to whoever runs the body.
+  between them, and leaves the operating point to whoever runs the body. A
+  paper design — nothing in it has been built or physically validated.
 type: software
 authors:
   - family-names: Mraz

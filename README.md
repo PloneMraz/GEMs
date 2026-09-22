@@ -1,6 +1,6 @@
 # GEMs — GYNOID ENTITY MODELS
 
-Open-source designs for building a physical robot body.
+Open-source designs of a physical robot body.
 
 **Documentation:** https://plonemraz.github.io/vault/gems/
 

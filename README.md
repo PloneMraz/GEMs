@@ -116,7 +116,7 @@ enough to show in the layout.
 | 🔜 | Firmware source (awaits a target board) |
 | 🔜 | Feature extraction, fusion, link management |
 | ✅ | Component selection, sourced — actuators, power, compute, bus, materials, reducers |
-| ⚠ | **Actuator torque density and `f_act` are inconsistent in `spec/`** — see [hardware/electrical](hardware/electrical/) §1 |
+| ✅ | Actuator torque density reconciled with `f_act` — 75–90 Nm/kg peak over module mass, and the basis now declared |
 | 🔜 | Mechanical CAD |
 | 🔜 | Electrical schematics |
 

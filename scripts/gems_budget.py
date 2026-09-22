@@ -83,6 +83,21 @@ def sleep_hours(pack_kwh, floor_w):
     return pack_kwh * 1000.0 / floor_w
 
 
+def joint_torque_total(body_mass_kg):
+    """Summed peak joint torque of the declared kinematics.
+
+    Delegates to the sizing model in hardware/electrical so that the torque
+    table has one home. Duplicating it here is how the two would drift.
+    """
+    import sys
+    from pathlib import Path
+    d = str(Path(__file__).resolve().parent.parent / "hardware" / "electrical")
+    if d not in sys.path:
+        sys.path.insert(0, d)
+    from actuator_sizing import torque_table
+    return sum(r[3] for r in torque_table(body_mass_kg))
+
+
 def log_bytes_per_s(dof=40, channels=4, bytes_per_sample=4, hz=500):
     return dof * channels * bytes_per_sample * hz
 
@@ -215,11 +230,24 @@ def collect_claims():
     c.append(("asimov mass", "spec/02-structure-and-motion.md",
               "~%d kg" % round(scaled), "35 kg body scaled to 1.75 m"))
 
-    # 02.6 shoulder torque
-    for load, reach in ((15, 0.70), (30, 0.70), (50, 0.70)):
+    # 02.6 shoulder torque, and the actuator mass that follows at 80 Nm/kg
+    for load, reach in ((5, 0.40), (15, 0.70), (30, 0.70), (50, 0.70)):
         t = shoulder_torque(load, reach)
         c.append(("torque %dkg %.2fm" % (load, reach), "spec/02-structure-and-motion.md",
-                  "%d Nm" % round(t), "shoulder torque, %d kg at %.2f m" % (load, reach)))
+                  "%d Nm (%.2f kg)" % (round(t), actuator_mass_for_torque(t, 80.0)),
+                  "shoulder torque and actuator mass, %d kg at %.2f m" % (load, reach)))
+
+    # 02.6 the density-to-f_act mapping — the coupling that must not drift
+    total_nm = joint_torque_total(130.0)
+    c.append(("joint torque total", "spec/02-structure-and-motion.md",
+              "**%d Nm**" % round(total_nm),
+              "summed joint torque of the declared kinematics at 130 kg"))
+    for d in (75, 80, 90):
+        m = total_nm / d
+        c.append(("f_act @%d" % d, "spec/02-structure-and-motion.md",
+                  "%.1f kg | **%.2f**" % (m, m / 130.0) if d != 80
+                  else "%.1f kg | %.2f" % (m, m / 130.0),
+                  "actuator mass and f_act at %d Nm/kg" % d))
 
     # 02.7 both operating points, derived here rather than transcribed
     for t in (2, 4):

@@ -7,7 +7,7 @@ directory fixes as a design.
 |---|---|---|
 | [`kinematics.md`](kinematics.md) | Degrees of freedom, their arrangement, reach and segment lengths | ✅ |
 | [`mechanical/`](mechanical/) | Material and mechanism selection, sourced. CAD still to come | ◐ selection done |
-| [`electrical/`](electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint actuator sizing | ◐ selection done, **one finding needs a decision** |
+| [`electrical/`](electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint actuator sizing | ◐ selection done |
 | [`sim-model/`](sim-model/) | URDF generated from the kinematics, with an audit that holds it to the declaration | ✅ |
 
 ## Specification and design

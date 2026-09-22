@@ -54,9 +54,10 @@ JOINTS = [
 # Published torque densities, peak torque per actuator kilogram.
 DENSITIES = [
     (22.0,  "integrated state of the art, whole-actuator"),
-    (33.0,  "the figure spec 02.6 uses"),
-    (36.0,  "top of the range spec 02.6 declares"),
+    (33.0,  "what spec 02.6 used before 2026-09-22"),
+    (36.0,  "top of the superseded range"),
     (52.0,  "commercial QDD module, 8:1 planetary"),
+    (75.0,  "floor of the band spec 02.6 now declares"),
     (88.7,  "commercial hollow-shaft planetary module, peak"),
 ]
 
@@ -113,8 +114,7 @@ def main(argv=None):
         return 1
     need = total_nm / (band_hi * a.mass)
     print("The lowest density that fits is %.0f Nm/kg." % need)
-    print("spec 02.6 declares 30-36 Nm/kg, which gives f_act = %.2f — outside."
-          % (total_nm / 33.0 / a.mass))
+    print("spec 02.6 declares 75-90 Nm/kg peak over module mass, which is why.")
     return 0
 
 

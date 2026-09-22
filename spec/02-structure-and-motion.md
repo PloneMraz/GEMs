@@ -50,13 +50,16 @@ not exist.
 | Coefficient | Range | Status |
 |---|---|---|
 | `f_str` — structure | ~0.25–0.35 | `⟦IMPL⟧` — material and safety factor |
-| `f_act` — actuators | ~0.25–0.35 | `⟦IMPL⟧` — degrees of freedom and gearing |
+| `f_act` — actuators | ~0.25–0.35 | Derived, not assumed: the summed joint torque of the declared kinematics divided by actuator torque density. See [2.6](#26-actuation-and-manipulation) |
 | `p` — specific power | **~10–25 W/kg** in motion | *Sourced* — commercial humanoids draw 300–1500 W walking; a 2.3 kWh pack supporting ~2 h of dynamic work implies ~1.1 kW continuous. Armoured bodies sit in the upper half |
 | `e` — battery density | **450** (durable) / **900** (ceiling) Wh/kg | [03](03-energy.md) |
 
-The first two are left open because they depend on material choices not yet
-made. **Their ranges are narrow enough that no conclusion below changes sign** —
-which is why this chapter closes without fixing a material.
+`f_str` is left open because it depends on material choices not yet made; its
+range is narrow enough that no conclusion below changes sign.
+
+`f_act` is **no longer an assumption**. It follows from the declared joint count
+and the declared torque density, and 2.6 shows the derivation. It is listed as a
+coefficient because the loop consumes it as one, not because it is free.
 
 ## 2.3 The endurance ceiling
 
@@ -144,26 +147,61 @@ magnitude.
 | Property | Envelope | Maturity |
 |---|---|---|
 | Specific power | **3–5 kW/kg** | **TM** |
-| Specific torque | **~30–36 Nm/kg** | **TM** |
+| Specific torque | **75–90 Nm/kg peak** — see below | **TM**, top of the commercial band |
 | Efficiency | 75–82% | **TM** |
 | Response | milliseconds | **TM** |
 | Joints | precision bearings with harmonic or cycloidal reducers | **TM** |
 | Balance | IMU with ZMP control and reaction wheels | **TM** |
 | Adhesion | gecko-type dry adhesive, moderate load | **LAB** |
 
-Shoulder torque for a load `M` at reach `L` is `τ = M·g·L`. In brackets, the
-corresponding actuator mass at 33 Nm/kg. Full reach for this body is **0.70 m**,
-declared at [`hardware/kinematics.md`](../hardware/kinematics.md):
+### The basis matters as much as the number
+
+Torque density is quoted on two incompatible bases, differing by a factor of
+four. **Peak torque over actuator module mass** — motor, gearbox and housing —
+is what module datasheets give, and what this specification declares. **Total
+integrated actuator mass**, counting cooling and wiring, yields 18–22 Nm/kg for
+the state of the art. A figure carried across from one basis to the other will
+size a body that cannot be built.
+
+**This specification declares peak-over-module, and 75–90 Nm/kg is the top of
+what is commercially claimed.** The cost of standing there is real: part
+availability narrows to a handful of modules, and there is no margin to trade
+away later.
+
+### Why 75 is the floor
+
+The declared kinematics need **3414 Nm** summed across 30 joints at the 130 kg
+operating point ([joint-by-joint sizing](../hardware/electrical/)). Divide:
+
+| Density | Actuator mass | `f_act` |
+|---|---|---|
+| 75 Nm/kg | 45.5 kg | **0.35** |
+| 80 Nm/kg | 42.7 kg | 0.33 |
+| 90 Nm/kg | 37.9 kg | **0.29** |
+
+**The declared band and the `f_act` band of 2.2 are the same constraint seen
+twice.** 75–90 Nm/kg maps onto `f_act` 0.29–0.35; below 75 the actuators eat
+the mass budget and the loop stops converging. The two figures cannot drift
+apart, because each is derivable from the other and
+`scripts/gems_budget.py --check` holds them together.
+
+### Shoulder torque
+
+`τ = M·g·L`, with the corresponding actuator mass at 80 Nm/kg. Full reach for
+this body is **0.70 m**, declared at
+[`hardware/kinematics.md`](../hardware/kinematics.md):
 
 | Load | reach 0.40 m | reach 0.55 m | reach 0.70 m |
 |---|---|---|---|
-| 5 kg | 20 Nm (0.6 kg) | 27 Nm (0.8 kg) | 34 Nm (1.0 kg) |
-| 15 kg | 59 Nm (1.8 kg) | 81 Nm (2.5 kg) | 103 Nm (3.1 kg) |
-| 30 kg | 118 Nm (3.6 kg) | 162 Nm (4.9 kg) | 206 Nm (6.2 kg) |
-| 50 kg | 196 Nm (5.9 kg) | 270 Nm (8.2 kg) | 343 Nm (10.4 kg) |
+| 5 kg | 20 Nm (0.25 kg) | 27 Nm (0.34 kg) | 34 Nm (0.43 kg) |
+| 15 kg | 59 Nm (0.74 kg) | 81 Nm (1.01 kg) | 103 Nm (1.29 kg) |
+| 30 kg | 118 Nm (1.47 kg) | 162 Nm (2.02 kg) | 206 Nm (2.58 kg) |
+| 50 kg | 196 Nm (2.45 kg) | 270 Nm (3.37 kg) | 343 Nm (4.29 kg) |
 
-**Torque is not the binding constraint.** Even 50 kg at full reach needs only
-~10 kg of shoulder actuator, within the `f_act` budget.
+**A single joint is not the binding constraint.** Even 50 kg at full reach needs
+only ~4.3 kg of shoulder actuator. What binds is the **sum across all thirty
+joints**, and the legs carry 1905 Nm of the 3414 — which is why arm payload is a
+poor lever on total actuator mass.
 
 **Declared group 2 capability:** daily manipulation and moderate precision, with
 per-arm loads in the tens of kilograms at short to medium reach.

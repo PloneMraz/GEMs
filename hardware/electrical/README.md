@@ -9,10 +9,17 @@ Component selection against the specification. Every figure below is sourced;
 
 ---
 
-## 1. The actuator finding — read this first
+## 1. The actuator finding — raised, and resolved
 
-Sizing the declared 30 joints against published torque densities does not
-reproduce the actuator mass fraction the specification assumes.
+> **Resolved by option A on 2026-09-22.** The specification now declares
+> **75–90 Nm/kg peak, on a peak-torque-over-module-mass basis**, and states the
+> basis explicitly. `spec/` and this document agree again; the record below is
+> kept because the reasoning is what justifies a figure at the top of the
+> commercial band.
+
+Sizing the declared 30 joints against published torque densities did not
+reproduce the actuator mass fraction the specification assumed. Tool output as
+run on 2026-09-22, before the correction:
 
 ```
 Nm/kg    mass kg    f_act    source
@@ -26,12 +33,15 @@ Nm/kg    mass kg    f_act    source
 [Spec 02.2](../../spec/02-structure-and-motion.md#22-the-four-coefficients)
 assumes `f_act` between **0.25 and 0.35**. [Spec
 02.6](../../spec/02-structure-and-motion.md#26-actuation-and-manipulation)
-declares actuator specific torque of **30–36 Nm/kg** and sizes its own worked
-example at 33.
+declared, at that time, actuator specific torque of **30–36 Nm/kg**, and sized
+its own worked example at 33.
 
-**Those two figures are not compatible.** At 33 Nm/kg the actuators weigh 80% of
-the body, `Σf` exceeds 1 before a single cell of battery is fitted, and the
+**Those two figures were not compatible.** At 33 Nm/kg the actuators weigh 80%
+of the body, `Σf` exceeds 1 before a single cell of battery is fitted, and the
 coupled loop does not converge at any endurance — not at four hours, not at two.
+
+Both figures in that paragraph have since been corrected; they are quoted here
+as they stood when the contradiction was found.
 
 ### It is not the arms
 
@@ -64,8 +74,8 @@ module's 52 Nm/kg, `f_act` = 0.51 and the loop is already marginal:
 | 0.51 — at 52 Nm/kg | γ = 9.9 | γ = 81.8 |
 | 0.80 — at 33 Nm/kg | **diverges** | **diverges** |
 
-This is a decision for the author, not something to be silently patched. The
-options are laid out in §6.
+This was a decision for the author, not something to be silently patched. The
+options as put are kept at §6, with the one taken marked.
 
 ---
 
@@ -167,21 +177,35 @@ measurement, not a datasheet reading, and it stays open until measured.
 > [spec 07.2](../../spec/07-firmware-and-software.md#72-real-time-requirements)
 > demands, rather than leaving skew to be inferred later.
 
-## 6. What the author has to decide
+## 6. The decision
 
-The actuator finding of §1 does not have a technical answer. It has three, and
-they trade against each other:
+The finding of §1 had no technical answer — three options, trading against each
+other. They are kept here because a design that does not record what it turned
+down cannot explain itself later.
 
-| Option | What it costs |
-|---|---|
-| **A — Raise the declared torque density to ≥75 Nm/kg** | Commits the design to the top of the commercial market. Spec 02.6 changes from 30–36 to a figure only the best modules meet, and part availability narrows sharply |
-| **B — Accept a higher `f_act`** | At 52 Nm/kg, `f_act` = 0.51: γ = 9.9 at two hours and 81.8 at four. Endurance collapses to something under two hours, and the mass envelope of spec 02.5 is wrong |
-| **C — Reduce what the body must do** | Lower peak torques mean less payload, gentler gait, less dynamic recovery. The legs dominate, so this means accepting a body that walks rather than catches itself |
+| Option | What it costs | |
+|---|---|---|
+| **A — Raise the declared torque density to ≥75 Nm/kg** | Commits the design to the top of the commercial market. Part availability narrows sharply and there is no margin left to trade away | **✅ taken** |
+| **B — Accept a higher `f_act`** | At 52 Nm/kg, `f_act` = 0.51: γ = 9.9 at two hours and 81.8 at four. Endurance collapses below two hours and the mass envelope of spec 02.5 becomes wrong | rejected |
+| **C — Reduce what the body must do** | Lower peak torque means less payload, gentler gait, less dynamic recovery. The legs dominate, so this means a body that walks rather than one that catches itself | rejected |
 
-**Nothing here is patched in the specification pending that decision.** The
-figures in `spec/` still say 30–36 Nm/kg and `f_act` 0.25–0.35, and they are
-still inconsistent. Recording the contradiction is this document's job;
-resolving it is not.
+### What option A committed the design to
+
+**75–90 Nm/kg peak, over module mass.** Only a handful of commercial modules
+reach it — the hollow-shaft planetary at 88.7 Nm/kg is at the very top of what
+is claimed, and a mainstream 52 Nm/kg module does not qualify. Supply is thin
+and will stay thin.
+
+**The specification now states the basis**, which is the part that actually
+prevents a repeat. The original error was not only a wrong number: 30–36 Nm/kg
+is a reasonable figure *on the integrated basis*, and it was being used as if it
+were peak-over-module. A density with no basis attached is a number waiting to
+be misread.
+
+**The two bands are now one constraint.** 75–90 Nm/kg maps onto `f_act`
+0.29–0.35, each derivable from the other, and `scripts/gems_budget.py --check`
+holds them together — including the actuator-mass column, which it did not
+cover before and which is exactly where this drift hid.
 
 ## 7. References
 

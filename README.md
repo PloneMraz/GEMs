@@ -73,8 +73,8 @@ One directory per group, and the body's three design disciplines nest under
 | [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ ten chapters |
 | [`protocol/`](protocol/) | Platform conformance protocol — how a body demonstrates it satisfies the contract | ✅ v0.1 draft |
 | [`hardware/`](hardware/) | The body itself | ◐ kinematics declared |
-| `hardware/mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 needs part selection |
-| `hardware/electrical/` | Power distribution, bus topology, sensor harness | 🔜 needs part selection |
+| [`hardware/mechanical/`](hardware/mechanical/) | Material and mechanism selection, sourced; CAD to follow | ◐ selection done |
+| [`hardware/electrical/`](hardware/electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint sizing | ◐ selection done |
 | [`hardware/sim-model/`](hardware/sim-model/) | URDF generated from the kinematics, audited against it | ✅ |
 | [`firmware/`](firmware/) | Device-level and real-time code: drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
 | [`software/`](software/) | Processing of what the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | ◐ emission log implemented |
@@ -115,8 +115,10 @@ enough to show in the layout.
 | ✅ | Simulation model — 30 DOF URDF, generated from the kinematics and audited against it |
 | 🔜 | Firmware source (awaits a target board) |
 | 🔜 | Feature extraction, fusion, link management |
-| 🔜 | Mechanical CAD (needs part selection) |
-| 🔜 | Electrical schematics (needs part selection) |
+| ✅ | Component selection, sourced — actuators, power, compute, bus, materials, reducers |
+| ⚠ | **Actuator torque density and `f_act` are inconsistent in `spec/`** — see [hardware/electrical](hardware/electrical/) §1 |
+| 🔜 | Mechanical CAD |
+| 🔜 | Electrical schematics |
 
 ---
 

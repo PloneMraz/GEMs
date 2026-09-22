@@ -65,8 +65,30 @@ this repository.
 
 ## Repository layout
 
+One directory per group, and the body's three design disciplines nest under
+`hardware/` rather than sitting at the root beside it.
+
 | Path | Contents | Status |
 |---|---|---|
+| [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ ten chapters |
+| [`protocol/`](protocol/) | Platform conformance protocol — how a body demonstrates it satisfies the contract | ✅ v0.1 draft |
+| [`hardware/`](hardware/) | The body itself | ◐ kinematics declared |
+| `hardware/mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 needs part selection |
+| `hardware/electrical/` | Power distribution, bus topology, sensor harness | 🔜 needs part selection |
+| `hardware/sim-model/` | URDF/MJCF simulation model | 🔜 needs inertias |
+| [`firmware/`](firmware/) | Device-level and real-time code: drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
+| [`software/`](software/) | Processing of what the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | ◐ emission log implemented |
+| [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |
+
+Directories marked 🔜 do not exist yet. They are named in advance so that the
+place a file belongs is never in question at the moment it is added.
+
+**Firmware and software sit at the root rather than under one heading**, because
+they are different disciplines under one specification chapter: firmware owns
+deadlines, software owns meaning, and the line between them is load-bearing
+enough to show in the layout.
+
+---|---|---|
 | [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ ten chapters |
 | [`protocol/`](protocol/) | Platform conformance protocol — how a body demonstrates it satisfies the contract | ✅ v0.1 draft |
 | [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |

@@ -6,9 +6,9 @@ directory fixes as a design.
 | Document | Contents | Status |
 |---|---|---|
 | [`kinematics.md`](kinematics.md) | Degrees of freedom, their arrangement, reach and segment lengths | ✅ |
-| `mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 *needs part selection* |
-| `electrical/` | Power distribution, bus topology, sensor harness | 🔜 *needs part selection* |
-| `sim-model/` | URDF/MJCF simulation model | 🔜 *needs kinematics plus inertias* |
+| `hardware/mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 *needs part selection* |
+| `hardware/electrical/` | Power distribution, bus topology, sensor harness | 🔜 *needs part selection* |
+| `hardware/sim-model/` | URDF/MJCF simulation model | 🔜 *needs inertias* |
 
 ## Specification and design
 
@@ -36,12 +36,19 @@ visible rather than buried.
 
 ## Why the rest waits
 
-`mechanical/` and `electrical/` need parts: an actuator, a reducer, a structural
+`hardware/mechanical/` and `hardware/electrical/` need parts: an actuator, a reducer, a structural
 alloy, a bus. Choosing them is design work, and none of the specification's
 `⟦IMPL⟧` constants that depend on them — actuator mass fraction, joint current
 loop rate, permitted timestamp skew, thermal envelope — can be closed before
 they are chosen.
 
-`sim-model/` needs less: kinematics are now declared, and a simulation could be
-built on them with estimated inertias. That is the nearest buildable piece of
-hardware work, and the only one that needs no fabrication.
+`hardware/sim-model/` needs less: kinematics are now declared, and a simulation
+could be built on them with estimated inertias. That is the nearest buildable
+piece of hardware work, and the only one that needs no fabrication.
+
+**Why the simulation model lives under hardware rather than beside it.** It is
+not a model in its own right; it is a model *of* this body, and its inertias
+come from the mechanical design. Kept apart, the two drift and the simulation
+quietly starts lying about the thing it claims to represent. Kept adjacent, the
+coupling is visible and a change to one is an obvious prompt to check the
+other.

@@ -7,9 +7,9 @@ against firmware, which owns *time*.
 | Module | What it is | Status |
 |---|---|---|
 | [`audit_log.py`](audit_log.py) | The emission log of [spec 06.4](../spec/06-audit-surface.md#64-emission-log): record schema, hash chain, per-batch Merkle root, and the verifier an assessor runs | ✅ reference implementation |
+| [`agency.py`](agency.py) | The self-caused / external gate of [spec 07.4](../spec/07-firmware-and-software.md#74-what-software-must-guarantee), by efference copy. Runs before fusion, because fusion averages away the evidence it needs | ✅ reference implementation |
 | Feature extraction and compression | The ≥2:1 the link requires ([spec 05.4](../spec/05-sensing.md#54-aggregate-rate-against-the-link)) | 🔜 *waiting update* |
 | Sensor fusion | Multi-rate, on a shared time base | 🔜 *waiting update* |
-| Agency classification | The self-caused / external gate, early in the pipeline | 🔜 *waiting update* |
 | Link management | Graceful degradation before dropped streams | 🔜 *waiting update* |
 
 Python 3, standard library only.

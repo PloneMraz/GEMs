@@ -91,7 +91,7 @@ One directory per group, and the body's three design disciplines nest under
 | Path | Contents | Status |
 |---|---|---|
 | [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ ten chapters |
-| [`protocol/`](protocol/) | Platform conformance protocol — how a body demonstrates it satisfies the contract | ✅ v0.1 draft |
+| [`protocol/`](protocol/) | Platform conformance protocol, and an assessment of this repository's simulated body against it | ✅ v0.1 draft + record |
 | [`hardware/`](hardware/) | The body itself | ◐ kinematics declared |
 | [`hardware/mechanical/`](hardware/mechanical/) | Material and mechanism selection, sourced; CAD to follow | ◐ selection done |
 | [`hardware/electrical/`](hardware/electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint sizing | ◐ selection done |
@@ -108,13 +108,6 @@ they are different disciplines under one specification chapter: firmware owns
 deadlines, software owns meaning, and the line between them is load-bearing
 enough to show in the layout.
 
----|---|---|
-| [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ ten chapters |
-| [`protocol/`](protocol/) | Platform conformance protocol — how a body demonstrates it satisfies the contract | ✅ v0.1 draft |
-| [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |
-| [`firmware/`](firmware/) | Device-level and real-time code on the body: drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
-| [`software/`](software/) | Processing of the information and data the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | ◐ emission log implemented |
-| [`hardware/`](hardware/) | The body itself: kinematic configuration now; mechanical CAD, electrical design and simulation model to follow | ◐ kinematics declared |
 
 ---
 
@@ -131,6 +124,8 @@ enough to show in the layout.
 | ✅ | Conformance protocol (v0.1 draft) |
 | ✅ | Firmware architecture and the reflex budget split across stages |
 | ✅ | Emission log: format, hash chain, batch signing, verifier |
+| ✅ | Agency classification by efference copy, with protocol §7.1 run against it |
+| ✅ | Conformance assessment of the simulated body — **9 of 16 unmet, and named** |
 | ✅ | Kinematic configuration — DOF, arrangement, reach |
 | ✅ | Simulation model — 30 DOF URDF, generated from the kinematics and audited against it |
 | 🔜 | Firmware source (awaits a target board) |

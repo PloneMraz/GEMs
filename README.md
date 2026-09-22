@@ -15,7 +15,10 @@ body.
 > [!IMPORTANT]
 > **This is a paper design. Nothing here has been built.**
 >
-> The project is unfunded. No component has been procured, nothing has been
+> The plain reason is money. There is no funding behind this work and no budget
+> to buy parts with — the actuator modules §2.6 calls for, a pack of cells, a
+> multi-threat armour layup, thirty joints' worth of anything, are simply beyond
+> what one person can pay for. So nothing has been procured, nothing has been
 > assembled, and no figure in this repository has been measured on hardware.
 > What exists is a specification, a conformance protocol, executable models, and
 > a component selection drawn from published sources.
@@ -208,6 +211,6 @@ not need a target board — the [budget model](scripts/), the
 implemented and tested. Component selection is sourced and recorded; mechanical
 CAD and electrical schematics are not drawn.
 
-**No part of this has been built or physically validated**, for the reason given
-at the top of this file. The work is complete as a paper design and untested as
-a body.
+**No part of this has been built or physically validated**, and the reason is
+the one at the top of this file: there is no money to buy the parts with. The
+work is complete as a paper design and untested as a body.

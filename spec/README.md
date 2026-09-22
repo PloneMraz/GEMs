@@ -34,10 +34,10 @@ if you are checking this body against an external specification rather than
 building it.
 
 > [!NOTE]
-> **Nothing specified here has been built.** The project is unfunded; every
-> figure in these chapters is derived or cited, none is measured on hardware.
-> See the [repository README](../README.md) for what that does and does not
-> mean.
+> **Nothing specified here has been built.** There is no money behind this work
+> to buy parts with, so every figure in these chapters is derived or cited and
+> none is measured on hardware. See the [repository README](../README.md) for
+> what that does and does not mean.
 
 ## Status
 

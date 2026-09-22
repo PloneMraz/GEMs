@@ -75,7 +75,7 @@ One directory per group, and the body's three design disciplines nest under
 | [`hardware/`](hardware/) | The body itself | ◐ kinematics declared |
 | `hardware/mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 needs part selection |
 | `hardware/electrical/` | Power distribution, bus topology, sensor harness | 🔜 needs part selection |
-| `hardware/sim-model/` | URDF/MJCF simulation model | 🔜 needs inertias |
+| [`hardware/sim-model/`](hardware/sim-model/) | URDF generated from the kinematics, audited against it | ✅ |
 | [`firmware/`](firmware/) | Device-level and real-time code: drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
 | [`software/`](software/) | Processing of what the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | ◐ emission log implemented |
 | [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |
@@ -112,9 +112,9 @@ enough to show in the layout.
 | ✅ | Firmware architecture and the reflex budget split across stages |
 | ✅ | Emission log: format, hash chain, batch signing, verifier |
 | ✅ | Kinematic configuration — DOF, arrangement, reach |
+| ✅ | Simulation model — 30 DOF URDF, generated from the kinematics and audited against it |
 | 🔜 | Firmware source (awaits a target board) |
 | 🔜 | Feature extraction, fusion, link management |
-| 🔜 | Simulation model (needs inertias only) |
 | 🔜 | Mechanical CAD (needs part selection) |
 | 🔜 | Electrical schematics (needs part selection) |
 

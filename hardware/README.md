@@ -8,7 +8,7 @@ directory fixes as a design.
 | [`kinematics.md`](kinematics.md) | Degrees of freedom, their arrangement, reach and segment lengths | ✅ |
 | `hardware/mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 *needs part selection* |
 | `hardware/electrical/` | Power distribution, bus topology, sensor harness | 🔜 *needs part selection* |
-| `hardware/sim-model/` | URDF/MJCF simulation model | 🔜 *needs inertias* |
+| [`sim-model/`](sim-model/) | URDF generated from the kinematics, with an audit that holds it to the declaration | ✅ |
 
 ## Specification and design
 
@@ -42,9 +42,11 @@ alloy, a bus. Choosing them is design work, and none of the specification's
 loop rate, permitted timestamp skew, thermal envelope — can be closed before
 they are chosen.
 
-`hardware/sim-model/` needs less: kinematics are now declared, and a simulation
-could be built on them with estimated inertias. That is the nearest buildable
-piece of hardware work, and the only one that needs no fabrication.
+[`sim-model/`](sim-model/) needed less, and is done: kinematics were declared,
+so the model is generated from them with estimated masses and inertias. It is
+good for reach, workspace and gait topology, and **not** good for impact or
+torque prediction — those need true inertia, which needs a mechanical design.
+The README there says which is which rather than leaving a user to find out.
 
 **Why the simulation model lives under hardware rather than beside it.** It is
 not a model in its own right; it is a model *of* this body, and its inertias

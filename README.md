@@ -70,8 +70,8 @@ this repository.
 | [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ ten chapters |
 | [`protocol/`](protocol/) | Platform conformance protocol — how a body demonstrates it satisfies the contract | ✅ v0.1 draft |
 | [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |
-| `firmware/` | Device-level and real-time code on the body: sensor and actuator drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | 🔜 *waiting update* |
-| `software/` | Processing of the information and data the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | 🔜 *waiting update* |
+| [`firmware/`](firmware/) | Device-level and real-time code on the body: drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
+| [`software/`](software/) | Processing of the information and data the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | ◐ emission log implemented |
 | `mechanical/` | Structural CAD, armour layup, joint assemblies | 🔜 *waiting update* |
 | `electrical/` | Power distribution, bus topology, sensor harness | 🔜 *waiting update* |
 | `sim-model/` | Simulation model | 🔜 *waiting update* |
@@ -89,8 +89,10 @@ this repository.
 | ✅ | Budget model, and a check that holds `spec/` to its own arithmetic |
 | ✅ | Platform specification published in this repository |
 | ✅ | Conformance protocol (v0.1 draft) |
-| 🔜 | Firmware specification |
-| 🔜 | Software specification |
+| ✅ | Firmware architecture and the reflex budget split across stages |
+| ✅ | Emission log: format, hash chain, batch signing, verifier |
+| 🔜 | Firmware source (awaits a target board) |
+| 🔜 | Feature extraction, fusion, link management |
 | 🔜 | Mechanical CAD |
 | 🔜 | Electrical schematics |
 | 🔜 | Simulation model |
@@ -159,6 +161,8 @@ them.
 
 ## Status
 
-The [platform specification](spec/) is published here in ten chapters, and the
-[conformance protocol](protocol/) in draft. Hardware designs, firmware and
-software are not published yet.
+The [platform specification](spec/) is published here in ten chapters, the
+[conformance protocol](protocol/) in draft, and the parts of the stack that do
+not need a target board — the [budget model](scripts/) and the
+[emission log](software/) — are implemented and tested. Hardware designs are not
+published yet.

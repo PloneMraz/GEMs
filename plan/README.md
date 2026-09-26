@@ -63,8 +63,9 @@ that they cannot be mistaken for purchasable items.
 | Kinematic simulation model | L4 for kinematics only | `hardware/sim-model/` — inertias estimated |
 | Everything else | L0 | — |
 
-No item is at L3. There is no bill of materials and no price anywhere in the
-repository.
+No item is at L3. The bill of materials exists — [`hardware/bom/`](../hardware/bom/),
+one row per item the specification names — but no row carries a verified price
+yet.
 
 ---
 
@@ -76,7 +77,7 @@ it can move past L2. None can be settled by arithmetic alone.
 | # | Decision | Blocks | Status |
 |---|---|---|---|
 | **D-1** | **Knee torque requirement.** The sizing script assumes knee = hip pitch, flagged there as an assumption, not a source | Actuator sizing, `f_act`, the mass loop | open — check against published gait data |
-| **D-2** | **Actuators: procure modules or design them.** An 88.7 Nm/kg module exists commercially; designing our own motor, reducer and drive puts every capacitor of the drive inside this repository | M-3, E-3, F-3 — the largest single block of work | open |
+| **D-2** | **Actuators: procure modules or design them.** An 88.7 Nm/kg module exists commercially, but it peaks at 85 Nm and 16 of the 30 joints need more ([`hardware/bom/`](../hardware/bom/README.md#what-building-the-bom-turned-up)). This decision also settles the conflict between the per-class reducers of `hardware/mechanical` and the single module family of `hardware/electrical`. Designing our own motor, reducer and drive puts every capacitor of the drive inside this repository | M-3, E-3, F-3 — the largest single block of work | open |
 | **D-3** | **Real-time processor and RTOS.** The Jetson carries perception and compression; it is not a hard real-time target for the 500 Hz balance loop and the 10 ms reflex path | All firmware, E-5 | open |
 | **D-4** | **High-voltage bus voltage** | Every power stage, cell count in series, harness gauge | open |
 | **D-5** | **Cell and pack format** at the durable tier (400–500 Wh/kg) | Pack mechanics, BMS, thermal | open — candidates sourced in `hardware/electrical/` |
@@ -159,7 +160,7 @@ See [`software.md`](software.md). Needs no hardware decision and can proceed now
 
 | ID | Task | To | Waits for |
 |---|---|---|---|
-| B-1 | BOM format: part, manufacturer, part number, quantity, source link, unit price, currency, date priced, maturity | — | — |
+| B-1 | BOM format: part, manufacturer, part number, quantity, source link, unit price, currency, date priced, maturity — ✅ [`hardware/bom/`](../hardware/bom/) | — | — |
 | B-2 | Price what is already selected at L2 — actuator modules, cells, compute, EtherCAT and CAN FD parts, materials | L3 | B-1 |
 | B-3 | Extend the BOM as each work package reaches L3 | L3 | each package |
 | B-4 | Cost roll-up by subsystem, with "quote only" and **LAB** rows counted separately rather than guessed | L3 | B-3 |

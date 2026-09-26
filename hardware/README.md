@@ -9,6 +9,7 @@ directory fixes as a design.
 | [`mechanical/`](mechanical/) | Material and mechanism selection, sourced. CAD still to come | ◐ selection done |
 | [`electrical/`](electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint actuator sizing | ◐ selection done |
 | [`sim-model/`](sim-model/) | URDF generated from the kinematics, with an audit that holds it to the declaration | ✅ |
+| [`bom/`](bom/) | Bill of materials: every item the specification names, with part number, source and price where verified, blank where not | ◐ 69 rows, none priced |
 
 ## Specification and design
 

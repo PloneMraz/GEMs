@@ -27,7 +27,7 @@ REF_MASS = 130.0          # the 4-hour operating point of spec 02.5
 REACH = 0.70              # hardware/kinematics.md §2
 FOREARM_REACH = 0.38      # elbow to grip centre
 
-# Per-joint peak torque. Leg and waist figures scale with body mass; arm
+# Per-joint peak torque. Leg and trunk figures scale with body mass; arm
 # figures scale with the payload the arm is required to hold at reach.
 # Sources are listed per row in README.md.
 JOINTS = [
@@ -38,8 +38,11 @@ JOINTS = [
     ("knee",           2, "per_kg", 1.77),
     ("ankle_pitch",    2, "per_kg", 1.40),   # sourced: 1.4 Nm/kg at push-off
     ("ankle_roll",     2, "per_kg", 0.54),
-    ("waist_pitch",    1, "per_kg", 1.54),
-    ("waist_yaw",      1, "per_kg", 0.77),
+    ("trunk_pitch",    1, "per_kg", 1.54),
+    ("trunk_yaw",      1, "per_kg", 0.77),
+    # trunk_roll (lateral bend, kinematics §1.4, D-9) is not yet sized: no
+    # source gives its torque, and assuming one would move the f_act figures
+    # of spec 02.6 on a guess.
     ("shoulder_pitch", 2, "payload", (30.0, REACH)),
     ("shoulder_roll",  2, "payload", (22.0, REACH)),
     ("shoulder_yaw",   2, "fixed",   60.0),

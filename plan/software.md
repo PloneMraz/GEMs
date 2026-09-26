@@ -67,7 +67,7 @@ conservative configuration (spec 05.4).
 | Audit log: format, hash chain, Merkle batches, verifier | ✅ L4 | done — [`audit_log.py`](../reference/audit_log.py) |
 | Two tiers — full and anchored — assembled from firmware records | L4 | F-10 |
 | Synchronisation to the off-board compute after an outage, oldest first, nothing dropped | L4 | S-5 |
-| Storage accounting: 1.15 GB/h full tier against the log device | L4 | E-5 |
+| Storage accounting: 1.18 GB/h full tier against the log device | L4 | E-5 |
 
 ## S-5 — Link management
 

@@ -65,12 +65,13 @@ JOINTS = [
     (1, "hip_pitch", "cycloidal", "leg"), (2, "hip_roll", "cycloidal", "leg"),
     (3, "hip_yaw", "cycloidal", "leg"), (4, "knee", "cycloidal", "leg"),
     (5, "ankle_pitch", "unassigned", "leg"), (6, "ankle_roll", "unassigned", "leg"),
-    (7, "waist_pitch", "unassigned", "torso"), (8, "waist_yaw", "unassigned", "torso"),
+    (7, "trunk_pitch", "unassigned", "torso"), (8, "trunk_yaw", "unassigned", "torso"),
     (9, "shoulder_pitch", "planetary", "arm"), (10, "shoulder_roll", "planetary", "arm"),
     (11, "shoulder_yaw", "planetary", "arm"), (12, "elbow", "planetary", "arm"),
     (13, "wrist_yaw", "harmonic", "arm"), (14, "wrist_pitch", "harmonic", "arm"),
     (15, "wrist_roll", "harmonic", "arm"), (16, "neck_yaw", "harmonic", "neck"),
     (17, "neck_pitch", "harmonic", "neck"),
+    (18, "trunk_roll", "unassigned", "torso"),     # lateral bend, D-9
 ]
 MODULE_CHILDREN = [
     # offset, description, category, make/buy, spec_ref
@@ -149,15 +150,21 @@ def build():
 
     # -- joint modules: one part number per joint type, shared left/right --
     for idx, name, red, _ in JOINTS:
-        nm = torque[name]
+        nm = torque.get(name)
         pn = module_pn(idx)
-        b.part(pn, "Joint module, %s" % name.replace("_", " "), "ASSY", "MAKE",
-               mass="%.3f" % (nm / MODULE_NM_PER_KG),
-               basis="estimate: %.0f Nm peak / %.1f Nm/kg" % (nm, MODULE_NM_PER_KG),
-               level="L2", ref="spec 02.6; hardware/kinematics.md 1",
-               req="%.0f Nm peak; >=75 Nm/kg over module mass" % nm,
-               notes="D-2 open: procure as one module or build from the children below."
-               + ("" if nm <= 85 else " No module found at this torque and density."))
+        if nm is None:                    # declared, not yet sized
+            b.part(pn, "Joint module, %s" % name.replace("_", " "), "ASSY", "MAKE",
+                   level="L1", ref="hardware/kinematics.md 1.4",
+                   req="torque not yet sized (D-9); >=75 Nm/kg over module mass",
+                   notes="Trunk lateral bend, added by D-9. No torque source yet.")
+        else:
+            b.part(pn, "Joint module, %s" % name.replace("_", " "), "ASSY", "MAKE",
+                   mass="%.3f" % (nm / MODULE_NM_PER_KG),
+                   basis="estimate: %.0f Nm peak / %.1f Nm/kg" % (nm, MODULE_NM_PER_KG),
+                   level="L2", ref="spec 02.6; hardware/kinematics.md 1",
+                   req="%.0f Nm peak; >=75 Nm/kg over module mass" % nm,
+                   notes="D-2 open: procure as one module or build from the children below."
+                   + ("" if nm <= 85 else " No module found at this torque and density."))
         for off, desc, cat, mb, ref in MODULE_CHILDREN:
             cpn = "GEM-2%02d%02d" % (idx, off)
             d = desc
@@ -198,7 +205,7 @@ def build():
         ("GEM-11060", "Electronic nose", "1", "spec 05.3", "5-30 ppb per compound, 5-10 s", "TM"),
         ("GEM-11070", "Taste analyser, lab-on-chip", "1", "spec 05.3", "batch-wise", "LAB"),
         ("GEM-11080", "Speaker and ultrasonic emitter", "1", "spec 05.3", "", "TM"),
-        ("GEM-11090", "Micro facial and pupil actuator set", "1", "spec 05.3; kinematics 1.4", "", "LAB"),
+        ("GEM-11090", "Micro facial and pupil actuator set", "1", "spec 05.3; kinematics 1.6", "", "LAB"),
     ]:
         b.use(head, b.part(pn, d, "OTS" if mat == "TM" else "MFG",
                            "BUY" if mat == "TM" else "MAKE", uom="SET" if pn == "GEM-11090" else "EA",
@@ -214,9 +221,16 @@ def build():
     torso = b.part("GEM-13000", "Torso assembly", "ASSY", "MAKE", level="L1", ref="plan M-2")
     b.use(top, torso)
     b.use(torso, S("GEM-13010", "Pelvis structure"))
-    b.use(torso, S("GEM-13020", "Torso structure"))
+    b.use(torso, S("GEM-13020", "Torso structure, upper thorax"))
+    b.use(torso, S("GEM-13021", "Spine segment structure, lumbar"))
+    b.use(torso, S("GEM-13022", "Spine segment structure, lower thoracic"))
+    b.use(torso, b.part("GEM-13023", "Spine coupling mechanism, three axes over three segments",
+                        "MFG", "MAKE", uom="SET", level="L1",
+                        ref="hardware/kinematics.md 1.4; plan D-9",
+                        notes="Gearing, cable or elastic continuum element: IMPL"))
     b.use(torso, module_pn(8))
     b.use(torso, module_pn(7))
+    b.use(torso, module_pn(18))
     b.use(torso, b.part("GEM-13030", "IMU, torso", "OTS", "BUY", level="L1",
                         ref="spec 05.3", req="1 kHz"), "", "count IMPL; at least 1")
 

@@ -98,7 +98,7 @@ def joint_torque_total(body_mass_kg):
     return sum(r[3] for r in torque_table(body_mass_kg))
 
 
-def log_bytes_per_s(dof=40, channels=4, bytes_per_sample=4, hz=500):
+def log_bytes_per_s(dof=41, channels=4, bytes_per_sample=4, hz=500):
     return dof * channels * bytes_per_sample * hz
 
 
@@ -289,8 +289,8 @@ def collect_claims():
               "full-tier log volume per hour"))
 
     # hardware/kinematics.md — the three joint-count configurations
-    for dof, label in ((30, "core only"), (40, "core + minimum hands"),
-                       (72, "core + anthropomorphic hands")):
+    for dof, label in ((31, "core only"), (41, "core + minimum hands"),
+                       (73, "core + anthropomorphic hands")):
         b = log_bytes_per_s(dof=dof)
         c.append(("log %d DOF" % dof, "hardware/kinematics.md",
                   "%d kB/s · %.1f Mbps · %.2f GB/h"

@@ -87,6 +87,18 @@ humanoids such as Kotaro and Kenshiro. It is the most flexible, but those
 designs report poor controllability and low load capacity, and nine trunk
 actuators would break the actuator mass budget (`f_act`).
 
+**An implemented precedent for the coupling.** The Flexinoid spine (Ali and
+Abdullah, *Scientific Reports* 2025;
+[`electrical/sources/`](electrical/sources/)) is a five-vertebra tensegrity
+column — rigid struts, TPU cables, a spherical joint at each level — with pitch
+and roll driven by **two actuators in the lumbar region** through tendons and
+series elastic elements, the tensegrity transmitting the motion up the column.
+Per vertebra 25° flexion and ±10° lateral bend, ±30° lateral bend in total;
+unpowered it carries 15 kg passively. Two differences from this body: its yaw
+is a separate revolute joint at the shoulder mount, where here yaw is the third
+coupled axis; and its lateral range is a third of the 90° targeted here. It
+shows the mechanism class works at human scale, not that these figures do.
+
 The coupling ratio between segments is `⟦IMPL⟧`. The simulation model spreads
 each axis equally; the human distribution — most rotation thoracic, little
 lumbar — is the reference the mechanical design should move toward. The

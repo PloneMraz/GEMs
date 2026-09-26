@@ -47,7 +47,7 @@ Some things are absent because they belong to no one in this repository:
 |---|---|
 | Any specification of the controller | Not this repository |
 | The standard judging a body's conduct | A third party: the deploying or certifying party |
-| Conformance test procedures | `protocol/` — 🔜 *waiting update* |
+| Conformance test procedures | [`protocol/`](../protocol/) — v0.1 draft |
 
 ## Reading this chapter
 

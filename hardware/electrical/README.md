@@ -215,45 +215,55 @@ has no torque figure yet. Two things were found, and one was not.
 
 **What the trunk figures already in the table rest on.** Nothing. The waist
 rows — trunk pitch 1.54 Nm/kg (200 Nm at 130 kg) and trunk yaw 0.77 Nm/kg — have
-no source in §7; they were assumed when the table was written. A lateral-bend
-figure derived as a ratio of trunk pitch is therefore a ratio of an assumption,
-and this note says so rather than hiding it behind a citation.
+no source in §7; they were assumed when the table was written. The source found
+for lateral bend below covers all three axes, so it can replace both.
 
-**The ratio of lateral bend to pitch, from three independent places:**
+**Human trunk torque per kilogram, all three axes — Pan et al. 2025 [14]
+(full text in [`sources/`](sources/)).** 122 asymptomatic adults, 61 male
+(24.5 ± 2.3 y, 73.4 ± 15.0 kg, 175.6 ± 6.8 cm) and 61 female; Bionix Sim3 Pro
+dynamometer; median peak torque, normalised to body weight:
+
+| Axis | Isometric, male | Isometric, female | Isokinetic 15°/s, male | Isokinetic 15°/s, female |
+|---|---|---|---|---|
+| Extension (trunk pitch) | **1.74 Nm/kg** | 1.63 | 0.69 | 1.40 |
+| Flexion | 1.15 | 1.05 | 0.58 | 0.93 |
+| **Lateral bending, left / right (trunk roll)** | **0.95 / 0.91** | 1.00 / 0.86 | 0.47 / 0.46 | 0.88 / 0.78 |
+| Axial rotation, left / right (trunk yaw) | **0.74 / 0.64** | 0.66 / 0.66 | 0.35 / 0.40 | 0.43 / 0.53 |
+
+Sex differences vanish once normalised (P > 0.05), so the male isometric
+column is used as the figure. The isokinetic values are lower because the
+device's slow constant-velocity protocol is not a peak-effort condition; they
+are not a dynamic peak. Lateral bending is **0.55 × extension**.
+
+**Cross-check, two engineered waists and one robot URDF:**
 
 | Source | Roll : pitch | Note |
 |---|---|---|
-| Human isometric trunk strength, asymptomatic adult cohort, 2025 [14] | **0.54–0.60** | Males, medians: extension 118.1 Nm, flexion 87.3 Nm, lateral bending 71.3 / 63.2 Nm (left / right), rotation lowest. Read from the article's search summary; full text unreachable from the environment this was written in — **body mass of the cohort not obtained**, so no Nm/kg |
-| 3-DOF coupled tendon-driven humanoid waist, *Advanced Robotics* 2023 [15] | **0.50** | Designed pitch : roll : yaw = 4 : 2 : 1, realised as 87.0 / 53.0 / 22.2 Nm static. Robot mass not obtained |
-| Unitree G1 URDF, 29-DOF [16] | 1.0 | waist_roll = waist_pitch = 35 Nm, waist_yaw 88 Nm, robot 35.1 kg. An outlier: G1's pitch and roll travel only ±30°, and both are sized far below its yaw. Not a reference for a spine that bends 90° laterally |
+| 3-DOF coupled tendon-driven humanoid waist, *Advanced Robotics* 2023 [15] | 0.50 | Designed pitch : roll : yaw = 4 : 2 : 1, realised as 87.0 / 53.0 / 22.2 Nm static. Abstract only; robot mass not obtained |
+| Flexinoid tensegrity spine, *Scientific Reports* 2025 [18] | — | No torque figures for pitch or roll; actuators are 1.89 N·m servos with elastic assistance. Its value is as a mechanism reference — see kinematics §1.4 |
+| Unitree G1 URDF, 29-DOF [16] | 1.0 | waist_roll = waist_pitch = 35 Nm, waist_yaw 88 Nm, robot 35.1 kg. An outlier: G1's pitch and roll travel only ±30°, both sized far below its yaw |
 
 Human strength and a waist engineered to match human balance agree at
-**about 0.5–0.6**. The G1 ratio is set by its small-travel design, not by need.
+**about 0.5–0.55**. The G1 ratio is set by its small-travel design, not by need.
 
-**Candidate: trunk roll = 0.6 × trunk pitch = 0.92 Nm/kg — 120 Nm at 130 kg.**
-Not yet adopted; the sizing table still carries 30 joints. What adopting it does
-to the actuator mass fraction, at the 130 kg point:
+**Options, not yet adopted** — the sizing table still carries 30 joints. At the
+130 kg point:
 
-| Trunk roll | Σ torque | `f_act` at 75 Nm/kg | at 80 | at 88.7 | Density for `f_act` ≤ 0.35 |
-|---|---|---|---|---|---|
-| 100 Nm (0.5 ×) | 3514 Nm | 0.360 | 0.338 | 0.305 | ≥ 77.2 Nm/kg |
-| **120 Nm (0.6 ×)** | **3534 Nm** | **0.362** | **0.340** | **0.306** | **≥ 77.7 Nm/kg** |
-| 200 Nm (1.0 ×) | 3614 Nm | 0.371 | 0.348 | 0.313 | ≥ 79.4 Nm/kg |
+| | Pitch | Roll | Yaw | Σ torque | `f_act` at 75 | at 80 | at 88.7 | Density for `f_act` ≤ 0.35 |
+|---|---|---|---|---|---|---|---|---|
+| Today, no roll | 200 | — | 100 | 3414 Nm | 0.350 | 0.328 | 0.296 | 75.0 |
+| **A** — add roll at 0.95 Nm/kg, keep the assumed pitch and yaw | 200 | 124 | 100 | 3537 Nm | 0.363 | 0.340 | 0.307 | **77.7** |
+| **B** — all three trunk axes from [14]: 1.74 / 0.95 / 0.74 Nm/kg | 226 | 124 | 96 | 3560 Nm | 0.365 | 0.342 | 0.309 | **78.2** |
 
-At any of these the floor of the declared density band, 75 Nm/kg (spec 02.6),
-no longer holds `f_act` inside 0.25–0.35; the floor moves to about 78. That is
-a specification change and waits for the author.
+Either option moves the floor of the declared density band (spec 02.6) from
+75 to about 78 Nm/kg; B also replaces two unsourced constants with sourced
+ones. Both are specification changes and wait for the author.
 
 **What was not found:** a dynamic lateral trunk moment during the motions the
 axis is for — twisting to protect the body in a fall, righting from the ground.
 Isometric strength is a floor on capability, not a peak dynamic demand.
 Asymmetric-lifting biomechanics report lateral bending moments at L5/S1 rising
 with task asymmetry [17], but no peak figure was obtained.
-
-**To verify from the full texts** (reachable outside this environment): the
-cohort's mean body mass in [14], to state lateral bending in Nm/kg directly; the
-robot mass in [15]; and, if [17] or its neighbours give one, a peak lateral
-moment in Nm/kg for a dynamic task.
 
 ## 7. References
 
@@ -282,7 +292,8 @@ against a real gait dataset.
 |---|---|
 | 12 | [Human-Level Actuation for Humanoids](https://arxiv.org/html/2511.06796) |
 | 13 | [Selection guide for humanoid robot knee and hip joint motors](https://www.cubemars.com/how-to-choose-hip-and-knee-joint-motors-for-humanoid-robots.html) |
-| 14 | [Sex-specific characteristics of the trunk muscle behaviors in an asymptomatic adult cohort](https://pmc.ncbi.nlm.nih.gov/articles/PMC12150468/), PubMed 40490841, 2025 |
+| 14 | Pan F., Cheng J., Kong C., Wang W., Lu S., [Sex-specific characteristics of the trunk muscle behaviors in an asymptomatic adult cohort](https://doi.org/10.1186/s40001-025-02742-w), *European Journal of Medical Research* 30:471, 2025 — [`sources/pan-2025-…pdf`](sources/pan-2025-trunk-torque-eur-j-med-res-30-471.pdf) |
 | 15 | [A 3-DOF coupled tendon-driven humanoid waist](https://www.tandfonline.com/doi/abs/10.1080/01691864.2023.2289134), *Advanced Robotics* 37(23), 2023 |
 | 16 | [Unitree G1 description, `g1_29dof.urdf`](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/g1_description) — joint `<limit effort>` values read on 2026-09-26 |
 | 17 | [The effects of lifting speed on the peak external forward bending, lateral bending, and twisting spine moments](https://www.tandfonline.com/doi/abs/10.1080/001401399185838), *Ergonomics* 42(1) |
+| 18 | Ali A. R., Abdullah H. S., [Development of a compliant spine mechanism for enhanced humanoid robotics locomotion](https://doi.org/10.1038/s41598-025-32165-w), *Scientific Reports* 15:44646, 2025 — [`sources/ali-2025-…pdf`](sources/ali-2025-flexinoid-tensegrity-spine-sci-rep-15-44646.pdf) |

@@ -97,6 +97,7 @@ One directory per group, and the body's three design disciplines nest under
 | [`hardware/mechanical/`](hardware/mechanical/) | Material and mechanism selection, sourced; CAD to follow | ◐ selection done |
 | [`hardware/electrical/`](hardware/electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint sizing | ◐ selection done |
 | [`hardware/sim-model/`](hardware/sim-model/) | URDF generated from the kinematics, audited against it | ✅ |
+| [`hardware/design/`](hardware/design/) | Concept art, then industrial design and expressive capability (plan ID) | ◐ concept art |
 | [`hardware/bom/`](hardware/bom/) | EBOM, MBOM and SBOM from one definition, checked against each other; approved manufacturer list, blanks where not yet verified | ◐ 281 parts, none priced |
 | [`firmware/`](firmware/) | Code that runs directly on the microcontrollers, bare metal or RTOS: joint control, battery management, secure boot and attestation, low-power beacon — and the real-time controller's balance, reflex and supervisor modules if D-3 makes it a microcontroller | ◐ architecture; source awaits a target |
 | [`software/`](software/) | Code that runs under Linux on the embedded computers: capture drivers, feature extraction and compression, sensor fusion, log synchronisation, link management | 🔜 no source yet |

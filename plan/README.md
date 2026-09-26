@@ -115,7 +115,7 @@ quite passes as human is received worse than one that does not try.
 
 | ID | Task | To | Waits for |
 |---|---|---|---|
-| ID-1 | Design brief: proportions from `kinematics.md`, the gynoid form, the uncanny-valley position the design takes and why | L1 | — |
+| ID-1 | Design brief: proportions from `kinematics.md`, the gynoid form, the uncanny-valley position the design takes and why; starting from the author's [concept art](../hardware/design/concept/) and its tensions with the specification | L1 | — |
 | ID-2 | Form development: silhouette and proportion studies, form language, then class-A outer surfaces in CAD. Constraints: shell thickness (spec 04.5), armour coverage (spec 02.4), joint range of motion from the URDF | L4 | ID-1, M-1 |
 | ID-3 | Human-contact surfaces: pinch-point elimination at every joint, contact zones for safe touch (spec 01 group 4), lift and handling points | L4 | ID-2 |
 | ID-4 | Colour, material and finish by zone, within what the shell layers allow: electrochromic range (spec 04.3), the sense-and-heal skin's feel, the fire layer's constraints | L4 | ID-2, M-8 — **LAB** in part |

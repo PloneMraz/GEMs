@@ -9,6 +9,7 @@ directory fixes as a design.
 | [`mechanical/`](mechanical/) | Material and mechanism selection, sourced. CAD still to come | ◐ selection done |
 | [`electrical/`](electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint actuator sizing | ◐ selection done |
 | [`sim-model/`](sim-model/) | URDF generated from the kinematics, with an audit that holds it to the declaration | ✅ |
+| [`design/`](design/) | How the body looks and what it can express: concept art now; industrial design and expression to follow (plan ID) | ◐ concept art |
 | [`bom/`](bom/) | EBOM, MBOM and SBOM generated from the kinematics and checked against each other; approved manufacturer list with source and price where verified | ◐ 281 parts, none priced |
 
 ## Specification and design

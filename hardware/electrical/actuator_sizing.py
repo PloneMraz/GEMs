@@ -38,13 +38,13 @@ JOINTS = [
     ("knee",           2, "per_kg", 1.77),
     ("ankle_pitch",    2, "per_kg", 1.40),   # sourced: 1.4 Nm/kg at push-off
     ("ankle_roll",     2, "per_kg", 0.54),
-    ("trunk_pitch",    1, "per_kg", 1.54),
-    ("trunk_yaw",      1, "per_kg", 0.77),
-    # trunk_roll (lateral bend, kinematics §1.4, D-9) is not yet sized.
-    # Candidate from README §6a: 0.6 x trunk_pitch = 0.92 Nm/kg (120 Nm at
-    # 130 kg), which moves the density floor of spec 02.6 from 75 to ~78
-    # Nm/kg. Adopting it is the author's call; the constant is not in the
-    # table until then.
+    # Trunk: human isometric peak, normalised to body weight, male medians
+    # (Pan et al. 2025, README ref 14): extension 1.74, lateral bending 0.95
+    # (left, the larger side), axial rotation 0.74 Nm/kg. Adopted 2026-09-26
+    # (README §6a, option B); the roll axis is decision D-9.
+    ("trunk_pitch",    1, "per_kg", 1.74),   # sourced: extension
+    ("trunk_roll",     1, "per_kg", 0.95),   # sourced: lateral bending
+    ("trunk_yaw",      1, "per_kg", 0.74),   # sourced: axial rotation
     ("shoulder_pitch", 2, "payload", (30.0, REACH)),
     ("shoulder_roll",  2, "payload", (22.0, REACH)),
     ("shoulder_yaw",   2, "fixed",   60.0),
@@ -62,7 +62,8 @@ DENSITIES = [
     (33.0,  "what spec 02.6 used before 2026-09-22"),
     (36.0,  "top of the superseded range"),
     (52.0,  "commercial QDD module, 8:1 planetary"),
-    (75.0,  "floor of the band spec 02.6 now declares"),
+    (75.0,  "floor of the band before 2026-09-26"),
+    (80.0,  "floor of the band spec 02.6 now declares"),
     (88.7,  "commercial hollow-shaft planetary module, peak"),
 ]
 
@@ -119,7 +120,7 @@ def main(argv=None):
         return 1
     need = total_nm / (band_hi * a.mass)
     print("The lowest density that fits is %.0f Nm/kg." % need)
-    print("spec 02.6 declares 75-90 Nm/kg peak over module mass, which is why.")
+    print("spec 02.6 declares 80-90 Nm/kg peak over module mass: the floor with margin.")
     return 0
 
 

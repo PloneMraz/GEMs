@@ -147,7 +147,7 @@ magnitude.
 | Property | Envelope | Maturity |
 |---|---|---|
 | Specific power | **3–5 kW/kg** | **TM** |
-| Specific torque | **75–90 Nm/kg peak** — see below | **TM**, top of the commercial band |
+| Specific torque | **80–90 Nm/kg peak** — see below | **TM**, top of the commercial band |
 | Efficiency | 75–82% | **TM** |
 | Response | milliseconds | **TM** |
 | Joints | precision bearings with harmonic or cycloidal reducers | **TM** |
@@ -163,27 +163,31 @@ integrated actuator mass**, counting cooling and wiring, yields 18–22 Nm/kg fo
 the state of the art. A figure carried across from one basis to the other will
 size a body that cannot be built.
 
-**This specification declares peak-over-module, and 75–90 Nm/kg is the top of
+**This specification declares peak-over-module, and 80–90 Nm/kg is the top of
 what is commercially claimed.** The cost of standing there is real: part
 availability narrows to a handful of modules, and there is no margin to trade
 away later.
 
-### Why 75 is the floor
+### Why 80 is the floor
 
-The declared kinematics need **3414 Nm** summed across the 30 joints sized so
-far — trunk lateral bend, the 31st, awaits a torque figure
-([kinematics §1.4](../hardware/kinematics.md#14-the-trunk-is-a-spine-not-a-waist)) — at the 130 kg
-operating point ([joint-by-joint sizing](../hardware/electrical/)). Divide:
+The declared kinematics need **3560 Nm** summed across 31 joints at the 130 kg
+operating point ([joint-by-joint sizing](../hardware/electrical/)); the three
+trunk axes are sized from measured human trunk strength per kilogram
+([electrical §6a](../hardware/electrical/README.md#6a-trunk-lateral-bend-torque--research-2026-09-26)).
+Divide:
 
 | Density | Actuator mass | `f_act` |
 |---|---|---|
-| 75 Nm/kg | 45.5 kg | **0.35** |
-| 80 Nm/kg | 42.7 kg | 0.33 |
-| 90 Nm/kg | 37.9 kg | **0.29** |
+| 80 Nm/kg | 44.5 kg | **0.34** |
+| 85 Nm/kg | 41.9 kg | 0.32 |
+| 90 Nm/kg | 39.6 kg | **0.30** |
 
 **The declared band and the `f_act` band of 2.2 are the same constraint seen
-twice.** 75–90 Nm/kg maps onto `f_act` 0.29–0.35; below 75 the actuators eat
-the mass budget and the loop stops converging. The two figures cannot drift
+twice.** 80–90 Nm/kg maps onto `f_act` 0.30–0.34. The arithmetic alone would
+allow a floor near 78 Nm/kg, where `f_act` touches 0.35; the declared floor
+is set at 80 so that the next joint sized — or a dynamic trunk figure above the
+isometric one — does not immediately break the band. Below the floor the
+actuators eat the mass budget and the loop stops converging. The two figures cannot drift
 apart, because each is derivable from the other and
 `scripts/gems_budget.py --check` holds them together.
 
@@ -202,7 +206,7 @@ this body is **0.70 m**, declared at
 
 **A single joint is not the binding constraint.** Even 50 kg at full reach needs
 only ~4.3 kg of shoulder actuator. What binds is the **sum across all the
-joints**, and the legs carry 1905 Nm of the 3414 — which is why arm payload is a
+joints**, and the legs carry 1906 Nm of the 3560 — which is why arm payload is a
 poor lever on total actuator mass.
 
 **Declared group 2 capability:** daily manipulation and moderate precision, with

@@ -53,7 +53,7 @@ MATURITY = {"TM", "LAB"}
 STATUS = {"SELECTED", "CANDIDATE"}
 
 # Declared density at the reference operating point: f_act = 0.30 needs the
-# top of the 75-90 Nm/kg band (spec 02.6). Used only for mass estimates.
+# top of the 80-90 Nm/kg band (spec 02.6). Used only for mass estimates.
 MODULE_NM_PER_KG = 88.7
 PACK_KWH, CELLS_KG = 10.36, 23.0          # gems_budget at the declared point
 ARMOUR_M2, ARMOUR_KG_M2 = 1.17, 7.5       # 65% of 1.8 m2, mid-band areal density
@@ -155,14 +155,14 @@ def build():
         if nm is None:                    # declared, not yet sized
             b.part(pn, "Joint module, %s" % name.replace("_", " "), "ASSY", "MAKE",
                    level="L1", ref="hardware/kinematics.md 1.4",
-                   req="torque not yet sized (D-9); >=75 Nm/kg over module mass",
+                   req="torque not yet sized (D-9); >=80 Nm/kg over module mass",
                    notes="Trunk lateral bend, added by D-9. No torque source yet.")
         else:
             b.part(pn, "Joint module, %s" % name.replace("_", " "), "ASSY", "MAKE",
                    mass="%.3f" % (nm / MODULE_NM_PER_KG),
                    basis="estimate: %.0f Nm peak / %.1f Nm/kg" % (nm, MODULE_NM_PER_KG),
                    level="L2", ref="spec 02.6; hardware/kinematics.md 1",
-                   req="%.0f Nm peak; >=75 Nm/kg over module mass" % nm,
+                   req="%.0f Nm peak; >=80 Nm/kg over module mass" % nm,
                    notes="D-2 open: procure as one module or build from the children below."
                    + ("" if nm <= 85 else " No module found at this torque and density."))
         for off, desc, cat, mb, ref in MODULE_CHILDREN:

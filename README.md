@@ -91,6 +91,7 @@ One directory per group, and the body's three design disciplines nest under
 | Path | Contents | Status |
 |---|---|---|
 | [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ ten chapters |
+| [`plan/`](plan/) | What remains between the specification and a complete design: definition of done, open decisions, work packages, and the firmware and software work down to the task | ✅ v1 |
 | [`protocol/`](protocol/) | Platform conformance protocol, and an assessment of this repository's simulated body against it | ✅ v0.1 draft + record |
 | [`hardware/`](hardware/) | The body itself | ◐ kinematics declared |
 | [`hardware/mechanical/`](hardware/mechanical/) | Material and mechanism selection, sourced; CAD to follow | ◐ selection done |
@@ -132,6 +133,8 @@ enough to show in the layout.
 | 🔜 | Feature extraction, fusion, link management |
 | ✅ | Component selection, sourced — actuators, power, compute, bus, materials, reducers |
 | ✅ | Actuator torque density reconciled with `f_act` — 75–90 Nm/kg peak over module mass, and the basis now declared |
+| ✅ | Work plan to a complete design — decisions, packages, firmware and software task lists ([`plan/`](plan/)) |
+| 🔜 | Bill of materials with sources and prices ([`plan/` B-1 to B-4](plan/README.md#b--bill-of-materials-and-cost)) |
 | 🔜 | Mechanical CAD |
 | 🔜 | Electrical schematics |
 

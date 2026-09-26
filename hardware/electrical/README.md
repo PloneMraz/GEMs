@@ -219,7 +219,8 @@ no source in §7; they were assumed when the table was written. The source found
 for lateral bend below covers all three axes, so it can replace both.
 
 **Human trunk torque per kilogram, all three axes — Pan et al. 2025 [14]
-(full text in [`sources/`](sources/)).** 122 asymptomatic adults, 61 male
+(open access at the DOI; its licence is CC BY-NC-ND, so it is cited, not
+vendored).** 122 asymptomatic adults, 61 male
 (24.5 ± 2.3 y, 73.4 ± 15.0 kg, 175.6 ± 6.8 cm) and 61 female; Bionix Sim3 Pro
 dynamometer; median peak torque, normalised to body weight:
 
@@ -292,8 +293,8 @@ against a real gait dataset.
 |---|---|
 | 12 | [Human-Level Actuation for Humanoids](https://arxiv.org/html/2511.06796) |
 | 13 | [Selection guide for humanoid robot knee and hip joint motors](https://www.cubemars.com/how-to-choose-hip-and-knee-joint-motors-for-humanoid-robots.html) |
-| 14 | Pan F., Cheng J., Kong C., Wang W., Lu S., [Sex-specific characteristics of the trunk muscle behaviors in an asymptomatic adult cohort](https://doi.org/10.1186/s40001-025-02742-w), *European Journal of Medical Research* 30:471, 2025 — [`sources/pan-2025-…pdf`](sources/pan-2025-trunk-torque-eur-j-med-res-30-471.pdf) |
+| 14 | Pan F., Cheng J., Kong C., Wang W., Lu S., [Sex-specific characteristics of the trunk muscle behaviors in an asymptomatic adult cohort](https://doi.org/10.1186/s40001-025-02742-w), *European Journal of Medical Research* 30:471, 2025 — open access, CC BY-NC-ND 4.0; not vendored |
 | 15 | [A 3-DOF coupled tendon-driven humanoid waist](https://www.tandfonline.com/doi/abs/10.1080/01691864.2023.2289134), *Advanced Robotics* 37(23), 2023 |
 | 16 | [Unitree G1 description, `g1_29dof.urdf`](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/g1_description) — joint `<limit effort>` values read on 2026-09-26 |
 | 17 | [The effects of lifting speed on the peak external forward bending, lateral bending, and twisting spine moments](https://www.tandfonline.com/doi/abs/10.1080/001401399185838), *Ergonomics* 42(1) |
-| 18 | Ali A. R., Abdullah H. S., [Development of a compliant spine mechanism for enhanced humanoid robotics locomotion](https://doi.org/10.1038/s41598-025-32165-w), *Scientific Reports* 15:44646, 2025 — [`sources/ali-2025-…pdf`](sources/ali-2025-flexinoid-tensegrity-spine-sci-rep-15-44646.pdf) |
+| 18 | Ali A. R., Abdullah H. S., [Development of a compliant spine mechanism for enhanced humanoid robotics locomotion](https://doi.org/10.1038/s41598-025-32165-w), *Scientific Reports* 15:44646, 2025 — open access, CC BY 4.0; copy in [`sources/`](sources/ali-2025-flexinoid-tensegrity-spine-sci-rep-15-44646.pdf) |

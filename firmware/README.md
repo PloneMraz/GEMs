@@ -1,13 +1,14 @@
 # Firmware
 
-Device-level and real-time code on the body. What [spec
-07](../spec/07-firmware-and-software.md) calls the layer that owns *time*: if
-missing a deadline breaks the body rather than degrading an answer, it belongs
-here.
+Code resident on the body's embedded devices — joint drive boards, the
+real-time controller, the battery management board, the secure element, the
+trace radio — as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division)
+defines firmware. Every **hard real-time** task on the body is here, because
+only here can its worst-case timing be bounded.
 
 | Document | Contents | Status |
 |---|---|---|
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Modules, ownership of each deadline, the reflex budget split across stages, and the firmware/software interface | ✅ |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Modules and the deadline each carries, the reflex budget split across stages, and the firmware/software interface | ✅ |
 | Source | — | 🔜 *waiting a target* |
 
 ## Why there is no source yet
@@ -24,7 +25,7 @@ envelope) depend on that choice and on the drive electronics.
 
 Source written before that would be inventing the target, which is the one thing
 this repository does not do. What *can* be written without a target is the
-architecture: which module owns which deadline, how the 10 ms reflex budget is
+architecture: which module carries which deadline, how the 10 ms reflex budget is
 divided, and what crosses the line into software. That is
 [`ARCHITECTURE.md`](ARCHITECTURE.md).
 

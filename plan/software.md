@@ -4,9 +4,13 @@ Module by module, from [spec 07.4](../spec/07-firmware-and-software.md#74-what-s
 and [`../software/README.md`](../software/README.md) down to the task. Levels
 L0–L5 are defined in [`README.md`](README.md#levels-of-detail).
 
-**None of this waits for hardware.** Software owns meaning, not time; it runs
-on the Jetson-class compute, and every module can be written and tested now
-against synthetic or simulated sensor data (V-7). That makes this the one
+**Scope.** Software as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division)
+defines it: code on the edge AI module under a general-purpose OS. Its tasks are
+firm, soft or non-real-time; every hard real-time task is firmware.
+
+**Almost none of this waits for hardware.** Every module except the capture
+drivers of S-9 can be written and tested now against synthetic or simulated
+sensor data (V-7). That makes this the one
 package that can move to L5 before any part is chosen.
 
 **Scope boundary kept.** Nothing here specifies the controller that operates
@@ -38,13 +42,13 @@ conservative configuration (spec 05.4).
 | Compression ratio measured per channel and in aggregate on simulated data | L5 | V-7 |
 | Compute load measured against the Jetson power envelope of `hardware/electrical/` §4 | L5 | D-3 |
 
-## S-2 — Agency classification
+## S-2 — Agency tag handling
 
 | Task | To | Waits for |
 |---|---|---|
-| Reference implementation | ✅ L4 | done — [`agency.py`](../software/agency.py) |
+| Reference implementation — the specification the firmware port F-7 is checked against | ✅ L4 | done — [`agency.py`](../software/agency.py) |
 | Run on simulated whole-body motion rather than synthetic returns | L5 | V-5 |
-| Keep it ahead of fusion and compression in the pipeline (guarantee 2) — enforced by the pipeline, not by convention | L4 | S-3 |
+| Carry the firmware's tag through every stage and refuse untagged input (spec 07.4 guarantee 2) — enforced by the pipeline, not by convention | L4 | S-3 |
 
 ## S-3 — Sensor fusion
 
@@ -100,3 +104,14 @@ not yet planned anywhere else.
 |---|---|---|
 | Fingerprint baselining for attestation tier 2 | L4 | F-11 |
 | Assessor tooling: extend `protocol/assess.py` as simulated evidence arrives | L5 | V-9 |
+
+## S-9 — Capture on the application processor
+
+Drivers are software when they run under the general-purpose OS (spec 07.1).
+Frame capture and encoding are firm real-time: a late frame is dropped, not
+used.
+
+| Task | To | Waits for |
+|---|---|---|
+| Camera, thermal, LiDAR, microphone and SDR capture, delivering buffers timestamped on the shared time base of F-2 | L4 | E-6 |
+| Per-channel health: dropout, saturation, stuck value | L4 | — |

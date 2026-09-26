@@ -11,7 +11,7 @@ is marked `⟦IMPL⟧` and stays marked.
 
 | Module | Owns | Deadline | Source |
 |---|---|---|---|
-| **Sensor drivers** | Acquisition and timestamping at source | per-channel rate | [07.2](../spec/07-firmware-and-software.md#72-real-time-requirements) |
+| **Sensor drivers** | Acquisition and timestamping at source, on the embedded nodes — IMU, encoders, joint torque, tactile readout. Camera, LiDAR, audio and SDR capture run on the application processor and are software ([07.1](../spec/07-firmware-and-software.md#71-the-division)) | per-channel rate | [07.2](../spec/07-firmware-and-software.md#72-real-time-requirements) |
 | **Time base** | One clock all channels share, established at transport | skew below the reflex budget | 07.2 |
 | **Actuator drivers** | Current and position loops | `⟦IMPL⟧`, kHz-class | 07.2 |
 | **State estimator** | Joint state, IMU fusion, contact state | 1 kHz | 07.2 |
@@ -88,16 +88,17 @@ Firmware hands up, software hands down. The boundary is narrow on purpose.
 | **Down** | Power state requests | on event |
 | **Down** | Gating: which channels run at full rate | on event |
 
-**Agency tagging happens below the line.** It is firmware's because it needs the
-commanded value and the measured value in the same place at the same time
-([07.4](../spec/07-firmware-and-software.md#74-what-software-must-guarantee)):
+**Agency tagging is firmware.** It is a hard real-time stage of the reflex path,
+and it needs the commanded value and the measured value in the same place at the
+same time
+([07.3](../spec/07-firmware-and-software.md#73-what-firmware-must-guarantee), guarantee 7):
 once a stream has crossed upward without its tag, the information that would
 have carried it has already been averaged away.
 
-**Software sends intent, not commands.** Firmware owns the deadline, so firmware
-owns the final command. Software that could write actuator values directly could
-also miss a deadline while holding them, and nothing above the line has a
-watchdog.
+**Software sends intent, not commands.** The final command belongs to a hard
+real-time task, so it belongs to firmware. Software that could write actuator
+values directly could also miss a deadline while holding them, and nothing on the
+application processor has a watchdog that bounds it.
 
 ## 5. Link loss
 

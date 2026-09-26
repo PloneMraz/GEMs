@@ -98,17 +98,19 @@ One directory per group, and the body's three design disciplines nest under
 | [`hardware/electrical/`](hardware/electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint sizing | ◐ selection done |
 | [`hardware/sim-model/`](hardware/sim-model/) | URDF generated from the kinematics, audited against it | ✅ |
 | [`hardware/bom/`](hardware/bom/) | Engineering BOM: multi-level structure, item master, approved manufacturer list; blanks mark what is not yet verified | ◐ 230 parts, none priced |
-| [`firmware/`](firmware/) | Device-level and real-time code: drivers, balance loop, reflex path, energy state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
-| [`software/`](software/) | Processing of what the hardware acquires: feature extraction and compression, sensor fusion, self-caused/external classification, logging and synchronisation, link management | ◐ emission log implemented |
+| [`firmware/`](firmware/) | Code on the embedded devices, and every hard real-time task: joint control, balance loop, reflex path with agency tagging, power-state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
+| [`software/`](software/) | Code on the application processors: capture drivers, feature extraction and compression, sensor fusion, log synchronisation, link management, and reference implementations checked against the firmware | ◐ emission log implemented |
 | [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |
 
 Directories marked 🔜 do not exist yet. They are named in advance so that the
 place a file belongs is never in question at the moment it is added.
 
 **Firmware and software sit at the root rather than under one heading**, because
-they are different disciplines under one specification chapter: firmware owns
-deadlines, software owns meaning, and the line between them is load-bearing
-enough to show in the layout.
+they are different disciplines under one specification chapter: firmware runs
+on the embedded devices and carries every hard real-time task, software runs on
+the application processors under a general-purpose OS, and the line between them
+is load-bearing enough to show in the layout. Terms follow standard usage — see
+the [glossary](spec/glossary.md).
 
 
 ---

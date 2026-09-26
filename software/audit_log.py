@@ -39,7 +39,7 @@ class Agency(str, Enum):
     """Whether a registered change was caused by this body.
 
     Classification MUST happen before anything interprets the change
-    (spec 07.4, protocol C-8). A record carrying UNCLASSIFIED past the
+    (spec 07.3 g7, 07.4 g2; protocol C-8). A record carrying UNCLASSIFIED past the
     classification stage is a conformance failure, not a default.
     """
 
@@ -175,7 +175,7 @@ class EmissionLog:
                 "measured amplitude with each contact event." % r.seq)
         if r.tier is Tier.EMISSION and r.agency is Agency.UNCLASSIFIED:
             raise ValueError(
-                "emission seq %d is UNCLASSIFIED. Spec 07.4: classification "
+                "emission seq %d is UNCLASSIFIED. Spec 07.3 g7: tagging "
                 "happens before interpretation, not after." % r.seq)
 
     def seal_batch(self) -> Batch | None:

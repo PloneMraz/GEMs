@@ -5,7 +5,7 @@
 Generate a URDF for the GEMs body from the declared kinematic configuration.
 
 Source of truth: hardware/kinematics.md. This script encodes that declaration
-and nothing else — 30 core degrees of freedom, the declared segment lengths,
+and nothing else — 31 core degrees of freedom, the declared segment lengths,
 and a mass model. Change the declaration, regenerate, do not hand-edit the URDF.
 
     python hardware/sim-model/generate_urdf.py            # write gems.urdf
@@ -23,7 +23,8 @@ No mechanical design exists yet, so nothing below is derived from one.
   * Inertia tensors are computed from solid geometric primitives — cylinders
     for limbs, boxes for torso, pelvis, head and feet. Real segments are
     shells around voids.
-  * Joint limits are human ranges of motion, not mechanism travel.
+  * Joint limits are targets for mechanical travel (kinematics §1.5), with the
+    human range of motion as the soft limit. Neither is mechanism travel yet.
 
 The model is therefore good for reach, workspace, gait topology and controller
 bring-up, and not good for anything that depends on true inertia — impact,
@@ -46,7 +47,12 @@ from xml.dom import minidom
 
 SEG = {
     "pelvis":    dict(kind="box", w=0.30, d=0.18, h=0.16),
-    "torso":     dict(kind="box", w=0.34, d=0.21, h=0.46),
+    # The trunk (0.46 m) is three coupled segments (kinematics §1.4, plan D-9):
+    # lumbar, lower thoracic, and the upper thorax that carries the shoulders,
+    # the neck and the battery pack.
+    "spine_lumbar":   dict(kind="box", w=0.34, d=0.21, h=0.12),
+    "spine_thoracic": dict(kind="box", w=0.34, d=0.21, h=0.12),
+    "torso":          dict(kind="box", w=0.34, d=0.21, h=0.22),
     "head":      dict(kind="box", w=0.16, d=0.19, h=0.22),
     "upper_arm": dict(kind="cyl", r=0.048, h=0.32),   # declared 0.32
     "forearm":   dict(kind="cyl", r=0.040, h=0.26),   # declared 0.26
@@ -55,7 +61,9 @@ SEG = {
     "shank":     dict(kind="cyl", r=0.050, h=0.42),   # declared 0.42
     "foot":      dict(kind="box", w=0.10, d=0.26, h=0.07),
 }
-UPWARD = {"torso", "head"}
+UPWARD = {"spine_lumbar", "spine_thoracic", "torso", "head"}
+TRUNK = ("spine_lumbar", "spine_thoracic", "torso")
+TRUNK_HEIGHT = sum(SEG[k]["h"] for k in TRUNK)
 SHOULDER_WIDTH = 0.40       # declared
 HIP_WIDTH = 0.18
 DECLARED_REACH = 0.70       # declared: shoulder to fingertip
@@ -69,11 +77,17 @@ MASS_FRAC = {
 }
 PAIRED = {"upper_arm", "forearm", "hand", "thigh", "shank", "foot"}
 
-# Human ranges of motion, radians. Mechanism travel is IMPL.
+# Two tiers of joint limit (kinematics §1.5). LIM is the human range of
+# motion: written as the soft limit (<safety_controller>), a profile the
+# operator may choose. MECH is the mechanical travel the design targets:
+# written as <limit>, and at least as wide as LIM everywhere. Joints absent
+# from MECH have mechanical travel equal to the human range until the
+# mechanical design says otherwise.
 # Signs are for the left side under the right-hand rule about each joint's
 # axis: pitch about +y, so flexion that carries a limb forward is negative;
 # roll about +x, so abduction of a left limb is positive. Right-side roll and
-# yaw limits are mirrored in add_joint.
+# yaw limits are mirrored in add_joint. Trunk limits are totals across its
+# three segments.
 LIM = {
     "hip_roll": (-0.52, 0.79), "hip_pitch": (-2.09, 0.52), "hip_yaw": (-0.79, 0.79),
     "knee": (0.0, 2.44), "ankle_pitch": (-0.52, 0.87), "ankle_roll": (-0.35, 0.35),
@@ -81,15 +95,27 @@ LIM = {
     "shoulder_yaw": (-1.57, 1.57), "elbow": (-2.62, 0.0),
     "wrist_yaw": (-1.57, 1.57), "wrist_pitch": (-1.22, 1.22),
     "wrist_roll": (-1.57, 1.57),
-    "waist_yaw": (-0.79, 0.79), "waist_pitch": (-0.52, 1.05),
+    "trunk_yaw": (-0.79, 0.79), "trunk_pitch": (-0.52, 1.05),
+    "trunk_roll": (-0.52, 0.52),
     "neck_yaw": (-1.31, 1.31), "neck_pitch": (-0.70, 0.70),
 }
+MECH = {
+    "shoulder_pitch": (-3.14, 1.22),    # 250 deg
+    "shoulder_roll": (-0.70, 3.14),     # 220 deg
+    "elbow": (-2.62, 0.87),             # 200 deg: 50 deg past straight
+    "hip_pitch": (-2.09, 1.57),         # 210 deg: 90 deg of extension
+    "knee": (-1.05, 2.44),              # 200 deg: 60 deg past straight; lock at 0
+    "trunk_yaw": (-1.57, 1.57),         # 180 deg, spread over three segments
+    "trunk_roll": (-0.79, 0.79),        # 90 deg, provisional
+}
+SOFT_K_POSITION, SOFT_K_VELOCITY = 100.0, 1.5   # placeholders; the profile is CTRL
 EFFORT, VELOCITY = 200.0, 8.0
 
 # Display colours, RGB. Left limbs warm, right limbs cool, so the sides can be
 # told apart at a glance; along each limb the shade alternates so adjacent
 # segments never share a colour. Axial segments are neutral.
-AXIAL_RGB = {"pelvis": (0.25, 0.25, 0.28), "torso": (0.40, 0.44, 0.52),
+AXIAL_RGB = {"pelvis": (0.25, 0.25, 0.28), "spine_lumbar": (0.33, 0.36, 0.42),
+             "spine_thoracic": (0.46, 0.50, 0.58), "torso": (0.40, 0.44, 0.52),
              "head": (0.80, 0.80, 0.82)}
 LIMB_SHADE = {"upper_arm": 0, "forearm": 1, "hand": 2,
               "thigh": 0, "shank": 1, "foot": 2}
@@ -171,18 +197,26 @@ def add_dummy(robot, name):
     return link
 
 
-def add_joint(robot, name, parent, child, xyz, axis, kind="revolute"):
+def add_joint(robot, name, parent, child, xyz, axis, kind="revolute",
+              limit_key=None, share=1.0, mimic=None):
     j = ET.SubElement(robot, "joint", name=name, type=kind)
     ET.SubElement(j, "parent", link=parent)
     ET.SubElement(j, "child", link=child)
     ET.SubElement(j, "origin", xyz=xyz, rpy="0 0 0")
     ET.SubElement(j, "axis", xyz=axis)
-    base = name.split("_", 1)[1] if name[:2] in ("l_", "r_") else name
+    base = limit_key or (name.split("_", 1)[1] if name[:2] in ("l_", "r_") else name)
     lo, hi = LIM[base]
+    mlo, mhi = MECH.get(base, LIM[base])
     if name.startswith("r_") and axis != Y:
         lo, hi = -hi, -lo    # mirror roll and yaw across the sagittal plane
-    ET.SubElement(j, "limit", lower="%.4f" % lo, upper="%.4f" % hi,
+        mlo, mhi = -mhi, -mlo
+    ET.SubElement(j, "limit", lower="%.4f" % (mlo * share), upper="%.4f" % (mhi * share),
                   effort="%.1f" % EFFORT, velocity="%.1f" % VELOCITY)
+    ET.SubElement(j, "safety_controller", soft_lower_limit="%.4f" % (lo * share),
+                  soft_upper_limit="%.4f" % (hi * share),
+                  k_position="%.1f" % SOFT_K_POSITION, k_velocity="%.1f" % SOFT_K_VELOCITY)
+    if mimic:
+        ET.SubElement(j, "mimic", joint=mimic, multiplier="1", offset="0")
     return j
 
 
@@ -191,22 +225,38 @@ X, Y, Z = "1 0 0", "0 1 0", "0 0 1"
 
 def build(total_mass):
     masses = {k: total_mass * f for k, f in MASS_FRAC.items()}
+    trunk_mass = masses.pop("torso")
+    for k in TRUNK:
+        masses[k] = trunk_mass * SEG[k]["h"] / TRUNK_HEIGHT
 
     robot = ET.Element("robot", name="gems")
     robot.append(ET.Comment(
         " Generated by hardware/sim-model/generate_urdf.py from the declared "
         "kinematic configuration in hardware/kinematics.md. Do not hand-edit. "
         "Masses are anthropometric estimates; inertias are solid primitives; "
-        "joint limits are human ranges of motion. None is derived from a "
-        "mechanical design, because none exists yet. "))
+        "joint limits are design targets for mechanical travel, with the human "
+        "range of motion as the soft limit. None is derived from a mechanical "
+        "design, because none exists yet. "))
 
     add_link(robot, "pelvis", "pelvis", masses["pelvis"])
 
-    # waist 2 + torso
-    add_dummy(robot, "waist_yaw_link")
-    add_joint(robot, "waist_yaw", "pelvis", "waist_yaw_link", "0 0 0", Z)
-    add_link(robot, "torso", "torso", masses["torso"])
-    add_joint(robot, "waist_pitch", "waist_yaw_link", "torso", "0 0 0", Y)
+    # trunk: 3 axes, each spread over 3 coupled segments. The first segment's
+    # joints are the actuated masters; the others follow through <mimic>.
+    parent, z0 = "pelvis", 0.0
+    share = 1.0 / len(TRUNK)
+    for i, seg_name in enumerate(TRUNK, start=1):
+        sfx = "" if i == 1 else "_%d" % i
+        yaw_l, pitch_l = "trunk_yaw%s_link" % sfx, "trunk_pitch%s_link" % sfx
+        add_dummy(robot, yaw_l)
+        add_joint(robot, "trunk_yaw" + sfx, parent, yaw_l, "0 0 %.4f" % z0, Z,
+                  limit_key="trunk_yaw", share=share, mimic=None if i == 1 else "trunk_yaw")
+        add_dummy(robot, pitch_l)
+        add_joint(robot, "trunk_pitch" + sfx, yaw_l, pitch_l, "0 0 0", Y,
+                  limit_key="trunk_pitch", share=share, mimic=None if i == 1 else "trunk_pitch")
+        add_link(robot, seg_name, seg_name, masses[seg_name])
+        add_joint(robot, "trunk_roll" + sfx, pitch_l, seg_name, "0 0 0", X,
+                  limit_key="trunk_roll", share=share, mimic=None if i == 1 else "trunk_roll")
+        parent, z0 = seg_name, SEG[seg_name]["h"]
 
     th = seg_length("torso")
 
@@ -322,9 +372,14 @@ def point_at(robot, q, link, local):
         pp, pr = pose[j.find("parent").get("link")]
         o = _apply(pr, _xyz(j.find("origin")))
         axis = [float(v) for v in j.find("axis").get("xyz").split()]
+        m = j.find("mimic")
+        if m is not None:                 # a coupled joint follows its master
+            angle = (float(m.get("multiplier")) * q.get(m.get("joint"), 0.0)
+                     + float(m.get("offset")))
+        else:
+            angle = q.get(j.get("name"), 0.0)
         pose[j.find("child").get("link")] = (
-            [a + b for a, b in zip(pp, o)],
-            _mul(pr, _rot(axis, q.get(j.get("name"), 0.0))))
+            [a + b for a, b in zip(pp, o)], _mul(pr, _rot(axis, angle)))
     pp, pr = pose[link]
     return [a + b for a, b in zip(pp, _apply(pr, local))]
 
@@ -332,9 +387,11 @@ def point_at(robot, q, link, local):
 def joint_senses(robot):
     """Does each joint move the body the way its name says, on both sides?
     Each check drives one joint to the limit that should produce the motion
-    and asks where a probe point ends up."""
-    lim = {j.get("name"): (float(j.find("limit").get("lower")),
-                           float(j.find("limit").get("upper")))
+    and asks where a probe point ends up. The human asymmetries it checks are
+    properties of the soft limits — the human profile — not of the mechanical
+    travel, which is wider by design."""
+    lim = {j.get("name"): (float(j.find("safety_controller").get("soft_lower_limit")),
+                           float(j.find("safety_controller").get("soft_upper_limit")))
            for j in robot.findall("joint")}
     hand = (0.0, 0.0, -seg_length("hand"))
     toe = (SEG["foot"]["d"] / 2.0, 0.0, 0.0)
@@ -378,25 +435,37 @@ def audit(robot, total_mass):
     """Check the model against the declaration it was generated from."""
     joints = robot.findall("joint")
     dof = [j for j in joints if j.get("type") in ("revolute", "continuous",
-                                                  "prismatic")]
+                                                  "prismatic")
+           and j.find("mimic") is None]
+    coupled = {}
+    for j in joints:
+        m = j.find("mimic")
+        if m is not None:
+            coupled.setdefault(m.get("joint"), []).append(j.get("name"))
+    trunk_spread = all(len(coupled.get(a, [])) == len(TRUNK) - 1
+                       for a in ("trunk_yaw", "trunk_pitch", "trunk_roll"))
+    covers = all(float(j.find("limit").get("lower")) <= float(j.find("safety_controller").get("soft_lower_limit")) + 1e-9
+                 and float(j.find("limit").get("upper")) >= float(j.find("safety_controller").get("soft_upper_limit")) - 1e-9
+                 for j in joints)
     mass = sum(float(m.get("value"))
                for m in robot.iter("mass"))
     reach = (seg_length("upper_arm") + seg_length("forearm")
              + seg_length("hand"))
     height = (seg_length("foot") + seg_length("shank") + seg_length("thigh")
-              + seg_length("pelvis") + seg_length("torso") + seg_length("head"))
+              + seg_length("pelvis") + TRUNK_HEIGHT + seg_length("head"))
 
     ext = geometry_extents(robot)
     drawn_height = (max(e[2][1] for e in ext.values())
                     - min(e[2][0] for e in ext.values()))
     foot = ext["l_foot"]
     foot_forward = (foot[0][1] - foot[0][0]) > (foot[1][1] - foot[1][0])
-    torso = ext["torso"]
-    torso_above_waist = torso[2][0] >= -1e-9
+    torso_above_waist = ext["spine_lumbar"][2][0] >= -1e-9
     senses = joint_senses(robot)
 
     checks = [
-        ("core DOF", len(dof), 30, len(dof) == 30),
+        ("core DOF", len(dof), 31, len(dof) == 31),
+        ("trunk spread 3 segs", trunk_spread, True, trunk_spread),
+        ("mech covers soft", covers, True, covers),
         ("total mass kg", round(mass, 1), total_mass,
          abs(mass - total_mass) < 0.5),
         ("reach m", round(reach, 3), DECLARED_REACH,
@@ -405,7 +474,7 @@ def audit(robot, total_mass):
          abs(height - DECLARED_HEIGHT) < 0.02),
         ("drawn height m", round(drawn_height, 3), DECLARED_HEIGHT,
          abs(drawn_height - DECLARED_HEIGHT) < 0.02),
-        ("drawn segments", len(ext), 15, len(ext) == 15),
+        ("drawn segments", len(ext), 17, len(ext) == 17),
         ("torso above waist", torso_above_waist, True, torso_above_waist),
         ("feet point forward", foot_forward, True, foot_forward),
         ("joints move as named", senses, True, senses),

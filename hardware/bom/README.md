@@ -140,7 +140,7 @@ the pages that could be read, and each entry's notes say which.
 
 **The actuator density has one module behind it, and it is small.** The only
 module found at or above 75 Nm/kg peaks at 85 Nm. Nine of the seventeen joint
-types — 16 of the 30 joints — need more, up to 230 Nm at the hip and knee.
+types — 16 of the 30 sized joints — need more, up to 230 Nm at the hip and knee.
 
 **The reducer classes and the actuator family disagree.** `hardware/mechanical`
 §2 assigns cycloidal reducers to hips and knees and harmonic drives to wrists

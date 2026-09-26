@@ -142,7 +142,7 @@ on the body, and the [SBOM](hardware/bom/sbom.cdx.json) marks it `excluded`.
 | ✅ | Agency tagging by efference copy — reference model for the firmware port, with protocol §7.1 run against it |
 | ✅ | Conformance assessment of the simulated body — **9 of 16 unmet, and named** |
 | ✅ | Kinematic configuration — DOF, arrangement, reach |
-| ✅ | Simulation model — 30 DOF URDF, generated from the kinematics and audited against it |
+| ✅ | Simulation model — 31 DOF URDF with a coupled three-segment spine and two-tier joint limits, generated from the kinematics and audited against it |
 | 🔜 | Firmware source (awaits a target board) |
 | 🔜 | Feature extraction, fusion, link management |
 | ✅ | Component selection, sourced — actuators, power, compute, bus, materials, reducers |

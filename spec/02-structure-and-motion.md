@@ -170,7 +170,9 @@ away later.
 
 ### Why 75 is the floor
 
-The declared kinematics need **3414 Nm** summed across 30 joints at the 130 kg
+The declared kinematics need **3414 Nm** summed across the 30 joints sized so
+far — trunk lateral bend, the 31st, awaits a torque figure
+([kinematics §1.4](../hardware/kinematics.md#14-the-trunk-is-a-spine-not-a-waist)) — at the 130 kg
 operating point ([joint-by-joint sizing](../hardware/electrical/)). Divide:
 
 | Density | Actuator mass | `f_act` |
@@ -199,7 +201,7 @@ this body is **0.70 m**, declared at
 | 50 kg | 196 Nm (2.45 kg) | 270 Nm (3.37 kg) | 343 Nm (4.29 kg) |
 
 **A single joint is not the binding constraint.** Even 50 kg at full reach needs
-only ~4.3 kg of shoulder actuator. What binds is the **sum across all thirty
+only ~4.3 kg of shoulder actuator. What binds is the **sum across all the
 joints**, and the legs carry 1905 Nm of the 3414 — which is why arm payload is a
 poor lever on total actuator mass.
 

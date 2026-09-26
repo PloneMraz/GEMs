@@ -152,7 +152,7 @@ audit surface exists to prevent.
 |---|---|---|
 | Compute power | Draws on the same `p` (W/kg) that enters `Σf < 1` | [02.1](02-structure-and-motion.md#21-the-mass-loop) — edge compute eats the convergence condition, not merely the battery |
 | Thermal | A sealed body in human contact dissipates worse than a rack | `⟦IMPL⟧` |
-| Log storage | **1.15 GB/hour** full tier; ~1700 hours on a 2 TB device | [06.4](06-audit-surface.md#64-audit-log) |
+| Log storage | **1.18 GB/hour** full tier; ~1700 hours on a 2 TB device | [06.4](06-audit-surface.md#64-audit-log) |
 | Link share, full-tier log | **0.03%** of 8 Gbps | [06.4](06-audit-surface.md#64-audit-log) |
 
 ## 7.7 Open constants

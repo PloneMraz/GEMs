@@ -14,9 +14,9 @@ wrong one.
 |---|---|---|
 | **Legs** | **12** | 6 × 2 — hip roll, pitch, yaw; knee; ankle pitch, roll |
 | **Arms** | **14** | 7 × 2 — shoulder pitch, roll, yaw; elbow; wrist yaw, pitch, roll |
-| **Waist** | **2** | yaw, pitch |
+| **Trunk** | **3** | yaw, pitch, lateral bend — each spread over three coupled segments, one actuator per axis (see 1.4) |
 | **Neck** | **2** | yaw, pitch |
-| **Core total** | **30** | |
+| **Core total** | **31** | |
 | **Hands** | **2 × 5 … 2 × 21** | declared separately — see 1.2 |
 
 ### 1.1 Why seven-DOF arms
@@ -52,20 +52,92 @@ that.
 
 ### 1.3 The working figure
 
-Budgets elsewhere in this repository use **40 DOF**. That is this
-configuration's **core 30 plus minimum hands (2 × 5)** — the low end, chosen so
+Budgets elsewhere in this repository use **41 DOF**. That is this
+configuration's **core 31 plus minimum hands (2 × 5)** — the low end, chosen so
 that budgets derived from it are not flattered.
 
 | Configuration | Logged joints | Full-tier log rate |
 |---|---|---|
-| Core only | 30 | 240 kB/s · 1.9 Mbps · 0.86 GB/h |
-| **Core + minimum hands** | **40** | **320 kB/s · 2.6 Mbps · 1.15 GB/h** |
-| Core + anthropomorphic hands | 72 | 576 kB/s · 4.6 Mbps · 2.07 GB/h |
+| Core only | 31 | 248 kB/s · 2.0 Mbps · 0.89 GB/h |
+| **Core + minimum hands** | **41** | **328 kB/s · 2.6 Mbps · 1.18 GB/h** |
+| Core + anthropomorphic hands | 73 | 584 kB/s · 4.7 Mbps · 2.10 GB/h |
 
 Even the largest configuration is **0.06%** of the 8 Gbps link. Joint count is
 not a bandwidth problem; it is a mass and reliability problem.
 
-### 1.4 Not counted as joints
+### 1.4 The trunk is a spine, not a waist
+
+In a human the trunk does not turn at one joint. Rotation is spread over many
+vertebrae, most of it through the thoracic spine; the lumbar spine barely turns
+at all, its facet joints set against it
+([Anatomy Standard](https://www.anatomystandard.com/biomechanics/spine/rom-of-spine.html)).
+A single yaw joint at the waist turns the body exactly where a human does not,
+and at large angles reads as a figure twisted at one seam.
+
+**Decision D-9, 2026-09-26: a coupled multi-segment spine.** The trunk is three
+segments — lumbar, lower thoracic, and the upper thorax that carries the
+shoulders, the neck and the battery pack. Each of three axes — yaw, pitch and
+lateral bend — has **one actuator**, and a coupling mechanism (gearing, cable or
+an elastic continuum element; `⟦IMPL⟧`) spreads its motion over the three
+segments. The motion is distributed like a spine's; the actuator count is that
+of a three-axis waist.
+
+Rejected: one actuator per segment per axis, the approach of musculoskeletal
+humanoids such as Kotaro and Kenshiro. It is the most flexible, but those
+designs report poor controllability and low load capacity, and nine trunk
+actuators would break the actuator mass budget (`f_act`).
+
+The coupling ratio between segments is `⟦IMPL⟧`. The simulation model spreads
+each axis equally; the human distribution — most rotation thoracic, little
+lumbar — is the reference the mechanical design should move toward. The
+battery pack sits on the top segment, rigid with the shoulders, so the spine
+turns beneath it.
+
+**Lateral bend is new with this decision.** It has no torque in the sizing table
+yet ([`electrical/actuator_sizing.py`](electrical/actuator_sizing.py)), so `f_act`
+figures elsewhere cover 30 of the 31 core joints until it is sized.
+
+### 1.5 Range of motion: mechanism, not biology
+
+The body's joint limits are set by what the mechanism allows, not by human
+range of motion. Wider travel gives the real-time code more ways to turn the
+body before impact — the way animals twist to protect what is vulnerable — and
+fewer moments of being pinned at a limit exactly when a reaction is needed.
+Human range stays available as a **profile**, not as the mechanism.
+
+| Tier | Where | Whose |
+|---|---|---|
+| **Mechanical travel** | URDF `<limit>` | The body's capability — declared here |
+| **Soft limit** | URDF `<safety_controller>` | The operator's or controller's choice (`⟦CTRL⟧`). The model ships the human range as the default profile |
+
+Design targets for mechanical travel, total range — decided 2026-09-26,
+to be revised by simulation and, if it happens, by assembly:
+
+| Joint | Human range (soft default) | Mechanical target |
+|---|---|---|
+| Shoulder pitch | 240° | **250°** |
+| Shoulder roll | 200° | **220°** |
+| Elbow | 150° | **200°** — 50° past straight |
+| Hip pitch | 150° | **210°** — 90° of extension |
+| Knee | 140° | **200°** — 60° past straight |
+| Trunk yaw | 90° | **180°**, spread over three segments (60° each) |
+| Trunk lateral bend | 60° | **90°** — provisional, not sourced |
+| Trunk pitch | 90° | 90° — no change proposed |
+| Neck | 150° yaw, 80° pitch | unchanged: radar and Wi-Fi sensing cover what is behind |
+| All others | human | equal to human until the mechanical design says otherwise |
+
+Where flexion is already bounded by segments meeting — a forearm against an
+upper arm near 150° — the added travel is on the other side of straight.
+
+**Locks are separate from limits.** A lock that holds a joint for standing
+(spec 03.2, measure 4) engages at a chosen angle — the knee at 0° — and is
+independent of the mechanical travel beyond it. Two conditions follow from
+separating them: a lock whose release would let the joint pass straight must be
+**engaged without power** (spring-applied), since a knee that can pass 0°
+collapses if the lock opens on power loss; and it must carry the full static
+load path.
+
+### 1.6 Not counted as joints
 
 Facial micro-actuators and pupil actuation ([spec
 05.3](../spec/05-sensing.md#53-channels)) are not structural joints: they carry
@@ -94,8 +166,8 @@ that gap.
 
 | Declared here | Consumed by |
 |---|---|
-| 40 logged joints | Full-tier log rate, [spec 06.4](../spec/06-audit-surface.md#64-audit-log) |
-| 40 joints × 4 channels | Proprioception channel, [spec 05.3](../spec/05-sensing.md#53-channels) |
+| 41 logged joints | Full-tier log rate, [spec 06.4](../spec/06-audit-surface.md#64-audit-log) |
+| 41 joints × 4 channels | Proprioception channel, [spec 05.3](../spec/05-sensing.md#53-channels) |
 | Joint count and gearing | `f_act`, [spec 02.2](../spec/02-structure-and-motion.md#22-the-four-coefficients) — still `⟦IMPL⟧`, because count alone does not fix mass |
 | 0.70 m reach | Shoulder torque, [spec 02.6](../spec/02-structure-and-motion.md#26-actuation-and-manipulation) |
 | Joint count | Module count in [firmware](../firmware/ARCHITECTURE.md) |
@@ -110,7 +182,9 @@ that gap.
 
 | `⟦IMPL⟧` | Depends on |
 |---|---|
-| Joint range of motion, per joint | Mechanical design |
+| Joint range of motion, per joint — the mechanical travel actually achieved, against the targets of 1.5 | Mechanical design |
+| Spine coupling mechanism and ratios | Mechanical design (D-9) |
+| Trunk lateral-bend torque | Sizing, D-9 |
 | Reducer ratio, per joint | Actuator selection |
 | Segment mass distribution | Structural design |
 | Hand configuration fitted | `⟦CTRL⟧` — see 1.2 |

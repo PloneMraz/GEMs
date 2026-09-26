@@ -64,14 +64,14 @@ measured.
 | Sleep states supported | none implemented |
 | Protection level and coverage | NIJ IIIA + stab, 65% coverage — selected, not built |
 | Actuator specific torque | 75–90 Nm/kg peak over module mass — selected, not procured |
-| Summed joint torque | 3405 Nm across 30 joints |
+| Summed joint torque | 3405 Nm across the 30 joints sized; trunk lateral bend not yet sized |
 | Peak power at the source | 51.8 kW at 5C |
 | Link bandwidth and latency | 8 Gbps, ~1 ms PHY — specified, no radio |
-| Sensor configuration | 40 logged joints; no sensor exists |
+| Sensor configuration | 41 logged joints; no sensor exists |
 | Aggregate raw rate | 15.8 Gbps at the conservative configuration |
 | Compression ratio achieved | none — not implemented |
 | Compute split | specified; nothing running |
-| Log rates, full tier | 2.6 Mbps, 1.15 GB/h |
+| Log rates, full tier | 2.6 Mbps, 1.18 GB/h |
 | Contact surfaces instrumented | none |
 
 ## What the gaps cluster into

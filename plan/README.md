@@ -171,7 +171,10 @@ Constraints the decision carries into the design:
 | | |
 |---|---|
 | **Waist load** | Pack mass high above the waist adds pitch inertia about the waist axis (~1.8 kg·m² at 23 kg, against ~3.7 kg·m² estimated for the torso itself — about +50%). Waist pitch, already 200 Nm, is sized with it |
-| **Falls** | The pack is exposed in a backward fall. The supported failure state (spec 07.3 g2) should favour falls that spare the back |
+| **Impact protection** | A pack frame with a crush zone between the outer shell and the cells, so that an impact reaches the cells as shock within their qualified level, never as deformation or penetration — the path to thermal runaway. The upper back has the volume for that crush zone; the waist, in the concept's form, does not |
+| **Falls** | The upper back is among the first regions to land in a backward fall, at speed. **Verification requirement (V-4):** the pack survives the worst-case backward fall from standing with no cell deformation and cell acceleration within the qualified shock level. The supported failure state (spec 07.3 g2) should still favour falls that spare the back |
+| **Strikes** | The flank and waist are primary targets for kicks and knees; many combat rule sets forbid strikes to the spine and the back of the head. The upper back is the least-struck region of the torso |
+| **Dock** | The default dock is a seat carrying the body through the pelvis (spec 03.5). A pack in the upper back is never loaded by sitting, and the charging contacts can sit in the backrest, next to the pack |
 | **Cooling exhaust** | Up and out at the upper back, where warm air leaves naturally; intake low. Exhaust points away from the face and head sensors |
 | **Thermal-runaway venting** | A separate path from cooling, and never toward the head. Runaway gas is directed down and away from the body |
 | **Sealing and armour** | Openings in the torso break the seal and the armour; the torso is in every coverage band (spec 02.4). Baffled or labyrinth openings behind the protection layer |
@@ -213,7 +216,7 @@ See [`software.md`](software.md). Needs no hardware decision and can proceed now
 | V-1 | Full-body physics model with actuator models (torque–speed, current limits, reducer efficiency, backlash) | L5 | M-12, D-2 |
 | V-2 | Battery and power model: state of charge, voltage sag at peak draw, the 5C peak of spec 02.7 | L5 | E-2 |
 | V-3 | Balance and gait in simulation at ≥ 500 Hz, driven by the firmware's own controller code | L5 | F-5 |
-| V-4 | Fall and supported failure state (C-16) | L5 | F-8 |
+| V-4 | Fall and supported failure state (C-16), including the backward-fall case for the pack (see [pack location](#pack-location-decided)) | L5 | F-8 |
 | V-5 | Software-in-the-loop: firmware built for the host, stepping against the physics model | L5 | F-0 |
 | V-6 | Emulated target: firmware built for the real processor, run in an instruction-set emulator against the physics model | L5 | D-3 |
 | V-7 | Sensor simulation: rendered cameras, depth, IMU noise, tactile contact, for the software pipeline | L5 | S-1 |

@@ -150,8 +150,9 @@ is replaced by the module's own firmware and shrinks to integration.
 
 | Task | To | Waits for |
 |---|---|---|
-| Signed summary format at quiescent power | L4 | — |
-| Duty cycle against the floor-power budget of spec 03.6 | L4 | D-7 |
+| Signed summary format at quiescent power: `loop_state`, `loop_state_age`, `body_state`, `log_root`, `alive` (spec 06.5) | L4 | — |
+| Hold the loop's latest `loop_state` in always-on memory so it survives into sleep, carried byte for byte | L4 | E-4 |
+| Duty cycle against the quiescent-power budget of spec 03.6 | L4 | D-7 |
 | Radio driver | L4 | E-8 |
 
 ## F-13 — Shell controllers

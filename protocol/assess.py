@@ -191,8 +191,8 @@ STATIC = {
                        "than predicted; a simulator returns what it was written to"),
     "C-5":  (NEEDS_HW, "needs ambient physical fluctuation to be distinguishable from"),
     "C-7":  (NEEDS_HW, "needs a structure to resist with"),
-    "C-10": (NEEDS_HW, "needs a radio to transmit from and a meter to measure quiescent "
-                       "power with"),
+    "C-10": (NEEDS_HW, "needs a radio to transmit from, a loop to write loop_state, and "
+                       "a meter to measure quiescent power with"),
     "C-11": (NOT_IMPL, "tier 1 needs a secure element, tier 2 a commissioning "
                        "baseline taken from real sensors, tier 3 actuators to "
                        "challenge; none exists"),

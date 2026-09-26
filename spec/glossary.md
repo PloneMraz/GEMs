@@ -57,14 +57,18 @@ contract term, it takes the engineering name and cites the contract term once:
 | Appraisal, integration (reflex stages) | Reflex decision, state assembly | |
 | Agency classification | **Agency tagging**, a firmware task | *Agency* itself is the contract's term and stays |
 
-## Open question found in the review
+## Decision recorded: what C5 asks of the body
 
-**RSIL C5 and the low-power beacon may not mean the same thing.** RSIL defines
-C5 as "self-reports low power: the system emits a trace of *the loop is running
-weakly*", and states that C5 is not a criterion for detecting a dead loop.
-Spec 06.5 meets C5 with a radio beacon that keeps transmitting a signed "alive"
-summary at low electrical power while the body sleeps — closer to a liveness
-heartbeat, which is what RSIL says C5 is not. Whether the beacon should also
-carry a loop-weakness signal, or whether the mapping in spec 08.1 should be
-restated, is a decision for the specification's author; nothing has been
-changed on this point.
+RSIL defines C5 as "self-reports low power: the system emits a trace of *the
+loop is running weakly*", and states that C5 is not a criterion for detecting a
+dead loop. Spec 06.5 first met it with a beacon whose content was a liveness
+signal at low electrical power — closer to a heartbeat, which is what RSIL says
+C5 is not.
+
+Resolved by the author, 2026-09-26: the beacon stays as the channel, and carries
+the loop's own report in a `loop_state` field, unaltered and with its age. The
+body transmits; the loop reports. The beacon's `alive` field is kept for the
+delegated watch during sleep and is explicitly not C5. Dead-loop detection is
+placed where RSIL places it — in a stored record outside the loop, here the
+audit log synchronised off-board. See [06.5](06-audit-surface.md#65-low-power-beacon),
+[08.1](08-platform-contract.md#81-conformance-map) and protocol C-10.

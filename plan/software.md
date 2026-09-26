@@ -27,7 +27,7 @@ it; what to do with that information is not this repository's
 | Task | To | Waits for |
 |---|---|---|
 | Record types shared with firmware: sensor record, agency tag, telemetry, fault, intent | L4 | — |
-| The interface between the real-time code and the edge software (architecture §4), as a versioned message definition | L4 | — |
+| The interface between the real-time code and the edge software (architecture §4), as a versioned message definition — including the loop's `loop_state` report for the beacon (spec 06.5) | L4 | — |
 | Synthetic data generators per channel, for tests that do not need the full simulator | L4 | — |
 
 ## S-1 — Feature extraction and compression

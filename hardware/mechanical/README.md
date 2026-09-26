@@ -78,13 +78,13 @@ both needs a layered package.
 | Stab, NIJ 0115 level 1, spike | **~3.2 kg/m²** standalone | [9] |
 | **Integrated multi-threat package** | **~6–9 kg/m²** | [10] |
 
-Against 1.8 m² of skin area, at the coverage bands of [spec
-02.4](../../spec/02-structure-and-motion.md#24-protection): **5.4 kg** at 50%
-coverage and 6 kg/m², up to **13.0 kg** at 80% and 9 kg/m².
+Against 1.6 m² of skin area at 1.65 m, at the coverage bands of [spec
+02.4](../../spec/02-structure-and-motion.md#24-protection): **4.8 kg** at 50%
+coverage and 6 kg/m², up to **11.5 kg** at 80% and 9 kg/m².
 
 > Armour is non-scaling mass. It enters `m_ext` and is multiplied by `γ`, so at
-> γ = 3.4 the difference between 50% and 80% coverage is ~3 kg of armour and
-> **~11 kg of body**. With `f_act` already under pressure, coverage is the
+> γ = 2.6 the difference between 50% and 80% coverage is ~3 kg of armour and
+> **~7 kg of body**. With `f_act` already under pressure, coverage is the
 > cheapest place to buy margin back — and the most visible thing to lose.
 
 ## 4. Shell layers

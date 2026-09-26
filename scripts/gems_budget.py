@@ -23,7 +23,9 @@ import json
 import sys
 from pathlib import Path
 
-BODY_SKIN_AREA_M2 = 1.8   # skin area of a ~1.75 m body, spec 02.4
+HEIGHT_M = 1.65            # declared height, spec 00 — 1.75 m until 2026-09-26 (D-8)
+BODY_SKIN_AREA_M2 = round(1.8 * (HEIGHT_M / 1.75) ** 2, 2)   # 1.8 m2 at 1.75 m, scaled by the square: 1.60 m2
+REF_ENDURANCE_H = 2.0      # reference operating point, D-8: 2 h free-running with a dock
 G = 9.81
 
 
@@ -248,13 +250,26 @@ def collect_claims():
     F_STR = 0.30
     DENSITY = 80.0
     f_act_s, m_act_fixed = actuator_split(DENSITY)
-    M_EXT_MID = 28.8                   # mid of the m_ext range of 02.5, before actuators
+    REF = budget(F_STR, DENSITY, 20, REF_ENDURANCE_H, 450, 0.65, 7.5, 20.0)
+    REF_M = REF["body_mass_kg"]
+    from actuator_sizing import REF_MASS, arm_torques, SHOULDER_TO_GRIP, ELBOW_TO_GRIP, load_case_table  # noqa: E402
+
+    # the sizing script's reference mass must be the loop's output
+    c.append(("ref mass", "hardware/electrical/actuator_sizing.py",
+              "REF_MASS = %.1f" % round(REF_M) if abs(REF_MASS - REF_M) < 0.5 else "REF_MASS must be %.1f" % REF_M,
+              "reference mass in the sizing script equals the loop's output at D-8"))
+
+    # 00 / 02.4 height and skin area
+    c.append(("height", "spec/00-scope-and-criteria.md", "~%.2f m" % HEIGHT_M, "declared height"))
+    c.append(("skin area", "spec/02-structure-and-motion.md", "~%.1f m² for a %.2f m body" % (BODY_SKIN_AREA_M2, HEIGHT_M), "skin area at the declared height"))
 
     # 02.2 the split
     c.append(("f_act_s", "spec/02-structure-and-motion.md",
               "**%.3f**" % f_act_s, "scaling actuator fraction, legs and trunk at 80 Nm/kg"))
     c.append(("m_act_fixed", "spec/02-structure-and-motion.md",
               "**%.1f kg**" % m_act_fixed, "fixed actuator mass, arms, wrists and neck at 80 Nm/kg"))
+    c.append(("f_act ref", "spec/02-structure-and-motion.md",
+              "%.2f at the %d-hour point" % (REF["f_act"], REF_ENDURANCE_H), "f_act at the reference point"))
 
     # 02.3 endurance ceilings, f_str + f_act_s
     for p in (10, 15, 20, 25):
@@ -272,25 +287,29 @@ def collect_claims():
         c.append(("gamma p%d t%d" % (p, t), "spec/02-structure-and-motion.md",
                   _fmt(g, 1) if g else "*diverges*", "growth factor at p=%d, t=%dh" % (p, t)))
 
-    # 02.4 armour mass, and its price at the 4 h point
+    # 02.4 armour mass, and its price at the reference point
     for cov, areal in ((0.50, 6), (0.50, 9), (0.65, 6), (0.65, 9), (0.80, 6), (0.80, 9)):
+        c.append(("armour %d%% @%d" % (cov * 100, areal), "spec/02-structure-and-motion.md",
+                  "| %.2f m² |" % (BODY_SKIN_AREA_M2 * cov) if areal == 6 else "",
+                  "armour area at %d%% coverage" % (cov * 100)) if areal == 6 else None)
         c.append(("armour %d%% @%d" % (cov * 100, areal), "spec/02-structure-and-motion.md",
                   _fmt(armour_mass(cov, areal)) + " kg",
                   "armour at %d%% coverage, %d kg/m2" % (cov * 100, areal)))
-    g4 = growth_factor(sigma_f(F_STR, f_act_s, 20, 4, 450))
+    c[:] = [x for x in c if x]
+    g_ref = REF["gamma"]
     d_arm = armour_mass(0.80, 6) - armour_mass(0.50, 6)
-    c.append(("gamma 4h", "spec/02-structure-and-motion.md", "γ=%.1f" % g4,
-              "growth factor at the 4 h point"))
+    c.append(("gamma ref", "spec/02-structure-and-motion.md", "γ=%.1f" % g_ref,
+              "growth factor at the reference point"))
     c.append(("armour price", "spec/02-structure-and-motion.md",
-              "~%d kg of armour — and **~%d kg of\n> body**" % (round(d_arm), round(d_arm * g4)),
+              "~%d kg of armour — and **~%d kg of\n> body**" % (round(d_arm), round(d_arm * g_ref)),
               "body cost of 80% over 50% coverage at 6 kg/m2, times γ"))
 
-    # 02.5 Asimov scaling cross-check
-    scaled = 35.0 * (1.75 / 1.2) ** 3
+    # 02.5 scaling cross-check
+    scaled = 35.0 * (HEIGHT_M / 1.2) ** 3
     c.append(("asimov scale", "spec/02-structure-and-motion.md",
-              "%.2f" % ((1.75 / 1.2) ** 3), "mass scaling ratio (1.75/1.2)^3"))
+              "`(%.2f/1.2)³ = %.2f`" % (HEIGHT_M, (HEIGHT_M / 1.2) ** 3), "mass scaling ratio"))
     c.append(("asimov mass", "spec/02-structure-and-motion.md",
-              "~%d kg" % round(scaled), "35 kg body scaled to 1.75 m"))
+              "**~%d kg** for a %.2f m body" % (round(scaled), HEIGHT_M), "35 kg body scaled to the declared height"))
 
     # 02.5 mass envelope: gamma and body range per operating point
     for label, t, e in (("2h durable", 2, 450), ("4h durable", 4, 450),
@@ -303,12 +322,11 @@ def collect_claims():
                   "growth factor and body range, %s" % label))
 
     # 02.6 shoulder torque as a lever, M*g*L, and the sized arm joints
-    for load, reach in ((5, 0.40), (15, 0.64), (30, 0.64), (50, 0.64)):
+    for load, reach in ((5, 0.40), (15, SHOULDER_TO_GRIP), (30, SHOULDER_TO_GRIP), (50, SHOULDER_TO_GRIP)):
         t = shoulder_torque(load, reach)
         c.append(("torque %dkg %.2fm" % (load, reach), "spec/02-structure-and-motion.md",
                   "%d Nm (%.2f kg)" % (round(t), actuator_mass_for_torque(t, DENSITY)),
                   "shoulder torque and actuator mass, %d kg at %.2f m" % (load, reach)))
-    from actuator_sizing import arm_torques, SHOULDER_TO_GRIP, ELBOW_TO_GRIP  # noqa: E402
     arms = arm_torques(DENSITY)
     for key, label in (("shoulder", "shoulder pitch"), ("shoulder_roll", "shoulder roll"), ("elbow", "elbow")):
         pay, own = arms[key]
@@ -318,27 +336,31 @@ def collect_claims():
     c.append(("grip levers", "spec/02-structure-and-motion.md",
               "%.2f m from the shoulder and %.2f m from the elbow" % (SHOULDER_TO_GRIP, ELBOW_TO_GRIP),
               "grip-centre levers"))
+    for name, m, status, ts, te, th, tt in load_case_table(REF_MASS):
+        c.append(("case %s" % name[:20], "spec/02-structure-and-motion.md",
+                  "| %d | %d | %d | %d | %d |" % (round(m), round(ts), round(te), round(th), round(tt)),
+                  "load case: %s" % name))
 
     # 02.6 the density-to-f_act mapping — the coupling that must not drift
-    total_nm = joint_torque_total(130.0)
+    total_nm = joint_torque_total(REF_MASS)
     per_kg, fixed_nm = torque_split()
     c.append(("joint torque total", "spec/02-structure-and-motion.md",
-              "**%d Nm**" % round(total_nm),
-              "summed joint torque of the declared kinematics at 130 kg"))
+              "**%d Nm** summed across 31 joints at the %d kg" % (round(total_nm), REF_MASS),
+              "summed joint torque of the declared kinematics at the reference point"))
     c.append(("torque split", "spec/02-structure-and-motion.md",
-              "%d Nm of it scales with body mass and %d Nm does not" % (round(per_kg * 130), round(fixed_nm)),
+              "%d Nm of it scales with body mass and %d Nm does not" % (round(per_kg * REF_MASS), round(fixed_nm)),
               "the two parts of the summed torque"))
     for d in (80, 85, 90):
         m = total_nm / d
         c.append(("f_act @%d" % d, "spec/02-structure-and-motion.md",
-                  "%.1f kg | **%.2f**" % (m, m / 130.0) if d != 85
-                  else "%.1f kg | %.2f" % (m, m / 130.0),
+                  "%.1f kg | **%.2f**" % (m, m / REF_MASS) if d != 85
+                  else "%.1f kg | %.2f" % (m, m / REF_MASS),
                   "actuator mass and f_act at %d Nm/kg" % d))
     c.append(("f_act band", "spec/02-structure-and-motion.md",
-              "80–90 Nm/kg maps onto `f_act` %.2f–%.2f" % (total_nm / 90 / 130.0, total_nm / 80 / 130.0),
+              "80–90 Nm/kg maps onto `f_act` %.2f–%.2f" % (total_nm / 90 / REF_MASS, total_nm / 80 / REF_MASS),
               "the density band and the f_act band, stated as one constraint"))
     c.append(("f_act floor", "spec/02-structure-and-motion.md",
-              "allow a floor near %d Nm/kg" % round(total_nm / 0.35 / 130.0),
+              "allow a floor near %d Nm/kg" % round(total_nm / 0.35 / REF_MASS),
               "the density at which f_act touches 0.35"))
 
     # 02.6 carry capacity at both operating points
@@ -346,7 +368,8 @@ def collect_claims():
         b = budget(F_STR, DENSITY, 20, t, 450, 0.65, 7.5, 20.0)
         v = b["carry_kg_at_peak"]
         c.append(("carry t%dh" % t, "spec/02-structure-and-motion.md",
-                  ("**%d kg**" % round(v)) if v >= 0 else ("exceeds it by %d kg" % round(-v)),
+                  ("%d-hour body at %d kg carries **%d kg**" % (t, round(b["body_mass_kg"]), round(v))) if v >= 0
+                  else ("%d-hour body at %d kg carries nothing — the body alone exceeds it by %d kg" % (t, round(b["body_mass_kg"]), round(-v))),
                   "carry capacity at peak, %d h point" % t))
 
     # 02.7 both operating points, derived here rather than transcribed
@@ -365,8 +388,20 @@ def collect_claims():
                       "%d kW" % round(source_peak_kw(kwh, cr)),
                       "source peak at the %d h point, %dC" % (t, cr)))
 
+    # 05.2 tactile layout on the declared skin area
+    fine_cm2, fine_d, ord_d = 500, 300, 20
+    ord_cm2 = BODY_SKIN_AREA_M2 * 1e4 - fine_cm2
+    points = fine_cm2 * fine_d + ord_cm2 * ord_d
+    tact_gbps = points * 1000 * 12 / 1e9
+    c.append(("tactile area", "spec/05-sensing.md", "| **Total** | %.1f m² |" % BODY_SKIN_AREA_M2, "tactile total area"))
+    c.append(("tactile ordinary", "spec/05-sensing.md", "~%s cm²" % format(int(round(ord_cm2, -2)), ","), "ordinary-region area"))
+    c.append(("tactile points", "spec/05-sensing.md", "**~%s**" % format(int(round(points, -4)), ","), "tactile point count"))
+    c.append(("tactile Gbps", "spec/05-sensing.md", "**%.1f Gbps** raw" % tact_gbps, "tactile raw rate"))
+    c.append(("aggregate A", "spec/05-sensing.md", "**%.1f Gbps**" % (5.97 + tact_gbps + 3.58), "aggregate raw rate, configuration A"))
+    c.append(("dense points", "spec/05-sensing.md", "**%d\n   million points**" % round(24100 * BODY_SKIN_AREA_M2 * 1e4 / 1e6), "points at 100x human density"))
+
     # 03.6 self-discharge and sleep, on the pack figure 02.7 quotes
-    PACK = round(budget(F_STR, DENSITY, 20, 4, 450, 0.65, 7.5, 20.0)["pack_kWh"], 1)
+    PACK = round(REF["pack_kWh"], 1)
     for pct in (1, 2, 3):
         c.append(("selfdisch %d%%" % pct, "spec/03-energy.md",
                   "%d mW" % round(self_discharge_w(PACK, pct) * 1000),
@@ -430,12 +465,12 @@ def main(argv=None):
     ap = argparse.ArgumentParser(
         description="GEMs mass, energy and power budget.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="Defaults sit at the 4-hour durable-pack point of spec 02.5.")
+        epilog="Defaults sit at the reference point of D-8: 2 h free-running with a dock, durable pack, 65%% armour, 1.65 m.")
     ap.add_argument("--f-str", type=float, default=0.30, help="structure mass fraction")
     ap.add_argument("--density", type=float, default=80.0,
                     help="actuator torque density, Nm/kg peak over module mass")
     ap.add_argument("--p", type=float, default=20.0, help="specific power, W/kg")
-    ap.add_argument("--endurance", type=float, default=4.0, help="free-running hours")
+    ap.add_argument("--endurance", type=float, default=REF_ENDURANCE_H, help="free-running hours")
     ap.add_argument("--e", type=float, default=450.0, help="battery density, Wh/kg")
     ap.add_argument("--coverage", type=float, default=0.65, help="armour coverage, 0-1")
     ap.add_argument("--areal", type=float, default=7.5, help="armour areal density, kg/m2")

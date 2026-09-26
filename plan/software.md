@@ -32,13 +32,13 @@ it; what to do with that information is not this repository's
 
 ## S-1 — Feature extraction and compression
 
-Guarantee 1: **≥ 2:1, realistically 8:1**, on 15.8 Gbps raw at the
+Guarantee 1: **≥ 2:1, realistically 8:1**, on 15.1 Gbps raw at the
 conservative configuration (spec 05.4).
 
 | Task | To | Waits for |
 |---|---|---|
 | Stereo vision: encoding, disparity, features; the retained multispectral and thermal paths | L4 | — |
-| Tactile: event-based compression — report change, not state — for ~500,000 taxels | L4 | — |
+| Tactile: event-based compression — report change, not state — for ~460,000 taxels | L4 | — |
 | SDR: decimation and channel selection | L4 | — |
 | LiDAR, microphone array (beamforming), proprioception passed at full rate — it is the one channel that must not be cut (spec 05.5) | L4 | — |
 | Compression ratio measured per channel and in aggregate on simulated data | L5 | V-7 |

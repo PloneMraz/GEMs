@@ -83,7 +83,7 @@ it can move past L2. None can be settled by arithmetic alone.
 | **D-5** | **Cell and pack format** at the durable tier (400–500 Wh/kg) | Pack mechanics, BMS, thermal | open — candidates sourced in `hardware/electrical/` |
 | **D-6** | **Reference hand configuration.** The declaration leaves 2×5 to 2×21 DOF open (`⟦CTRL⟧`); a complete design needs one point to draw | M-4, E-3 count, F-3 count | open — anchor figure is 40 joints, i.e. 2×5 |
 | **D-7** | **Secure element and low-power beacon radio** | Attestation, beacon, C-10, C-11 | open |
-| **D-8** | **Operating point for the reference design** — endurance, armour coverage | Mass, pack size, every downstream figure | open — the conformance record uses 4 h, 65% |
+| **D-8** | **Operating point for the reference design** — endurance, height, armour | Mass, pack size, every downstream figure | **decided 2026-09-26, in part: 2 h free-running with a dock, and 1.65 m** (was 4 h, 1.75 m). The body comes to ~96 kg and the legs gain 29 kg of carry capacity against the AKH70-48 ([spec 02.6](../spec/02-structure-and-motion.md#load-cases)). Open within it: armour coverage and level — the reference keeps 65% until discussed. The dock is now load-bearing for the design: package DK |
 | **D-9** | **Trunk architecture** | M-5, E-3, F-5, the URDF | **decided 2026-09-26: a coupled multi-segment spine** — three segments, one actuator per axis for yaw, pitch and lateral bend ([kinematics §1.4](../hardware/kinematics.md#14-the-trunk-is-a-spine-not-a-waist)). Open within it: the coupling mechanism and ratios. All three trunk axes are sized from Pan et al. 2025 |
 | **D-10** | **Arm payload** | Shoulder and elbow sizing, `f_act`, the mass loop | **decided 2026-09-26: 15 kg in one hand, arm horizontal, load at the grip centre; shoulder roll 11 kg** ([electrical §6b](../hardware/electrical/README.md#6b-arm-payload-and-the-two-parts-of-f_act--2026-09-26)). Replaced a 30 kg fingertip stress test. With it `f_act` splits into a scaling part (legs, trunk) and a fixed part (arms, wrists, neck) carried in `m_ext`; the density floor stays at 80 Nm/kg as margin |
 | **D-11** | **Load cases** | Leg and trunk sizing, carry capacity, D-8 | **decided 2026-09-26: static objects only; lifting, carrying or dragging a person is out, contact stays in** ([spec 02.6](../spec/02-structure-and-motion.md#load-cases)). A held load adds to the leg and trunk per-kg rows. Open within it: the masses of the four proposed cases |
@@ -140,7 +140,7 @@ quite passes as human is received worse than one that does not try.
 | M-7 | Protection layer — integrated multi-threat package, panel layout at the declared coverage | L4 | D-8 |
 | M-8 | Shell, three layers (spec 04.5): sense-and-heal, variable stiffness, load-and-fire, on the surfaces of ID-2 | L4 | M-7, ID-2 — **LAB** for the first two |
 | M-9 | Head and sensor mounting — stereo baseline, thermal, LiDAR, microphone array geometry, inside the face of ID-5 | L4 | E-6, ID-5 |
-| M-10 | Dock — seat form, charging contacts, alignment | L4 | E-2 |
+| M-10 | Dock, mechanical — moved to package DK below | — | — |
 | M-11 | Thermal design — conduction paths, compute and drive cooling, sealed-body dissipation. Exhaust at the upper back, over the pack — see [pack location](#pack-location-decided) below | L5 | M-2, E-3, E-5 |
 | M-12 | Mass properties exported from CAD into the simulation model, replacing the estimated inertias | L5 | M-5 |
 
@@ -152,16 +152,19 @@ waist or pelvis. It frees the waist the concept art asks for
 ([`hardware/design/concept/`](../hardware/design/concept/)), and it places the
 body's largest heat source where an exhaust is easiest to design.
 
-What the decision costs, at the declared point (URDF geometry: pelvis centre
-~0.99 m above the sole, scapular region ~1.35 m), and how the cost falls as
-cells improve — `gems_budget.py` at 4 h and 65% coverage:
+What the decision costs, at the declared point (URDF geometry at 1.65 m: pelvis centre
+~0.94 m above the sole, scapular region ~1.30 m), and how the cost falls as
+cells improve — `gems_budget.py` at the D-8 point, 2 h and 65% coverage:
 
 | Cell energy density | Body | Pack | Centre of mass raised by moving the pack from pelvis to upper back |
 |---|---|---|---|
-| 450 Wh/kg — durable tier, today | 129.3 kg | 23.0 kg, 10.3 kWh | ~6 cm |
-| 550 Wh/kg | 116.6 kg | 17.0 kg | ~5 cm |
-| 700 Wh/kg — low end of the ceiling tier (spec 03.1) | 106.5 kg | 12.2 kg | ~4 cm |
-| 1000 Wh/kg | 97.2 kg | 7.8 kg | ~3 cm |
+| 450 Wh/kg — durable tier, today | 96.2 kg | 8.5 kg, 3.9 kWh | ~3 cm |
+| 550 Wh/kg | 92.3 kg | 6.7 kg | ~3 cm |
+| 700 Wh/kg — low end of the ceiling tier (spec 03.1) | 88.9 kg | 5.1 kg | ~2 cm |
+| 1000 Wh/kg | 85.3 kg | 3.4 kg | ~1 cm |
+
+(At the 4 h point this section was written for, the pack was 23 kg and the
+shift ~6 cm; the move to 2 h on 2026-09-26 took most of the cost away.)
 
 The pack shrinks faster than the energy it holds would suggest, because the
 mass loop compounds: a lighter pack makes a lighter body, which needs less pack.
@@ -173,7 +176,7 @@ Constraints the decision carries into the design:
 
 | | |
 |---|---|
-| **Trunk load** | Pack mass high above the waist adds pitch inertia about the waist (~1.8 kg·m² at 23 kg, against ~3.7 kg·m² estimated for the torso itself — about +50%). Trunk pitch, already 226 Nm, is sized with it; the pack rides the top spine segment, so the spine turns beneath it |
+| **Trunk load** | Pack mass high above the waist adds pitch inertia about the waist (~0.7 kg·m² at 8.5 kg, against ~3.7 kg·m² estimated for the 1.75 m torso — under +20%; ~1.8 kg·m² and +50% at the 23 kg pack of the old 4 h point). Trunk pitch, 167 Nm at the reference point, is sized with it; the pack rides the top spine segment, so the spine turns beneath it |
 | **Impact protection** | A pack frame with a crush zone between the outer shell and the cells, so that an impact reaches the cells as shock within their qualified level, never as deformation or penetration — the path to thermal runaway. The upper back has the volume for that crush zone; the waist, in the concept's form, does not |
 | **Falls** | The upper back is among the first regions to land in a backward fall, at speed. **Verification requirement (V-4):** the pack survives the worst-case backward fall from standing with no cell deformation and cell acceleration within the qualified shock level. The supported failure state (spec 07.3 g2) should still favour falls that spare the back |
 | **Strikes** | The flank and waist are primary targets for kicks and knees; many combat rule sets forbid strikes to the spine and the back of the head. The upper back is the least-struck region of the torso |
@@ -193,7 +196,7 @@ Constraints the decision carries into the design:
 | E-4 | Power distribution and conversion: HV to logic rails, isolated domains, the always-on rail at quiescent power (spec 03.6) | L4 | E-2 |
 | E-5 | Compute boards: Jetson carrier, real-time controller board, EtherCAT master interface, storage for the audit log | L4 | D-3 |
 | E-6 | Sensor front-ends: camera links, thermal, LiDAR, microphone array, SDR, IMUs, e-nose | L4 | E-5 |
-| E-7 | Tactile skin readout for ~500,000 taxels (spec 05.2): multiplexing, ADCs, local event compression | L4 | **LAB** |
+| E-7 | Tactile skin readout for ~460,000 taxels (spec 05.2): multiplexing, ADCs, local event compression | L4 | **LAB** |
 | E-8 | Radios: mmWave uplink, fallback link, low-power beacon radio | L4 | D-7 |
 | E-9 | Root of trust: secure element per node or per bus segment | L4 | D-7 |
 | E-10 | Shell drivers: magnetorheological coils or electrorheological high-voltage supply, electrochromic drivers | L4 | M-8 — **LAB** |
@@ -225,6 +228,23 @@ See [`software.md`](software.md). Needs no hardware decision and can proceed now
 | V-7 | Sensor simulation: rendered cameras, depth, IMU noise, tactile contact, for the software pipeline | L5 | S-1 |
 | V-8 | Link simulation: bandwidth, latency, outage, for link management | L5 | S-5 |
 | V-9 | Conformance re-assessment: rerun `protocol/assess.py` with each simulated result, and state which rows moved and why | L5 | all |
+
+### DK — Dock
+
+With the reference point at 2 h free-running (D-8), the dock is part of the
+design, not an accessory: the body's day is a sequence of free-running spans
+and dock returns, and nothing in the repository designs the dock yet. Spec
+[03.5](../spec/03-energy.md#35-dock) declares its forms (seat or couch by
+default, load-bearing hanger for storage) and both charging methods; the
+pack-location decision above puts the contacts in the backrest.
+
+| ID | Task | To | Waits for |
+|---|---|---|---|
+| DK-1 | Requirements: charge power and time to full against the 3.9 kWh pack, how many returns a day at the declared power profile, wired and wireless roles (spec 03.5), where a body may dock, what state it holds while docked (spec 03.4 levels 3 and 4) | L1 | D-8 |
+| DK-2 | Seat form: pelvis support and rise-from-seat path against the ROM tiers, backrest contacts beside the pack, alignment and self-docking tolerance, the hanger variant | L4 | DK-1, ID-2, M-2 |
+| DK-3 | Dock electrical: charger, contact set and its safety (dead contacts until mated), wireless pad as the maintenance path, thermal handling of charge power, mains side | L4 | DK-1, D-4, D-5, E-2 |
+| DK-4 | Dock-side control and telemetry: detection and handshake with F-9, charge control, the beacon read while docked (spec 06.5) | L4 | DK-3, F-9 |
+| DK-5 | Simulated dock cycle: walk to dock, sit, charge, rise — endurance per day measured, not assumed | L5 | V-3, DK-2 |
 
 ### B — Bill of materials and cost
 

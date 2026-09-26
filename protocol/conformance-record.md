@@ -58,17 +58,17 @@ measured.
 | Declared | Value |
 |---|---|
 | Simulated or physical | **simulated** — no physical body exists |
-| Mass | 129 kg (derived, not weighed) |
-| Free-running endurance | 4 h at the declared operating point |
+| Mass | 96 kg (derived, not weighed) |
+| Free-running endurance | 2 h at the declared operating point, with a dock |
 | Endurance ceiling | 10.7 h |
 | Sleep states supported | none implemented |
 | Protection level and coverage | NIJ IIIA + stab, 65% coverage — selected, not built |
 | Actuator specific torque | 80–90 Nm/kg peak over module mass — selected, not procured |
-| Summed joint torque | 3099 Nm across 31 joints |
-| Peak power at the source | 51.7 kW at 5C |
+| Summed joint torque | 2479 Nm across 31 joints |
+| Peak power at the source | 19.2 kW at 5C |
 | Link bandwidth and latency | 8 Gbps, ~1 ms PHY — specified, no radio |
 | Sensor configuration | 41 logged joints; no sensor exists |
-| Aggregate raw rate | 15.8 Gbps at the conservative configuration |
+| Aggregate raw rate | 15.1 Gbps at the conservative configuration |
 | Compression ratio achieved | none — not implemented |
 | Compute split | specified; nothing running |
 | Log rates, full tier | 2.6 Mbps, 1.18 GB/h |

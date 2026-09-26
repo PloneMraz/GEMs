@@ -55,9 +55,9 @@ STATUS = {"SELECTED", "CANDIDATE"}
 # Declared density at the reference operating point: f_act = 0.30 needs the
 # top of the 80-90 Nm/kg band (spec 02.6). Used only for mass estimates.
 MODULE_NM_PER_KG = 88.7
-PACK_KWH, CELLS_KG = 10.36, 23.0          # gems_budget at the declared point
-ARMOUR_M2, ARMOUR_KG_M2 = 1.17, 7.5       # 65% of 1.8 m2, mid-band areal density
-BODY_MASS_BUDGET = 129.3   # scripts/gems_budget.py at the 4 h point
+PACK_KWH, CELLS_KG = 3.85, 8.5            # gems_budget at the D-8 point: 2 h, 65%, 1.65 m
+ARMOUR_M2, ARMOUR_KG_M2 = 1.04, 7.5       # 65% of 1.6 m2, mid-band areal density
+BODY_MASS_BUDGET = 96.2    # scripts/gems_budget.py at the D-8 point
 
 # -- joint table: stable index -> part-number block. Never renumber. -------
 #    idx, joint, reducer class, placement
@@ -190,7 +190,7 @@ def build():
                              req="CFRP long members, 7075-T6 at joints",
                              notes="Section sizing IMPL; structure allowance 38.8 kg in total")
 
-    top = b.part("GEM-10000", "GEMs body, reference design A (4 h, 65% armour coverage)",
+    top = b.part("GEM-10000", "GEMs body, reference design A (2 h with dock, 65% armour, 1.65 m)",
                  "ASSY", "MAKE", level="L1", ref="spec 02.5; protocol/conformance-record.md",
                  req="%.1f kg derived body mass" % BODY_MASS_BUDGET)
 
@@ -328,9 +328,9 @@ def build():
                         basis="per m2, mid-band of 6-9 kg/m2", level="L2",
                         ref="spec 02.4; hardware/mechanical 3",
                         req="NIJ IIIA + NIJ 0115 level 1"),
-          "%.2f" % ARMOUR_M2, "65% of 1.8 m2")
+          "%.2f" % ARMOUR_M2, "65% of 1.6 m2")
     for pn, d, q, basis, mat, ref, req in [
-        ("GEM-18020", "Sense-and-heal layer, e-skin and self-healing polymer", "1.80", "skin area", "LAB", "spec 04.5", "600% stretch"),
+        ("GEM-18020", "Sense-and-heal layer, e-skin and self-healing polymer", "1.60", "skin area", "LAB", "spec 04.5", "600% stretch"),
         ("GEM-18030", "Variable-stiffness layer, MR / ER / jamming", "", "coverage IMPL", "LAB", "spec 04.1", "2-30x modulus, ms"),
         ("GEM-18040", "Fire layer, sacrificial", "", "coverage IMPL", "TM", "spec 04.4", "standard to be anchored"),
         ("GEM-18050", "Electrochromic colour layer", "", "coverage IMPL", "LAB", "spec 04.3", "~1-5 s"),

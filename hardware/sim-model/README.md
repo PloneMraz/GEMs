@@ -10,7 +10,7 @@ A URDF of the GEMs body, generated from the declared kinematic configuration.
 ```bash
 python hardware/sim-model/generate_urdf.py            # write gems.urdf
 python hardware/sim-model/generate_urdf.py --check    # audit only
-python hardware/sim-model/generate_urdf.py --mass 95  # a lighter operating point
+python hardware/sim-model/generate_urdf.py --mass 125 # the old 4 h operating point
 ```
 
 Python 3, standard library only.
@@ -19,7 +19,7 @@ Python 3, standard library only.
 
 The model is produced from [`../kinematics.md`](../kinematics.md) rather than
 authored beside it. A hand-written URDF is a second declaration of the same
-facts, and two declarations drift: the file says 0.70 m reach, the document says
+facts, and two declarations drift: the file says 0.66 m reach, the document says
 something else, and nobody notices until a controller is tuned against the wrong
 one.
 
@@ -30,10 +30,10 @@ compares them to the declaration:
   core DOF             31         expected 31         ok
   trunk spread 3 segs  True       expected True       ok
   mech covers soft     True       expected True       ok
-  total mass kg        130.0      expected 130.0      ok
-  reach m              0.7        expected 0.7        ok
-  standing height m    1.75       expected 1.75       ok
-  drawn height m       1.75       expected 1.75       ok
+  total mass kg        96.2       expected 96.2       ok
+  reach m              0.66       expected 0.66       ok
+  standing height m    1.656      expected 1.65       ok
+  drawn height m       1.656      expected 1.65       ok
   drawn segments       17         expected 17         ok
   torso above waist    True       expected True       ok
   feet point forward   True       expected True       ok

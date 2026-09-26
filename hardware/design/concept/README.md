@@ -31,15 +31,15 @@ These are inputs to the design brief (ID-1) and to colour, material and finish
 
 ## Where it meets the specification
 
-Read against the reference design at the declared operating point — 1.75 m,
-129.5 kg, 4 h, 65% armour coverage. None of these is a verdict on the concept;
+Read against the reference design at the declared operating point — 1.65 m,
+~96 kg, 2 h with a dock, 65% armour coverage (D-8, 2026-09-26; 1.75 m, 129.5 kg and 4 h when the concept was first compared). None of these is a verdict on the concept;
 each is a point ID-2 and the packaging study M-2 must resolve, by changing the
 form or by choosing a different operating point (D-8).
 
 | Concept | Specification | Tension |
 |---|---|---|
-| Very narrow waist and slender torso | The torso carries ~23 kg of cells (10.3 kWh), the compute and the spine actuators, 226 Nm in trunk pitch | The largest volume in the body sits where the concept is narrowest |
-| Slim knees and ankles | Knee and hip pitch need ~230 Nm peak; at 88.7 Nm/kg that is ~2.6 kg of actuator per joint, ankle pitch ~180 Nm | Joint housings of that torque are wider than the concept's joints; see the actuator finding in [`../../bom/`](../../bom/README.md#what-building-it-turned-up) |
+| Very narrow waist and slender torso | The torso carries ~8.5 kg of cells (3.9 kWh), the compute and the spine actuators, 167 Nm in trunk pitch | The largest volume in the body sits where the concept is narrowest |
+| Slim knees and ankles | Knee and hip pitch need ~170 Nm peak; at 88.7 Nm/kg that is ~1.9 kg of actuator per joint, ankle pitch ~180 Nm | Joint housings of that torque are wider than the concept's joints; see the actuator finding in [`../../bom/`](../../bom/README.md#what-building-it-turned-up) |
 | Glossy hard shell | The outer layer is sense-and-heal e-skin, soft, 600% stretch (spec 04.5); armour at 6–9 kg/m² beneath | A soft, self-healing skin does not read as hard gloss; the finish is a CMF decision (ID-4) |
 | Articulated five-finger hands | The anchor configuration is 5 DOF per hand, and the hand choice is open (D-6) | The drawn hands look closer to the moderate or anthropomorphic tier |
 | Separate toes | The kinematics has no toe joints | Toes would be sculpted, not actuated, unless the kinematics changes |

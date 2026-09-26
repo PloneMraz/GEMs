@@ -21,9 +21,9 @@ quantities, and they do not all move together:
 1. **Fabrication.** The densest published e-skin array reaches **~347
    elements/cm²** *(sourced)* — roughly **level with human skin**, not above it.
    A 100× density means 24,100/cm², about **69× beyond anything yet built**.
-2. **Bandwidth.** Even if it could be built: 24,100/cm² over 1.8 m² is **434
-   million points**. At 1 kHz and 12 bits that is **~5,200 Gbps of tactile data
-   alone** — **650×** the 8 Gbps link of [01](01-architecture.md). No compression
+2. **Bandwidth.** Even if it could be built: 24,100/cm² over 1.6 m² is **386
+   million points**. At 1 kHz and 12 bits that is **~4,600 Gbps of tactile data
+   alone** — **580×** the 8 Gbps link of [01](01-architecture.md). No compression
    ratio rescues that.
 
 **Declared tactile capability:** density **level with human skin** in the fine
@@ -38,11 +38,12 @@ Uniform whole-body density is wasteful — human skin is not uniform either.
 | Region | Area | Density | Points |
 |---|---|---|---|
 | Fine — hands, face | ~500 cm² | ~300/cm² *(near the fabrication ceiling)* | ~150,000 |
-| Ordinary — remainder | ~17,500 cm² | ~20/cm² | ~350,000 |
-| **Total** | 1.8 m² | — | **~500,000** |
+| Ordinary — remainder | ~15,500 cm² | ~20/cm² | ~310,000 |
+| **Total** | 1.6 m² | — | **~460,000** |
 
-At 1 kHz and 12 bits: **6.0 Gbps** raw — three quarters of the link, from one
-channel.
+At 1 kHz and 12 bits: **5.5 Gbps** raw — two thirds of the link, from one
+channel. (1.8 m², ~500,000 points and 6.0 Gbps until the height came to 1.65 m
+on 2026-09-26.)
 
 ## 5.3 Channels
 
@@ -71,7 +72,7 @@ channel.
 
 | Configuration | Vision | Tactile | SDR | **Total** | Minimum compression |
 |---|---|---|---|---|---|
-| **A — conservative** (4K30, 500k points) | 5.97 | 6.00 | 3.58 | **15.8 Gbps** | **2 : 1** |
+| **A — conservative** (4K30, 460k points) | 5.97 | 5.52 | 3.58 | **15.1 Gbps** | **2 : 1** |
 | **B — moderate** (8K60, 1M points, 4-ch SDR) | 47.8 | 12.0 | 7.17 | **67.2 Gbps** | **8 : 1** |
 | **C — 100× density** | 47.8 | 5,206 | 7.17 | **5,261 Gbps** | 658 : 1 — *excluded* |
 

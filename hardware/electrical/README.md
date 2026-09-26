@@ -324,10 +324,11 @@ same operating point and 15 kg payload:
 
 | Change | Body | Hip pitch | `f_act` |
 |---|---|---|---|
-| Reference, 4 h, 65% armour, 450 Wh/kg | 129 kg | 227 Nm | 0.30 |
+| Reference of that morning, 4 h, 65% armour, 450 Wh/kg, 1.75 m | 129 kg | 227 Nm | 0.30 |
 | Pack at 900 Wh/kg | 99 kg | 175 Nm | 0.32 |
 | No armour, skin only | 99 kg | 175 Nm | 0.32 |
 | Both | 76 kg | 134 Nm | 0.35 |
+| **D-8 as decided that evening: 2 h with a dock, 65% armour, 1.65 m** | **96 kg** | **170 Nm** | **0.32** |
 
 A lighter body lowers every leg and trunk module's torque and the peak power
 the pack must supply, and raises `f_act` slightly because the fixed part is
@@ -383,9 +384,10 @@ rated and peak, not how long peak may be held.
 drive behind a three-stage 48:1 reducer: 222 Nm peak, 74 Nm rated, 1396 g,
 **159 Nm/kg** [26] — 1.8 times the density this document called the top of
 the market, bought with output speed: ±5 rad/s against ±13 rad/s. Against
-the 130 kg table, at 48:1 every leg and trunk joint is covered except hip
+the 130 kg table of that morning, at 48:1 every leg and trunk joint was covered except hip
 pitch and knee at 230 Nm (short by 8) and trunk pitch at 226 (short by 4);
-shoulder pitch and roll are covered. What is not known is whether ~5 rad/s
+at the 96 kg reference point of D-8, decided that evening, every joint is
+covered, hip pitch and knee at 170 Nm with 29 kg of carry capacity to spare. What is not known is whether ~5 rad/s
 at the output is enough for gait and for catching a fall; that is the
 measurement D-2 now turns on, and the sizing table gains a speed column
 when it exists.
@@ -394,8 +396,9 @@ when it exists.
 declared loads to static objects and puts a held load onto the leg and trunk
 rows ([spec 02.6](../../spec/02-structure-and-motion.md#load-cases)). The
 sizing script prints the case table and the mass the legs can carry against
-this module's 222 Nm peak and 74 Nm rated torque; at the 4-hour point the
-body alone exceeds the peak, at the 2-hour point 26 kg is left for the hands.
+this module's 222 Nm peak and 74 Nm rated torque; at the old 4-hour point the
+body alone exceeded the peak, at the 2-hour, 1.65 m reference point of D-8
+29 kg is left for the hands.
 
 **In-house design is not an option.** By the author's rule of 2026-09-26
 ([`CLAUDE.md`](../../CLAUDE.md) §2), no part of this design may be proposed

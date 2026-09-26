@@ -24,17 +24,17 @@ import argparse
 import sys
 
 G = 9.81
-REF_MASS = 130.0          # the 4-hour operating point of spec 02.5
+REF_MASS = 96.0           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
 FLOOR_DENSITY = 80.0      # floor of the band spec 02.6 declares, Nm/kg
 
 # Arm geometry, hardware/kinematics.md §2. Levers are horizontal distances from
 # the joint axis with the arm held straight out, the posture of maximum
 # gravitational moment.
-UPPER_ARM = 0.32          # shoulder to elbow
-FOREARM = 0.26            # elbow to wrist
+UPPER_ARM = 0.30          # shoulder to elbow, 1.65 m body
+FOREARM = 0.25            # elbow to wrist
 WRIST_TO_GRIP = 0.06      # wrist to the centre of a held object, assumed ⟦IMPL⟧
-SHOULDER_TO_GRIP = UPPER_ARM + FOREARM + WRIST_TO_GRIP   # 0.64 m
-ELBOW_TO_GRIP = FOREARM + WRIST_TO_GRIP                  # 0.32 m
+SHOULDER_TO_GRIP = UPPER_ARM + FOREARM + WRIST_TO_GRIP   # 0.61 m
+ELBOW_TO_GRIP = FOREARM + WRIST_TO_GRIP                  # 0.31 m
 
 # Arm payload, decided 2026-09-26 (README §6b): 15 kg in one hand, arm
 # horizontal, load at the grip centre. Shoulder roll carries the same posture
@@ -79,7 +79,7 @@ MODULE_RATED = 74.0
 # Sources are listed per row in README.md.
 JOINTS = [
     # (name, count, basis, value)
-    ("hip_pitch",      2, "per_kg", 1.77),   # 230 Nm at 130 kg, scaled from 100-150 Nm at 70 kg
+    ("hip_pitch",      2, "per_kg", 1.77),   # scaled from 100-150 Nm at 70 kg
     ("hip_roll",       2, "per_kg", 1.23),
     ("hip_yaw",        2, "per_kg", 0.62),
     ("knee",           2, "per_kg", 1.77),
@@ -221,7 +221,7 @@ def split(body_mass=REF_MASS, density=FLOOR_DENSITY):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1])
     ap.add_argument("--mass", type=float, default=REF_MASS,
-                    help="body mass in kg (default: the 4-hour point)")
+                    help="body mass in kg (default: the D-8 reference point)")
     ap.add_argument("--carry", type=float, default=0.0,
                     help="load held close to the body, kg, added to the leg and trunk rows")
     a = ap.parse_args(argv)

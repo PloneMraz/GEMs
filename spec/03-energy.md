@@ -109,14 +109,14 @@ Components of quiescent power:
 **But the always-on wake-up circuit is not the dominant term.** Cell self-discharge runs
 **1–3% per month** *(sourced; automotive standards require under 2%/month, and
 solid-state is expected to be lower but has yet to demonstrate it)*. On the
-10.3 kWh pack of the 4-hour reference body
+3.9 kWh pack of the 2-hour reference body
 ([02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators)):
 
 | Self-discharge | Equivalent power |
 |---|---|
-| 1%/month | **143 mW** |
-| 2%/month | **286 mW** |
-| 3%/month | **429 mW** |
+| 1%/month | **54 mW** |
+| 2%/month | **108 mW** |
+| 3%/month | **162 mW** |
 
 A deep-sleeping always-on wake-up circuit costs **tens of µW** — about **four orders of
 magnitude below self-discharge**.
@@ -125,15 +125,15 @@ Sleep duration at 2%/month, linear approximation:
 
 | Mode | Total floor | Duration |
 |---|---|---|
-| Deep — wake-up receiver and retention only | ~286 mW *(over 99% of it self-discharge)* | **~4.1 years** |
-| Plus passive spatial sensing | ~305 mW | ~3.9 years |
-| Plus full-CSI spatial sensing | ~487 mW | **~2.4 years** |
+| Deep — wake-up receiver and retention only | ~108 mW *(over 99% of it self-discharge)* | **~4.1 years** |
+| Plus passive spatial sensing | ~127 mW | ~3.5 years |
+| Plus full-CSI spatial sensing | ~309 mW | **~1.4 years** |
 
 > **Deep-sleep duration does not depend on pack size.** Energy and drain scale
 > together, so a 4 kWh pack and a 20 kWh pack both reach ~4.1 years at 2%/month.
 > A larger pack buys sleep duration only once there is a **fixed** load beside
-> self-discharge: with full-CSI sensing running, 4 kWh gives ~1.5 years where
-> 10.3 kWh gives ~2.4.
+> self-discharge: with full-CSI sensing running, the reference 3.9 kWh pack
+> gives ~1.4 years where a 10 kWh pack would give ~2.4.
 
 > **Two design consequences.**
 >
@@ -150,9 +150,9 @@ Sleep duration at 2%/month, linear approximation:
 
 ## 3.7 Environmental harvesting — add-on
 
-Peak solar irradiance is ~1000 W/m². The effective collecting area of a ~1.75 m
-body is ~0.5–0.7 m²; good cell efficiency is 20–25% — giving a maximum harvest
-of **~100–175 W**.
+Peak solar irradiance is ~1000 W/m². The effective collecting area of a ~1.65 m
+body is ~0.45–0.6 m²; good cell efficiency is 20–25% — giving a maximum harvest
+of **~90–150 W**.
 
 Against that, a humanoid in motion draws **hundreds to over 1000 W**. Solar
 **extends standby; it does not run a working body.** It counts toward waiting

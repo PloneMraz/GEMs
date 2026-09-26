@@ -4,7 +4,7 @@ Open-source designs of a physical robot body.
 
 **Documentation:** https://plonemraz.github.io/vault/gems/
 
-GEMs specifies a ~1.75 m humanoid body whose purpose is to acquire physical
+GEMs specifies a ~1.65 m humanoid body whose purpose is to acquire physical
 experience on behalf of a controller that does not live entirely on it. It is a
 **platform specification**: it declares capability envelopes and the trade-offs
 between them, and deliberately leaves the operating point to whoever runs the
@@ -42,12 +42,12 @@ trade-off**, not a chosen point on it.
 
 | Property | Declared envelope |
 |---|---|
-| Height | ~1.75 m |
-| Mass | **70–160 kg**, depending on endurance and armour coverage |
+| Height | ~1.65 m — 1.75 m until 2026-09-26 |
+| Mass | **76–160 kg**, depending on endurance and armour coverage; the reference design sits at ~96 kg, 2 h with a dock |
 | Free-running endurance | Hours, under a **hard ceiling** — past it no convergent design exists at any price |
 | Deep-sleep endurance | **~years**, bounded by battery self-discharge rather than by standby electronics |
 | Protection | Handgun-calibre ballistic + stab + everyday impact, as one multi-layer package |
-| Actuation | 3–5 kW/kg, ~30–36 Nm/kg. Peak power is limited by **the source, not the actuators** |
+| Actuation | 80–90 Nm/kg peak over module mass at ~16:1; 3–5 kW/kg declared, under review. Peak power is limited by **the source, not the actuators** |
 | Uplink | mmWave, up to ~8 Gbps, ~1 ms PHY latency at short range |
 | Sensing | **16–67 Gbps** raw aggregate; ≥2:1 on-body compression is mandatory, ~8:1 realistic |
 | Compute | Split between body and external system. Balance loop ≥500 Hz and reflex ≤10 ms **must** be on-body |

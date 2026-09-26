@@ -2,7 +2,7 @@
 
 ## What this specification is
 
-GEMs specifies a ~1.75 m humanoid body built to acquire physical experience on
+GEMs specifies a ~1.65 m humanoid body built to acquire physical experience on
 behalf of a controller that does not live entirely on it.
 
 It specifies **the range of what the body can do and what each capability

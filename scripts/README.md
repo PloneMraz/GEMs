@@ -9,7 +9,7 @@ Python 3, standard library only. No installation.
 ## Pricing an operating point
 
 ```bash
-python scripts/gems_budget.py                 # the 4-hour durable-pack point
+python scripts/gems_budget.py                 # the D-8 point: 2 h with a dock, 65% armour, 1.65 m
 python scripts/gems_budget.py --endurance 6   # ask what six hours costs
 python scripts/gems_budget.py --json          # machine-readable
 python scripts/gems_budget.py --help          # every input

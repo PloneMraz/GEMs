@@ -46,28 +46,28 @@ from xml.dom import minidom
 # unless listed in UPWARD.
 
 SEG = {
-    "pelvis":    dict(kind="box", w=0.30, d=0.18, h=0.16),
+    "pelvis":    dict(kind="box", w=0.28, d=0.17, h=0.15),
     # The trunk (0.46 m) is three coupled segments (kinematics §1.4, plan D-9):
     # lumbar, lower thoracic, and the upper thorax that carries the shoulders,
     # the neck and the battery pack.
-    "spine_lumbar":   dict(kind="box", w=0.34, d=0.21, h=0.12),
-    "spine_thoracic": dict(kind="box", w=0.34, d=0.21, h=0.12),
-    "torso":          dict(kind="box", w=0.34, d=0.21, h=0.22),
-    "head":      dict(kind="box", w=0.16, d=0.19, h=0.22),
-    "upper_arm": dict(kind="cyl", r=0.048, h=0.32),   # declared 0.32
-    "forearm":   dict(kind="cyl", r=0.040, h=0.26),   # declared 0.26
-    "hand":      dict(kind="box", w=0.04, d=0.09, h=0.12),   # palm faces the thigh
-    "thigh":     dict(kind="cyl", r=0.062, h=0.42),   # declared 0.42
-    "shank":     dict(kind="cyl", r=0.050, h=0.42),   # declared 0.42
-    "foot":      dict(kind="box", w=0.10, d=0.26, h=0.07),
+    "spine_lumbar":   dict(kind="box", w=0.32, d=0.20, h=0.11),
+    "spine_thoracic": dict(kind="box", w=0.32, d=0.20, h=0.11),
+    "torso":          dict(kind="box", w=0.32, d=0.20, h=0.21),
+    "head":      dict(kind="box", w=0.15, d=0.18, h=0.21),
+    "upper_arm": dict(kind="cyl", r=0.045, h=0.30),   # declared 0.30
+    "forearm":   dict(kind="cyl", r=0.038, h=0.25),   # declared 0.25
+    "hand":      dict(kind="box", w=0.04, d=0.085, h=0.11),   # palm faces the thigh
+    "thigh":     dict(kind="cyl", r=0.058, h=0.40),   # declared 0.40
+    "shank":     dict(kind="cyl", r=0.047, h=0.40),   # declared 0.40
+    "foot":      dict(kind="box", w=0.095, d=0.25, h=0.066),
 }
 UPWARD = {"spine_lumbar", "spine_thoracic", "torso", "head"}
 TRUNK = ("spine_lumbar", "spine_thoracic", "torso")
 TRUNK_HEIGHT = sum(SEG[k]["h"] for k in TRUNK)
-SHOULDER_WIDTH = 0.40       # declared
+SHOULDER_WIDTH = 0.38       # declared
 HIP_WIDTH = 0.18
-DECLARED_REACH = 0.70       # declared: shoulder to fingertip
-DECLARED_HEIGHT = 1.75
+DECLARED_REACH = 0.66       # declared: shoulder to fingertip, 1.65 m body
+DECLARED_HEIGHT = 1.65
 
 # Winter's anthropometric segment mass fractions. Sum to 1.0 over the body.
 MASS_FRAC = {
@@ -485,8 +485,8 @@ def audit(robot, total_mass):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1],
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--mass", type=float, default=130.0,
-                    help="total body mass in kg (default: the 4-hour point)")
+    ap.add_argument("--mass", type=float, default=96.2,
+                    help="total body mass in kg (default: the D-8 reference point)")
     ap.add_argument("--out", default=None, help="output path")
     ap.add_argument("--check", action="store_true",
                     help="audit against the declaration, write nothing")

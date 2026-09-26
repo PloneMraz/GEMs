@@ -236,13 +236,13 @@ def assess():
 
 
 def declaration():
-    b = budget.budget(0.30, 80.0, 20.0, 4.0, 450.0, 0.65, 7.5, 20.0)
+    b = budget.budget(0.30, 80.0, 20.0, 2.0, 450.0, 0.65, 7.5, 20.0)
     total_nm = budget.joint_torque_total(b["body_mass_kg"])
     log_bps = budget.log_bytes_per_s()
     return [
         ("Simulated or physical", "**simulated** — no physical body exists"),
         ("Mass", "%.0f kg (derived, not weighed)" % b["body_mass_kg"]),
-        ("Free-running endurance", "4 h at the declared operating point"),
+        ("Free-running endurance", "2 h at the declared operating point, with a dock"),
         ("Endurance ceiling", "%.1f h" % b["endurance_ceiling_h"]),
         ("Sleep states supported", "none implemented"),
         ("Protection level and coverage", "NIJ IIIA + stab, 65% coverage — selected, not built"),
@@ -251,7 +251,7 @@ def declaration():
         ("Peak power at the source", "%.1f kW at 5C" % b["source_peak_kW"]),
         ("Link bandwidth and latency", "8 Gbps, ~1 ms PHY — specified, no radio"),
         ("Sensor configuration", "41 logged joints; no sensor exists"),
-        ("Aggregate raw rate", "15.8 Gbps at the conservative configuration"),
+        ("Aggregate raw rate", "15.1 Gbps at the conservative configuration"),
         ("Compression ratio achieved", "none — not implemented"),
         ("Compute split", "specified; nothing running"),
         ("Log rates, full tier", "%.1f Mbps, %.2f GB/h"

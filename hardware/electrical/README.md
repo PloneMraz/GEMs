@@ -371,7 +371,8 @@ author; copyrighted, so cited and not vendored — [23][24][25]):
 | Torque coefficient at the output, AKH70-48 | 8.8123 Nm/A; ranges ±5 rad/s, ±280 Nm | [23] §4.2 |
 | Drive board for both, AK70-4820-2D-A3 | 48 V rated, 18–52 V; **20 A rms rated, 60 A peak**; CAN 1 Mbps; −20…65 °C ambient, 100 °C board limit; 21-bit inner and 15-bit outer encoder; ≤1 W standby | [24] §1.1 |
 | Envelope | Ø90 × 60.5 mm, Ø42 output boss, Ø7 through bore; housing mount 12 × M3 on Ø81; output face 6 × M4, 8 × M2.5, 4 × Ø3 dowels | [25] |
-| Peak torque duration, thermal time constant | **not stated in any of the three documents** | — |
+| AKH70-48 specification table, as far as the page shows it | 48:1, 21 pole pairs; **74 Nm rated at 28 rpm and 6 A DC** (≈ 217 W mechanical); back-drive torque 2.22 Nm; backlash 12 arcmin; NTC temperature sensor (MF51B103F3950); bearing ratings C 5680 N, C₀ 8680 N; 65 dB at 65 cm; 1396 g. The peak-torque, inertia, motor-constant and time-constant cells were blank in the copy read | [26], screenshot supplied by the author |
+| Peak torque duration, thermal time constant | **not stated in any of the three documents, nor on the page.** A search engine's generated answer offering "under 0.5 s", "0.5–2 s" and "over 2 s" phases was seen and is not evidence: no CubeMars document read here gives those figures | — |
 
 So 78 Nm at 2.83 Nm/A is 27.5 A, inside the board's 60 A peak, and the
 manual's ±110 Nm command range is the drive's limit, not the motor's rating.

@@ -86,6 +86,24 @@ LIM = {
 }
 EFFORT, VELOCITY = 200.0, 8.0
 
+# Display colours, RGB. Left limbs warm, right limbs cool, so the sides can be
+# told apart at a glance; along each limb the shade alternates so adjacent
+# segments never share a colour. Axial segments are neutral.
+AXIAL_RGB = {"pelvis": (0.25, 0.25, 0.28), "torso": (0.40, 0.44, 0.52),
+             "head": (0.80, 0.80, 0.82)}
+LIMB_SHADE = {"upper_arm": 0, "forearm": 1, "hand": 2,
+              "thigh": 0, "shank": 1, "foot": 2}
+SIDE_RGB = {
+    "l": ((0.90, 0.55, 0.20), (0.96, 0.80, 0.50), (0.65, 0.33, 0.10)),
+    "r": ((0.20, 0.58, 0.75), (0.58, 0.82, 0.92), (0.10, 0.38, 0.55)),
+}
+
+
+def colour(link_name, seg_name):
+    if seg_name in AXIAL_RGB:
+        return AXIAL_RGB[seg_name]
+    return SIDE_RGB[link_name[0]][LIMB_SHADE[seg_name]]
+
 
 def inertia(seg, m):
     """Solid primitive. Real segments are shells; this overstates nothing
@@ -134,6 +152,9 @@ def add_link(robot, name, seg_name, mass):
             ET.SubElement(geo, "cylinder", radius="%.4f" % s["r"], length="%.4f" % s["h"])
         else:
             ET.SubElement(geo, "box", size="%.4f %.4f %.4f" % (s["d"], s["w"], s["h"]))
+        if tag == "visual":
+            mat = ET.SubElement(el, "material", name=name)
+            ET.SubElement(mat, "color", rgba="%.2f %.2f %.2f 1" % colour(name, seg_name))
     return link
 
 

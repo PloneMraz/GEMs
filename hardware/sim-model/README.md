@@ -91,6 +91,10 @@ own. Joint angles follow the right-hand rule about each axis, so flexion that
 carries a limb forward is negative, and roll and yaw limits are mirrored
 between the left and right sides.
 
+**Colours are for telling parts apart,** not a surface finish: left limbs are
+orange, right limbs blue, alternating light and dark along each limb, with the
+pelvis, torso and head in greys. Shading is the viewer's, not the file's.
+
 **The root is `pelvis`,** floating. Attach it to a world frame in whatever
 simulator you use; the model does not assume one.
 

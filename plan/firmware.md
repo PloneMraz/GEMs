@@ -165,3 +165,11 @@ is replaced by the module's own firmware and shrinks to integration.
 | mmWave radio bring-up and beam tracking interface | L4 | E-8 |
 | Fallback link handover | L4 | E-8 |
 | Local-core behaviour on link loss — maintain, preserve, continue, attempt; never decide (spec 07.5) | L4 | — |
+
+## F-15 — Expressive actuators
+
+| Task | To | Waits for |
+|---|---|---|
+| Facial action-unit control: per-unit position and speed within the ranges of ID-6, and blending of simultaneous units | L4 | ID-6 — **LAB** |
+| Eye and pupil actuation, coordinated with neck gaze | L4 | ID-6 |
+| Expression requests arrive as intent from software, like motion (architecture §4); firmware bounds range and rate, it does not choose | L4 | — |

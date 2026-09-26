@@ -92,7 +92,7 @@ commercial torque-density band.** Nothing lower closes the mass loop.
 | Property | Figure | Source |
 |---|---|---|
 | Commercial QDD module, 8:1 planetary | **52 Nm/kg**, 9 arcmin backlash | CubeMars AKE80-8 [1] |
-| Commercial hollow-shaft planetary | **88.7 Nm/kg** peak, 85 Nm, 879 g — but 85 / 0.879 = 96.7, so the three figures are not one datasheet row; see §6b | CubeMars [1] |
+| Commercial hollow-shaft planetary | **88.7 Nm/kg** peak — 78 Nm peak, 26 Nm rated, 879 g, 16:1; 78 / 0.879 = 88.7. The 85 Nm quoted here until 2026-09-26 was a reseller figure, see §6b | CubeMars AKH70-16 [1][22] |
 | Highest commercial claim, series | up to **36 Nm/kg** | ZHR-H series [3] |
 | Integrated SOTA, whole-actuator | **18–22 Nm/kg** — axial flux, cycloidal QDD, hybrid housing, hollow titanium shaft, phase-change cooling | [3] |
 | Design floor for hip and knee | **> 30 Nm/kg** peak | [3] |
@@ -332,7 +332,7 @@ A lighter body lowers every leg and trunk module's torque and the peak power
 the pack must supply, and raises `f_act` slightly because the fixed part is
 divided by less body. At 30 kg payload the last row would be 0.39, outside the
 band: the payload decision is what lets the body get lighter. No row brings
-the hip under the 85 Nm of the one qualifying module, so D-2 is not settled
+the hip under the 78 Nm of the one qualifying module, so D-2 is not settled
 by mass.
 
 **Where the ceiling is, on three bases.** The density band is at the top of
@@ -342,17 +342,20 @@ the market, and the market is not the ceiling:
 |---|---|---|
 | Physics | Torque is rotor volume × air-gap shear stress, and shear stress in electric machinery runs from a few kPa in small machines to about 100 kPa in very large, well-cooled ones [20]. A joint-sized motor sits at the low end; the reducer multiplies torque at the cost of its own mass | Bound, not a figure |
 | Laboratory | **64.2 Nm/kg** peak — cycloidal quasi-direct drive, 89.9 Nm peak, 37.5 Nm continuous, Zhu et al. 2024 [21]; 1.40 kg by division, the paper's own mass figure not read | Peak over module mass |
-| Market | **85 Nm peak, 26 Nm rated** in the one module found at or above the floor, CubeMars AKH70-16 [1][22]; 879 g and 88.74 Nm/kg are quoted for it by resellers and cannot both be right with 85 Nm | Peak over module mass, as claimed |
+| Market | **78 Nm peak, 26 Nm rated, 879 g** in the one module found at or above the floor, CubeMars AKH70-16 [22]: 78 / 0.879 = 88.7 Nm/kg, the figure the band's top rests on | Peak over module mass, as claimed |
 
 The laboratory record is below the market claim, which is the usual sign that
-the two are not on the same basis, or that the market figure is a different
-mass. **Open for the author to arbitrate from the CubeMars datasheet**, which
-was not readable from the environment this was written in: whether the 879 g
-includes the drive board, and which of 85 Nm, 879 g and 88.74 Nm/kg is the
-rounded one.
+the two are not on the same basis: the laboratory figure is a full module
+with its housing, the market figure a compact planetary module at 16:1 whose
+879 g the datasheet does not break down. **Resolved 2026-09-26 by the author
+from the specification summary of the CubeMars page**: peak torque is
+**78 Nm**, not the 85 Nm the search excerpts and reseller listings carried,
+and 78 / 0.879 = 88.74 Nm/kg exactly. The three figures are consistent, and
+the module is 7 Nm smaller than this document assumed until then — hip yaw,
+at 81 Nm, and shoulder roll, at 84 Nm, moved above it.
 
 **The continuous-torque gap.** Every figure in the sizing table is a peak, and
-the density band is peak over module mass. The rated figures are 26 of 85 Nm
+the density band is peak over module mass. The rated figures are 26 of 78 Nm
 for the market module and 37.5 of 89.9 Nm for the laboratory one — about a
 third. A joint that must hold its peak for longer than the module's thermal
 time constant is sized by the rated figure, at roughly three times the mass.
@@ -395,4 +398,4 @@ against a real gait dataset.
 | 18 | Ali A. R., Abdullah H. S., [Development of a compliant spine mechanism for enhanced humanoid robotics locomotion](https://doi.org/10.1038/s41598-025-32165-w), *Scientific Reports* 15:44646, 2025 — open access, CC BY 4.0; copy in [`sources/`](sources/ali-2025-flexinoid-tensegrity-spine-sci-rep-15-44646.pdf) |
 | 20 | MIT course notes, *Electric Machines: Electromagnetic Forces* — the shear-stress range and torque ∝ rotor volume × shear stress; quoted from search excerpts, the [copy found](https://www.scribd.com/document/62980862/MIT-Electric-Machines) was not readable from this environment |
 | 21 | Zhu A., Tanaka Y., Rafeedi F., Hong D., [Cycloidal Quasi-Direct Drive Actuator Designs with Learning-based Torque Estimation for Legged Robotics](https://arxiv.org/abs/2410.16591), arXiv:2410.16591, 2024 — torque density up to 64.2 Nm/kg, 37.5 Nm continuous, 89.9 Nm peak; figures from the abstract as excerpted by search, the page not readable from this environment |
-| 22 | [CubeMars AKH70-16 V1.0 KV41 hollow-shaft planetary actuator](https://www.cubemars.com/product/akh70-16-v-1-0-kv41-hollow-shaft-planetary-actuator.html) — 26 Nm rated, 85 Nm peak, 16:1; product page not readable from this environment, figures from search excerpts and reseller listings |
+| 22 | [CubeMars AKH70-16 V1.0 KV41 hollow-shaft planetary actuator](https://www.cubemars.com/product/akh70-16-v-1-0-kv41-hollow-shaft-planetary-actuator.html) — Φ90 × 60.5 mm, 879 g, 7 mm bore, 26 Nm rated, **78 Nm peak**, 105 rpm no-load, 16:1, dual 21-bit encoders; from the specification summary of the product page as read by the author on 2026-09-26, the page itself not readable from this environment. Search excerpts and reseller listings quote 85 Nm peak; the 78 Nm figure is the one consistent with 879 g and 88.74 Nm/kg |

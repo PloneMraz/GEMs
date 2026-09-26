@@ -139,9 +139,9 @@ the pages that could be read, and each entry's notes say which.
 ## What building it turned up
 
 **The actuator density has one module behind it, and it is small.** The only
-module found at or above 80 Nm/kg peaks at 85 Nm. 8 of the 18 joint
-types — 13 of the 31 joints — need more, up to 230 Nm at the hip and knee
-(17 of 31 before the arm payload came down on 2026-09-26).
+module found at or above 80 Nm/kg peaks at 78 Nm. 10 of the 18 joint
+types — 17 of the 31 joints — need more, up to 230 Nm at the hip and knee.
+Hip yaw at 81 Nm and shoulder roll at 84 Nm sit just above it.
 
 **The reducer classes and the actuator family disagree.** `hardware/mechanical`
 §2 assigns cycloidal reducers to hips and knees and harmonic drives to wrists

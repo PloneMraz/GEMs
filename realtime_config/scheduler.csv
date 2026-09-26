@@ -1,0 +1,11 @@
+task,platform,sched_policy,priority,runtime_us,deadline_us,period_us,bound_basis,evidence,notes
+current_loop,IMPL,IMPL,,,,,CONSTRUCTION,,Joint drive board microcontroller (spec 07.1); bare metal or RTOS and loop rate wait for the drive electronics (D-2)
+proprio_sampling,IMPL,IMPL,,,,,CONSTRUCTION,,Joint drive board microcontroller; sampled with the current loop
+balance,IMPL,IMPL,,,,,IMPL,,Real-time controller; platform decided by D-3
+reflex,IMPL,IMPL,,,,,IMPL,,Real-time controller; platform decided by D-3
+safe_state,IMPL,IMPL,,,,,IMPL,,Real-time controller; platform decided by D-3
+capture,LINUX,IMPL,,,,,NONE,,Edge AI module; firm real-time needs no proven bound
+fusion,LINUX,IMPL,,,,,NONE,,Edge AI module
+link,LINUX,IMPL,,,,,NONE,,Edge AI module
+log_sync,LINUX,IMPL,,,,,NONE,,Edge AI module
+commissioning,LINUX,IMPL,,,,,NONE,,Edge AI module

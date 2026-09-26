@@ -9,9 +9,12 @@ abstraction and run on the host in software-in-the-loop (V-5). Only drivers,
 board support and timing measurements wait for D-3.
 
 **Scope.** Firmware as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division)
-defines it: code on the embedded devices, including every hard real-time task.
-Capture drivers on the application processor are software and are listed in
-[`software.md`](software.md#s-9--capture-on-the-application-processor).
+defines it — code running directly on a microcontroller — together with the
+real-time controller's modules (F-4 to F-10), which are firmware if decision D-3
+selects a microcontroller and software under a real-time Linux kernel if it does
+not. They are planned here either way, because their deadlines, not their layer,
+decide how they are built. Capture drivers on the edge module are software and
+are listed in [`software.md`](software.md#s-9--capture-on-the-application-processor).
 
 **One rule carried from the architecture.** Every module that carries a deadline
 reports its misses. Each task below that implements a timed loop includes the
@@ -81,7 +84,7 @@ is replaced by the module's own firmware and shrinks to integration.
 |---|---|---|
 | Balance at ≥ 500 Hz: centre-of-mass and ZMP regulation, whole-body torque distribution within joint limits | L4 | — |
 | Step recovery | L4 | — |
-| Motion intent interface from software — intent, not commands (architecture §4) | L4 | — |
+| Motion intent interface from the edge software — intent, not commands (architecture §4) | L4 | — |
 | Priority over the reflex path where they contend (architecture §3) | L4 | — |
 | Verified in simulation — standing, pushed, stepping (V-3) | L5 | V-1 |
 | **Closes C-13** in simulated form when run on the emulated target (V-6) | L5 | V-6 |
@@ -101,7 +104,7 @@ is replaced by the module's own firmware and shrinks to integration.
 
 | Task | To | Waits for |
 |---|---|---|
-| Port the efference-copy gate of [`firmware/reference/agency.py`](../firmware/reference/agency.py) to firmware, where commanded and measured values meet | L4 | — |
+| Port the efference-copy gate of [`reference/agency.py`](../reference/agency.py) to firmware, where commanded and measured values meet | L4 | — |
 | Cross-check the port against the Python reference on the same recorded data | L5 | — |
 
 ## F-8 — Safe-state supervisor
@@ -129,7 +132,7 @@ is replaced by the module's own firmware and shrinks to integration.
 
 | Task | To | Waits for |
 |---|---|---|
-| Port the record format and hash chain of [`software/audit_log.py`](../software/audit_log.py) to firmware at loop rate | L4 | — |
+| Port the record format and hash chain of [`reference/audit_log.py`](../reference/audit_log.py) to firmware at loop rate | L4 | — |
 | Batch signing through the secure element; batch period from measured signing throughput | L4 | D-7 |
 | Storage layout on the log device, and behaviour when it fills — never trimmed during a link outage (architecture §5) | L4 | E-5 |
 | Byte-for-byte verification against the Python verifier | L5 | — |
@@ -172,4 +175,4 @@ is replaced by the module's own firmware and shrinks to integration.
 |---|---|---|
 | Facial action-unit control: per-unit position and speed within the ranges of ID-6, and blending of simultaneous units | L4 | ID-6 — **LAB** |
 | Eye and pupil actuation, coordinated with neck gaze | L4 | ID-6 |
-| Expression requests arrive as intent from software, like motion (architecture §4); firmware bounds range and rate, it does not choose | L4 | — |
+| Expression requests arrive as intent from the edge software, like motion (architecture §4); the real-time code bounds range and rate, it does not choose | L4 | — |

@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-09-26T11:20:26Z",
+    "timestamp": "2026-09-26T11:36:08Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -29,8 +29,8 @@
   "components": [
     {
       "type": "library",
-      "bom-ref": "software/audit_log.py",
-      "name": "software/audit_log.py",
+      "bom-ref": "reference/audit_log.py",
+      "name": "reference/audit_log.py",
       "version": "sha256:4fa7c5c88b6c",
       "description": "Audit log: format, hash chain, Merkle batches, verifier",
       "supplier": {
@@ -59,9 +59,9 @@
     },
     {
       "type": "library",
-      "bom-ref": "firmware/reference/agency.py",
-      "name": "firmware/reference/agency.py",
-      "version": "sha256:cb56af12002e",
+      "bom-ref": "reference/agency.py",
+      "name": "reference/agency.py",
+      "version": "sha256:26ff517d699a",
       "description": "Agency tagging by efference copy; golden model for the firmware port",
       "supplier": {
         "name": "Plone Mraz"
@@ -76,7 +76,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "cb56af12002edf9a538c1a261d8ddb2bdf0c9d5603ae7c7ed69ae570e3a1f8cd"
+          "content": "26ff517d699ac26d8ebc60ecc3bacd24f0effd73571043b8e26bf060683a0a79"
         }
       ],
       "scope": "optional",
@@ -151,7 +151,7 @@
       "type": "application",
       "bom-ref": "protocol/assess.py",
       "name": "protocol/assess.py",
-      "version": "sha256:5921128f2cff",
+      "version": "sha256:6552be69f065",
       "description": "Conformance assessment of the simulated body",
       "supplier": {
         "name": "Plone Mraz"
@@ -166,7 +166,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "5921128f2cffed0536f7501329b0dae9a5ed7e0afe1430a5eb062f3039d61465"
+          "content": "6552be69f06521e90318d0f698398c4a9ed4773e959910727595ad3094d59403"
         }
       ],
       "scope": "excluded",
@@ -211,7 +211,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:dd0e1f23e6a0",
+      "version": "sha256:75c572f440cd",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -226,7 +226,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "dd0e1f23e6a0a2224e2384c70564feb500a57f849d98b321a23b2de44b11b98c"
+          "content": "75c572f440cdb4bc546a060bc9c3d2cc5004ca30fa97eebbce8bf9a7be332883"
         }
       ],
       "scope": "excluded",
@@ -239,9 +239,9 @@
     },
     {
       "type": "application",
-      "bom-ref": "realtime/check_timing.py",
-      "name": "realtime/check_timing.py",
-      "version": "sha256:eb4bdd8c4b5b",
+      "bom-ref": "realtime_config/check_timing.py",
+      "name": "realtime_config/check_timing.py",
+      "version": "sha256:9755df19b820",
       "description": "Timing table check against the specification and the firmware architecture",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "eb4bdd8c4b5b13d1dbc512cca5910374adb897e75f1b2da7607bfc5d6e449818"
+          "content": "9755df19b8205537bf5dfbe815dfd8ea7059fd6807a282627180d1f2778e57ec"
         }
       ],
       "scope": "excluded",
@@ -286,26 +286,26 @@
     {
       "ref": "gems",
       "dependsOn": [
-        "software/audit_log.py",
-        "firmware/reference/agency.py",
+        "reference/audit_log.py",
+        "reference/agency.py",
         "hardware/electrical/actuator_sizing.py",
         "scripts/gems_budget.py",
         "protocol/assess.py",
         "hardware/sim-model/generate_urdf.py",
         "hardware/bom/build_bom.py",
-        "realtime/check_timing.py"
+        "realtime_config/check_timing.py"
       ]
     },
     {
-      "ref": "software/audit_log.py",
+      "ref": "reference/audit_log.py",
       "dependsOn": [
         "cpython"
       ]
     },
     {
-      "ref": "firmware/reference/agency.py",
+      "ref": "reference/agency.py",
       "dependsOn": [
-        "software/audit_log.py",
+        "reference/audit_log.py",
         "cpython"
       ]
     },
@@ -325,8 +325,8 @@
     {
       "ref": "protocol/assess.py",
       "dependsOn": [
-        "software/audit_log.py",
-        "firmware/reference/agency.py",
+        "reference/audit_log.py",
+        "reference/agency.py",
         "scripts/gems_budget.py",
         "cpython"
       ]
@@ -345,7 +345,7 @@
       ]
     },
     {
-      "ref": "realtime/check_timing.py",
+      "ref": "realtime_config/check_timing.py",
       "dependsOn": [
         "cpython"
       ]

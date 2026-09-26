@@ -15,15 +15,21 @@ independent. Terms follow standard usage; see the [glossary](glossary.md).
 **Where it runs — firmware or software.** Firmware is software resident in the
 non-volatile memory of an embedded device and executed by it: in the wording of
 ISO/IEC 12207, the combination of a hardware device and the instructions and data
-that reside on it as read-only software. Here that means the microcontrollers
-and real-time processors, bare metal or under an RTOS. Software is everything
-executed on the application processors under a general-purpose operating
-system — including the device drivers that run there.
+that reside on it as read-only software. Here that means code running directly
+on a microcontroller, bare metal or under an RTOS. Software is code running under
+an operating system on an embedded computer — Linux, with or without a real-time
+kernel — including the device drivers that run there.
 
 | Layer | Runs on | Contents |
 |---|---|---|
-| **Firmware** | Joint drive boards, the real-time controller, the battery management board, the secure element, the beacon radio | Current and position loops, state estimation, balance loop, reflex path including agency tagging, safety supervisor, power-state machine, battery management, secure boot and attestation, full-tier log writing at loop rate, low-power beacon |
-| **Software** | The edge AI module, under a general-purpose OS | Camera, LiDAR, audio and SDR drivers and capture, feature extraction and compression, sensor fusion, predictive modelling, log assembly and synchronisation, link management |
+| **Firmware** | Joint drive boards, the battery management board, the secure element, the beacon radio | Current and position loops, battery management, secure boot and attestation, low-power beacon |
+| **Software** | The edge AI module, under Linux | Camera, LiDAR, audio and SDR drivers and capture, feature extraction and compression, sensor fusion, predictive modelling, log assembly and synchronisation, link management |
+| **Either, by decision D-3** | The real-time controller: a microcontroller under an RTOS, or an embedded computer under Linux with a real-time kernel | State estimation, balance loop, reflex path including agency tagging, safety supervisor, power-state machine, full-tier log writing at loop rate |
+
+The real-time controller's code is firmware or software according to which
+processor D-3 selects ([plan](../plan/README.md#3-decisions-that-block-everything-else)).
+Its deadlines do not change with the choice; only the evidence that they are met
+does.
 
 **How late it may be — the real-time class.** A task's class is set by the
 consequence of missing its deadline, as the real-time systems literature defines
@@ -36,11 +42,18 @@ it:
 | **Soft real-time** | has reduced value | Sensor fusion, link management |
 | **Non-real-time** | is merely late | Log synchronisation after an outage, commissioning tools |
 
-**The rule that joins them: every hard real-time task is firmware.** It must run
-where its worst-case timing can be bounded, and a general-purpose operating
-system does not bound it. The converse does not hold — firmware may do work
-that is not hard real-time, and software may carry firm and soft real-time
-tasks.
+**The rule that joins them: every hard real-time task runs on a platform whose
+worst-case latency is bounded.** The two axes stay independent — the rule
+constrains the platform, not the layer — and the bound is established one of two
+ways, recorded per task in [`realtime_config/`](../realtime_config/):
+
+| Platform | How the bound is established |
+|---|---|
+| Microcontroller, bare metal or RTOS | **By construction**: fixed-priority or interrupt scheduling with a schedulability analysis of every task set |
+| Linux with a real-time kernel (PREEMPT_RT), tasks under `SCHED_FIFO` or `SCHED_DEADLINE` on isolated cores | **By configuration and measurement**: latency measured under worst-case load and recorded as evidence. `SCHED_DEADLINE` guarantees deadlines only while total utilisation stays within the cores available, so the evidence must include the utilisation budget |
+
+A Linux task without a real-time kernel and a real-time scheduling policy has no
+bounded worst case, and cannot carry a hard real-time task.
 
 ## 7.2 Real-time requirements
 
@@ -52,8 +65,9 @@ tasks.
 | Reflex, end to end | **≤ 10 ms** | hard | The reaction is not a reaction |
 
 Every task's layer, rate, deadline, stage budget and deadline class is held in
-one table, [`realtime/tasks.csv`](../realtime/tasks.csv), checked against this
-section by `python realtime/check_timing.py`.
+[`realtime_config/tasks.csv`](../realtime_config/tasks.csv), and its platform and
+scheduling policy in [`realtime_config/scheduler.csv`](../realtime_config/scheduler.csv);
+`python realtime_config/check_timing.py` checks both against this section.
 
 **Multi-stream timestamping.** Every sensor channel MUST carry timestamps on a
 common time base, established at the transport layer rather than inferred later.
@@ -68,7 +82,10 @@ path.
 > necessity**, as [05.6](05-sensing.md#56-the-on-body--off-body-compute-split)
 > establishes. They are not a partitioning preference.
 
-## 7.3 What firmware must guarantee
+## 7.3 What the real-time code must guarantee
+
+These bind the firmware and the real-time controller together — whichever layer
+decision D-3 places the controller in.
 
 | # | Guarantee | Note |
 |---|---|---|

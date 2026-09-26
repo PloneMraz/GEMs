@@ -6,14 +6,10 @@
 The centrepiece is `TestProtocolProcedure71`, which runs the procedure
 protocol/conformance.md §7.1 specifies, including its pipeline-position check.
 
-    python -m unittest discover -s firmware/reference -t firmware/reference -v
+    python -m unittest discover -s reference -v
 """
 
-import sys
 import unittest
-from pathlib import Path
-
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "software"))
 
 from audit_log import Agency, AuditLog, Record, Tier
 from agency import (AgencyGate, Command, ForwardModel, Sample, Tolerance,

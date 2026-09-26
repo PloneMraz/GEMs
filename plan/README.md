@@ -58,7 +58,7 @@ that they cannot be mistaken for purchasable items.
 | Envelopes, mass–energy loop | L0–L1 | `spec/`, `scripts/gems_budget.py --check` |
 | Kinematics, 30 core DOF | L1 | `hardware/kinematics.md` |
 | Actuators, cells, compute, bus, materials | **L2** | `hardware/electrical/`, `hardware/mechanical/` |
-| Audit log, agency tagging | **L4** in reference form | `software/`, `firmware/reference/`, 30 tests |
+| Audit log, agency tagging | **L4** in reference form | `reference/`, 30 tests |
 | Firmware | L1 | `firmware/ARCHITECTURE.md` |
 | Kinematic simulation model | L4 for kinematics only | `hardware/sim-model/` — inertias estimated |
 | Everything else | L0 | — |
@@ -78,7 +78,7 @@ it can move past L2. None can be settled by arithmetic alone.
 |---|---|---|---|
 | **D-1** | **Knee torque requirement.** The sizing script assumes knee = hip pitch, flagged there as an assumption, not a source | Actuator sizing, `f_act`, the mass loop | open — check against published gait data |
 | **D-2** | **Actuators: procure modules or design them.** An 88.7 Nm/kg module exists commercially, but it peaks at 85 Nm and 16 of the 30 joints need more ([`hardware/bom/`](../hardware/bom/README.md#what-building-it-turned-up)). This decision also settles the conflict between the per-class reducers of `hardware/mechanical` and the single module family of `hardware/electrical`. Designing our own motor, reducer and drive puts every capacitor of the drive inside this repository | M-3, E-3, F-3 — the largest single block of work | open |
-| **D-3** | **Real-time processor and RTOS.** The Jetson carries perception and compression; it is not a hard real-time target for the 500 Hz balance loop and the 10 ms reflex path | All firmware, E-5 | open |
+| **D-3** | **Real-time controller: a microcontroller under an RTOS, or an embedded computer under Linux with a real-time kernel.** The Jetson carries perception and compression; it is not the target for the 500 Hz balance loop and the 10 ms reflex path. The choice decides whether that code is firmware or software (spec 07.1), and how its latency bound is established — by construction or by measurement | All firmware, E-5 | open |
 | **D-4** | **High-voltage bus voltage** | Every power stage, cell count in series, harness gauge | open |
 | **D-5** | **Cell and pack format** at the durable tier (400–500 Wh/kg) | Pack mechanics, BMS, thermal | open — candidates sourced in `hardware/electrical/` |
 | **D-6** | **Reference hand configuration.** The declaration leaves 2×5 to 2×21 DOF open (`⟦CTRL⟧`); a complete design needs one point to draw | M-4, E-3 count, F-3 count | open — anchor figure is 40 joints, i.e. 2×5 |

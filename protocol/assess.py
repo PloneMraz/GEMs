@@ -27,7 +27,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-for sub in ("software", "firmware/reference", "scripts", "hardware/electrical"):
+for sub in ("reference", "scripts", "hardware/electrical"):
     p = str(ROOT / sub)
     if p not in sys.path:
         sys.path.insert(0, p)

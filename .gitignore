@@ -1,2 +1,5 @@
 # Local reference material and working drafts — not part of the published source.
 ref/
+
+# Python bytecode.
+__pycache__/

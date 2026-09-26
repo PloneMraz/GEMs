@@ -207,6 +207,54 @@ be misread.
 holds them together — including the actuator-mass column, which it did not
 cover before and which is exactly where this drift hid.
 
+## 6a. Trunk lateral-bend torque — research, 2026-09-26
+
+Decision D-9 added a lateral-bend axis to the trunk
+([kinematics §1.4](../kinematics.md#14-the-trunk-is-a-spine-not-a-waist)). It
+has no torque figure yet. Two things were found, and one was not.
+
+**What the trunk figures already in the table rest on.** Nothing. The waist
+rows — trunk pitch 1.54 Nm/kg (200 Nm at 130 kg) and trunk yaw 0.77 Nm/kg — have
+no source in §7; they were assumed when the table was written. A lateral-bend
+figure derived as a ratio of trunk pitch is therefore a ratio of an assumption,
+and this note says so rather than hiding it behind a citation.
+
+**The ratio of lateral bend to pitch, from three independent places:**
+
+| Source | Roll : pitch | Note |
+|---|---|---|
+| Human isometric trunk strength, asymptomatic adult cohort, 2025 [14] | **0.54–0.60** | Males, medians: extension 118.1 Nm, flexion 87.3 Nm, lateral bending 71.3 / 63.2 Nm (left / right), rotation lowest. Read from the article's search summary; full text unreachable from the environment this was written in — **body mass of the cohort not obtained**, so no Nm/kg |
+| 3-DOF coupled tendon-driven humanoid waist, *Advanced Robotics* 2023 [15] | **0.50** | Designed pitch : roll : yaw = 4 : 2 : 1, realised as 87.0 / 53.0 / 22.2 Nm static. Robot mass not obtained |
+| Unitree G1 URDF, 29-DOF [16] | 1.0 | waist_roll = waist_pitch = 35 Nm, waist_yaw 88 Nm, robot 35.1 kg. An outlier: G1's pitch and roll travel only ±30°, and both are sized far below its yaw. Not a reference for a spine that bends 90° laterally |
+
+Human strength and a waist engineered to match human balance agree at
+**about 0.5–0.6**. The G1 ratio is set by its small-travel design, not by need.
+
+**Candidate: trunk roll = 0.6 × trunk pitch = 0.92 Nm/kg — 120 Nm at 130 kg.**
+Not yet adopted; the sizing table still carries 30 joints. What adopting it does
+to the actuator mass fraction, at the 130 kg point:
+
+| Trunk roll | Σ torque | `f_act` at 75 Nm/kg | at 80 | at 88.7 | Density for `f_act` ≤ 0.35 |
+|---|---|---|---|---|---|
+| 100 Nm (0.5 ×) | 3514 Nm | 0.360 | 0.338 | 0.305 | ≥ 77.2 Nm/kg |
+| **120 Nm (0.6 ×)** | **3534 Nm** | **0.362** | **0.340** | **0.306** | **≥ 77.7 Nm/kg** |
+| 200 Nm (1.0 ×) | 3614 Nm | 0.371 | 0.348 | 0.313 | ≥ 79.4 Nm/kg |
+
+At any of these the floor of the declared density band, 75 Nm/kg (spec 02.6),
+no longer holds `f_act` inside 0.25–0.35; the floor moves to about 78. That is
+a specification change and waits for the author.
+
+**What was not found:** a dynamic lateral trunk moment during the motions the
+axis is for — twisting to protect the body in a fall, righting from the ground.
+Isometric strength is a floor on capability, not a peak dynamic demand.
+Asymmetric-lifting biomechanics report lateral bending moments at L5/S1 rising
+with task asymmetry [17], but no peak figure was obtained.
+
+**To verify from the full texts** (reachable outside this environment): the
+cohort's mean body mass in [14], to state lateral bending in Nm/kg directly; the
+robot mass in [15]; and, if [17] or its neighbours give one, a peak lateral
+moment in Nm/kg for a dynamic task.
+
 ## 7. References
 
 | # | Source |
@@ -234,3 +282,7 @@ against a real gait dataset.
 |---|---|
 | 12 | [Human-Level Actuation for Humanoids](https://arxiv.org/html/2511.06796) |
 | 13 | [Selection guide for humanoid robot knee and hip joint motors](https://www.cubemars.com/how-to-choose-hip-and-knee-joint-motors-for-humanoid-robots.html) |
+| 14 | [Sex-specific characteristics of the trunk muscle behaviors in an asymptomatic adult cohort](https://pmc.ncbi.nlm.nih.gov/articles/PMC12150468/), PubMed 40490841, 2025 |
+| 15 | [A 3-DOF coupled tendon-driven humanoid waist](https://www.tandfonline.com/doi/abs/10.1080/01691864.2023.2289134), *Advanced Robotics* 37(23), 2023 |
+| 16 | [Unitree G1 description, `g1_29dof.urdf`](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/g1_description) — joint `<limit effort>` values read on 2026-09-26 |
+| 17 | [The effects of lifting speed on the peak external forward bending, lateral bending, and twisting spine moments](https://www.tandfonline.com/doi/abs/10.1080/001401399185838), *Ergonomics* 42(1) |

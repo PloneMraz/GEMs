@@ -63,9 +63,9 @@ that they cannot be mistaken for purchasable items.
 | Kinematic simulation model | L4 for kinematics only | `hardware/sim-model/` — inertias estimated |
 | Everything else | L0 | — |
 
-No item is at L3. The bill of materials exists — [`hardware/bom/`](../hardware/bom/),
-one row per item the specification names — but no row carries a verified price
-yet.
+No item is at L3. The engineering BOM exists — [`hardware/bom/`](../hardware/bom/),
+230 part numbers in a multi-level structure — with one selected manufacturer
+part and no verified price yet.
 
 ---
 
@@ -160,7 +160,7 @@ See [`software.md`](software.md). Needs no hardware decision and can proceed now
 
 | ID | Task | To | Waits for |
 |---|---|---|---|
-| B-1 | BOM format: part, manufacturer, part number, quantity, source link, unit price, currency, date priced, maturity — ✅ [`hardware/bom/`](../hardware/bom/) | — | — |
+| B-1 | BOM format: part, manufacturer, part number, quantity, source link, unit price, currency, date priced, maturity — ✅ [`hardware/bom/`](../hardware/bom/): multi-level EBOM, item master, AVL | — | — |
 | B-2 | Price what is already selected at L2 — actuator modules, cells, compute, EtherCAT and CAN FD parts, materials | L3 | B-1 |
 | B-3 | Extend the BOM as each work package reaches L3 | L3 | each package |
 | B-4 | Cost roll-up by subsystem, with "quote only" and **LAB** rows counted separately rather than guessed | L3 | B-3 |

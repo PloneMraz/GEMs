@@ -90,10 +90,10 @@ is replaced by the module's own firmware and shrinks to integration.
 
 | Task | To | Waits for |
 |---|---|---|
-| Stage pipeline with the budget of architecture §2 — acquisition 1.0, classification 0.5, integration 2.0, appraisal 1.0, command 4.0, log 0.05 ms | L4 | — |
+| Stage pipeline with the budget of architecture §2 — acquisition 1.0, agency tagging 0.5, state assembly 2.0, reflex decision 1.0, command 4.0, log 0.05 ms | L4 | — |
 | Per-stage timing instrumentation, so the split can be measured and moved | L4 | — |
 | Loadable reflex set: format, signing, loading at runtime | L4 | D-7 |
-| Pre-closed appraisal table lookup | L4 | — |
+| Reflex decision: lookup against the loaded reflex set | L4 | — |
 | Anchored context written for every reflex (spec 07.4 guarantee 3) | L4 | F-10 |
 | **Closes C-14** in simulated form when measured end to end on V-6 | L5 | V-6 |
 
@@ -101,7 +101,7 @@ is replaced by the module's own firmware and shrinks to integration.
 
 | Task | To | Waits for |
 |---|---|---|
-| Port the efference-copy gate of [`software/agency.py`](../software/agency.py) to firmware, where commanded and measured values meet | L4 | — |
+| Port the efference-copy gate of [`firmware/reference/agency.py`](../firmware/reference/agency.py) to firmware, where commanded and measured values meet | L4 | — |
 | Cross-check the port against the Python reference on the same recorded data | L5 | — |
 
 ## F-8 — Safe-state supervisor
@@ -119,7 +119,7 @@ is replaced by the module's own firmware and shrinks to integration.
 | Task | To | Waits for |
 |---|---|---|
 | The four state levels of spec 03.4, and every transition with its wake latency | L4 | — |
-| Tiered sleep with the vigilance circuit on the always-on rail | L4 | E-4 |
+| Tiered sleep with the always-on wake-up circuit on the always-on rail | L4 | E-4 |
 | Battery management: cell monitoring, balancing, state of charge and health, protection | L4 | D-5 |
 | Pre-charge and contactor sequencing | L4 | E-2 |
 | Dock detection and charge control | L4 | E-2 |
@@ -143,11 +143,11 @@ is replaced by the module's own firmware and shrinks to integration.
 | Tier 3: active challenge — commanded motion checked against encoder, IMU and vision agreement | L4 | F-3, F-4 |
 | **Closes C-11** in simulated form for tiers 2 and 3 | L5 | V-5 |
 
-## F-12 — Trace emitter
+## F-12 — Low-power beacon
 
 | Task | To | Waits for |
 |---|---|---|
-| Signed summary format at floor power | L4 | — |
+| Signed summary format at quiescent power | L4 | — |
 | Duty cycle against the floor-power budget of spec 03.6 | L4 | D-7 |
 | Radio driver | L4 | E-8 |
 

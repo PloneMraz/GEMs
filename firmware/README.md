@@ -2,7 +2,7 @@
 
 Code resident on the body's embedded devices — joint drive boards, the
 real-time controller, the battery management board, the secure element, the
-trace radio — as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division)
+beacon radio — as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division)
 defines firmware. Every **hard real-time** task on the body is here, because
 only here can its worst-case timing be bounded.
 
@@ -10,6 +10,7 @@ only here can its worst-case timing be bounded.
 |---|---|---|
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Modules and the deadline each carries, the reflex budget split across stages, and the firmware/software interface | ✅ |
 | Source | — | 🔜 *waiting a target* |
+| [`reference/`](reference/) | Golden models in Python that firmware ports are checked against — [`agency.py`](reference/agency.py), agency tagging by efference copy (plan F-7) | ✅ with tests |
 
 ## Why there is no source yet
 
@@ -37,7 +38,7 @@ divided, and what crosses the line into software. That is
 | Bus topology | Timestamp skew budget, loop rates |
 | Actuator driver interface | Current loop, joint telemetry format |
 | Secure element part | Attestation agent, signing throughput |
-| Low-power radio part | Trace emitter duty cycle |
+| Low-power radio part | Beacon duty cycle |
 
 Each of these is an `⟦IMPL⟧` in [spec
 09](../spec/09-open-constants.md) — open because it depends on choices not yet

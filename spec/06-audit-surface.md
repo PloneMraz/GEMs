@@ -10,7 +10,7 @@ declares **outside its own scope and belonging to the platform**.
 | Source | Demand | Why it binds |
 |---|---|---|
 | **Readable emission** | Every emission must leave a trace a third party can read | Without it, success measured from outside cannot be measured at all |
-| **Low-power trace** | That trace must remain emittable at floor power | A closure condition, not a convenience |
+| **Low-power trace** (RSIL C5) | That trace must remain emittable at quiescent power | A closure condition, not a convenience |
 | **Body integrity** | Sensor and actuator integrity must be verifiable | A recovery snapshot covers the system, not the body. A body compromised at sensor or actuator level re-infects a freshly clean system on the first cycle |
 | **Contact amplitude** | Physical amplitude at human contact must be recorded | The cheapest way to provoke a strong response from a person can be to touch them |
 
@@ -53,9 +53,9 @@ sensor–actuator chain is consistent with itself as commissioned."* That is the
 examination the contract asks for. It is not, and must not be presented as, a
 guarantee against an adversary with physical access — see 6.6.
 
-## 6.4 Emission log
+## 6.4 Audit log
 
-Two tiers, matching the two-seat architecture of [01](01-architecture.md):
+Two tiers, matching the on-board / off-board split of [01](01-architecture.md). The anchored tier carries what RSIL calls the anchored context of each emission (spec 08.2):
 
 | Tier | Content | Location | Rate |
 |---|---|---|---|
@@ -77,9 +77,10 @@ Budget:
 > hashing runs at MB/s, with room to spare) and **sign a Merkle root per batch**.
 > The batch period is `⟦IMPL⟧`; it trades trace granularity against signing load.
 
-## 6.5 Low-power trace
+## 6.5 Low-power beacon
 
-The trace path must survive sleep levels 2 and 4
+The beacon is how this body meets RSIL C5, the observable low-power trace
+(spec 08.1). It must survive sleep levels 2 and 4
 ([03.4](03-energy.md#34-four-state-levels)). Mechanism: a low-duty-cycle radio
 periodically emitting a signed summary — alive, state, Merkle root of the log.
 
@@ -87,10 +88,10 @@ Anchored on a common BLE SoC: **4.6 mA at 0 dBm** while transmitting for a few
 milliseconds, **~1.5 µA** between. At a 1-second advertising interval the
 average lands in the **tens of µA** — **under one milliwatt**. *Sourced.*
 
-> **This is effectively free in power terms.** Against the vigilance floor of
-> [03.6](03-energy.md#36-floor-power-and-the-sleep-ceiling) and against hundreds
+> **This is effectively free in power terms.** Against the quiescent power of
+> [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) and against hundreds
 > to thousands of watts in motion, sub-milliwatt is rounding noise. **The
-> low-power trace is not an energy problem; it is a specification omission**, and
+> low-power beacon is not an energy problem; it is a specification omission**, and
 > this chapter closes it without touching the mass budget.
 >
 > Note the direction: this is a **transmit** path, distinct from the receive-side

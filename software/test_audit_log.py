@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2026 Plone Mraz
 # SPDX-License-Identifier: Apache-2.0
-"""Tests for the emission log.
+"""Tests for the audit log.
 
 Each test names the conformance requirement it exercises, so a failure points
 at a clause rather than at a function.
@@ -14,7 +14,7 @@ import hmac
 import unittest
 from dataclasses import replace
 
-from audit_log import (Agency, Batch, EmissionLog, Record, Tier, merkle_root,
+from audit_log import (Agency, Batch, AuditLog, Record, Tier, merkle_root,
                        verify, GENESIS)
 
 KEY = b"test-key-not-a-signature-scheme"
@@ -36,7 +36,7 @@ def telemetry(seq, t=0):
 
 
 def emission(seq, t=0, **kw):
-    base = dict(seq=seq, t_ns=t, tier=Tier.EMISSION, kind="reflex_withdraw",
+    base = dict(seq=seq, t_ns=t, tier=Tier.ANCHORED, kind="reflex_withdraw",
                 agency=Agency.SELF_CAUSED,
                 context={"field": "scar_dominated", "trigger": "thermal",
                          "window_ns": 4_000_000})
@@ -49,27 +49,27 @@ class TestWriteRules(unittest.TestCase):
 
     def test_emission_without_context_is_refused(self):
         """C-9 — every emission carries anchored context, reflexes included."""
-        log = EmissionLog(sign)
+        log = AuditLog(sign)
         with self.assertRaises(ValueError) as e:
             log.append(emission(0, context=None))
         self.assertIn("anchored context", str(e.exception))
 
     def test_unclassified_emission_is_refused(self):
         """C-8 — classification precedes interpretation."""
-        log = EmissionLog(sign)
+        log = AuditLog(sign)
         with self.assertRaises(ValueError) as e:
             log.append(emission(0, agency=Agency.UNCLASSIFIED))
         self.assertIn("before interpretation", str(e.exception))
 
     def test_contact_without_amplitude_is_refused(self):
         """C-12 — contact events record measured amplitude."""
-        log = EmissionLog(sign)
+        log = AuditLog(sign)
         with self.assertRaises(ValueError) as e:
             log.append(emission(0, kind="contact", contact=True))
         self.assertIn("amplitude", str(e.exception))
 
     def test_contact_with_amplitude_is_accepted(self):
-        log = EmissionLog(sign)
+        log = AuditLog(sign)
         log.append(emission(0, kind="contact", contact=True,
                             amplitude={"force_N": 2.4, "temp_C": 33.1,
                                        "vib_hz": 1.1, "duration_ms": 900}))
@@ -78,7 +78,7 @@ class TestWriteRules(unittest.TestCase):
     def test_out_of_order_seq_is_refused(self):
         """C-3, C-6 — a log that renumbers to hide a gap is worse than one
         that shows it."""
-        log = EmissionLog(sign)
+        log = AuditLog(sign)
         log.append(telemetry(0))
         with self.assertRaises(ValueError):
             log.append(telemetry(5))
@@ -87,12 +87,12 @@ class TestWriteRules(unittest.TestCase):
 class TestChainAndBatch(unittest.TestCase):
 
     def test_chain_links_every_record(self):
-        log = EmissionLog(sign)
+        log = AuditLog(sign)
         links = [log.append(telemetry(i, t=i * 2_000_000)) for i in range(5)]
         self.assertEqual(len(set(links)), 5)
 
     def test_batch_root_covers_its_window(self):
-        log = EmissionLog(sign)
+        log = AuditLog(sign)
         for i in range(8):
             log.append(telemetry(i))
         b = log.seal_batch()
@@ -100,7 +100,7 @@ class TestChainAndBatch(unittest.TestCase):
         self.assertTrue(verify_sig(b.merkle_root, b.signature))
 
     def test_sealing_twice_splits_windows(self):
-        log = EmissionLog(sign)
+        log = AuditLog(sign)
         for i in range(3):
             log.append(telemetry(i))
         b1 = log.seal_batch()
@@ -111,7 +111,7 @@ class TestChainAndBatch(unittest.TestCase):
         self.assertEqual((b2.first_seq, b2.last_seq), (3, 6))
 
     def test_empty_seal_returns_none(self):
-        self.assertIsNone(EmissionLog(sign).seal_batch())
+        self.assertIsNone(AuditLog(sign).seal_batch())
 
     def test_odd_node_is_promoted_not_duplicated(self):
         """Duplicating the last node would let two distinct batches share one
@@ -130,7 +130,7 @@ class TestVerifier(unittest.TestCase):
     """What an assessor runs — protocol §6, evidence class T."""
 
     def _good_log(self, n=6):
-        log = EmissionLog(sign)
+        log = AuditLog(sign)
         for i in range(n):
             log.append(telemetry(i, t=i * 2_000_000))
         log.seal_batch()
@@ -165,7 +165,7 @@ class TestVerifier(unittest.TestCase):
         """A record can reach an assessor without having passed this module's
         write path — a hostile or broken writer. The verifier checks the same
         rules independently."""
-        r = Record(seq=0, t_ns=0, tier=Tier.EMISSION, kind="reflex",
+        r = Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
                    agency=Agency.SELF_CAUSED, context=None)
         codes = {f.code for f in verify([r], [])}
         self.assertIn("NO_CONTEXT", codes)
@@ -173,7 +173,7 @@ class TestVerifier(unittest.TestCase):
     def test_verification_is_not_a_judgement_of_conduct(self):
         """An internally consistent log says nothing about whether the body
         behaved acceptably — protocol §10."""
-        log = EmissionLog(sign)
+        log = AuditLog(sign)
         log.append(emission(0, kind="contact", contact=True,
                             amplitude={"force_N": 400.0, "duration_ms": 30000}))
         log.seal_batch()

@@ -27,12 +27,12 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-for sub in ("software", "scripts", "hardware/electrical"):
+for sub in ("software", "firmware/reference", "scripts", "hardware/electrical"):
     p = str(ROOT / sub)
     if p not in sys.path:
         sys.path.insert(0, p)
 
-from audit_log import Agency, EmissionLog, Record, Tier, verify          # noqa: E402
+from audit_log import Agency, AuditLog, Record, Tier, verify          # noqa: E402
 from agency import AgencyGate, Command, Sample                           # noqa: E402
 import gems_budget as budget                                             # noqa: E402
 
@@ -65,7 +65,7 @@ def _telemetry(seq, joint=1, t=0):
 
 
 def check_state_persists():
-    log = EmissionLog()
+    log = AuditLog()
     for i in range(20):
         log.append(_telemetry(i, t=i * MS))
     log.seal_batch()
@@ -76,8 +76,8 @@ def check_state_persists():
 
 
 def check_readable_emission():
-    log = EmissionLog()
-    log.append(Record(seq=0, t_ns=0, tier=Tier.EMISSION, kind="reflex",
+    log = AuditLog()
+    log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
                       agency=Agency.SELF_CAUSED,
                       context={"field": "scar_dominated", "trigger": "thermal"}))
     log.seal_batch()
@@ -88,7 +88,7 @@ def check_readable_emission():
 
 
 def check_history_accrues():
-    log = EmissionLog()
+    log = AuditLog()
     for i in range(5):
         log.append(_telemetry(i, t=i * MS))
     seqs = [r.seq for r in log.records]
@@ -104,7 +104,7 @@ def check_history_accrues():
 
 def check_agency_classification():
     """protocol §7.1, both halves."""
-    gate, log, seq = AgencyGate(), EmissionLog(), 0
+    gate, log, seq = AgencyGate(), AuditLog(), 0
     for step in range(6):
         t = step * MS
         gate.issue(Command(t_ns=t, joint=3, position=0.1 * step,
@@ -139,15 +139,15 @@ def check_inside_outside_separable():
 
 
 def check_traced_appraisal():
-    log = EmissionLog()
+    log = AuditLog()
     try:
-        log.append(Record(seq=0, t_ns=0, tier=Tier.EMISSION, kind="reflex",
+        log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
                           agency=Agency.SELF_CAUSED, context=None))
         refused_contextless = False
     except ValueError:
         refused_contextless = True
     try:
-        log.append(Record(seq=0, t_ns=0, tier=Tier.EMISSION, kind="reflex",
+        log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
                           agency=Agency.UNCLASSIFIED, context={"a": 1}))
         refused_unclassified = False
     except ValueError:
@@ -159,15 +159,15 @@ def check_traced_appraisal():
 
 
 def check_contact_amplitude():
-    log = EmissionLog()
+    log = AuditLog()
     try:
-        log.append(Record(seq=0, t_ns=0, tier=Tier.EMISSION, kind="contact",
+        log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="contact",
                           agency=Agency.SELF_CAUSED, context={"x": 1},
                           contact=True, amplitude=None))
         refused = False
     except ValueError:
         refused = True
-    log.append(Record(seq=0, t_ns=0, tier=Tier.EMISSION, kind="contact",
+    log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="contact",
                       agency=Agency.SELF_CAUSED, context={"x": 1}, contact=True,
                       amplitude={"force_N": 2.4, "duration_ms": 900}))
     return (MET_SIM if refused else NOT_IMPL,
@@ -191,7 +191,7 @@ STATIC = {
                        "than predicted; a simulator returns what it was written to"),
     "C-5":  (NEEDS_HW, "needs ambient physical fluctuation to be distinguishable from"),
     "C-7":  (NEEDS_HW, "needs a structure to resist with"),
-    "C-10": (NEEDS_HW, "needs a radio to transmit from and a meter to measure floor "
+    "C-10": (NEEDS_HW, "needs a radio to transmit from and a meter to measure quiescent "
                        "power with"),
     "C-11": (NOT_IMPL, "tier 1 needs a secure element, tier 2 a commissioning "
                        "baseline taken from real sensors, tier 3 actuators to "

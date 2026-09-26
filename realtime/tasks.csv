@@ -1,0 +1,23 @@
+task,name,parent,layer,runs_on,rate_hz,deadline_ms,budget_ms,deadline_class,spec_ref
+current_loop,Joint current control,,FIRMWARE,joint drive board,,,,DEADLINE_HARD,spec 07.2
+proprio_sampling,Proprioceptive sampling,,FIRMWARE,joint drive board,1000,1.0,,DEADLINE_HARD,spec 07.2
+balance,Balance,,FIRMWARE,real-time controller,500,2.0,,DEADLINE_HARD,spec 07.2; firmware/ARCHITECTURE 3
+balance.estimate,State estimate,balance,FIRMWARE,real-time controller,,,0.6,DEADLINE_HARD,firmware/ARCHITECTURE 3
+balance.solve,Control solve,balance,FIRMWARE,real-time controller,,,0.8,DEADLINE_HARD,firmware/ARCHITECTURE 3
+balance.dispatch,Command dispatch,balance,FIRMWARE,real-time controller,,,0.3,DEADLINE_HARD,firmware/ARCHITECTURE 3
+balance.log,Log write,balance,FIRMWARE,real-time controller,,,0.05,DEADLINE_HARD,firmware/ARCHITECTURE 3
+balance.margin,Margin,balance,FIRMWARE,real-time controller,,,0.25,DEADLINE_HARD,firmware/ARCHITECTURE 3
+reflex,"Reflex, end to end",,FIRMWARE,real-time controller,,10.0,,DEADLINE_HARD,spec 07.2; firmware/ARCHITECTURE 2
+reflex.acquire,Acquisition and timestamp,reflex,FIRMWARE,sensor node,,,1.0,DEADLINE_HARD,firmware/ARCHITECTURE 2
+reflex.agency,Agency tagging,reflex,FIRMWARE,real-time controller,,,0.5,DEADLINE_HARD,spec 07.3 g7; firmware/ARCHITECTURE 2
+reflex.assemble,State assembly,reflex,FIRMWARE,real-time controller,,,2.0,DEADLINE_HARD,firmware/ARCHITECTURE 2
+reflex.decide,Reflex decision,reflex,FIRMWARE,real-time controller,,,1.0,DEADLINE_HARD,firmware/ARCHITECTURE 2; spec 08.2
+reflex.actuate,Command and actuation onset,reflex,FIRMWARE,joint drive board,,,4.0,DEADLINE_HARD,firmware/ARCHITECTURE 2
+reflex.log,Log write,reflex,FIRMWARE,real-time controller,,,0.05,DEADLINE_HARD,firmware/ARCHITECTURE 2
+reflex.margin,Margin,reflex,FIRMWARE,real-time controller,,,1.45,DEADLINE_HARD,firmware/ARCHITECTURE 2
+safe_state,Safe-state supervisor,,FIRMWARE,real-time controller,,,,DEADLINE_HARD,spec 07.1; spec 07.3 g2
+capture,Per-frame capture and encoding,,SOFTWARE,edge AI module,,,,DEADLINE_FIRM,spec 07.1
+fusion,Sensor fusion,,SOFTWARE,edge AI module,,,,DEADLINE_SOFT,spec 07.1
+link,Link management,,SOFTWARE,edge AI module,,,,DEADLINE_SOFT,spec 07.1
+log_sync,Log synchronisation after an outage,,SOFTWARE,edge AI module,,,,DEADLINE_NONE,spec 07.1
+commissioning,Commissioning tools,,SOFTWARE,edge AI module,,,,DEADLINE_NONE,spec 07.1

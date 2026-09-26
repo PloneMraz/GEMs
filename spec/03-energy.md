@@ -43,21 +43,21 @@ for why this option decides more than its name suggests.
 
 ## 3.3 Tiered sleep
 
-The body drops to floor power on a cycle: actuators off with the body resting on
+The body drops to quiescent power on a cycle: actuators off with the body resting on
 a mechanical support, full-rate sensing off, heavy compute off. A very
-low-power vigilance circuit and wake-on-event remain.
+low-power always-on wake-up circuit and wake-on-event remain.
 
-**Delegated watch.** While the body sleeps, the **off-body seat of the
+**Delegated watch.** While the body sleeps, the **off-board compute of the
 controller stays awake**, observing through other sources — environmental
 devices, other units, signal networks. The body sleeps **without the system going
 blind.** This is an architectural advantage biology does not have, and it is
-available only because of the two-seat pillar in [01](01-architecture.md).
+available only because of the on-board / off-board split of [01](01-architecture.md).
 
 | # | Constraint | Content |
 |---|---|---|
 | 1 | **Depth against wake latency** | Deeper sleep, slower waking: tens of ms (light) to seconds (deep). Multiple levels are offered; which one is `⟦CTRL⟧` |
 | 2 | **Sleep posture is a physical constraint** | Switching actuators fully off requires a passive structure to carry gravity. Deep sleep needs support — it is not available while standing unaided |
-| 3 | **The floor is above zero** | The vigilance circuit still draws. Sleep is very long but not indefinite. See 3.6 for what actually bounds it |
+| 3 | **Quiescent power is above zero** | The always-on wake-up circuit still draws. Sleep is very long but not indefinite. See 3.6 for what actually bounds it |
 | 4 | **It cuts the integral, not the peak** | This measure reduces total energy over a scheduled cycle, not instantaneous power |
 
 ## 3.4 Four state levels
@@ -65,7 +65,7 @@ available only because of the two-seat pillar in [01](01-architecture.md).
 | Level | Source | Actuators | Sensing | Character |
 |---|---|---|---|---|
 | **1. Active** | Battery | Running | Full, under gating | All six measures apply |
-| **2. Free sleep** | Battery (floor) | Off, body resting | Vigilance circuit only | Maximum saving; the off-body seat watches |
+| **2. Free sleep** | Battery (floor) | Off, body resting | Always-on wake-up circuit only | Maximum saving; the off-board compute watches |
 | **3. Rest-and-charge** | **External** | Light support | **Spatial sensing retained** | **Resting without going blind, charging without going dead** |
 | **4. Deep sleep on dock** | External | Off | Minimal | Fast full charge plus maximum rest; suits standby units |
 
@@ -94,19 +94,19 @@ Both charging methods are provided:
 
 Which method is used when: `⟦CTRL⟧`.
 
-## 3.6 Floor power and the sleep ceiling
+## 3.6 Quiescent power and the sleep ceiling
 
-Components of the floor:
+Components of quiescent power:
 
 | Component | Power | Note |
 |---|---|---|
 | Sub-GHz wake-up receiver | **3–30 µW** | *Sourced* — published designs from 305 nW to ~6 µW; Wi-Fi-based variants ~30 mW |
 | RAM retention and the root-of-trust monotonic clock | ~10–50 µW | `⟦IMPL⟧` |
-| Low-power trace emission ([06](06-audit-surface.md)) | **< 1 mW** | |
+| Low-power beacon ([06.5](06-audit-surface.md#65-low-power-beacon)) | **< 1 mW** | |
 | Spatial sensing, passive mode | **~18 µW** | *Sourced* |
 | Spatial sensing, full CSI, duty-cycled | **~50–200 mW** | `⟦IMPL⟧` — the expensive term |
 
-**But the vigilance circuit is not the dominant term.** Cell self-discharge runs
+**But the always-on wake-up circuit is not the dominant term.** Cell self-discharge runs
 **1–3% per month** *(sourced; automotive standards require under 2%/month, and
 solid-state is expected to be lower but has yet to demonstrate it)*. On the
 10.4 kWh pack of the 4-hour reference body
@@ -118,7 +118,7 @@ solid-state is expected to be lower but has yet to demonstrate it)*. On the
 | 2%/month | **289 mW** |
 | 3%/month | **433 mW** |
 
-A deep-sleeping vigilance circuit costs **tens of µW** — about **four orders of
+A deep-sleeping always-on wake-up circuit costs **tens of µW** — about **four orders of
 magnitude below self-discharge**.
 
 Sleep duration at 2%/month, linear approximation:
@@ -137,13 +137,13 @@ Sleep duration at 2%/month, linear approximation:
 
 > **Two design consequences.**
 >
-> **(1)** Optimising the vigilance circuit below ~10 mW is wasted effort — it
+> **(1)** Optimising the always-on wake-up circuit below ~10 mW is wasted effort — it
 > disappears beneath self-discharge. The only term worth optimising is full-rate
 > spatial sensing, because it alone is the same order as the chemistry.
 >
 > **(2)** What bounds sleep is **not the standby electronics — it is the cell
 > chemistry.** A deep-sleeping body runs its pack down in a few years even if
-> the vigilance circuit drew nothing at all.
+> the always-on wake-up circuit drew nothing at all.
 >
 > The bound disappears at levels 3 and 4, where the dock both carries the body
 > and offsets self-discharge.

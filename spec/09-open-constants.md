@@ -34,10 +34,10 @@ Two kinds of blank, and they are not the same:
 | Fixed non-scaling mass (compute, sensors, hands, skin, harness) | [02.5](02-structure-and-motion.md#25-mass-envelope) | Depends on component selection |
 | Areal density of the sense-and-heal and variable-stiffness layers | [04.5](04-shell.md#45-the-three-layer-division) | No reliable published figure found. The constraint is firm even though the number is not |
 | Fire layer temperature and duration | [04.4](04-shell.md#44-fire-resistance) | Must anchor to an existing firefighting-garment standard, not be derived here |
-| RAM retention and root-of-trust clock power | [03.6](03-energy.md#36-floor-power-and-the-sleep-ceiling) | Depends on the parts chosen. Immaterial against self-discharge |
-| Full-CSI spatial sensing power | [03.6](03-energy.md#36-floor-power-and-the-sleep-ceiling) | The one floor term that matters; depends on implementation |
-| Merkle batch period for log signing | [06.4](06-audit-surface.md#64-emission-log) | Trades trace granularity against signing load |
-| Exact self-discharge rate | [03.6](03-energy.md#36-floor-power-and-the-sleep-ceiling) | Depends on the chemistry chosen. **The order of magnitude and the dominant term are established**, which is what the sleep ceiling needs |
+| RAM retention and root-of-trust clock power | [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) | Depends on the parts chosen. Immaterial against self-discharge |
+| Full-CSI spatial sensing power | [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) | The one floor term that matters; depends on implementation |
+| Merkle batch period for log signing | [06.4](06-audit-surface.md#64-audit-log) | Trades trace granularity against signing load |
+| Exact self-discharge rate | [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) | Depends on the chemistry chosen. **The order of magnitude and the dominant term are established**, which is what the sleep ceiling needs |
 
 ## What is deliberately *not* here
 
@@ -54,6 +54,6 @@ Some things are absent because they belong to no one in this repository:
 A blank here is not an oversight and not a placeholder waiting for a plausible
 number. Where the specification could establish the *shape* of a constraint
 without its exact value, it did so and said which is which — the sleep ceiling
-in [03.6](03-energy.md#36-floor-power-and-the-sleep-ceiling) is the clearest
+in [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) is the clearest
 example: the precise self-discharge figure is open, but knowing *which term
 dominates* was enough to close the question that mattered.

@@ -21,27 +21,46 @@ changed over to it.
 | **TM**, **LAB** | Commercially available; demonstrated in the laboratory but not scaled | [00](00-scope-and-criteria.md) |
 | **`⟦IMPL⟧`**, **`⟦CTRL⟧`** | Left open until parts are chosen; left to the operator | [09](09-open-constants.md) |
 
+## Where each vocabulary belongs
+
+Two vocabularies meet in this repository, and each has a place.
+
+**RSIL and DIL terms are kept, in the contract layer.** They name concepts of
+the companion specifications, not components, and renaming them would break the
+correspondence with those papers. Their place is where the contract is stated
+and tested — [spec 08](08-platform-contract.md), [`protocol/`](../protocol/) —
+and the field names of the audit-log record schema, which carries the
+contract's evidence. Verified against the RSIL text: *appraisal*, *scar*,
+*appraisal under a scar-dominated field*, *anchored context*, *emission*,
+*trace*, *agency* (`AgencyTag`, `SELF_CAUSED`), *caused-by-me*, *region*,
+*resistance*, *reflex*, and the requirement labels INV-6, INV-8, C5, E1–E4.
+
+**Everywhere else, engineering terms.** Where an engineering item realises a
+contract term, it takes the engineering name and cites the contract term once:
+"reflex decision (RSIL INV-8: appraisal under a scar-dominated field)".
+
 ## Terms changed to standard usage
 
 | Was | Now | Why |
 |---|---|---|
 | Firmware "owns time", software "owns meaning"; "anything with a deadline is firmware" | Firmware and software by where code runs; hard, firm, soft and non-real-time by the consequence of a late result; every hard real-time task is firmware | The old rule merged two independent classifications. It made a camera driver on the application processor "firmware", and it placed agency classification on both sides of the line at once |
+| Emission log (the component) | **Audit log**; `AuditLog` in code | *Emission* stays as the contract's word for an output event, and *anchored* as the name of the tier that holds its anchored context (`Tier.ANCHORED`, matching spec 06.4) |
+| Low-power trace (the component), trace emitter, trace radio | **Low-power beacon**, beacon radio | *Low-power trace* stays as the name of RSIL C5, which the beacon satisfies |
+| Floor power | **Quiescent power** | Also avoids a clash with RSIL's unrelated *floor-tag* |
+| Vigilance circuit, vigilance rail | **Always-on wake-up circuit**, always-on rail | Not an RSIL term |
+| On-body / off-body seat | **On-board / off-board compute** | "One intelligence, two seats" stays as the name of the architectural principle in [spec 01](01-architecture.md), where it is defined; "seat" is not an RSIL term |
+| Pre-closed appraisal | **Reflex decision** in engineering text; **appraisal under a scar-dominated field** (RSIL §9.7) in the contract | "Pre-closed" was this repository's paraphrase, not RSIL's wording |
+| Appraisal, integration (reflex stages) | Reflex decision, state assembly | |
+| Agency classification | **Agency tagging**, a firmware task | *Agency* itself is the contract's term and stays |
 
-## Repository terms still to review
+## Open question found in the review
 
-These are terms the repository uses that are not standard engineering
-vocabulary. Some come from the RSIL and DIL papers the repository answers to,
-where they name concepts rather than components, and renaming them would break
-that correspondence. None has been changed yet; each needs a decision.
-
-| Repository term | Nearest standard term | Note |
-|---|---|---|
-| Emission log | Audit log; event log | Used in code (`software/audit_log.py` already says audit) and in protocol evidence classes |
-| Low-power trace, trace emitter | Telemetry beacon; heartbeat | |
-| Vigilance circuit | Always-on domain; wake-up circuit | |
-| Floor power | Quiescent power; standby power | |
-| On-body / off-body seat | On-board / off-board compute; edge / remote | "Two seats" is the architecture's own image (spec 01) |
-| Agency classification, self-caused / external | Self/other discrimination by efference copy; sense of agency | Both are established terms in motor control and cognitive science; the repository's usage is close already |
-| Anchored context | Provenance record; context record | |
-| Traced appraisal | — | An RSIL concept, not a component; no engineering equivalent to adopt |
-| Dock | Docking station; charging station | Already standard |
+**RSIL C5 and the low-power beacon may not mean the same thing.** RSIL defines
+C5 as "self-reports low power: the system emits a trace of *the loop is running
+weakly*", and states that C5 is not a criterion for detecting a dead loop.
+Spec 06.5 meets C5 with a radio beacon that keeps transmitting a signed "alive"
+summary at low electrical power while the body sleeps — closer to a liveness
+heartbeat, which is what RSIL says C5 is not. Whether the beacon should also
+carry a loop-weakness signal, or whether the mapping in spec 08.1 should be
+restated, is a decision for the specification's author; nothing has been
+changed on this point.

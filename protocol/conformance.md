@@ -59,13 +59,13 @@ that contract explicitly places outside itself and assigns to the platform.
 | **C-1** | Inside/outside separable | Sensor returns and internal state MUST permit a distinction between self-caused and externally-caused change. The body does not draw the line; it MUST NOT foreclose it | **C** | [05.5](../spec/05-sensing.md#55-proprioception-is-mandatory) |
 | **C-2** | Effective action | Actuators MUST act on the surroundings, and the surroundings MUST be able to return something other than predicted | **M** | [02.6](../spec/02-structure-and-motion.md#26-actuation-and-manipulation) |
 | **C-3** | State persists | State MUST survive across cycles. A body that resets between actions grants no accumulated history | **T** | [01](../spec/01-architecture.md) |
-| **C-4** | Readable emission | Every emission MUST leave a trace a party other than the body can read | **T** | [06.4](../spec/06-audit-surface.md#64-emission-log) |
+| **C-4** | Readable emission | Every emission MUST leave a trace a party other than the body can read | **T** | [06.4](../spec/06-audit-surface.md#64-audit-log) |
 | **C-5** | Distinguishable action | The body MUST emit action distinguishable from ambient environmental fluctuation | **M** | [02.6](../spec/02-structure-and-motion.md#26-actuation-and-manipulation) |
 | **C-6** | History accrues | State MUST accrue, not merely be loaded | **T** | [01](../spec/01-architecture.md) |
 | **C-7** | Withstands resistance | The body MUST withstand resistance without resetting itself clean on every mismatch | **D**, **M** | [02.4](../spec/02-structure-and-motion.md#24-protection) |
 | **C-8** | Agency classification precedes interpretation | Every change MUST be classified as self-caused or not **before** anything interprets it. Classification applied after fusion or compression does not satisfy this | **C**, **T** | [07.3](../spec/07-firmware-and-software.md#73-what-firmware-must-guarantee) guarantee 7; [07.4](../spec/07-firmware-and-software.md#74-what-software-must-guarantee) guarantee 2 |
 | **C-9** | Traced appraisal | An appraisal step MUST sit between integration and response, and every emission — **including reflexes** — MUST carry anchored context. A scar-to-action path that bypasses appraisal MUST NOT exist | **C**, **T** | [08.2](../spec/08-platform-contract.md#82-traced-appraisal-not-mute-reflex) |
-| **C-10** | Low-power trace | The body MUST emit an observable trace at floor power, in every sleep state it supports | **M** | [06.5](../spec/06-audit-surface.md#65-low-power-trace) |
+| **C-10** | Low-power trace | The body MUST emit an observable trace at quiescent power, in every sleep state it supports | **M** | [06.5](../spec/06-audit-surface.md#65-low-power-beacon) |
 | **C-11** | Integrity attestable | Sensor and actuator integrity MUST be verifiable by a party other than the body, against a commissioning baseline | **C** | [06.3](../spec/06-audit-surface.md#63-three-tiers-of-attestation) |
 | **C-12** | Contact amplitude recorded | Physical amplitude delivered at human-contact surfaces MUST be measured and recorded with each contact event | **M**, **T** | [06.6](../spec/06-audit-surface.md#66-contact-amplitude) |
 
@@ -148,11 +148,11 @@ NOT present it as such.
 
 ### 7.4 C-10 — low-power trace
 
-**Procedure.** Place the body in each sleep state it declares. Measure floor
+**Procedure.** Place the body in each sleep state it declares. Measure quiescent
 power. Confirm from outside that the trace is received.
 
 **Pass.** The trace is received in every declared sleep state, and the measured
-floor power is within the declared figure.
+quiescent power is within the declared figure.
 
 ### 7.5 C-16 — failure state
 
@@ -176,7 +176,7 @@ the operator picks the point, so there is nothing here to pass or fail.
 |---|---|
 | Mass | kg |
 | Free-running endurance at stated load | hours |
-| Sleep states supported, and floor power in each | W |
+| Sleep states supported, and quiescent power in each | W |
 | Protection level and coverage | standard, % |
 | Actuator specific power and torque | kW/kg, Nm/kg |
 | Peak power available at the source | kW |
@@ -238,7 +238,7 @@ encouraged; claiming the name is not.
 | Test rigs, tolerances, sample sizes | §7 |
 | Fingerprint deviation tolerance | §7.3 tier 2 |
 | Permitted inter-channel timestamp skew | C-15 |
-| Merkle batch period, and therefore trace granularity | [06.4](../spec/06-audit-surface.md#64-emission-log) |
+| Merkle batch period, and therefore trace granularity | [06.4](../spec/06-audit-surface.md#64-audit-log) |
 
 ## 12. References
 

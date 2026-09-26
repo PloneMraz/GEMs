@@ -16,10 +16,10 @@ whoever runs the body, not here.
 | 00 | [Scope and acceptance criteria](00-scope-and-criteria.md) | overview | What must be true of anything in this specification, and the notation |
 | 01 | [Architecture](01-architecture.md) | overview | The invariant pillar, and the application frame it serves |
 | 02 | [Structure and motion](02-structure-and-motion.md) | hardware | Mass loop, convergence condition, protection, reach and payload, peak power |
-| 03 | [Energy](03-energy.md) | hardware | Sources, the six levers, state levels, docking, floor power and sleep ceiling |
+| 03 | [Energy](03-energy.md) | hardware | Sources, the six levers, state levels, docking, quiescent power and sleep ceiling |
 | 04 | [Shell](04-shell.md) | hardware | Programmable stiffness, self-healing, colour, and the three-layer division |
 | 05 | [Sensing](05-sensing.md) | hardware | Per-channel envelopes, aggregate rate, and the on-body/off-body compute split |
-| 06 | [Audit surface](06-audit-surface.md) | hardware | Attestation, emission log, low-power trace, contact amplitude |
+| 06 | [Audit surface](06-audit-surface.md) | hardware | Attestation, audit log, low-power beacon, contact amplitude |
 | 07 | [Firmware and software](07-firmware-and-software.md) | software | What runs on the body: responsibilities, rates, guarantees, and link-loss behaviour |
 | 08 | [Platform contract](08-platform-contract.md) | protocols | What an external processing loop requires of a body, and where this body supplies it |
 | 09 | [Open constants](09-open-constants.md) | resources | Values deliberately left unfilled, and why |

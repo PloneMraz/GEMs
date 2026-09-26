@@ -48,7 +48,7 @@ AVL_FIELDS = ["part_number", "rank", "status", "manufacturer", "mpn",
               "supplier", "supplier_pn", "source_url", "unit_price", "currency",
               "price_qty", "price_date", "price_url", "notes"]
 
-CATEGORIES = {"ASSY", "MFG", "OTS", "PCBA", "CABLE", "MATL"}
+CATEGORIES = {"ASSY", "MFG", "OTS", "PCBA", "CABLE", "MATL", "SW", "CONS"}
 MATURITY = {"TM", "LAB"}
 STATUS = {"SELECTED", "CANDIDATE"}
 
@@ -82,6 +82,32 @@ MODULE_CHILDREN = [
     (6, "Joint torque sensor", "OTS", "BUY", "spec 05.3; spec 06.6"),
     (7, "Joint drive PCBA", "PCBA", "MAKE", "plan E-3"),
     (8, "Housing, 7075-T6", "MFG", "MAKE", "hardware/mechanical 1"),
+    (9, "Fastener set", "OTS", "BUY", "plan M-3"),
+]
+
+# Software carried as virtual part numbers: each image is a child of the board
+# it is programmed into, so a shipped body records which image it carries.
+SOFTWARE = [
+    # pn, description, parent boards, spec_ref
+    ("GEM-40010", "Firmware image, joint drive", "joint drive PCBAs", "plan F-3"),
+    ("GEM-40020", "Firmware image, real-time controller", "GEM-13230", "plan F-0 to F-11"),
+    ("GEM-40030", "Firmware image, battery management", "GEM-13120", "plan F-9"),
+    ("GEM-40040", "Firmware image, trace radio", "GEM-13330", "plan F-12"),
+    ("GEM-40050", "Firmware image, secure element", "GEM-13350", "plan F-11"),
+    ("GEM-40060", "Firmware image, tactile readout", "GEM-18080", "plan F-1"),
+    ("GEM-40070", "Firmware image, shell field driver", "GEM-18090", "plan F-13"),
+    ("GEM-40080", "OS image, edge AI module", "GEM-13200", "spec 07.1"),
+    ("GEM-40090", "GEMs software stack, edge AI module", "GEM-13200", "plan S-0 to S-9"),
+]
+
+# Manufacturing-only items: in the MBOM, never in the EBOM.
+CONSUMABLES = [
+    ("GEM-50010", "Threadlocker, medium strength", "ML"),
+    ("GEM-50020", "Reducer grease", "G"),
+    ("GEM-50030", "Thermal interface material", "G"),
+    ("GEM-50040", "Adhesive, shell layer bonding", "ML"),
+    ("GEM-50050", "Cable ties and heat-shrink", "SET"),
+    ("GEM-50060", "Shipping crate and packaging", "SET"),
 ]
 
 
@@ -115,6 +141,11 @@ class Bom:
 def build():
     b = Bom()
     torque = {name: t for name, _, t, _ in torque_table(REF_MASS)}
+    for pn, d, _, ref in SOFTWARE:
+        b.part(pn, d, "SW", "MAKE", uom="EA", level="L0", ref=ref,
+               notes="Virtual part: version recorded at programming. Nothing built yet.")
+    for pn, d, uom in CONSUMABLES:
+        b.part(pn, d, "CONS", "BUY", uom=uom, level="L0", ref="MBOM only")
 
     # -- joint modules: one part number per joint type, shared left/right --
     for idx, name, red, _ in JOINTS:
@@ -140,8 +171,11 @@ def build():
             if off == 7:
                 n = "PCBA BOM is generated from its schematic (plan E-3); none exists yet"
             b.part(cpn, "%s, %s" % (d, name.replace("_", " ")), cat, mb,
+                   uom="SET" if off == 9 else "EA",
                    level="L1" if off in (2, 7) else "L0", ref=ref, notes=n)
             b.use(pn, cpn)
+            if off == 7:
+                b.use(cpn, "GEM-40010")
 
     # -- structure and sub-assemblies --------------------------------------
     S = lambda pn, d: b.part(pn, d, "MFG", "MAKE", level="L2",
@@ -312,7 +346,209 @@ def build():
 
     dock = b.part("GEM-30000", "Dock, seat form, with charging contacts", "ASSY", "MAKE",
                   level="L1", ref="spec 03.5", notes="Ground equipment; not part of the body")
+    b.use(dock, S("GEM-30010", "Dock structure"))
+    b.use(dock, b.part("GEM-30020", "Charging contact set", "OTS", "BUY", uom="SET",
+                       level="L1", ref="spec 03.5"))
+    b.use(dock, b.part("GEM-30030", "Dock charger PCBA", "PCBA", "MAKE", level="L0",
+                       ref="plan E-2", notes="PCBA BOM from schematic; none exists yet"))
+
+    for pn, _, parents, _ in SOFTWARE:
+        if parents.startswith("GEM-"):
+            b.use(parents, pn)
+
+    # structural fasteners per assembly, drawn from the CAD once it exists
+    for pn, p in list(b.parts.items()):
+        if p["category"] == "ASSY" and not pn.startswith("GEM-2") and pn != "GEM-13110":
+            fpn = pn[:-2] + "99"
+            b.use(pn, b.part(fpn, "Fastener set, %s" % p["description"].split(",")[0].lower(),
+                             "OTS", "BUY", uom="SET", level="L0", ref="plan M-5",
+                             notes="Contents from the CAD (plan M-1, M-5)"))
     return b, top, dock
+
+
+# -- manufacturing BOM ------------------------------------------------------
+
+MBOM_FIELDS = ["assembly", "op_no", "work_center", "operation", "consumes",
+               "qty", "uom", "qty_basis", "notes"]
+WORK_CENTERS = {
+    "WC-EMS": "PCB assembly, external contract manufacturer",
+    "WC-PROG": "Device programming",
+    "WC-CELL": "Cell stack assembly, external specialist",
+    "WC-HARN": "Harness manufacture, external",
+    "WC-JNT": "Joint module assembly",
+    "WC-SUB": "Sub-assembly",
+    "WC-INT": "Final integration",
+    "WC-CAL": "Calibration and end-of-line test",
+    "WC-COM": "Commissioning: root of trust and attestation baselines",
+    "WC-PACK": "Packaging",
+}
+AS_CONSUMED = "as consumed; figure set by the work instruction"
+
+
+def build_mbom(b, roots):
+    """Routings: the EBOM regrouped into build operations, plus the
+    manufacturing-only items the EBOM never carries. Every EBOM line is
+    consumed by exactly one operation of its parent's routing."""
+    children = defaultdict(list)
+    for l in b.lines:
+        children[l["parent"]].append(l)
+    ops = []
+
+    def op(asm, wc, text, consumes="", qty="", basis="", notes=""):
+        n = 10 * (1 + sum(o["assembly"] == asm for o in ops))
+        uom = b.parts[consumes]["uom"] if consumes else ""
+        ops.append(dict(assembly=asm, op_no=str(n), work_center=wc, operation=text,
+                        consumes=consumes, qty=qty, uom=uom, qty_basis=basis, notes=notes))
+
+    def line(asm, off_desc):
+        for l in children[asm]:
+            if b.parts[l["child"]]["description"].startswith(off_desc):
+                return l
+        raise KeyError((asm, off_desc))
+
+    for asm in sorted(children):
+        p = b.parts[asm]
+        if asm.startswith("GEM-2") and p["category"] == "ASSY":          # joint module
+            name = p["description"].split(", ", 1)[1]
+            steps = [("Housing", "Prepare housing", None),
+                     ("Output bearing", "Press in output bearing", None),
+                     ("Motor", "Install motor stator and rotor", None),
+                     ("Reducer", "Install reducer; grease per work instruction", "GEM-50020"),
+                     ("Absolute encoder, motor side", "Install motor-side encoder", None),
+                     ("Absolute encoder, output side", "Install output-side encoder", None),
+                     ("Joint torque sensor", "Install joint torque sensor", None),
+                     ("Joint drive PCBA", "Mount drive PCBA; thermal interface to housing", "GEM-50030"),
+                     ("Fastener set", "Fasten and torque to drawing", "GEM-50010")]
+            for key, text, cons in steps:
+                l = line(asm, key)
+                op(asm, "WC-JNT", text, l["child"], l["qty"], l["qty_basis"])
+                if cons:
+                    op(asm, "WC-JNT", "(consumable) %s" % b.parts[cons]["description"],
+                       cons, "", AS_CONSUMED)
+            op(asm, "WC-CAL", "Commutation offset and encoder calibration, %s" % name)
+            op(asm, "WC-CAL", "Joint torque sensor calibration")
+            op(asm, "WC-CAL", "End-of-line test: peak torque, backdrive, thermal")
+            continue
+        if p["category"] == "PCBA":
+            op(asm, "WC-EMS", "Assemble board to its PCBA BOM (from schematic)")
+            for l in children[asm]:
+                op(asm, "WC-PROG", "Program %s" % b.parts[l["child"]]["description"].lower(),
+                   l["child"], l["qty"], l["qty_basis"])
+            op(asm, "WC-CAL", "Board-level functional test")
+            continue
+        if asm == "GEM-13110":
+            for l in children[asm]:
+                op(asm, "WC-CELL", "Build cell stack", l["child"], l["qty"], l["qty_basis"])
+            op(asm, "WC-CAL", "Cell matching and stack acceptance test")
+            continue
+        wc = {"GEM-10000": "WC-INT", "GEM-19000": "WC-HARN"}.get(asm, "WC-SUB")
+        for l in children[asm]:
+            c = b.parts[l["child"]]
+            if c["category"] == "SW":
+                op(asm, "WC-PROG", "Install %s" % c["description"].lower(),
+                   l["child"], l["qty"], l["qty_basis"])
+            elif c["uom"] == "M2":
+                op(asm, wc, "Apply %s" % c["description"].lower(), l["child"], l["qty"],
+                   l["qty_basis"])
+            elif c["description"].startswith("Fastener set"):
+                op(asm, wc, "Fasten and torque to drawing", l["child"], l["qty"], l["qty_basis"])
+            else:
+                op(asm, wc, "Install %s" % c["description"][0].lower() + c["description"][1:],
+                   l["child"], l["qty"], l["qty_basis"])
+        if asm == "GEM-18000":
+            op(asm, wc, "(consumable) %s" % b.parts["GEM-50040"]["description"],
+               "GEM-50040", "", AS_CONSUMED)
+        if asm == "GEM-19000":
+            op(asm, wc, "(consumable) %s" % b.parts["GEM-50050"]["description"],
+               "GEM-50050", "", AS_CONSUMED)
+        if wc == "WC-SUB" or asm == "GEM-10000":
+            op(asm, wc, "(consumable) %s" % b.parts["GEM-50010"]["description"],
+               "GEM-50010", "", AS_CONSUMED)
+        if asm == "GEM-10000":
+            op(asm, "WC-COM", "Provision root-of-trust keys; record measured-boot baseline (spec 06.2)")
+            op(asm, "WC-COM", "Baseline physical fingerprints for attestation tier 2 (spec 06.3)")
+            op(asm, "WC-CAL", "Whole-body calibration: IMU, joint zero offsets, kinematics")
+            op(asm, "WC-CAL", "End-of-line test: power states (spec 03.4), stand and balance, supported failure state (spec 07.3)")
+    for r in roots:
+        op(r, "WC-PACK", "Pack for shipment", "GEM-50060", "1")
+    return ops
+
+
+def check_mbom(b, ops):
+    errs = []
+    ebom = defaultdict(list)
+    for l in b.lines:
+        ebom[l["parent"]].append((l["child"], l["qty"]))
+    mbom = defaultdict(list)
+    for o in ops:
+        if o["work_center"] not in WORK_CENTERS:
+            errs.append("mbom: %s op %s: unknown work centre" % (o["assembly"], o["op_no"]))
+        if o["consumes"] and o["consumes"] not in b.parts:
+            errs.append("mbom: %s consumes unknown part %s" % (o["assembly"], o["consumes"]))
+        elif o["consumes"] and b.parts[o["consumes"]]["category"] != "CONS":
+            mbom[o["assembly"]].append((o["consumes"], o["qty"]))
+    for asm in set(ebom) | set(mbom):
+        if sorted(ebom[asm]) != sorted(mbom[asm]):
+            errs.append("mbom: %s does not consume exactly its EBOM lines" % asm)
+    return errs
+
+
+# -- software BOM -------------------------------------------------------------
+
+REPO = HERE.parent.parent
+SBOM_SOURCES = [
+    # path, CycloneDX type, description, depends on
+    ("software/audit_log.py", "library", "Emission log: format, hash chain, Merkle batches, verifier", []),
+    ("software/agency.py", "library", "Agency tagging by efference copy, reference implementation", ["software/audit_log.py"]),
+    ("hardware/electrical/actuator_sizing.py", "application", "Joint torque table and actuator sizing", []),
+    ("scripts/gems_budget.py", "application", "Mass-energy-power budget model and spec check", ["hardware/electrical/actuator_sizing.py"]),
+    ("protocol/assess.py", "application", "Conformance assessment of the simulated body", ["software/audit_log.py", "software/agency.py", "scripts/gems_budget.py"]),
+    ("hardware/sim-model/generate_urdf.py", "application", "URDF generator and audit", []),
+    ("hardware/bom/build_bom.py", "application", "EBOM, MBOM and SBOM generator and check", ["hardware/electrical/actuator_sizing.py"]),
+]
+
+
+def build_sbom(timestamp):
+    import hashlib
+    import json
+    comps, deps = [], []
+    py = {"type": "platform", "bom-ref": "cpython", "name": "CPython",
+          "version": ">=3.10", "description": "Python interpreter; standard library only, no third-party packages",
+          "licenses": [{"license": {"id": "PSF-2.0"}}]}
+    for path, typ, desc, needs in SBOM_SOURCES:
+        digest = hashlib.sha256((REPO / path).read_bytes()).hexdigest()
+        comps.append({
+            "type": typ, "bom-ref": path, "name": path, "version": "sha256:" + digest[:12],
+            "description": desc,
+            "supplier": {"name": "Plone Mraz"},
+            "licenses": [{"license": {"id": "Apache-2.0"}}],
+            "hashes": [{"alg": "SHA-256", "content": digest}],
+        })
+        deps.append({"ref": path, "dependsOn": needs + ["cpython"]})
+    comps.append(py)
+    deps.append({"ref": "cpython", "dependsOn": []})
+    doc = {
+        "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
+        "bomFormat": "CycloneDX", "specVersion": "1.7", "version": 1,
+        "metadata": {
+            "timestamp": timestamp,
+            "authors": [{"name": "Plone Mraz"}],
+            "component": {"type": "application", "bom-ref": "gems", "name": "GEMs software, reference implementations",
+                          "supplier": {"name": "Plone Mraz"},
+                          "licenses": [{"license": {"id": "Apache-2.0"}}]},
+        },
+        "components": comps,
+        "dependencies": [{"ref": "gems", "dependsOn": [c[0] for c in SBOM_SOURCES]}] + deps,
+    }
+    return json.dumps(doc, indent=2) + "\n"
+
+
+def sbom_equal(a, b_text):
+    import json
+    x, y = json.loads(a), json.loads(b_text)
+    x["metadata"].pop("timestamp", None)
+    y["metadata"].pop("timestamp", None)
+    return x == y
 
 
 # -- serialisation ----------------------------------------------------------
@@ -338,7 +574,7 @@ def read_csv(path, fields):
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
-def check_structure(b, roots):
+def check_structure(b, roots, consumed=()):
     errs = []
     children = defaultdict(list)
     for l in b.lines:
@@ -348,7 +584,7 @@ def check_structure(b, roots):
         children[l["parent"]].append(l)
         if l["qty"] == "" and not l["qty_basis"]:
             errs.append("ebom: %s under %s has no qty and no basis" % (l["child"], l["parent"]))
-    used = {l["child"] for l in b.lines} | set(roots)
+    used = {l["child"] for l in b.lines} | set(roots) | set(consumed)
     for pn, p in b.parts.items():
         if pn not in used:
             errs.append("parts: %s is not used by any assembly" % pn)
@@ -456,8 +692,30 @@ def summary(b, children, avl, top):
     ]
 
 
-def render(b, top, dock, avl):
-    errs, children = check_structure(b, [top, dock])
+def render_mbom(b, ops):
+    md = ["# Manufacturing BOM — routings", "",
+          "Generated by [`build_bom.py`](build_bom.py). Do not hand-edit; see "
+          "[`README.md`](README.md#mbom). Every EBOM line is consumed by exactly one "
+          "operation of its parent's routing; the check fails otherwise.", "",
+          "## Work centres", "", "| Code | Work centre |", "|---|---|"]
+    md += ["| `%s` | %s |" % kv for kv in WORK_CENTERS.items()]
+    by = defaultdict(list)
+    for o in ops:
+        by[o["assembly"]].append(o)
+    for asm in sorted(by):
+        md += ["", "## `%s` %s" % (asm, b.parts[asm]["description"]), "",
+               "| Op | Work centre | Operation | Consumes | Qty | UoM |",
+               "|---|---|---|---|---|---|"]
+        for o in by[asm]:
+            md.append("| %s | `%s` | %s | %s | %s | %s |" % (
+                o["op_no"], o["work_center"], o["operation"],
+                "`%s`" % o["consumes"] if o["consumes"] else "",
+                o["qty"] or ("—" if o["consumes"] else ""), o["uom"]))
+    return "\n".join(md) + "\n"
+
+
+def render(b, top, dock, avl, ops=()):
+    errs, children = check_structure(b, [top, dock], {o["consumes"] for o in ops if o["consumes"]})
     by_pn = defaultdict(list)
     for a in avl:
         by_pn[a["part_number"]].append(a)
@@ -475,19 +733,27 @@ def main(argv=None):
     ap.add_argument("--check", action="store_true", help="verify, write nothing")
     a = ap.parse_args(argv)
 
+    from datetime import datetime, timezone
     b, top, dock = build()
+    ops = build_mbom(b, [top, dock])
     parts_csv = to_csv(PART_FIELDS, list(b.parts.values()))
     ebom_csv = to_csv(EBOM_FIELDS, b.lines)
     avl = read_csv(HERE / "avl.csv", AVL_FIELDS)
-    errs, md = render(b, top, dock, avl)
+    errs, md = render(b, top, dock, avl, ops)
     errs += check_avl(avl, b.parts)
+    errs += check_mbom(b, ops)
+    sbom = build_sbom(datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"))
 
-    files = {"parts.csv": parts_csv, "ebom.csv": ebom_csv, "EBOM.md": md}
+    files = {"parts.csv": parts_csv, "ebom.csv": ebom_csv, "EBOM.md": md,
+             "mbom.csv": to_csv(MBOM_FIELDS, ops), "MBOM.md": render_mbom(b, ops)}
     if a.check:
         for name, text in files.items():
             p = HERE / name
             if not p.exists() or p.read_text(encoding="utf-8") != text:
                 errs.append("%s is out of date — run build_bom.py" % name)
+        p = HERE / "sbom.cdx.json"
+        if not p.exists() or not sbom_equal(p.read_text(encoding="utf-8"), sbom):
+            errs.append("sbom.cdx.json is out of date — run build_bom.py")
     for e in errs:
         print("ERROR " + e)
     if errs:
@@ -495,9 +761,14 @@ def main(argv=None):
     if not a.check:
         for name, text in files.items():
             (HERE / name).write_text(text, encoding="utf-8")
+        p = HERE / "sbom.cdx.json"
+        if not p.exists() or not sbom_equal(p.read_text(encoding="utf-8"), sbom):
+            p.write_text(sbom, encoding="utf-8")
     print("\n".join(l for l in summary(b, check_structure(b, [top, dock])[1], avl, top)
                     if l.startswith("| ") and not l.startswith("| |")))
-    print("\n%s." % ("Checked; nothing written" if a.check else "Wrote parts.csv, ebom.csv, EBOM.md"))
+    print("MBOM: %d operations across %d routings" % (len(ops), len({o["assembly"] for o in ops})))
+    print("\n%s." % ("Checked; nothing written" if a.check else
+                     "Wrote parts.csv, ebom.csv, EBOM.md, mbom.csv, MBOM.md, sbom.cdx.json"))
     return 0
 
 

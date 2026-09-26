@@ -77,7 +77,7 @@ channel.
 
 Available link: **8 Gbps**.
 
-> The two-seat architecture of [01](01-architecture.md) is not a design
+> The on-board / off-board split of [01](01-architecture.md) is not a design
 > preference. **It falls short by 2× in the most conservative configuration and
 > by 8× in a sensible one.** On-body processing is arithmetic, not taste.
 
@@ -109,7 +109,7 @@ The split is a dial with **two hard ends and a soft middle**.
 | Minimum compression | **2 : 1 → 8 : 1** (5.4) |
 | Balance loop | **≥ 500 Hz** |
 | Fast reaction loop | **≤ 10 ms** |
-| Traced appraisal on every emission | per emission ([08](08-platform-contract.md)) |
+| Context record for every output event (RSIL INV-8: anchored context on every emission) | per event ([08.2](08-platform-contract.md#82-traced-appraisal-not-mute-reflex)) |
 
 Link round-trip is ~1 ms at ideal short range, but at kilometre range with beam
 tracking it cannot be relied on for ≤10 ms. **Balance and reflex are therefore

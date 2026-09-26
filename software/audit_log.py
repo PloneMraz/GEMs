@@ -2,7 +2,7 @@
 # SPDX-FileCopyrightText: 2026 Plone Mraz
 # SPDX-License-Identifier: Apache-2.0
 """
-GEMs emission log — reference implementation.
+GEMs audit log — reference implementation.
 
 Specification: spec/06-audit-surface.md §6.4, spec/07-firmware-and-software.md
 §7.3–7.4. Conformance: protocol/conformance.md C-4, C-6, C-9, C-12.
@@ -52,7 +52,7 @@ class Tier(str, Enum):
     """The two tiers of spec 06.4."""
 
     FULL = "FULL"            # per-joint telemetry, ring buffer on the body
-    EMISSION = "EMISSION"    # an emission with its anchored context
+    ANCHORED = "ANCHORED"    # an output event (RSIL: emission) with its anchored context
 
 
 def canonical(obj) -> bytes:
@@ -76,7 +76,7 @@ class Record:
     reports it rather than skipping over it (protocol C-3, C-6).
 
     `context` carries the anchored context an emission needs so a third party
-    can re-appraise it (spec 08.2). It is required on EMISSION records —
+    can re-appraise it (spec 08.2). It is required on ANCHORED records —
     including reflexes. Speed is not an exemption.
 
     `amplitude` records measured physical amplitude at a human-contact surface
@@ -133,7 +133,7 @@ def merkle_root(digests: Sequence[bytes]) -> bytes:
     return level[0]
 
 
-class EmissionLog:
+class AuditLog:
     """Append-only log with a hash chain and per-batch signed roots."""
 
     def __init__(self, sign: Callable[[bytes], bytes] | None = None):
@@ -164,7 +164,7 @@ class EmissionLog:
 
     @staticmethod
     def _require_wellformed(r: Record) -> None:
-        if r.tier is Tier.EMISSION and not r.context:
+        if r.tier is Tier.ANCHORED and not r.context:
             raise ValueError(
                 "emission seq %d carries no anchored context. Spec 08.2: an "
                 "action emitted without context cannot be re-appraised from "
@@ -173,7 +173,7 @@ class EmissionLog:
             raise ValueError(
                 "contact event seq %d records no amplitude. Spec 06.6 requires "
                 "measured amplitude with each contact event." % r.seq)
-        if r.tier is Tier.EMISSION and r.agency is Agency.UNCLASSIFIED:
+        if r.tier is Tier.ANCHORED and r.agency is Agency.UNCLASSIFIED:
             raise ValueError(
                 "emission seq %d is UNCLASSIFIED. Spec 07.3 g7: tagging "
                 "happens before interpretation, not after." % r.seq)
@@ -250,10 +250,10 @@ def verify(records: Iterable[Record], batches: Sequence[Batch],
         d = r.digest()
         prev = h(prev, d)
         by_seq[r.seq] = d
-        if r.tier is Tier.EMISSION and not r.context:
+        if r.tier is Tier.ANCHORED and not r.context:
             findings.append(Finding(r.seq, "NO_CONTEXT",
                                     "emission carries no anchored context"))
-        if r.tier is Tier.EMISSION and r.agency is Agency.UNCLASSIFIED:
+        if r.tier is Tier.ANCHORED and r.agency is Agency.UNCLASSIFIED:
             findings.append(Finding(r.seq, "UNCLASSIFIED",
                                     "emission not classified self/external"))
         if r.contact and not r.amplitude:

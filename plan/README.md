@@ -58,7 +58,7 @@ that they cannot be mistaken for purchasable items.
 | Envelopes, mass–energy loop | L0–L1 | `spec/`, `scripts/gems_budget.py --check` |
 | Kinematics, 30 core DOF | L1 | `hardware/kinematics.md` |
 | Actuators, cells, compute, bus, materials | **L2** | `hardware/electrical/`, `hardware/mechanical/` |
-| Emission log, agency classification | **L4** in reference form | `software/`, 30 tests |
+| Audit log, agency tagging | **L4** in reference form | `software/`, `firmware/reference/`, 30 tests |
 | Firmware | L1 | `firmware/ARCHITECTURE.md` |
 | Kinematic simulation model | L4 for kinematics only | `hardware/sim-model/` — inertias estimated |
 | Everything else | L0 | — |
@@ -77,12 +77,12 @@ it can move past L2. None can be settled by arithmetic alone.
 | # | Decision | Blocks | Status |
 |---|---|---|---|
 | **D-1** | **Knee torque requirement.** The sizing script assumes knee = hip pitch, flagged there as an assumption, not a source | Actuator sizing, `f_act`, the mass loop | open — check against published gait data |
-| **D-2** | **Actuators: procure modules or design them.** An 88.7 Nm/kg module exists commercially, but it peaks at 85 Nm and 16 of the 30 joints need more ([`hardware/bom/`](../hardware/bom/README.md#what-building-the-bom-turned-up)). This decision also settles the conflict between the per-class reducers of `hardware/mechanical` and the single module family of `hardware/electrical`. Designing our own motor, reducer and drive puts every capacitor of the drive inside this repository | M-3, E-3, F-3 — the largest single block of work | open |
+| **D-2** | **Actuators: procure modules or design them.** An 88.7 Nm/kg module exists commercially, but it peaks at 85 Nm and 16 of the 30 joints need more ([`hardware/bom/`](../hardware/bom/README.md#what-building-it-turned-up)). This decision also settles the conflict between the per-class reducers of `hardware/mechanical` and the single module family of `hardware/electrical`. Designing our own motor, reducer and drive puts every capacitor of the drive inside this repository | M-3, E-3, F-3 — the largest single block of work | open |
 | **D-3** | **Real-time processor and RTOS.** The Jetson carries perception and compression; it is not a hard real-time target for the 500 Hz balance loop and the 10 ms reflex path | All firmware, E-5 | open |
 | **D-4** | **High-voltage bus voltage** | Every power stage, cell count in series, harness gauge | open |
 | **D-5** | **Cell and pack format** at the durable tier (400–500 Wh/kg) | Pack mechanics, BMS, thermal | open — candidates sourced in `hardware/electrical/` |
 | **D-6** | **Reference hand configuration.** The declaration leaves 2×5 to 2×21 DOF open (`⟦CTRL⟧`); a complete design needs one point to draw | M-4, E-3 count, F-3 count | open — anchor figure is 40 joints, i.e. 2×5 |
-| **D-7** | **Secure element and low-power trace radio** | Attestation, trace emitter, C-10, C-11 | open |
+| **D-7** | **Secure element and low-power beacon radio** | Attestation, beacon, C-10, C-11 | open |
 | **D-8** | **Operating point for the reference design** — endurance, armour coverage | Mass, pack size, every downstream figure | open — the conformance record uses 4 h, 65% |
 
 D-6 and D-8 are choices of *which* point to draw, not changes to the
@@ -148,11 +148,11 @@ quite passes as human is received worse than one that does not try.
 | E-1 | System block diagram: every board, every bus, every power rail, every connector | L1 | D-3, D-4 |
 | E-2 | Power: pack, BMS, pre-charge and contactor, fusing, supercapacitor tier (spec 03.2 measure 3), regeneration path, dock charger interface | L4 | D-4, D-5 |
 | E-3 | Joint drive board: inverter, gate driver, phase current sensing, encoder interface, EtherCAT slave controller, temperature sensing, brake and lock driver | L4 | D-2, D-4 |
-| E-4 | Power distribution and conversion: HV to logic rails, isolated domains, the always-on vigilance rail at floor power (spec 03.6) | L4 | E-2 |
-| E-5 | Compute boards: Jetson carrier, real-time controller board, EtherCAT master interface, storage for the emission log | L4 | D-3 |
+| E-4 | Power distribution and conversion: HV to logic rails, isolated domains, the always-on rail at quiescent power (spec 03.6) | L4 | E-2 |
+| E-5 | Compute boards: Jetson carrier, real-time controller board, EtherCAT master interface, storage for the audit log | L4 | D-3 |
 | E-6 | Sensor front-ends: camera links, thermal, LiDAR, microphone array, SDR, IMUs, e-nose | L4 | E-5 |
 | E-7 | Tactile skin readout for ~500,000 taxels (spec 05.2): multiplexing, ADCs, local event compression | L4 | **LAB** |
-| E-8 | Radios: mmWave uplink, fallback link, low-power trace radio | L4 | D-7 |
+| E-8 | Radios: mmWave uplink, fallback link, low-power beacon radio | L4 | D-7 |
 | E-9 | Root of trust: secure element per node or per bus segment | L4 | D-7 |
 | E-10 | Shell drivers: magnetorheological coils or electrorheological high-voltage supply, electrochromic drivers | L4 | M-8 — **LAB** |
 | E-11 | Contact-amplitude instrumentation (spec 06.6) | L4 | E-7 |

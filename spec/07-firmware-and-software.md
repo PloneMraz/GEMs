@@ -22,7 +22,7 @@ system — including the device drivers that run there.
 
 | Layer | Runs on | Contents |
 |---|---|---|
-| **Firmware** | Joint drive boards, the real-time controller, the battery management board, the secure element, the trace radio | Current and position loops, state estimation, balance loop, reflex path including agency tagging, safety supervisor, power-state machine, battery management, secure boot and attestation, full-tier log writing at loop rate, low-power trace emission |
+| **Firmware** | Joint drive boards, the real-time controller, the battery management board, the secure element, the beacon radio | Current and position loops, state estimation, balance loop, reflex path including agency tagging, safety supervisor, power-state machine, battery management, secure boot and attestation, full-tier log writing at loop rate, low-power beacon |
 | **Software** | The edge AI module, under a general-purpose OS | Camera, LiDAR, audio and SDR drivers and capture, feature extraction and compression, sensor fusion, predictive modelling, log assembly and synchronisation, link management |
 
 **How late it may be — the real-time class.** A task's class is set by the
@@ -51,6 +51,10 @@ tasks.
 | Balance | **≥ 500 Hz** | hard | The body falls |
 | Reflex, end to end | **≤ 10 ms** | hard | The reaction is not a reaction |
 
+Every task's layer, rate, deadline, stage budget and deadline class is held in
+one table, [`realtime/tasks.csv`](../realtime/tasks.csv), checked against this
+section by `python realtime/check_timing.py`.
+
 **Multi-stream timestamping.** Every sensor channel MUST carry timestamps on a
 common time base, established at the transport layer rather than inferred later.
 Channels arrive at rates differing by three orders of magnitude
@@ -72,8 +76,8 @@ path.
 | 2 | **A supported failure state** | On fault the body must reach a posture a passive structure can hold — the same requirement sleep places on posture ([03.3](03-energy.md#33-tiered-sleep)). Collapsing is not a failure state; it is a second failure |
 | 3 | **Power-state transitions** | The four levels of [03.4](03-energy.md#34-four-state-levels), including wake latency appropriate to the level left |
 | 4 | **Measured boot and attestation** | Every sensor and actuator node under the root of trust ([06.2](06-audit-surface.md#62-root-of-trust-and-its-limit)) |
-| 5 | **Trace emission at floor power** | Survives sleep levels 2 and 4 ([06.5](06-audit-surface.md#65-low-power-trace)) |
-| 6 | **Full-tier logging at loop rate** | Hash-chained, not signed per record ([06.4](06-audit-surface.md#64-emission-log)) |
+| 5 | **Beacon transmission at quiescent power** | Survives sleep levels 2 and 4 ([06.5](06-audit-surface.md#65-low-power-beacon)) |
+| 6 | **Full-tier logging at loop rate** | Hash-chained, not signed per record ([06.4](06-audit-surface.md#64-audit-log)) |
 | 7 | **Agency tagging at acquisition** | Every change tagged self-caused or external where the commanded and measured values meet, within the 0.5 ms stage of the reflex budget ([firmware architecture §2](../firmware/ARCHITECTURE.md#2-the-reflex-budget)) |
 
 > Guarantee 2 deserves emphasis because it is easy to specify as an
@@ -89,8 +93,8 @@ path.
 |---|---|---|
 | 1 | **Compression of at least 2:1, realistically 8:1** | [05.4](05-sensing.md#54-aggregate-rate-against-the-link) — below this the link cannot carry the body's own senses |
 | 2 | **Agency tag carried to interpretation** | Nothing interprets an untagged change, and no stage strips the tag that firmware attached (7.3 guarantee 7; [08.1](08-platform-contract.md#81-conformance-map)) |
-| 3 | **Anchored context on every emission** | Including reflexes. A fast action that leaves no re-appraisable trace is what the contract forbids ([08.2](08-platform-contract.md#82-traced-appraisal-not-mute-reflex)) |
-| 4 | **Log assembly and synchronisation** | Two tiers, Merkle-batched signing ([06.4](06-audit-surface.md#64-emission-log)) |
+| 3 | **A context record for every output event** | Including reflexes — RSIL INV-8: anchored context on every emission. A fast action that leaves no context record is what the contract forbids ([08.2](08-platform-contract.md#82-traced-appraisal-not-mute-reflex)) |
+| 4 | **Log assembly and synchronisation** | Two tiers, Merkle-batched signing ([06.4](06-audit-surface.md#64-audit-log)) |
 | 5 | **Graceful link degradation** | Reduced fidelity before dropped streams; the body should lose resolution, not lose senses |
 
 **On guarantee 2.** Agency tagging is done **in firmware, at acquisition**
@@ -99,10 +103,10 @@ without the self-caused/external distinction attached, the distinction cannot be
 recovered downstream — the information that would have carried it has already
 been averaged away.
 
-**On guarantee 3.** The cost is a compact context record per emission,
+**On guarantee 3.** The cost is a compact context record per output event,
 microseconds against a 10 ms budget. This is what makes *the body is
-replaceable, the data is preserved* true rather than aspirational: the off-body
-seat is never blind to what the body has already done.
+replaceable, the data is preserved* true rather than aspirational: the off-board
+compute is never blind to what the body has already done.
 
 ## 7.5 Link loss and the local core
 
@@ -131,8 +135,8 @@ audit surface exists to prevent.
 |---|---|---|
 | Compute power | Draws on the same `p` (W/kg) that enters `Σf < 1` | [02.1](02-structure-and-motion.md#21-the-mass-loop) — edge compute eats the convergence condition, not merely the battery |
 | Thermal | A sealed body in human contact dissipates worse than a rack | `⟦IMPL⟧` |
-| Log storage | **1.15 GB/hour** full tier; ~1700 hours on a 2 TB device | [06.4](06-audit-surface.md#64-emission-log) |
-| Link share, full-tier log | **0.03%** of 8 Gbps | [06.4](06-audit-surface.md#64-emission-log) |
+| Log storage | **1.15 GB/hour** full tier; ~1700 hours on a 2 TB device | [06.4](06-audit-surface.md#64-audit-log) |
+| Link share, full-tier log | **0.03%** of 8 Gbps | [06.4](06-audit-surface.md#64-audit-log) |
 
 ## 7.7 Open constants
 

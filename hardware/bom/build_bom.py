@@ -92,7 +92,7 @@ SOFTWARE = [
     ("GEM-40010", "Firmware image, joint drive", "joint drive PCBAs", "plan F-3"),
     ("GEM-40020", "Firmware image, real-time controller", "GEM-13230", "plan F-0 to F-11"),
     ("GEM-40030", "Firmware image, battery management", "GEM-13120", "plan F-9"),
-    ("GEM-40040", "Firmware image, trace radio", "GEM-13330", "plan F-12"),
+    ("GEM-40040", "Firmware image, beacon radio", "GEM-13330", "plan F-12"),
     ("GEM-40050", "Firmware image, secure element", "GEM-13350", "plan F-11"),
     ("GEM-40060", "Firmware image, tactile readout", "GEM-18080", "plan F-1"),
     ("GEM-40070", "Firmware image, shell field driver", "GEM-18090", "plan F-13"),
@@ -236,7 +236,7 @@ def build():
         ("GEM-13140", "Supercapacitor bank", "OTS", "spec 03.2 measure 3", "burst power"),
         ("GEM-13150", "Pre-charge, contactor and fuse set", "OTS", "plan E-2", "bus voltage D-4"),
         ("GEM-13160", "Power distribution and DC-DC PCBA", "PCBA", "plan E-4", "HV to logic rails"),
-        ("GEM-13170", "Vigilance rail PCBA", "PCBA", "spec 03.6", "tens of microwatts"),
+        ("GEM-13170", "Always-on rail PCBA", "PCBA", "spec 03.6", "tens of microwatts"),
     ]:
         b.use(power, b.part(pn, d, cat, "MAKE" if cat != "OTS" else "BUY",
                             uom="SET" if pn == "GEM-13150" else "EA", level="L1",
@@ -249,7 +249,7 @@ def build():
         ("GEM-13220", "Edge module carrier PCBA", "PCBA", "L1", "plan E-5", "", ""),
         ("GEM-13230", "Real-time controller PCBA, EtherCAT master", "PCBA", "L0", "spec 07.2; firmware/README",
          "balance 500 Hz, reflex 10 ms", "D-3 open: processor not chosen; not the edge module"),
-        ("GEM-13240", "Emission log storage, 2 TB", "OTS", "L1", "spec 07.6", "~1700 h full tier", ""),
+        ("GEM-13240", "Audit log storage, 2 TB", "OTS", "L1", "spec 07.6", "~1700 h full tier", ""),
         ("GEM-13250", "SDR front-end, 2 ch x 56 MHz", "OTS", "L1", "spec 05.3", "16 bit I/Q", ""),
     ]:
         b.use(compute, b.part(pn, d, cat, "BUY" if cat == "OTS" else "MAKE", level=lvl,
@@ -260,7 +260,7 @@ def build():
     for pn, d, ref, req, lvl, n in [
         ("GEM-13310", "mmWave uplink radio, 60 GHz", "spec 01 Link", "~8 Gbps, ~1 ms PHY", "L1", ""),
         ("GEM-13320", "Fallback link module, LEO / cellular", "spec 01 Link", "", "L1", ""),
-        ("GEM-13330", "Low-power trace radio", "spec 06.5", "floor power", "L0", "D-7 open"),
+        ("GEM-13330", "Low-power beacon radio", "spec 06.5", "quiescent power; RSIL C5", "L0", "D-7 open"),
         ("GEM-13340", "Spatial RF sensing front-end", "spec 05.3", "Wi-Fi / mmWave CSI", "L1", ""),
     ]:
         b.use(comms, b.part(pn, d, "OTS", "BUY", level=lvl, ref=ref, req=req, notes=n))
@@ -496,15 +496,20 @@ def check_mbom(b, ops):
 # -- software BOM -------------------------------------------------------------
 
 REPO = HERE.parent.parent
+# Two roles, kept apart. Reference implementations are the specifications the
+# on-body code is checked against. Design tools produce and check the design;
+# they are never part of the body, so CycloneDX scope "excluded" marks them.
+REFERENCE, TOOL = "reference-implementation", "design-tool"
 SBOM_SOURCES = [
-    # path, CycloneDX type, description, depends on
-    ("software/audit_log.py", "library", "Emission log: format, hash chain, Merkle batches, verifier", []),
-    ("software/agency.py", "library", "Agency tagging by efference copy, reference implementation", ["software/audit_log.py"]),
-    ("hardware/electrical/actuator_sizing.py", "application", "Joint torque table and actuator sizing", []),
-    ("scripts/gems_budget.py", "application", "Mass-energy-power budget model and spec check", ["hardware/electrical/actuator_sizing.py"]),
-    ("protocol/assess.py", "application", "Conformance assessment of the simulated body", ["software/audit_log.py", "software/agency.py", "scripts/gems_budget.py"]),
-    ("hardware/sim-model/generate_urdf.py", "application", "URDF generator and audit", []),
-    ("hardware/bom/build_bom.py", "application", "EBOM, MBOM and SBOM generator and check", ["hardware/electrical/actuator_sizing.py"]),
+    # path, CycloneDX type, role, description, depends on
+    ("software/audit_log.py", "library", REFERENCE, "Audit log: format, hash chain, Merkle batches, verifier", []),
+    ("firmware/reference/agency.py", "library", REFERENCE, "Agency tagging by efference copy; golden model for the firmware port", ["software/audit_log.py"]),
+    ("hardware/electrical/actuator_sizing.py", "application", TOOL, "Joint torque table and actuator sizing", []),
+    ("scripts/gems_budget.py", "application", TOOL, "Mass-energy-power budget model and spec check", ["hardware/electrical/actuator_sizing.py"]),
+    ("protocol/assess.py", "application", TOOL, "Conformance assessment of the simulated body", ["software/audit_log.py", "firmware/reference/agency.py", "scripts/gems_budget.py"]),
+    ("hardware/sim-model/generate_urdf.py", "application", TOOL, "URDF generator and audit", []),
+    ("hardware/bom/build_bom.py", "application", TOOL, "EBOM, MBOM and SBOM generator and check", ["hardware/electrical/actuator_sizing.py"]),
+    ("realtime/check_timing.py", "application", TOOL, "Timing table check against the specification and the firmware architecture", []),
 ]
 
 
@@ -515,7 +520,7 @@ def build_sbom(timestamp):
     py = {"type": "platform", "bom-ref": "cpython", "name": "CPython",
           "version": ">=3.10", "description": "Python interpreter; standard library only, no third-party packages",
           "licenses": [{"license": {"id": "PSF-2.0"}}]}
-    for path, typ, desc, needs in SBOM_SOURCES:
+    for path, typ, role, desc, needs in SBOM_SOURCES:
         digest = hashlib.sha256((REPO / path).read_bytes()).hexdigest()
         comps.append({
             "type": typ, "bom-ref": path, "name": path, "version": "sha256:" + digest[:12],
@@ -523,6 +528,8 @@ def build_sbom(timestamp):
             "supplier": {"name": "Plone Mraz"},
             "licenses": [{"license": {"id": "Apache-2.0"}}],
             "hashes": [{"alg": "SHA-256", "content": digest}],
+            "scope": "excluded" if role == TOOL else "optional",
+            "properties": [{"name": "gems:role", "value": role}],
         })
         deps.append({"ref": path, "dependsOn": needs + ["cpython"]})
     comps.append(py)
@@ -533,7 +540,7 @@ def build_sbom(timestamp):
         "metadata": {
             "timestamp": timestamp,
             "authors": [{"name": "Plone Mraz"}],
-            "component": {"type": "application", "bom-ref": "gems", "name": "GEMs software, reference implementations",
+            "component": {"type": "application", "bom-ref": "gems", "name": "GEMs repository code: reference implementations and design tools",
                           "supplier": {"name": "Plone Mraz"},
                           "licenses": [{"license": {"id": "Apache-2.0"}}]},
         },

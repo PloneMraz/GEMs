@@ -46,7 +46,7 @@ conservative configuration (spec 05.4).
 
 | Task | To | Waits for |
 |---|---|---|
-| Reference implementation — the specification the firmware port F-7 is checked against | ✅ L4 | done — [`agency.py`](../software/agency.py) |
+| Reference implementation — the specification the firmware port F-7 is checked against | ✅ L4 | done — [`agency.py`](../firmware/reference/agency.py) |
 | Run on simulated whole-body motion rather than synthetic returns | L5 | V-5 |
 | Carry the firmware's tag through every stage and refuse untagged input (spec 07.4 guarantee 2) — enforced by the pipeline, not by convention | L4 | S-3 |
 
@@ -62,9 +62,9 @@ conservative configuration (spec 05.4).
 
 | Task | To | Waits for |
 |---|---|---|
-| Emission log: format, hash chain, Merkle batches, verifier | ✅ L4 | done — [`audit_log.py`](../software/audit_log.py) |
+| Audit log: format, hash chain, Merkle batches, verifier | ✅ L4 | done — [`audit_log.py`](../software/audit_log.py) |
 | Two tiers — full and anchored — assembled from firmware records | L4 | F-10 |
-| Synchronisation to the off-body seat after an outage, oldest first, nothing dropped | L4 | S-5 |
+| Synchronisation to the off-board compute after an outage, oldest first, nothing dropped | L4 | S-5 |
 | Storage accounting: 1.15 GB/h full tier against the log device | L4 | E-5 |
 
 ## S-5 — Link management
@@ -96,7 +96,7 @@ not yet planned anywhere else.
 | Audio: localisation and separation from the 16-channel array | L4 | — |
 | Olfaction: compound identification within the 5–10 s response of spec 05.3 | L4 | E-6 |
 | Taste: batch analysis | L4 | **LAB** |
-| Contact amplitude (spec 06.6): recorded for every contact event, enforced at write as the emission log already does | L4 | E-11 |
+| Contact amplitude (spec 06.6): recorded for every contact event, enforced at write as the audit log already does | L4 | E-11 |
 
 ## S-8 — Commissioning and assessment tools
 

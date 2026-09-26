@@ -7,8 +7,7 @@ non-real-time; nothing hard real-time runs here.
 
 | Module | What it is | Status |
 |---|---|---|
-| [`audit_log.py`](audit_log.py) | The emission log of [spec 06.4](../spec/06-audit-surface.md#64-emission-log): record schema, hash chain, per-batch Merkle root, and the verifier an assessor runs | ✅ reference implementation |
-| [`agency.py`](agency.py) | Reference implementation of the self-caused / external tagging that firmware performs at acquisition ([spec 07.3](../spec/07-firmware-and-software.md#73-what-firmware-must-guarantee), guarantee 7), by efference copy. The runtime version is a firmware port; this one is the specification it is checked against | ✅ reference implementation |
+| [`audit_log.py`](audit_log.py) | The audit log of [spec 06.4](../spec/06-audit-surface.md#64-audit-log): record schema, hash chain, per-batch Merkle root, and the verifier an assessor runs | ✅ reference implementation |
 | Feature extraction and compression | The ≥2:1 the link requires ([spec 05.4](../spec/05-sensing.md#54-aggregate-rate-against-the-link)) | 🔜 *waiting update* |
 | Sensor fusion | Multi-rate, on a shared time base | 🔜 *waiting update* |
 | Link management | Graceful degradation before dropped streams | 🔜 *waiting update* |
@@ -19,7 +18,17 @@ Python 3, standard library only.
 python -m unittest discover -s software -v
 ```
 
-## The emission log
+The agency-tagging reference model moved to
+[`../firmware/reference/`](../firmware/reference/): tagging is a hard real-time
+firmware task (spec 07.3 g7), so its golden model lives with the firmware it
+specifies.
+
+## The audit log
+
+The log's record schema uses the vocabulary of the RSIL contract it carries
+evidence for — an *emission* is an output event, and the *anchored* tier holds
+each emission's anchored context (spec 08.2). Those are field names of the
+contract, not names for components; the component is the audit log.
 
 Protocol requirements **C-4**, **C-6**, **C-9** and **C-12** are verified by
 evidence class **T** — an assessor reads the log and checks a property. That

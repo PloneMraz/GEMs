@@ -2,9 +2,15 @@
 # SPDX-FileCopyrightText: 2026 Plone Mraz
 # SPDX-License-Identifier: Apache-2.0
 """
-Agency classification — did this body cause that change, or did something else?
+Agency tagging, reference implementation — did this body cause that change,
+or did something else?
 
-Specification: spec/05-sensing.md §5.5, spec/07-firmware-and-software.md §7.4.
+This is the specification the firmware port (plan F-7) is checked against. The
+runtime tag is written by firmware at acquisition; this module is the golden
+model, which is why it lives under firmware/ although it is Python.
+
+Specification: spec/05-sensing.md §5.5, spec/07-firmware-and-software.md §7.3
+(guarantee 7). Contract: RSIL INV-6 (spec 08.1).
 Conformance: protocol/conformance.md C-1, C-8, with the test procedure at §7.1.
 
 The mechanism is an efference copy. Every command the body issues is held
@@ -31,10 +37,14 @@ It writes a tag and passes the sample on.
 
 from __future__ import annotations
 
+import sys
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Iterable
 
-from audit_log import Agency
+# The agency tag is a record type shared with software (plan S-0).
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "software"))
+from audit_log import Agency  # noqa: E402
 
 # Matching window between a command and the return it explains. The
 # specification leaves this open (spec 07.7); it is bounded above by the reflex

@@ -51,7 +51,7 @@ trade-off**, not a chosen point on it.
 | Uplink | mmWave, up to ~8 Gbps, ~1 ms PHY latency at short range |
 | Sensing | **16–67 Gbps** raw aggregate; ≥2:1 on-body compression is mandatory, ~8:1 realistic |
 | Compute | Split between body and external system. Balance loop ≥500 Hz and reflex ≤10 ms **must** be on-body |
-| Audit surface | Signed sensor–actuator trace; a readable trace remains emittable at floor power while the body sleeps |
+| Audit surface | Signed sensor–actuator trace; a readable trace remains emittable at quiescent power while the body sleeps |
 
 Every figure above is reproducible — `python scripts/gems_budget.py --check`
 recomputes them against the chapters that state them.
@@ -99,7 +99,8 @@ One directory per group, and the body's three design disciplines nest under
 | [`hardware/sim-model/`](hardware/sim-model/) | URDF generated from the kinematics, audited against it | ✅ |
 | [`hardware/bom/`](hardware/bom/) | EBOM, MBOM and SBOM from one definition, checked against each other; approved manufacturer list, blanks where not yet verified | ◐ 281 parts, none priced |
 | [`firmware/`](firmware/) | Code on the embedded devices, and every hard real-time task: joint control, balance loop, reflex path with agency tagging, power-state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
-| [`software/`](software/) | Code on the application processors: capture drivers, feature extraction and compression, sensor fusion, log synchronisation, link management, and reference implementations checked against the firmware | ◐ emission log implemented |
+| [`software/`](software/) | Code on the application processors: capture drivers, feature extraction and compression, sensor fusion, log synchronisation, link management, and the audit-log reference implementation | ◐ audit log implemented |
+| [`realtime/`](realtime/) | Timing policy, apart from code: every task's layer, rate, deadline and deadline class, checked against `spec/` and the firmware architecture | ✅ |
 | [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |
 
 Directories marked 🔜 do not exist yet. They are named in advance so that the
@@ -110,7 +111,15 @@ they are different disciplines under one specification chapter: firmware runs
 on the embedded devices and carries every hard real-time task, software runs on
 the application processors under a general-purpose OS, and the line between them
 is load-bearing enough to show in the layout. Terms follow standard usage — see
-the [glossary](spec/glossary.md).
+the [glossary](spec/glossary.md), which also says where the vocabulary of the
+RSIL contract belongs.
+
+**Python outside `firmware/` and `software/` is tooling, not body code.** The
+generators and checks under `hardware/`, `protocol/`, `scripts/` and `realtime/`
+produce and verify the design; none of it runs on the body, and the
+[SBOM](hardware/bom/sbom.cdx.json) marks it `excluded`. The Python under
+`firmware/reference/` and `software/` is reference implementations — the
+specifications the on-body code will be checked against.
 
 
 ---
@@ -121,14 +130,14 @@ the [glossary](spec/glossary.md).
 |---|---|
 | ✅ | Capability envelopes derived and internally consistent |
 | ✅ | Platform contract mapped — every external requirement has a named home in the design |
-| ✅ | Audit surface specified: attestation, emission log, low-power trace |
+| ✅ | Audit surface specified: attestation, audit log, low-power beacon |
 | ✅ | Licensing settled |
 | ✅ | Budget model, and a check that holds `spec/` to its own arithmetic |
 | ✅ | Platform specification published in this repository |
 | ✅ | Conformance protocol (v0.1 draft) |
 | ✅ | Firmware architecture and the reflex budget split across stages |
-| ✅ | Emission log: format, hash chain, batch signing, verifier |
-| ✅ | Agency classification by efference copy, with protocol §7.1 run against it |
+| ✅ | Audit log: format, hash chain, batch signing, verifier |
+| ✅ | Agency tagging by efference copy — reference model for the firmware port, with protocol §7.1 run against it |
 | ✅ | Conformance assessment of the simulated body — **9 of 16 unmet, and named** |
 | ✅ | Kinematic configuration — DOF, arrangement, reach |
 | ✅ | Simulation model — 30 DOF URDF, generated from the kinematics and audited against it |
@@ -208,7 +217,7 @@ them.
 The [platform specification](spec/) is published here in ten chapters, the
 [conformance protocol](protocol/) in draft, and the parts of the stack that do
 not need a target board — the [budget model](scripts/), the
-[emission log](software/) and the [simulation model](hardware/sim-model/) — are
+[audit log](software/) and the [simulation model](hardware/sim-model/) — are
 implemented and tested. Component selection is sourced and recorded; mechanical
 CAD and electrical schematics are not drawn.
 

@@ -94,7 +94,7 @@ that gap.
 
 | Declared here | Consumed by |
 |---|---|
-| 40 logged joints | Full-tier log rate, [spec 06.4](../spec/06-audit-surface.md#64-emission-log) |
+| 40 logged joints | Full-tier log rate, [spec 06.4](../spec/06-audit-surface.md#64-audit-log) |
 | 40 joints × 4 channels | Proprioception channel, [spec 05.3](../spec/05-sensing.md#53-channels) |
 | Joint count and gearing | `f_act`, [spec 02.2](../spec/02-structure-and-motion.md#22-the-four-coefficients) — still `⟦IMPL⟧`, because count alone does not fix mass |
 | 0.70 m reach | Shoulder torque, [spec 02.6](../spec/02-structure-and-motion.md#26-actuation-and-manipulation) |

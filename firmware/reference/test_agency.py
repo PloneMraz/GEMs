@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
 # SPDX-FileCopyrightText: 2026 Plone Mraz
 # SPDX-License-Identifier: Apache-2.0
-"""Tests for agency classification.
+"""Tests for the agency-tagging reference model.
 
 The centrepiece is `TestProtocolProcedure71`, which runs the procedure
 protocol/conformance.md §7.1 specifies, including its pipeline-position check.
 
-    python -m unittest discover -s software -v
+    python -m unittest discover -s firmware/reference -t firmware/reference -v
 """
 
+import sys
 import unittest
+from pathlib import Path
 
-from audit_log import Agency, EmissionLog, Record, Tier
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "software"))
+
+from audit_log import Agency, AuditLog, Record, Tier
 from agency import (AgencyGate, Command, ForwardModel, Sample, Tolerance,
                     UnclassifiableSample, summarise)
 
@@ -96,7 +100,7 @@ class TestProtocolProcedure71(unittest.TestCase):
 
     def _run_procedure(self):
         gate = AgencyGate()
-        log = EmissionLog()
+        log = AuditLog()
         seq = 0
 
         for step in range(6):

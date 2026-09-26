@@ -99,6 +99,18 @@ is a separate revolute joint at the shoulder mount, where here yaw is the third
 coupled axis; and its lateral range is a third of the 90° targeted here. It
 shows the mechanism class works at human scale, not that these figures do.
 
+**A caution on cable coupling, from the same literature.** The 3-DOF
+tendon-driven waist of Wang et al. (*Advanced Robotics* 2023; specification
+restated in *Mech. Mach. Theory* 216:106220, 2025) couples three actuators
+through wires and pulleys. Under a 10 kg torso surrogate at 80°/s, wire slack
+put the path **63 mm** off the unloaded reference, and the authors added a
+spring gravity-compensation module to recover accuracy. For the coupling
+mechanism here — still `⟦IMPL⟧` — that is evidence against plain cable
+coupling at this body's trunk mass, and for either geared coupling or cable
+coupling with pretension and gravity compensation. Spring compensation of
+trunk pitch and roll also serves the energy measure of spec 03.2 (series
+elastic elements storing what gravity would otherwise cost).
+
 The coupling ratio between segments is `⟦IMPL⟧`. The simulation model spreads
 each axis equally; the human distribution — most rotation thoracic, little
 lumbar — is the reference the mechanical design should move toward. The

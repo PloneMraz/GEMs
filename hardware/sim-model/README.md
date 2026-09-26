@@ -35,12 +35,16 @@ compares them to the declaration:
   drawn segments       15         expected 15         ok
   torso above waist    True       expected True       ok
   feet point forward   True       expected True       ok
+  joints move as named True       expected True       ok
 ```
 
-The first four add up declared figures. The last four measure the geometry
+The first four add up declared figures. The next four measure the geometry
 actually written — the boxes and cylinders a viewer draws in the zero pose —
 because a model can have every length right and still draw the torso below the
-waist.
+waist. The last drives each limb joint to its limits, on both sides, and checks
+by forward kinematics that it moves the way its name says: the elbow brings the
+hand forward, the knee folds the shin back, abduction carries a limb outward,
+and the larger half of each asymmetric range points the way the human one does.
 
 A mismatch exits non-zero. If the declaration changes, regenerate; if the
 generator disagrees with the declaration, one of them is wrong and the audit
@@ -83,7 +87,9 @@ once, on the link that holds its mass.
 **Axes follow the URDF convention** — x forward, y left, z up. The zero pose
 stands upright with arms at the sides and palms facing the thighs; the torso
 and head extend upward from their joints, every other segment hangs below its
-own.
+own. Joint angles follow the right-hand rule about each axis, so flexion that
+carries a limb forward is negative, and roll and yaw limits are mirrored
+between the left and right sides.
 
 **The root is `pelvis`,** floating. Attach it to a world frame in whatever
 simulator you use; the model does not assume one.

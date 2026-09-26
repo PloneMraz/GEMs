@@ -34,6 +34,7 @@ design, which is what §4 of the declaration lists as open.
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
@@ -69,11 +70,15 @@ MASS_FRAC = {
 PAIRED = {"upper_arm", "forearm", "hand", "thigh", "shank", "foot"}
 
 # Human ranges of motion, radians. Mechanism travel is IMPL.
+# Signs are for the left side under the right-hand rule about each joint's
+# axis: pitch about +y, so flexion that carries a limb forward is negative;
+# roll about +x, so abduction of a left limb is positive. Right-side roll and
+# yaw limits are mirrored in add_joint.
 LIM = {
-    "hip_roll": (-0.79, 0.52), "hip_pitch": (-2.09, 0.52), "hip_yaw": (-0.79, 0.79),
-    "knee": (0.0, 2.44), "ankle_pitch": (-0.87, 0.52), "ankle_roll": (-0.35, 0.35),
+    "hip_roll": (-0.52, 0.79), "hip_pitch": (-2.09, 0.52), "hip_yaw": (-0.79, 0.79),
+    "knee": (0.0, 2.44), "ankle_pitch": (-0.52, 0.87), "ankle_roll": (-0.35, 0.35),
     "shoulder_pitch": (-3.14, 1.05), "shoulder_roll": (-0.35, 3.14),
-    "shoulder_yaw": (-1.57, 1.57), "elbow": (0.0, 2.62),
+    "shoulder_yaw": (-1.57, 1.57), "elbow": (-2.62, 0.0),
     "wrist_yaw": (-1.57, 1.57), "wrist_pitch": (-1.22, 1.22),
     "wrist_roll": (-1.57, 1.57),
     "waist_yaw": (-0.79, 0.79), "waist_pitch": (-0.52, 1.05),
@@ -153,6 +158,8 @@ def add_joint(robot, name, parent, child, xyz, axis, kind="revolute"):
     ET.SubElement(j, "axis", xyz=axis)
     base = name.split("_", 1)[1] if name[:2] in ("l_", "r_") else name
     lo, hi = LIM[base]
+    if name.startswith("r_") and axis != Y:
+        lo, hi = -hi, -lo    # mirror roll and yaw across the sagittal plane
     ET.SubElement(j, "limit", lower="%.4f" % lo, upper="%.4f" % hi,
                   effort="%.1f" % EFFORT, velocity="%.1f" % VELOCITY)
     return j
@@ -269,6 +276,83 @@ def geometry_extents(robot):
     return ext
 
 
+def _rot(axis, q):
+    x, y, z = axis
+    c, s, t = math.cos(q), math.sin(q), 1.0 - math.cos(q)
+    return [[t*x*x + c,   t*x*y - s*z, t*x*z + s*y],
+            [t*x*y + s*z, t*y*y + c,   t*y*z - s*x],
+            [t*x*z - s*y, t*y*z + s*x, t*z*z + c]]
+
+
+def _mul(a, b):
+    return [[sum(a[i][k] * b[k][j] for k in range(3)) for j in range(3)]
+            for i in range(3)]
+
+
+def _apply(r, v):
+    return [sum(r[i][k] * v[k] for k in range(3)) for i in range(3)]
+
+
+def point_at(robot, q, link, local):
+    """World position of a point fixed in `link`, with joints set per `q`
+    (name -> angle, others at zero). The root sits at the origin."""
+    pose = {robot.find("link").get("name"): ([0.0, 0.0, 0.0], _rot((0, 0, 1), 0))}
+    for j in robot.findall("joint"):
+        pp, pr = pose[j.find("parent").get("link")]
+        o = _apply(pr, _xyz(j.find("origin")))
+        axis = [float(v) for v in j.find("axis").get("xyz").split()]
+        pose[j.find("child").get("link")] = (
+            [a + b for a, b in zip(pp, o)],
+            _mul(pr, _rot(axis, q.get(j.get("name"), 0.0))))
+    pp, pr = pose[link]
+    return [a + b for a, b in zip(pp, _apply(pr, local))]
+
+
+def joint_senses(robot):
+    """Does each joint move the body the way its name says, on both sides?
+    Each check drives one joint to the limit that should produce the motion
+    and asks where a probe point ends up."""
+    lim = {j.get("name"): (float(j.find("limit").get("lower")),
+                           float(j.find("limit").get("upper")))
+           for j in robot.findall("joint")}
+    hand = (0.0, 0.0, -seg_length("hand"))
+    toe = (SEG["foot"]["d"] / 2.0, 0.0, 0.0)
+    ok = True
+    for side, out in (("l", 1.0), ("r", -1.0)):
+        p = side + "_"
+
+        def moved(joint, bound, link, local, test):
+            q = lim[p + joint][0 if bound == "lo" else 1]
+            return test(point_at(robot, {p + joint: q}, link, local),
+                        point_at(robot, {}, link, local))
+
+        ok &= moved("shoulder_pitch", "lo", p + "hand", hand,
+                    lambda a, z: a[2] > z[2] + 1.0)            # raises forward overhead
+        ok &= point_at(robot, {p + "shoulder_pitch": -1.57},
+                       p + "hand", hand)[0] > 0.5              # ... to the front
+        ok &= moved("shoulder_roll", "hi" if out > 0 else "lo", p + "hand", hand,
+                    lambda a, z: a[2] > z[2] + 1.0)            # abducts overhead
+        ok &= out * point_at(robot, {p + "shoulder_roll": out * 1.57},
+                             p + "hand", hand)[1] > 0.5        # ... outward
+        ok &= moved("elbow", "lo", p + "hand", hand,
+                    lambda a, z: a[0] > 0.1)                   # forearm comes forward
+        ok &= moved("hip_pitch", "lo", p + "shank", (0, 0, 0),
+                    lambda a, z: a[0] > 0.2
+                    and a[2] > -seg_length("pelvis"))          # knee comes up to the hip
+        ok &= moved("knee", "hi", p + "foot", (0, 0, 0),
+                    lambda a, z: a[0] < -0.1)                  # shin folds back
+        z0 = point_at(robot, {}, p + "foot", toe)[2]
+        down, up = (point_at(robot, {p + "ankle_pitch": q}, p + "foot", toe)[2] - z0
+                    for q in reversed(lim[p + "ankle_pitch"]))
+        ok &= down < -up < 0          # toe drops further than it lifts: plantar > dorsi
+        y0 = point_at(robot, {}, p + "shank", (0, 0, 0))[1]
+        sway = [out * (point_at(robot, {p + "hip_roll": q}, p + "shank",
+                                (0, 0, 0))[1] - y0)
+                for q in lim[p + "hip_roll"]]
+        ok &= max(sway) > -min(sway) > 0   # abducts outward further than it adducts
+    return ok
+
+
 def audit(robot, total_mass):
     """Check the model against the declaration it was generated from."""
     joints = robot.findall("joint")
@@ -288,6 +372,7 @@ def audit(robot, total_mass):
     foot_forward = (foot[0][1] - foot[0][0]) > (foot[1][1] - foot[1][0])
     torso = ext["torso"]
     torso_above_waist = torso[2][0] >= -1e-9
+    senses = joint_senses(robot)
 
     checks = [
         ("core DOF", len(dof), 30, len(dof) == 30),
@@ -302,6 +387,7 @@ def audit(robot, total_mass):
         ("drawn segments", len(ext), 15, len(ext) == 15),
         ("torso above waist", torso_above_waist, True, torso_above_waist),
         ("feet point forward", foot_forward, True, foot_forward),
+        ("joints move as named", senses, True, senses),
     ]
     return checks
 

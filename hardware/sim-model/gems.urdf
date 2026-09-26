@@ -12,6 +12,9 @@
       <geometry>
         <box size="0.1800 0.3000 0.1600"/>
       </geometry>
+      <material name="pelvis">
+        <color rgba="0.25 0.25 0.28 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.0800" rpy="0 0 0"/>
@@ -45,6 +48,9 @@
       <geometry>
         <box size="0.2100 0.3400 0.4600"/>
       </geometry>
+      <material name="torso">
+        <color rgba="0.40 0.44 0.52 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0.2300" rpy="0 0 0"/>
@@ -85,6 +91,9 @@
       <geometry>
         <box size="0.1900 0.1600 0.2200"/>
       </geometry>
+      <material name="head">
+        <color rgba="0.80 0.80 0.82 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 0.1100" rpy="0 0 0"/>
@@ -139,6 +148,9 @@
       <geometry>
         <cylinder radius="0.0480" length="0.3200"/>
       </geometry>
+      <material name="l_upper_arm">
+        <color rgba="0.90 0.55 0.20 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.1600" rpy="0 0 0"/>
@@ -165,6 +177,9 @@
       <geometry>
         <cylinder radius="0.0400" length="0.2600"/>
       </geometry>
+      <material name="l_forearm">
+        <color rgba="0.96 0.80 0.50 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.1300" rpy="0 0 0"/>
@@ -219,6 +234,9 @@
       <geometry>
         <box size="0.0900 0.0400 0.1200"/>
       </geometry>
+      <material name="l_hand">
+        <color rgba="0.65 0.33 0.10 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.0600" rpy="0 0 0"/>
@@ -273,6 +291,9 @@
       <geometry>
         <cylinder radius="0.0620" length="0.4200"/>
       </geometry>
+      <material name="l_thigh">
+        <color rgba="0.90 0.55 0.20 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.2100" rpy="0 0 0"/>
@@ -299,6 +320,9 @@
       <geometry>
         <cylinder radius="0.0500" length="0.4200"/>
       </geometry>
+      <material name="l_shank">
+        <color rgba="0.96 0.80 0.50 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.2100" rpy="0 0 0"/>
@@ -339,6 +363,9 @@
       <geometry>
         <box size="0.2600 0.1000 0.0700"/>
       </geometry>
+      <material name="l_foot">
+        <color rgba="0.65 0.33 0.10 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.0350" rpy="0 0 0"/>
@@ -393,6 +420,9 @@
       <geometry>
         <cylinder radius="0.0480" length="0.3200"/>
       </geometry>
+      <material name="r_upper_arm">
+        <color rgba="0.20 0.58 0.75 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.1600" rpy="0 0 0"/>
@@ -419,6 +449,9 @@
       <geometry>
         <cylinder radius="0.0400" length="0.2600"/>
       </geometry>
+      <material name="r_forearm">
+        <color rgba="0.58 0.82 0.92 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.1300" rpy="0 0 0"/>
@@ -473,6 +506,9 @@
       <geometry>
         <box size="0.0900 0.0400 0.1200"/>
       </geometry>
+      <material name="r_hand">
+        <color rgba="0.10 0.38 0.55 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.0600" rpy="0 0 0"/>
@@ -527,6 +563,9 @@
       <geometry>
         <cylinder radius="0.0620" length="0.4200"/>
       </geometry>
+      <material name="r_thigh">
+        <color rgba="0.20 0.58 0.75 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.2100" rpy="0 0 0"/>
@@ -553,6 +592,9 @@
       <geometry>
         <cylinder radius="0.0500" length="0.4200"/>
       </geometry>
+      <material name="r_shank">
+        <color rgba="0.58 0.82 0.92 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.2100" rpy="0 0 0"/>
@@ -593,6 +635,9 @@
       <geometry>
         <box size="0.2600 0.1000 0.0700"/>
       </geometry>
+      <material name="r_foot">
+        <color rgba="0.10 0.38 0.55 1"/>
+      </material>
     </visual>
     <collision>
       <origin xyz="0 0 -0.0350" rpy="0 0 0"/>

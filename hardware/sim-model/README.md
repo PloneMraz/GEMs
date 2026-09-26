@@ -31,7 +31,16 @@ compares them to the declaration:
   total mass kg        130.0      expected 130.0      ok
   reach m              0.7        expected 0.7        ok
   standing height m    1.75       expected 1.75       ok
+  drawn height m       1.75       expected 1.75       ok
+  drawn segments       15         expected 15         ok
+  torso above waist    True       expected True       ok
+  feet point forward   True       expected True       ok
 ```
+
+The first four add up declared figures. The last four measure the geometry
+actually written — the boxes and cylinders a viewer draws in the zero pose —
+because a model can have every length right and still draw the torso below the
+waist.
 
 A mismatch exits non-zero. If the declaration changes, regenerate; if the
 generator disagrees with the declaration, one of them is wrong and the audit
@@ -68,7 +77,13 @@ numbers about a body that does not exist.
 **Sixteen intermediate links carry 1 g each.** URDF gives every joint a child
 link, so a three-axis shoulder needs two massless links between the torso and
 the upper arm. Some tools reject exactly-zero mass, so they carry a gram — 16 g
-across the body, or 0.01% of it.
+across the body, or 0.01% of it. They carry no geometry: each segment is drawn
+once, on the link that holds its mass.
+
+**Axes follow the URDF convention** — x forward, y left, z up. The zero pose
+stands upright with arms at the sides and palms facing the thighs; the torso
+and head extend upward from their joints, every other segment hangs below its
+own.
 
 **The root is `pelvis`,** floating. Attach it to a world frame in whatever
 simulator you use; the model does not assume one.

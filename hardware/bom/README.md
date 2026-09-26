@@ -1,20 +1,28 @@
-# Bill of materials
+# Bills of materials
 
-The engineering bill of materials (EBOM) of the GEMs reference design, kept in
-the form hardware teams use: a multi-level product structure, an item master
-with stable internal part numbers, and an approved manufacturer list that holds
-sourcing and price separately from the design.
+The three bills of materials of the GEMs reference design, in the form hardware
+teams use:
 
-**Open [`EBOM.md`](EBOM.md) to read it.** The CSV files are the data; that page
-is the indented view generated from them.
+- **EBOM** — engineering BOM: the product as designed, a multi-level structure.
+- **MBOM** — manufacturing BOM: the same parts regrouped into routings — build
+  operations at work centres — plus the consumables the design never shows.
+- **SBOM** — software BOM, in two senses the industry uses side by side:
+  software images carried as virtual part numbers in the EBOM, so a shipped body
+  records what it runs; and a machine-readable component inventory in
+  CycloneDX, for supply-chain security.
+
+**To read them, open [`EBOM.md`](EBOM.md) and [`MBOM.md`](MBOM.md).** The CSV
+and JSON files are the data; those pages are generated from them.
 
 | File | Contents | Kept by |
 |---|---|---|
-| [`parts.csv`](parts.csv) | Item master — one row per internal part number | generated |
+| [`parts.csv`](parts.csv) | Item master — one row per internal part number, software and consumables included | generated |
 | [`ebom.csv`](ebom.csv) | Product structure — parent, find number, child, quantity | generated |
+| [`mbom.csv`](mbom.csv) | Routings — assembly, operation, work centre, what each operation consumes | generated |
+| [`sbom.cdx.json`](sbom.cdx.json) | Software components, hashes, licences and dependencies, CycloneDX 1.7 | generated |
 | [`avl.csv`](avl.csv) | Approved manufacturer list — manufacturer, part number, source, price, date | **by hand** |
-| [`EBOM.md`](EBOM.md) | Indented view with mass roll-up and sourcing status | generated |
-| [`build_bom.py`](build_bom.py) | Generates the structure and checks all four | — |
+| [`EBOM.md`](EBOM.md), [`MBOM.md`](MBOM.md) | Readable views, with mass roll-up and sourcing status | generated |
+| [`build_bom.py`](build_bom.py) | Generates all of the above from one definition, and checks them against each other | — |
 
 ```bash
 python hardware/bom/build_bom.py            # regenerate
@@ -42,6 +50,10 @@ on a few features, and each one is here for a reason.
 | **Manufactured, off-the-shelf and electrical kept apart** [7] | `category`: ASSY, MFG, OTS, PCBA, CABLE, MATL | They are sourced, costed and reviewed differently |
 | **Mass per line** [8] | `unit_mass_kg` with its basis, rolled up in `EBOM.md` | On this body, mass is the governing variable: every kilogram costs γ kilograms (spec 02.1) |
 | **PCBA BOMs with reference designators, footprint, value, DNP** [9][10] | Each PCBA is a part here; its own BOM comes from its schematic and joins this structure then | "Down to each capacitor" lives in those PCBA BOMs, and they cannot exist before the schematics |
+| **MBOM derived from the EBOM and validated back against it** [11][12] | Every EBOM line is consumed by exactly one operation of its parent's routing, with the same quantity; the check fails otherwise | An MBOM that drifts from the EBOM builds a different product from the one designed |
+| **Consumables, tooling and packaging in the MBOM only** [11][12] | Category `CONS`: threadlocker, reducer grease, thermal interface material, adhesive, cable ties, packaging | They are needed to build the body and are not part of its design |
+| **Software as virtual part numbers** | Category `SW`: each firmware image is a child of the board it is programmed into; the edge module's OS and software stack are children of the compute assembly | A body leaves the line with a recorded software configuration, and an update is a revision |
+| **SBOM in a standard format** [13][14] | CycloneDX 1.7, validated against the official schema. SPDX (ISO/IEC 5962:2021) is the other accepted format | The EU Cyber Resilience Act requires a machine-readable SBOM for products with digital elements from 11 December 2027 [15]; CISA published updated minimum elements in 2026 [14] |
 | **Generated from one source** [8] | Structure generated from the kinematics and the torque table of `hardware/electrical/actuator_sizing.py` | A joint added to the declaration appears in the BOM, or the check fails |
 
 ## Columns
@@ -72,10 +84,51 @@ exist), `notes`.
 - A **LAB** part carries no manufacturer part number: none exists to give.
 - The generated files match what the generator produces now.
 
+## MBOM
+
+Routings are generated for every assembly and every PCBA that carries software.
+Leaf parts — machined, composite and bought-in — have no routing here; theirs
+is fabrication to drawing, and belongs with the drawing.
+
+| Work centre | Covers |
+|---|---|
+| `WC-EMS` | PCB assembly at an external contract manufacturer, to each board's own PCBA BOM |
+| `WC-PROG` | Programming every firmware image and installing the edge module's images |
+| `WC-CELL` | Cell stack assembly at an external specialist |
+| `WC-HARN` | Harness manufacture, external |
+| `WC-JNT` | Joint module assembly — housing, bearing, motor, reducer, encoders, torque sensor, drive board, fasteners |
+| `WC-SUB`, `WC-INT` | Sub-assembly and final integration |
+| `WC-CAL` | Calibration and end-of-line test: commutation and encoders, torque sensors, whole-body kinematics, power states, stand and balance, supported failure state |
+| `WC-COM` | Commissioning the audit surface: root-of-trust keys and measured-boot baseline (spec 06.2), physical-fingerprint baselines for attestation tier 2 (spec 06.3) |
+| `WC-PACK` | Packaging |
+
+Commissioning is a work centre of its own because the specification makes it
+one: attestation tier 2 compares a body against the fingerprint taken here, so a
+body that skips it cannot be attested later.
+
+Consumable quantities are "as consumed" and set by work instructions, which do
+not exist yet. Cycle times and labour are not estimated.
+
+## SBOM
+
+`sbom.cdx.json` lists the software that exists in this repository: each module
+with its SHA-256, licence, supplier and the modules it imports, and the Python
+interpreter they all run on. There are no third-party packages. Its version
+field is a content hash, so a changed file is a changed version, and the check
+fails until the SBOM is regenerated. The timestamp is set at generation and is
+the one field the check ignores.
+
+The firmware images and the edge module's OS image are in the EBOM as virtual
+parts but **not** in the SBOM, because none of them has been built. They join it
+when they exist — with the RTOS, the EtherCAT master stack and the operating
+system distribution as the third-party components they will bring, each with its
+licence to be checked against this repository's.
+
 ## Where it stands
 
 The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time
-of writing: 230 part numbers, one selected manufacturer part (the Jetson T5000
+of writing: 281 part numbers, including 9 software images and 6 consumables; 472
+operations across 57 routings; one selected manufacturer part (the Jetson T5000
 module), candidates for nine parts, **no verified price**, and a mass roll-up of
 70.3 kg out of the 129.5 kg budget — the rest is blank rather than guessed.
 
@@ -111,3 +164,8 @@ knee, shoulder, elbow, wrist and neck.
 | 8 | [umanoide](https://github.com/AlessioPagliai/umanoide) — humanoid BOM generated by script, with supplier, link, mass and notes per row |
 | 9 | [Anzer — electronic design BOM for PCB assembly](https://www.anzer-usa.com/resources/electronic-design-bom/) |
 | 10 | [PCBSync — IPC-2588, BOM data in IPC-2581](https://pcbsync.com/ipc-2588/) |
+| 11 | [OpenBOM — manufacturing BOM and BOM restructuring](https://www.openbom.com/blog/manufacturing-bill-of-materials-from-bom-restructure-to-supply-chain-intelligence) |
+| 12 | [Leo AI — EBOM to MBOM transformation](https://www.getleo.ai/blog/ebom-to-mbom-transformation-handoff) |
+| 13 | [CycloneDX 1.7 JSON reference](https://cyclonedx.org/docs/1.7/json/) |
+| 14 | [RunSafe — CISA 2026 SBOM minimum elements mapped to CycloneDX and SPDX](https://runsafesecurity.com/blog/sbom-minimum-elements-cyclonedx-spdx/) |
+| 15 | [Anchore — EU CRA SBOM requirements](https://anchore.com/sbom/eu-cra/) |

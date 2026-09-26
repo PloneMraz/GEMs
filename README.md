@@ -97,7 +97,7 @@ One directory per group, and the body's three design disciplines nest under
 | [`hardware/mechanical/`](hardware/mechanical/) | Material and mechanism selection, sourced; CAD to follow | ◐ selection done |
 | [`hardware/electrical/`](hardware/electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint sizing | ◐ selection done |
 | [`hardware/sim-model/`](hardware/sim-model/) | URDF generated from the kinematics, audited against it | ✅ |
-| [`hardware/bom/`](hardware/bom/) | Engineering BOM: multi-level structure, item master, approved manufacturer list; blanks mark what is not yet verified | ◐ 230 parts, none priced |
+| [`hardware/bom/`](hardware/bom/) | EBOM, MBOM and SBOM from one definition, checked against each other; approved manufacturer list, blanks where not yet verified | ◐ 281 parts, none priced |
 | [`firmware/`](firmware/) | Code on the embedded devices, and every hard real-time task: joint control, balance loop, reflex path with agency tagging, power-state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
 | [`software/`](software/) | Code on the application processors: capture drivers, feature extraction and compression, sensor fusion, log synchronisation, link management, and reference implementations checked against the firmware | ◐ emission log implemented |
 | [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |
@@ -137,7 +137,7 @@ the [glossary](spec/glossary.md).
 | ✅ | Component selection, sourced — actuators, power, compute, bus, materials, reducers |
 | ✅ | Actuator torque density reconciled with `f_act` — 75–90 Nm/kg peak over module mass, and the basis now declared |
 | ✅ | Work plan to a complete design — decisions, packages, firmware and software task lists ([`plan/`](plan/)) |
-| ◐ | Engineering BOM — 230 part numbers in a multi-level structure; sources and prices filled only where verified ([`hardware/bom/`](hardware/bom/)) |
+| ◐ | EBOM, MBOM and SBOM — 281 part numbers, 57 routings, CycloneDX SBOM; sources and prices filled only where verified ([`hardware/bom/`](hardware/bom/)) |
 | 🔜 | Mechanical CAD |
 | 🔜 | Electrical schematics |
 

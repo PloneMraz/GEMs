@@ -97,6 +97,7 @@ narrow on purpose.
 | **Down** | Motion intent, not motion commands | on event |
 | **Down** | Power state requests | on event |
 | **Down** | Gating: which channels run at full rate | on event |
+| **Down** | The loop's self-report for the beacon (`loop_state`, RSIL C5), carried unaltered | on event |
 
 **Agency tagging is real-time code.** It is a hard real-time stage of the reflex path,
 and it needs the commanded value and the measured value in the same place at the

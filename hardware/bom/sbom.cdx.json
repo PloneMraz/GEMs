@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-09-26T11:36:08Z",
+    "timestamp": "2026-09-26T12:32:33Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -151,7 +151,7 @@
       "type": "application",
       "bom-ref": "protocol/assess.py",
       "name": "protocol/assess.py",
-      "version": "sha256:6552be69f065",
+      "version": "sha256:b1958c22d214",
       "description": "Conformance assessment of the simulated body",
       "supplier": {
         "name": "Plone Mraz"
@@ -166,7 +166,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "6552be69f06521e90318d0f698398c4a9ed4773e959910727595ad3094d59403"
+          "content": "b1958c22d214eac4c59214f208542c4663a07e3eee0cd60c28e795f427da595c"
         }
       ],
       "scope": "excluded",

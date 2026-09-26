@@ -21,13 +21,13 @@ a cross-reference can only dangle.**
 | **E1** | Sensors and internal state must make an inside/outside distinction *possible*. The platform does not draw the line; it must not foreclose it | [05.5](05-sensing.md#55-proprioception-is-mandatory) — proprioception |
 | **E2** | Actuators must act on the region, and the region must be able to return something other than what was predicted | [02.6](02-structure-and-motion.md#26-actuation-and-manipulation) |
 | **E3** | State must persist across cycles | [01](01-architecture.md) — off-body memory; on-body storage |
-| **E4** | Emissions must leave a trace a third party can read | [06.4](06-audit-surface.md#64-audit-log) |
+| **E4** | Emissions must leave a trace a third party can read | [06.4](06-audit-surface.md#64-audit-log) — the audit log, synchronised off-board; also where a stopped loop becomes detectable, as the stored behaviour-record RSIL requires for it |
 | **P(a)** | The platform must emit an action distinguishable from ambient fluctuation | [02.6](02-structure-and-motion.md#26-actuation-and-manipulation) |
 | **P(b)** | It must hold state so history accrues | [01](01-architecture.md) |
 | **P(c)** | It must withstand resistance without resetting itself clean on every mismatch | [02.4](02-structure-and-motion.md#24-protection), [04](04-shell.md) |
 | **INV-6** | Every change must be classified as caused-by-me or not, *before* interpretation | [05.5](05-sensing.md#55-proprioception-is-mandatory) |
 | **INV-8** | An appraisal step must sit between integration and response | 8.2 below |
-| **C5** | The platform must emit an observable low-power trace | [06.5](06-audit-surface.md#65-low-power-beacon) |
+| **C5** | The platform must be able to emit an observable low-power trace — in RSIL's definition, the loop's own report that it is running weakly | [06.5](06-audit-surface.md#65-low-power-beacon) — the beacon carries the loop's `loop_state` report unaltered, including during sleep. The body transmits; the loop reports |
 
 The companion specification identifies INV-6, INV-8 and C5 as the three points
 where a conventional sensorimotor chain skips a step — that is, the three places

@@ -10,7 +10,7 @@ declares **outside its own scope and belonging to the platform**.
 | Source | Demand | Why it binds |
 |---|---|---|
 | **Readable emission** | Every emission must leave a trace a third party can read | Without it, success measured from outside cannot be measured at all |
-| **Low-power trace** (RSIL C5) | That trace must remain emittable at quiescent power | A closure condition, not a convenience |
+| **Low-power trace** (RSIL C5) | The loop's own report that it is running weakly must be emittable, at quiescent power included | A closure condition, not a convenience |
 | **Body integrity** | Sensor and actuator integrity must be verifiable | A recovery snapshot covers the system, not the body. A body compromised at sensor or actuator level re-infects a freshly clean system on the first cycle |
 | **Contact amplitude** | Physical amplitude at human contact must be recorded | The cheapest way to provoke a strong response from a person can be to touch them |
 
@@ -79,10 +79,32 @@ Budget:
 
 ## 6.5 Low-power beacon
 
-The beacon is how this body meets RSIL C5, the observable low-power trace
-(spec 08.1). It must survive sleep levels 2 and 4
-([03.4](03-energy.md#34-four-state-levels)). Mechanism: a low-duty-cycle radio
-periodically emitting a signed summary — alive, state, Merkle root of the log.
+The beacon is the channel by which this body meets RSIL C5 (spec 08.1). It must
+survive sleep levels 2 and 4 ([03.4](03-energy.md#34-four-state-levels)).
+Mechanism: a low-duty-cycle radio periodically emitting a signed summary.
+
+**What "low power" means in C5.** RSIL defines C5 as *"Self-reports low power.
+The system emits a trace of 'the loop is running weakly' — an observable
+behavioural or structural signal"*, and limits it: C5 *"is not a criterion for
+detecting a dead loop"*. Low power there is the strength of the loop, not the
+charge of the battery. The body does not produce that report — the loop does,
+and the loop is not specified here ([README](../README.md#scope-boundary)). The
+body's obligation is to **carry** it, unaltered, including while it sleeps.
+
+| Field | Written by | Content | Serves |
+|---|---|---|---|
+| `loop_state` | **The loop**, through the intent interface ([firmware architecture §4](../firmware/ARCHITECTURE.md#4-the-interface-to-the-edge-software)) | The loop's latest self-report, opaque to the body, carried byte for byte; `NONE` if the loop has never written one | **RSIL C5** |
+| `loop_state_age` | The body | Time since `loop_state` was written, on the body's clock | C5 — a stale report must read as stale |
+| `body_state` | The body | Power-state level ([03.4](03-energy.md#34-four-state-levels)) and fault flags | Delegated watch during sleep |
+| `log_root` | The body | Merkle root of the latest sealed audit-log batch ([06.4](#64-audit-log)) | Ties the beacon to the record |
+| `alive` | The body | The body is transmitting | Delegated watch — **not** C5 |
+
+**What the beacon is not.** Its `alive` field says the *body* is transmitting.
+It does not say the loop is alive, and it cannot: a loop that has stopped
+outright sends no report, and silence is indistinguishable from a loop that never
+ran. RSIL places dead-loop detection in *"a stored behaviour-record outside the
+loop, read by a third party"*; here that is the audit log of 6.4, synchronised
+off-board, where a gap in the record is itself the evidence.
 
 Anchored on a common BLE SoC: **4.6 mA at 0 dBm** while transmitting for a few
 milliseconds, **~1.5 µA** between. At a 1-second advertising interval the

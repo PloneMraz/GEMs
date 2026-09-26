@@ -42,7 +42,7 @@ than a vague disclaimer.
 | **C-7** | Withstands resistance | D, M | not demonstrable without hardware | needs a structure to resist with |
 | **C-8** | Agency classification precedes interpretation | C, T | MET (simulated) | procedure §7.1 run on synthetic returns: commanded motion and applied force distinguished, tags written pre-fusion, residuals retained so the tag can be re-derived |
 | **C-9** | Traced appraisal | C, T | MET | an emission without anchored context is refused at write, as is one still unclassified; no bypass path exists in the writer |
-| **C-10** | Low-power trace | M | not demonstrable without hardware | needs a radio to transmit from and a meter to measure quiescent power with |
+| **C-10** | Low-power trace | M | not demonstrable without hardware | needs a radio to transmit from, a loop to write loop_state, and a meter to measure quiescent power with |
 | **C-11** | Integrity attestable | C | not implemented | tier 1 needs a secure element, tier 2 a commissioning baseline taken from real sensors, tier 3 actuators to challenge; none exists |
 | **C-12** | Contact amplitude recorded | M, T | MET (simulated) | the recording requirement is enforced at write; the measurement it records needs instrumented contact surfaces that do not exist |
 | **C-13** | Balance rate ≥ 500 Hz | M | not demonstrable without hardware | needs firmware on a target board |

@@ -65,7 +65,7 @@ that contract explicitly places outside itself and assigns to the platform.
 | **C-7** | Withstands resistance | The body MUST withstand resistance without resetting itself clean on every mismatch | **D**, **M** | [02.4](../spec/02-structure-and-motion.md#24-protection) |
 | **C-8** | Agency classification precedes interpretation | Every change MUST be classified as self-caused or not **before** anything interprets it. Classification applied after fusion or compression does not satisfy this | **C**, **T** | [07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee) guarantee 7; [07.4](../spec/07-firmware-and-software.md#74-what-software-must-guarantee) guarantee 2 |
 | **C-9** | Traced appraisal | An appraisal step MUST sit between integration and response, and every emission — **including reflexes** — MUST carry anchored context. A scar-to-action path that bypasses appraisal MUST NOT exist | **C**, **T** | [08.2](../spec/08-platform-contract.md#82-traced-appraisal-not-mute-reflex) |
-| **C-10** | Low-power trace | The body MUST emit an observable trace at quiescent power, in every sleep state it supports | **M** | [06.5](../spec/06-audit-surface.md#65-low-power-beacon) |
+| **C-10** | Low-power trace | The body MUST carry the loop's self-report that it is running weakly (RSIL C5) to an outside observer, unaltered and with its age, in every power state it supports, sleep states included | **M** | [06.5](../spec/06-audit-surface.md#65-low-power-beacon) |
 | **C-11** | Integrity attestable | Sensor and actuator integrity MUST be verifiable by a party other than the body, against a commissioning baseline | **C** | [06.3](../spec/06-audit-surface.md#63-three-tiers-of-attestation) |
 | **C-12** | Contact amplitude recorded | Physical amplitude delivered at human-contact surfaces MUST be measured and recorded with each contact event | **M**, **T** | [06.6](../spec/06-audit-surface.md#66-contact-amplitude) |
 
@@ -148,11 +148,19 @@ NOT present it as such.
 
 ### 7.4 C-10 — low-power trace
 
-**Procedure.** Place the body in each sleep state it declares. Measure quiescent
-power. Confirm from outside that the trace is received.
+**Procedure.** Through the intent interface, write a known test value as the
+loop's self-report. Place the body in each power state it declares, sleep states
+included. In each, receive the beacon from outside and read `loop_state` and
+`loop_state_age`; measure quiescent power. Then write a second value and confirm
+the change reaches the beacon; stop writing and confirm the age grows.
 
-**Pass.** The trace is received in every declared sleep state, and the measured
-quiescent power is within the declared figure.
+**Pass.** In every declared state the received `loop_state` is byte for byte
+the value written, its age is consistent with when it was written, and quiescent
+power is within the declared figure.
+
+**Not tested here.** The beacon's `alive` field is not C5 and passing this
+procedure says nothing about whether the loop is alive. Dead-loop detection is
+assessed from the synchronised audit log (C-3, C-6), as RSIL places it.
 
 ### 7.5 C-16 — failure state
 

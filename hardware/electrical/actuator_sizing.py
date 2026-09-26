@@ -40,9 +40,11 @@ JOINTS = [
     ("ankle_roll",     2, "per_kg", 0.54),
     ("trunk_pitch",    1, "per_kg", 1.54),
     ("trunk_yaw",      1, "per_kg", 0.77),
-    # trunk_roll (lateral bend, kinematics §1.4, D-9) is not yet sized: no
-    # source gives its torque, and assuming one would move the f_act figures
-    # of spec 02.6 on a guess.
+    # trunk_roll (lateral bend, kinematics §1.4, D-9) is not yet sized.
+    # Candidate from README §6a: 0.6 x trunk_pitch = 0.92 Nm/kg (120 Nm at
+    # 130 kg), which moves the density floor of spec 02.6 from 75 to ~78
+    # Nm/kg. Adopting it is the author's call; the constant is not in the
+    # table until then.
     ("shoulder_pitch", 2, "payload", (30.0, REACH)),
     ("shoulder_roll",  2, "payload", (22.0, REACH)),
     ("shoulder_yaw",   2, "fixed",   60.0),

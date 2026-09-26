@@ -8,7 +8,12 @@ tests do not depend on a processor. They are written against a thin hardware
 abstraction and run on the host in software-in-the-loop (V-5). Only drivers,
 board support and timing measurements wait for D-3.
 
-**One rule carried from the architecture.** Every module that owns a deadline
+**Scope.** Firmware as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division)
+defines it: code on the embedded devices, including every hard real-time task.
+Capture drivers on the application processor are software and are listed in
+[`software.md`](software.md#s-9--capture-on-the-application-processor).
+
+**One rule carried from the architecture.** Every module that carries a deadline
 reports its misses. Each task below that implements a timed loop includes the
 deadline monitor for it; it is not a separate task that can be skipped.
 
@@ -35,7 +40,6 @@ deadline monitor for it; it is not a separate task that can be skipped.
 | Joint encoder readout, absolute and incremental | L4 | E-3 |
 | Joint torque sensing | L4 | E-3 |
 | Tactile readout control — scan scheduling, event thresholds | L4 | E-7 — **LAB** |
-| Camera, thermal, LiDAR, microphone and SDR capture — on the Jetson side, delivering timestamped buffers | L4 | E-6 |
 | Per-channel health: dropout, saturation, stuck value | L4 | — |
 
 ## F-2 — Time base

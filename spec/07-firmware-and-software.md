@@ -9,23 +9,47 @@ draws it.
 
 ## 7.1 The division
 
-| Layer | Owns | Contents |
-|---|---|---|
-| **Firmware** | **Time** | Sensor and actuator drivers, current and position loops, balance loop, reflex path, safety interlocks, power-state machine, secure boot and attestation, low-power trace emission |
-| **Software** | **Meaning** | Feature extraction and compression, sensor fusion, self-caused/external classification, predictive modelling, log assembly and synchronisation, link management |
+Two classifications apply to every piece of code on the body, and they are
+independent. Terms follow standard usage; see the [glossary](glossary.md).
 
-**The boundary rule: anything with a deadline is firmware.** If missing a
-deadline breaks the body rather than degrading an answer, it belongs below the
-line. Everything above the line may take longer when the work is harder.
+**Where it runs — firmware or software.** Firmware is software resident in the
+non-volatile memory of an embedded device and executed by it: in the wording of
+ISO/IEC 12207, the combination of a hardware device and the instructions and data
+that reside on it as read-only software. Here that means the microcontrollers
+and real-time processors, bare metal or under an RTOS. Software is everything
+executed on the application processors under a general-purpose operating
+system — including the device drivers that run there.
+
+| Layer | Runs on | Contents |
+|---|---|---|
+| **Firmware** | Joint drive boards, the real-time controller, the battery management board, the secure element, the trace radio | Current and position loops, state estimation, balance loop, reflex path including agency tagging, safety supervisor, power-state machine, battery management, secure boot and attestation, full-tier log writing at loop rate, low-power trace emission |
+| **Software** | The edge AI module, under a general-purpose OS | Camera, LiDAR, audio and SDR drivers and capture, feature extraction and compression, sensor fusion, predictive modelling, log assembly and synchronisation, link management |
+
+**How late it may be — the real-time class.** A task's class is set by the
+consequence of missing its deadline, as the real-time systems literature defines
+it:
+
+| Class | A late result | Here |
+|---|---|---|
+| **Hard real-time** | is a failure — it may cause harm | Current loops, balance, reflex path, agency tagging, safety supervisor |
+| **Firm real-time** | has no value and is discarded, without harm | Per-frame capture and encoding |
+| **Soft real-time** | has reduced value | Sensor fusion, link management |
+| **Non-real-time** | is merely late | Log synchronisation after an outage, commissioning tools |
+
+**The rule that joins them: every hard real-time task is firmware.** It must run
+where its worst-case timing can be bounded, and a general-purpose operating
+system does not bound it. The converse does not hold — firmware may do work
+that is not hard real-time, and software may carry firm and soft real-time
+tasks.
 
 ## 7.2 Real-time requirements
 
-| Loop | Rate | Consequence of missing it |
-|---|---|---|
-| Joint current control | `⟦IMPL⟧`, typically kHz-class | Actuator instability |
-| Proprioceptive sampling | **1 kHz** | Agency classification degrades; see 7.4 |
-| Balance | **≥ 500 Hz** | The body falls |
-| Reflex, end to end | **≤ 10 ms** | The reaction is not a reaction |
+| Loop | Rate | Class | Consequence of missing it |
+|---|---|---|---|
+| Joint current control | `⟦IMPL⟧`, typically kHz-class | hard | Actuator instability |
+| Proprioceptive sampling | **1 kHz** | hard | Agency tagging degrades; see 7.3 |
+| Balance | **≥ 500 Hz** | hard | The body falls |
+| Reflex, end to end | **≤ 10 ms** | hard | The reaction is not a reaction |
 
 **Multi-stream timestamping.** Every sensor channel MUST carry timestamps on a
 common time base, established at the transport layer rather than inferred later.
@@ -44,12 +68,13 @@ path.
 
 | # | Guarantee | Note |
 |---|---|---|
-| 1 | **Determinism within the budgets of 7.2** | Watchdogs on every loop that has a deadline |
+| 1 | **Determinism within the budgets of 7.2** | Watchdogs and deadline-miss reporting on every hard real-time task |
 | 2 | **A supported failure state** | On fault the body must reach a posture a passive structure can hold — the same requirement sleep places on posture ([03.3](03-energy.md#33-tiered-sleep)). Collapsing is not a failure state; it is a second failure |
 | 3 | **Power-state transitions** | The four levels of [03.4](03-energy.md#34-four-state-levels), including wake latency appropriate to the level left |
 | 4 | **Measured boot and attestation** | Every sensor and actuator node under the root of trust ([06.2](06-audit-surface.md#62-root-of-trust-and-its-limit)) |
 | 5 | **Trace emission at floor power** | Survives sleep levels 2 and 4 ([06.5](06-audit-surface.md#65-low-power-trace)) |
 | 6 | **Full-tier logging at loop rate** | Hash-chained, not signed per record ([06.4](06-audit-surface.md#64-emission-log)) |
+| 7 | **Agency tagging at acquisition** | Every change tagged self-caused or external where the commanded and measured values meet, within the 0.5 ms stage of the reflex budget ([firmware architecture §2](../firmware/ARCHITECTURE.md#2-the-reflex-budget)) |
 
 > Guarantee 2 deserves emphasis because it is easy to specify as an
 > afterthought. A body that loses power or loses its balance solver while
@@ -63,13 +88,13 @@ path.
 | # | Guarantee | Source |
 |---|---|---|
 | 1 | **Compression of at least 2:1, realistically 8:1** | [05.4](05-sensing.md#54-aggregate-rate-against-the-link) — below this the link cannot carry the body's own senses |
-| 2 | **Agency classification before interpretation** | Every change classified as self-caused or not *before* anything interprets it ([08.1](08-platform-contract.md#81-conformance-map)) |
+| 2 | **Agency tag carried to interpretation** | Nothing interprets an untagged change, and no stage strips the tag that firmware attached (7.3 guarantee 7; [08.1](08-platform-contract.md#81-conformance-map)) |
 | 3 | **Anchored context on every emission** | Including reflexes. A fast action that leaves no re-appraisable trace is what the contract forbids ([08.2](08-platform-contract.md#82-traced-appraisal-not-mute-reflex)) |
 | 4 | **Log assembly and synchronisation** | Two tiers, Merkle-batched signing ([06.4](06-audit-surface.md#64-emission-log)) |
 | 5 | **Graceful link degradation** | Reduced fidelity before dropped streams; the body should lose resolution, not lose senses |
 
-**On guarantee 2.** Agency classification must sit **early** in the pipeline,
-not as a later correction. Once a stream has been fused, filtered or compressed
+**On guarantee 2.** Agency tagging is done **in firmware, at acquisition**
+(7.3 guarantee 7), not as a later correction in software. Once a stream has been fused, filtered or compressed
 without the self-caused/external distinction attached, the distinction cannot be
 recovered downstream — the information that would have carried it has already
 been averaged away.

@@ -23,6 +23,7 @@ whoever runs the body, not here.
 | 07 | [Firmware and software](07-firmware-and-software.md) | software | What runs on the body: responsibilities, rates, guarantees, and link-loss behaviour |
 | 08 | [Platform contract](08-platform-contract.md) | protocols | What an external processing loop requires of a body, and where this body supplies it |
 | 09 | [Open constants](09-open-constants.md) | resources | Values deliberately left unfilled, and why |
+| — | [Glossary](glossary.md) | resources | Technical terms, their standard sources, and repository terms still to review |
 
 ## Reading order
 

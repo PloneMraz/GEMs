@@ -1,13 +1,14 @@
 # Software
 
-Processing of the information and data the hardware acquires. What [spec
-07](../spec/07-firmware-and-software.md) calls the layer that owns *meaning*, as
-against firmware, which owns *time*.
+Code executed on the edge AI module under a general-purpose operating system,
+as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division) defines
+software: processing of what the hardware acquires. Its tasks are firm, soft or
+non-real-time; nothing hard real-time runs here.
 
 | Module | What it is | Status |
 |---|---|---|
 | [`audit_log.py`](audit_log.py) | The emission log of [spec 06.4](../spec/06-audit-surface.md#64-emission-log): record schema, hash chain, per-batch Merkle root, and the verifier an assessor runs | ✅ reference implementation |
-| [`agency.py`](agency.py) | The self-caused / external gate of [spec 07.4](../spec/07-firmware-and-software.md#74-what-software-must-guarantee), by efference copy. Runs before fusion, because fusion averages away the evidence it needs | ✅ reference implementation |
+| [`agency.py`](agency.py) | Reference implementation of the self-caused / external tagging that firmware performs at acquisition ([spec 07.3](../spec/07-firmware-and-software.md#73-what-firmware-must-guarantee), guarantee 7), by efference copy. The runtime version is a firmware port; this one is the specification it is checked against | ✅ reference implementation |
 | Feature extraction and compression | The ≥2:1 the link requires ([spec 05.4](../spec/05-sensing.md#54-aggregate-rate-against-the-link)) | 🔜 *waiting update* |
 | Sensor fusion | Multi-rate, on a shared time base | 🔜 *waiting update* |
 | Link management | Graceful degradation before dropped streams | 🔜 *waiting update* |

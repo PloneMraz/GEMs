@@ -129,7 +129,7 @@ licence to be checked against this repository's.
 The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time
 of writing: 294 part numbers, including 9 software images and 6 consumables; 494
 operations across 59 routings; one selected manufacturer part (the Jetson T5000
-module), candidates for nine parts, **no verified price**, and a mass roll-up of
+module), candidates for nine parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of
 66.9 kg out of the 129.3 kg budget — the rest is blank rather than guessed.
 
 Prices were looked for on 2026-09-26. Most supplier pages were unreachable from

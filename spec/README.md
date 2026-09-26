@@ -44,6 +44,6 @@ building it.
 All ten chapters are written. Every capability cluster is closed: no chapter is
 still at the level of a sketch.
 
-What is not here yet is the conformance protocol that turns chapter 08 from a
-map into a test — that lives in [`../protocol/`](../protocol/) and is
-🔜 *waiting update*.
+The conformance protocol that turns chapter 08 from a map into a test lives
+in [`../protocol/`](../protocol/), in draft at v0.1, together with an
+assessment of this repository's simulated body against it.

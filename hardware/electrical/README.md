@@ -240,7 +240,7 @@ are not a dynamic peak. Lateral bending is **0.55 × extension**.
 
 | Source | Roll : pitch | Note |
 |---|---|---|
-| 3-DOF coupled tendon-driven humanoid waist, *Advanced Robotics* 2023 [15] | 0.50 | Designed pitch : roll : yaw = 4 : 2 : 1, realised as 87.0 / 53.0 / 22.2 Nm static. Abstract only; robot mass not obtained |
+| 3-DOF coupled tendon-driven humanoid waist, *Advanced Robotics* 2023 [15]; full specification repeated in the same group's 2025 paper [19] | 0.50 | Designed pitch : roll : yaw = 4 : 2 : 1, realised as 87.0 / 53.0 / 22.2 Nm static from three RMD X8 Pro actuators of 13.0 Nm nominal each. ROM pitch −30…60°, roll ±30°, yaw ±90°. Sized for a torso surrogate of **10 kg at 0.2 m** — a ~20 Nm gravitational moment — so the absolute figures are for a light upper body; only the ratio transfers |
 | Flexinoid tensegrity spine, *Scientific Reports* 2025 [18] | — | No torque figures for pitch or roll; actuators are 1.89 N·m servos with elastic assistance. Its value is as a mechanism reference — see kinematics §1.4 |
 | Unitree G1 URDF, 29-DOF [16] | 1.0 | waist_roll = waist_pitch = 35 Nm, waist_yaw 88 Nm, robot 35.1 kg. An outlier: G1's pitch and roll travel only ±30°, both sized far below its yaw |
 
@@ -297,4 +297,5 @@ against a real gait dataset.
 | 15 | [A 3-DOF coupled tendon-driven humanoid waist](https://www.tandfonline.com/doi/abs/10.1080/01691864.2023.2289134), *Advanced Robotics* 37(23), 2023 |
 | 16 | [Unitree G1 description, `g1_29dof.urdf`](https://github.com/unitreerobotics/unitree_ros/tree/master/robots/g1_description) — joint `<limit effort>` values read on 2026-09-26 |
 | 17 | [The effects of lifting speed on the peak external forward bending, lateral bending, and twisting spine moments](https://www.tandfonline.com/doi/abs/10.1080/001401399185838), *Ergonomics* 42(1) |
+| 19 | Wang Y., Chen P., Togo S., Yokoi H., Jiang Y., [A novel gravity compensation mechanism for orthogonal DoFs with coupled springs](https://doi.org/10.1016/j.mechmachtheory.2025.106220), *Mechanism and Machine Theory* 216:106220, 2025 — open access, CC BY-NC 4.0; not vendored. Table 1 restates the waist of [15]; §3.1 reports the wire-slack accuracy loss under load |
 | 18 | Ali A. R., Abdullah H. S., [Development of a compliant spine mechanism for enhanced humanoid robotics locomotion](https://doi.org/10.1038/s41598-025-32165-w), *Scientific Reports* 15:44646, 2025 — open access, CC BY 4.0; copy in [`sources/`](sources/ali-2025-flexinoid-tensegrity-spine-sci-rep-15-44646.pdf) |

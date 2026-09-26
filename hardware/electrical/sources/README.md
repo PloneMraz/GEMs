@@ -11,3 +11,8 @@ the repository's `CC-BY-4.0` does not apply to it.
 Not copied, because its licence is CC BY-NC-ND 4.0 and this repository does
 not exclude commercial use: Pan et al. 2025, *European Journal of Medical
 Research* 30:471, [doi:10.1186/s40001-025-02742-w](https://doi.org/10.1186/s40001-025-02742-w).
+
+Not copied, because they carry a "no copying or reprinting without permission"
+notice: the CubeMars AK Series Product Manual V3.2.0, the AK70-4820-2D-A3
+Driver Manual V1.0.0 and the AKH70-16 2D drawing (README refs 23–25). They
+are free downloads from the AKH70-16 product page.

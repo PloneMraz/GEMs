@@ -92,7 +92,8 @@ commercial torque-density band.** Nothing lower closes the mass loop.
 | Property | Figure | Source |
 |---|---|---|
 | Commercial QDD module, 8:1 planetary | **52 Nm/kg**, 9 arcmin backlash | CubeMars AKE80-8 [1] |
-| Commercial hollow-shaft planetary | **88.7 Nm/kg** peak — 78 Nm peak, 26 Nm rated, 879 g, 16:1; 78 / 0.879 = 88.7. The 85 Nm quoted here until 2026-09-26 was a reseller figure, see §6b | CubeMars AKH70-16 [1][22] |
+| Commercial hollow-shaft planetary, 16:1 | **88.7 Nm/kg** peak — 78 Nm peak, 26 Nm rated, 879 g; 78 / 0.879 = 88.7. The 85 Nm quoted here until 2026-09-26 was the end of the torque curve, see §6b | CubeMars AKH70-16 [1][22] |
+| The same motor at 48:1 | **159 Nm/kg** peak — 222 Nm peak, 74 Nm rated, 1396 g, three-stage planetary; output ±5 rad/s against ±13 rad/s at 16:1 [23] | CubeMars AKH70-48 [26], search excerpts; page not readable from here |
 | Highest commercial claim, series | up to **36 Nm/kg** | ZHR-H series [3] |
 | Integrated SOTA, whole-actuator | **18–22 Nm/kg** — axial flux, cycloidal QDD, hybrid housing, hollow titanium shaft, phase-change cooling | [3] |
 | Design floor for hip and knee | **> 30 Nm/kg** peak | [3] |
@@ -361,6 +362,39 @@ actuator side of the peak-power comparison rests on that band. The module's
 interface is dual CAN, not EtherCAT. Price on the page: USD 598.90, recorded
 in the AVL as the first verified price.
 
+**From the manufacturer's documents, read 2026-09-26** (supplied by the
+author; copyrighted, so cited and not vendored — [23][24][25]):
+
+| Item | Figure | Source |
+|---|---|---|
+| Torque coefficient at the output, AKH70-16 | 2.8334 Nm/A; force-control ranges ±13 rad/s, ±110 Nm | [23] §4.2 |
+| Torque coefficient at the output, AKH70-48 | 8.8123 Nm/A; ranges ±5 rad/s, ±280 Nm | [23] §4.2 |
+| Drive board for both, AK70-4820-2D-A3 | 48 V rated, 18–52 V; **20 A rms rated, 60 A peak**; CAN 1 Mbps; −20…65 °C ambient, 100 °C board limit; 21-bit inner and 15-bit outer encoder; ≤1 W standby | [24] §1.1 |
+| Envelope | Ø90 × 60.5 mm, Ø42 output boss, Ø7 through bore; housing mount 12 × M3 on Ø81; output face 6 × M4, 8 × M2.5, 4 × Ø3 dowels | [25] |
+| Peak torque duration, thermal time constant | **not stated in any of the three documents** | — |
+
+So 78 Nm at 2.83 Nm/A is 27.5 A, inside the board's 60 A peak, and the
+manual's ±110 Nm command range is the drive's limit, not the motor's rating.
+The thermal question of the previous paragraph stays open: the documents give
+rated and peak, not how long peak may be held.
+
+**Torque density is a ratio choice.** The AKH70-48 is the same motor and
+drive behind a three-stage 48:1 reducer: 222 Nm peak, 74 Nm rated, 1396 g,
+**159 Nm/kg** [26] — 1.8 times the density this document called the top of
+the market, bought with output speed: ±5 rad/s against ±13 rad/s. Against
+the 130 kg table, at 48:1 every leg and trunk joint is covered except hip
+pitch and knee at 230 Nm (short by 8) and trunk pitch at 226 (short by 4);
+shoulder pitch and roll are covered. What is not known is whether ~5 rad/s
+at the output is enough for gait and for catching a fall; that is the
+measurement D-2 now turns on, and the sizing table gains a speed column
+when it exists.
+
+**In-house design is not an option.** By the author's rule of 2026-09-26
+([`CLAUDE.md`](../../CLAUDE.md) §2), no part of this design may be proposed
+as something to build rather than buy. The "design them" branch of D-2 is
+withdrawn; what remains is which bought module, at which ratio, and how
+several combine.
+
 **The continuous-torque gap.** Every figure in the sizing table is a peak, and
 the density band is peak over module mass. The rated figures are 26 of 78 Nm
 for the market module and 37.5 of 89.9 Nm for the laboratory one — about a
@@ -405,4 +439,8 @@ against a real gait dataset.
 | 18 | Ali A. R., Abdullah H. S., [Development of a compliant spine mechanism for enhanced humanoid robotics locomotion](https://doi.org/10.1038/s41598-025-32165-w), *Scientific Reports* 15:44646, 2025 — open access, CC BY 4.0; copy in [`sources/`](sources/ali-2025-flexinoid-tensegrity-spine-sci-rep-15-44646.pdf) |
 | 20 | MIT course notes, *Electric Machines: Electromagnetic Forces* — the shear-stress range and torque ∝ rotor volume × shear stress; quoted from search excerpts, the [copy found](https://www.scribd.com/document/62980862/MIT-Electric-Machines) was not readable from this environment |
 | 21 | Zhu A., Tanaka Y., Rafeedi F., Hong D., [Cycloidal Quasi-Direct Drive Actuator Designs with Learning-based Torque Estimation for Legged Robotics](https://arxiv.org/abs/2410.16591), arXiv:2410.16591, 2024 — torque density up to 64.2 Nm/kg, 37.5 Nm continuous, 89.9 Nm peak; figures from the abstract as excerpted by search, the page not readable from this environment |
+| 23 | CubeMars, *AK Series Product Manual V3.2.0 for AK 3.0 Robotic Actuator*, 2026-01-17 — §4.2 motor parameter table (KV, torque coefficient, speed and torque ranges), fault codes, CAN protocol; copyrighted, not vendored |
+| 24 | CubeMars, *AK70-4820-2D-A3 Driver Manual V1.0.0*, 2026-04-29 — §1.1 driver specifications; copyrighted, not vendored |
+| 25 | CubeMars, *AKH70-16 V1.0 KV41 Hollow Shaft Planetary Actuator 2D Drawing*, 2026-05-19 — proprietary, not vendored |
+| 26 | [CubeMars AKH70-48 V1.0 KV41 hollow-shaft planetary actuator](https://www.cubemars.com/product/akh70-48-v-1-0-kv41-hollow-shaft-planetary-actuator.html) — 222 Nm peak, 74 Nm rated, 1396 g, 159 Nm/kg, 48:1 three-stage; from search excerpts of the page and reseller listings, the page not readable from this environment |
 | 22 | [CubeMars AKH70-16 V1.0 KV41 hollow-shaft planetary actuator](https://www.cubemars.com/product/akh70-16-v-1-0-kv41-hollow-shaft-planetary-actuator.html) — Φ90 × 60.5 mm, 879 g, 7 mm bore, 26 Nm rated, **78 Nm peak**, 105 rpm no-load, 16:1, dual 21-bit encoders; from the specification summary of the product page as read by the author on 2026-09-26, the page itself not readable from this environment. Search excerpts and reseller listings quote 85 Nm peak; the 78 Nm figure is the one consistent with 879 g and 88.74 Nm/kg |

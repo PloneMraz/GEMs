@@ -159,7 +159,7 @@ magnitude.
 | Property | Envelope | Maturity |
 |---|---|---|
 | Specific power | **3–5 kW/kg** | **TM** |
-| Specific torque | **80–90 Nm/kg peak** — see below | **TM**, top of the commercial band |
+| Specific torque | **80–90 Nm/kg peak** — see below | **TM**, at a 16:1 reduction; the same motor at 48:1 is sold at 159 Nm/kg — see below |
 | Efficiency | 75–82% | **TM** |
 | Response | milliseconds | **TM** |
 | Joints | precision bearings with harmonic or cycloidal reducers | **TM** |
@@ -175,10 +175,15 @@ integrated actuator mass**, counting cooling and wiring, yields 18–22 Nm/kg fo
 the state of the art. A figure carried across from one basis to the other will
 size a body that cannot be built.
 
-**This specification declares peak-over-module, and 80–90 Nm/kg is the top of
-what is commercially claimed.** The cost of standing there is real: part
-availability narrows to a handful of modules, and there is no margin to trade
-away later.
+**This specification declares peak-over-module, at the reduction ratio of the
+modules it was derived from — about 16:1, ~100 rpm no-load.** Torque density
+is not a ceiling of the motor: the same motor sold at 48:1 claims 159 Nm/kg at
+about half the speed ([electrical §6b](../hardware/electrical/README.md#6b-arm-payload-and-the-two-parts-of-f_act--2026-09-26)).
+What the ratio trades is output speed, so a density figure without its ratio,
+like one without its basis, is a number waiting to be misread. The cost of
+standing at 80–90 is still real: part availability narrows to a handful of
+modules, and the joints that need more torque than those modules give must
+take a higher ratio and lose speed, which the sizing here does not yet check.
 
 ### Why 80 is the floor
 

@@ -129,7 +129,7 @@ licence to be checked against this repository's.
 The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time
 of writing: 294 part numbers, including 9 software images and 6 consumables; 494
 operations across 59 routings; one selected manufacturer part (the Jetson T5000
-module), candidates for nine parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of
+module), candidates for seventeen parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of
 66.9 kg out of the 129.3 kg budget — the rest is blank rather than guessed.
 
 Prices were looked for on 2026-09-26. Most supplier pages were unreachable from
@@ -138,10 +138,11 @@ the pages that could be read, and each entry's notes say which.
 
 ## What building it turned up
 
-**The actuator density has one module behind it, and it is small.** The only
-module found at or above 80 Nm/kg peaks at 78 Nm. 10 of the 18 joint
-types — 17 of the 31 joints — need more, up to 230 Nm at the hip and knee.
-Hip yaw at 81 Nm and shoulder roll at 84 Nm sit just above it.
+**The actuator density has one motor behind it, at two ratios.** At 16:1 the
+module peaks at 78 Nm and 10 of the 18 joint types — 17 of the 31 joints —
+need more. At 48:1 the same motor peaks at 222 Nm and only hip pitch, knee and
+trunk pitch fall short, by 4–8 Nm, at about a third of the output speed; both
+are in the AVL, and whether the slower one is fast enough is D-2's question.
 
 **The reducer classes and the actuator family disagree.** `hardware/mechanical`
 §2 assigns cycloidal reducers to hips and knees and harmonic drives to wrists

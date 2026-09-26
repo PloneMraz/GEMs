@@ -390,6 +390,13 @@ at the output is enough for gait and for catching a fall; that is the
 measurement D-2 now turns on, and the sizing table gains a speed column
 when it exists.
 
+**Load cases and carry capacity.** Decision D-11 of the same day limits the
+declared loads to static objects and puts a held load onto the leg and trunk
+rows ([spec 02.6](../../spec/02-structure-and-motion.md#load-cases)). The
+sizing script prints the case table and the mass the legs can carry against
+this module's 222 Nm peak and 74 Nm rated torque; at the 4-hour point the
+body alone exceeds the peak, at the 2-hour point 26 kg is left for the hands.
+
 **In-house design is not an option.** By the author's rule of 2026-09-26
 ([`CLAUDE.md`](../../CLAUDE.md) §2), no part of this design may be proposed
 as something to build rather than buy. The "design them" branch of D-2 is

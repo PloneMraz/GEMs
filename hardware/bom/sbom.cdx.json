@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-09-26T17:41:20Z",
+    "timestamp": "2026-09-26T19:00:49Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -91,7 +91,7 @@
       "type": "application",
       "bom-ref": "hardware/electrical/actuator_sizing.py",
       "name": "hardware/electrical/actuator_sizing.py",
-      "version": "sha256:16dcc4417a46",
+      "version": "sha256:0896af938b41",
       "description": "Joint torque table and actuator sizing",
       "supplier": {
         "name": "Plone Mraz"
@@ -106,7 +106,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "16dcc4417a46559e602eb68d8deaab36a0ca6a6f93d8c1e46babeaad7166a317"
+          "content": "0896af938b418838a6de5a0223d9524cae151166221dc04bdaaccbf766ce5953"
         }
       ],
       "scope": "excluded",
@@ -121,7 +121,7 @@
       "type": "application",
       "bom-ref": "scripts/gems_budget.py",
       "name": "scripts/gems_budget.py",
-      "version": "sha256:bb4214175396",
+      "version": "sha256:3b4ddc90c185",
       "description": "Mass-energy-power budget model and spec check",
       "supplier": {
         "name": "Plone Mraz"
@@ -136,7 +136,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "bb421417539668889bacf1a41dfdd1378066a9c265408b7fa638e83e2b32a32b"
+          "content": "3b4ddc90c18518be5619d06e834ec1dfef9778e61d1338c3c576e16fc8283863"
         }
       ],
       "scope": "excluded",

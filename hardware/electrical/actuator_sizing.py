@@ -54,6 +54,26 @@ ARM_STRUCTURE = [
 SHOULDER_YAW_POS = UPPER_ARM / 2     # yaw module sits in the upper arm
 WRIST_POS = UPPER_ARM + FOREARM      # three wrist modules at the wrist
 
+# Load cases, decided 2026-09-26 (spec 02.6, plan D-11): static objects only.
+# Lifting, carrying or dragging a person is outside the declared capability;
+# contact with people (spec 01 group 4) is not a load case and stays in.
+# Levers are horizontal distances from the shoulder and elbow axes to the
+# load's centre of mass; a load on the legs adds its mass to every per-kg
+# leg and trunk row. Masses marked "proposed" await the author's figures.
+LOAD_CASES = [
+    # (name, mass kg, hands, lever from shoulder m, lever from elbow m, status)
+    ("one hand, arm straight and horizontal",   PAYLOAD_KG, 1, SHOULDER_TO_GRIP, ELBOW_TO_GRIP, "decided D-10"),
+    ("bag hanging from one hand, arm down",     20.0, 1, 0.0,  0.0,  "proposed"),
+    ("object hugged to the chest, two hands",   20.0, 2, 0.30, 0.20, "proposed"),
+    ("light object to a high shelf, one hand",  5.0,  1, SHOULDER_TO_GRIP, ELBOW_TO_GRIP, "proposed"),
+    ("stairs with a load held close, two hands", 20.0, 2, 0.15, 0.10, "proposed"),
+]
+
+# The module the carry capacity is reported against: CubeMars AKH70-48,
+# README §6b — peak and rated torque, Nm.
+MODULE_PEAK = 222.0
+MODULE_RATED = 74.0
+
 # Per-joint peak torque. Leg and trunk figures scale with body mass; arm
 # figures follow from the payload and the arm's own weight; the rest are fixed.
 # Sources are listed per row in README.md.
@@ -130,12 +150,14 @@ def arm_torques(density=FLOOR_DENSITY):
     }
 
 
-def torque_table(body_mass, density=FLOOR_DENSITY):
+def torque_table(body_mass, density=FLOOR_DENSITY, carry_kg=0.0):
+    """Peak torque per joint. `carry_kg` is a load held close to the body: it
+    adds to the mass every leg and trunk row scales with, and nothing else."""
     arms = arm_torques(density)
     rows = []
     for name, n, basis, val in JOINTS:
         if basis == "per_kg":
-            t = val * body_mass
+            t = val * (body_mass + carry_kg)
         elif basis == "arm":
             joint, load = val
             key = "shoulder_roll" if load == PAYLOAD_ROLL_KG and joint == "shoulder" else joint
@@ -143,6 +165,41 @@ def torque_table(body_mass, density=FLOOR_DENSITY):
         else:
             t = val
         rows.append((name, n, t, n * t))
+    return rows
+
+
+def governing_per_kg():
+    """The largest per-kg figure among the leg and trunk rows: the joint that
+    limits how much mass the legs can lift."""
+    top = max(v for _, _, b, v in JOINTS if b == "per_kg")
+    return top, " and ".join(n for n, _, b, v in JOINTS if b == "per_kg" and v == top)
+
+
+def carry_capacity(body_mass, peak=MODULE_PEAK, rated=MODULE_RATED):
+    """Mass the legs can carry at a module's peak and rated torque: the joint
+    with the largest per-kg demand reaches the module's torque at
+    (body + carry) = torque / per_kg. Negative means the body alone exceeds
+    it. Rated is the figure for a load held through a slow climb; peak for a
+    single stand-up or step."""
+    per_kg, joint = governing_per_kg()
+    return peak / per_kg - body_mass, rated / per_kg - body_mass, joint
+
+
+def load_case_table(body_mass, density=FLOOR_DENSITY):
+    """Per load case: shoulder, elbow, hip and trunk torque, arm self-weight
+    included. Hip and trunk take the load on the legs."""
+    arms = arm_torques(density)
+    s_self = arms["shoulder"][1]
+    e_self = arms["elbow"][1]
+    hip = next(v for n, _, b, v in JOINTS if n == "hip_pitch")
+    trunk = next(v for n, _, b, v in JOINTS if n == "trunk_pitch")
+    rows = []
+    for name, m, hands, ls, le, status in LOAD_CASES:
+        rows.append((name, m, status,
+                     m / hands * G * ls + s_self,
+                     m / hands * G * le + e_self,
+                     hip * (body_mass + m),
+                     trunk * (body_mass + m)))
     return rows
 
 
@@ -165,13 +222,16 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1])
     ap.add_argument("--mass", type=float, default=REF_MASS,
                     help="body mass in kg (default: the 4-hour point)")
+    ap.add_argument("--carry", type=float, default=0.0,
+                    help="load held close to the body, kg, added to the leg and trunk rows")
     a = ap.parse_args(argv)
 
-    rows = torque_table(a.mass)
+    rows = torque_table(a.mass, carry_kg=a.carry)
     total_nm = sum(r[3] for r in rows)
     n_joints = sum(r[1] for r in rows)
 
-    print("Actuator sizing — %d joints, body mass %.0f kg" % (n_joints, a.mass))
+    print("Actuator sizing — %d joints, body mass %.0f kg%s"
+          % (n_joints, a.mass, ", carrying %.0f kg" % a.carry if a.carry else ""))
     print("=" * 66)
     print("  %-16s %3s %10s %12s" % ("joint", "n", "peak Nm", "total Nm"))
     for name, n, t, tot in rows:
@@ -193,6 +253,22 @@ def main(argv=None):
         pay, own = arms[k]
         print("  %-22s payload %5.1f Nm + self-weight %4.1f Nm = %5.1f Nm"
               % (label, pay, own, pay + own))
+
+    print()
+    print("Load cases (static objects; people are not a load case) — Nm, arm self-weight included")
+    print("=" * 66)
+    print("  %-42s %5s %8s %6s %5s %6s" % ("case", "kg", "shoulder", "elbow", "hip", "trunk"))
+    for name, m, status, ts, te, th, tt in load_case_table(a.mass):
+        print("  %-42s %5.0f %8.0f %6.0f %5.0f %6.0f  %s" % (name, m, ts, te, th, tt, status))
+    cp, cr, joint = carry_capacity(a.mass)
+    print()
+    print("Carry capacity of the legs against a %.0f Nm peak / %.0f Nm rated module (AKH70-48),"
+          % (MODULE_PEAK, MODULE_RATED))
+    print("  limited by %s:" % joint)
+    print("  a single stand-up or step, at peak:   %s"
+          % ("%.0f kg" % cp if cp >= 0 else "none — the body alone exceeds it by %.0f kg" % -cp))
+    print("  a sustained climb, at rated torque:   %s"
+          % ("%.0f kg" % cr if cr >= 0 else "none — the body alone exceeds it by %.0f kg" % -cr))
 
     print()
     print("Actuator mass and f_act at published torque densities")

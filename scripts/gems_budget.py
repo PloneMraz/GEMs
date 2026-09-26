@@ -94,6 +94,18 @@ def joint_torque_total(body_mass_kg):
     return sum(r[3] for r in torque_table(body_mass_kg))
 
 
+def carry_capacity(body_mass_kg):
+    """(kg at the module's peak, kg at its rated torque, limiting joints) —
+    hardware/electrical/actuator_sizing.py, against the AKH70-48."""
+    import sys
+    from pathlib import Path
+    d = str(Path(__file__).resolve().parent.parent / "hardware" / "electrical")
+    if d not in sys.path:
+        sys.path.insert(0, d)
+    from actuator_sizing import carry_capacity as cc
+    return cc(body_mass_kg)
+
+
 def torque_split():
     """(Nm per kg of body for legs and trunk, fixed Nm for arms, wrists, neck)."""
     import sys
@@ -160,6 +172,7 @@ def budget(f_str, density, p, endurance, e, coverage, areal, m_fixed,
     m = gamma * m_ext
     m_act = m * f_act_s + m_act_fixed
     pack_kwh = m * battery_fraction(p, endurance, e) * e / 1000.0
+    carry_peak, carry_rated, carry_joint = carry_capacity(m)
     out.update({
         "gamma": round(gamma, 2),
         "body_mass_kg": round(m, 1),
@@ -171,6 +184,9 @@ def budget(f_str, density, p, endurance, e, coverage, areal, m_fixed,
         "actuator_peak_kW": round(m_act * kw_per_kg, 0),
         "source_peak_kW": round(source_peak_kw(pack_kwh, c_rate), 1),
         "mass_price_per_kg_added": round(gamma, 2),
+        "carry_kg_at_peak": round(carry_peak, 1),
+        "carry_kg_at_rated": round(carry_rated, 1),
+        "carry_limited_by": carry_joint,
     })
     out["binding_peak_limit"] = (
         "source" if out["source_peak_kW"] < out["actuator_peak_kW"] else "actuators"
@@ -206,6 +222,11 @@ def print_report(b):
           % (b["battery_kg"], b["pack_kWh"]))
     print("         armour         %6.1f kg" % b["armour_kg"])
     print("         fixed          %6.1f kg   (compute, sensors, hands, skin, harness)" % i["m_fixed_kg"])
+    print()
+    print("carry    legs, %s, against the AKH70-48 (222 Nm peak, 74 Nm rated):" % b["carry_limited_by"])
+    for k, label in (("carry_kg_at_peak", "one stand-up or step"), ("carry_kg_at_rated", "a sustained climb")):
+        v = b[k]
+        print("         %-22s %s" % (label, "%.0f kg" % v if v >= 0 else "none, body over by %.0f kg" % -v))
     print()
     print("power    actuators accept %5.0f kW" % b["actuator_peak_kW"])
     print("         source delivers  %5.1f kW" % b["source_peak_kW"])
@@ -319,6 +340,14 @@ def collect_claims():
     c.append(("f_act floor", "spec/02-structure-and-motion.md",
               "allow a floor near %d Nm/kg" % round(total_nm / 0.35 / 130.0),
               "the density at which f_act touches 0.35"))
+
+    # 02.6 carry capacity at both operating points
+    for t in (2, 4):
+        b = budget(F_STR, DENSITY, 20, t, 450, 0.65, 7.5, 20.0)
+        v = b["carry_kg_at_peak"]
+        c.append(("carry t%dh" % t, "spec/02-structure-and-motion.md",
+                  ("**%d kg**" % round(v)) if v >= 0 else ("exceeds it by %d kg" % round(-v)),
+                  "carry capacity at peak, %d h point" % t))
 
     # 02.7 both operating points, derived here rather than transcribed
     for t in (2, 4):

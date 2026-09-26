@@ -39,7 +39,7 @@ the capacity to reconfigure in ways a human body cannot.
 | Group | Level |
 |---|---|
 | **1 — Sensing and experience acquisition** | **Primary axis.** At or above human. Only the extreme surveillance end is trimmed |
-| **2 — Technical manipulation** | Daily tasks and moderate precision. Industrial force is out |
+| **2 — Technical manipulation** | Daily tasks and moderate precision, on static objects. Industrial force is out; so is lifting, carrying or dragging a person ([02.6](02-structure-and-motion.md#load-cases)) |
 | **3 — Harsh environments** | Civil rescue only: house fires, ordinary-depth water. Vacuum, radiation, deep sea and foundry work are out |
 | **4 — Interaction and presence** | **Core.** Safe human contact, social presence |
 | **5 — Durability** | One material standard covering everyday physical impact: strikes, knives, vehicle contact, handgun rounds, training impact |

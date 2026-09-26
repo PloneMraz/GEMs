@@ -241,6 +241,46 @@ For the lever alone, `τ = M·g·L`, with the corresponding actuator mass at
 | 30 kg | 118 Nm (1.47 kg) | 162 Nm (2.02 kg) | 188 Nm (2.35 kg) |
 | 50 kg | 196 Nm (2.45 kg) | 270 Nm (3.37 kg) | 314 Nm (3.92 kg) |
 
+### Load cases
+
+**Decided 2026-09-26: the declared loads are static objects.** Lifting,
+carrying or dragging a person is outside group 2 — it needs dynamic factors no
+source gives and a responsibility no paper design can carry. Safe contact with
+people (group 4 of [01](01-architecture.md#application-frame)) is not a load
+case and stays core: touching, steadying and walking beside are in; lifting is
+out.
+
+Each case is a mass, how many hands hold it, the horizontal lever from the
+shoulder and elbow axes to its centre of mass, and a status. A load held close
+to the body is carried by the legs and trunk, so its mass is added to every
+per-kilogram row of theirs — the rule the sizing lacked until this date. Arm
+self-weight is included. At the 130 kg point:
+
+| Case | kg | Shoulder | Elbow | Hip | Trunk pitch | Status |
+|---|---|---|---|---|---|---|
+| One hand, arm straight and horizontal | 15 | 109 | 52 | 257 | 252 | decided, D-10 |
+| Bag hanging from one hand, arm down | 20 | 15 | 5 | 266 | 261 | proposed |
+| Object hugged to the chest, two hands | 20 | 45 | 24 | 266 | 261 | proposed |
+| Light object to a high shelf, one hand | 5 | 47 | 20 | 239 | 235 | proposed |
+| Stairs with a load held close, two hands | 20 | 30 | 14 | 266 | 261 | proposed |
+
+Two things the table says. The arm cases are cheap: the horizontal arm sets
+the shoulder and nothing else comes near it. The leg cases are where the mass
+goes: 20 kg held close costs the hip 35 Nm, whatever the hands do. The bag
+hanging straight down costs the shoulder nothing and is a bearing case — the
+AKH70-48 output bearing is rated 8680 N static, 18 times that bag.
+
+**Carry capacity** follows: the leg joint with the largest per-kilogram demand
+(hip pitch and knee, 1.77 Nm/kg) reaches a module's torque at
+`(body + load) = torque / 1.77`. Against the AKH70-48's 222 Nm peak, the 4-hour
+body at 129 kg carries nothing — the body alone exceeds it by 4 kg — while the
+2-hour body at 99 kg carries **26 kg** in one stand-up or step. Every
+kilogram off the body is a kilogram onto the hands, which is why D-8 and the
+load cases are one decision. At the module's 74 Nm rated torque no body in
+2.5 climbs stairs with a load for long; how long its peak may be held is the
+open question of [electrical §6b](../hardware/electrical/README.md#6b-arm-payload-and-the-two-parts-of-f_act--2026-09-26).
+`scripts/gems_budget.py` prints both figures for any point.
+
 **A single joint is not the binding constraint, but the arms are the lever on
 `f_act`.** The legs and trunk carry 2352 Nm of the 3112 and scale with the body,
 so they set the absolute torque each module must deliver and the peak power of

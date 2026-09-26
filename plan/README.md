@@ -129,7 +129,7 @@ quite passes as human is received worse than one that does not try.
 | ID | Task | To | Waits for |
 |---|---|---|---|
 | M-1 | Parametric CAD skeleton generated from `kinematics.md`, the same way the URDF is — joint frames, segment envelopes, keep-out volumes | L4 | — |
-| M-2 | Packaging study: where the pack, compute, drives, radios and sensors sit, checked against segment envelopes, the outer form and the centre of mass | L1 | D-4, D-5, ID-2 |
+| M-2 | Packaging study: where the pack, compute, drives, radios and sensors sit, checked against segment envelopes, the outer form and the centre of mass. **Pack location decided: the scapular region of the upper back, on the torso frame** — see [pack location](#pack-location-decided) below | L1 | D-4, D-5, ID-2 |
 | M-3 | Joint modules per class — hip/knee (cycloidal), shoulder/elbow (QDD planetary), wrist/neck (harmonic): bearings, seals, encoder mounts, joint locks (spec 03.2 measure 4), series-elastic elements (measure 5) | L4 | D-1, D-2 |
 | M-4 | Hands at the reference configuration | L4 | D-6 |
 | M-5 | Structure per segment — composite tubes, 7075 load-introduction fittings, fastener schedule | L4 | M-2, M-3 |
@@ -138,8 +138,44 @@ quite passes as human is received worse than one that does not try.
 | M-8 | Shell, three layers (spec 04.5): sense-and-heal, variable stiffness, load-and-fire, on the surfaces of ID-2 | L4 | M-7, ID-2 — **LAB** for the first two |
 | M-9 | Head and sensor mounting — stereo baseline, thermal, LiDAR, microphone array geometry, inside the face of ID-5 | L4 | E-6, ID-5 |
 | M-10 | Dock — seat form, charging contacts, alignment | L4 | E-2 |
-| M-11 | Thermal design — conduction paths, compute and drive cooling, sealed-body dissipation | L5 | M-2, E-3, E-5 |
+| M-11 | Thermal design — conduction paths, compute and drive cooling, sealed-body dissipation. Exhaust at the upper back, over the pack — see [pack location](#pack-location-decided) below | L5 | M-2, E-3, E-5 |
 | M-12 | Mass properties exported from CAD into the simulation model, replacing the estimated inertias | L5 | M-5 |
+
+#### Pack location, decided
+
+The author's decision, 2026-09-26: **the battery pack sits in the scapular
+region of the upper back, on the torso frame** — not on the arms, and not in the
+waist or pelvis. It frees the waist the concept art asks for
+([`hardware/design/concept/`](../hardware/design/concept/)), and it places the
+body's largest heat source where an exhaust is easiest to design.
+
+What the decision costs, at the declared point (URDF geometry: pelvis centre
+~0.99 m above the sole, scapular region ~1.35 m), and how the cost falls as
+cells improve — `gems_budget.py` at 4 h and 65% coverage:
+
+| Cell energy density | Body | Pack | Centre of mass raised by moving the pack from pelvis to upper back |
+|---|---|---|---|
+| 450 Wh/kg — durable tier, today | 129.5 kg | 23.0 kg, 10.4 kWh | ~6 cm |
+| 550 Wh/kg | 113.0 kg | 16.4 kg | ~5 cm |
+| 700 Wh/kg — low end of the ceiling tier (spec 03.1) | 100.7 kg | 11.5 kg | ~4 cm |
+| 1000 Wh/kg | 89.9 kg | 7.2 kg | ~3 cm |
+
+The pack shrinks faster than the energy it holds would suggest, because the
+mass loop compounds: a lighter pack makes a lighter body, which needs less pack.
+Two things do not improve with it. The ceiling tier trades rate for density
+(spec 02.7, 03.1), so the peak-power shortfall widens; and its cycle life is
+presently ~100 cycles. A denser cell is not free — it moves the problem.
+
+Constraints the decision carries into the design:
+
+| | |
+|---|---|
+| **Waist load** | Pack mass high above the waist adds pitch inertia about the waist axis (~1.8 kg·m² at 23 kg, against ~3.7 kg·m² estimated for the torso itself — about +50%). Waist pitch, already 200 Nm, is sized with it |
+| **Falls** | The pack is exposed in a backward fall. The supported failure state (spec 07.3 g2) should favour falls that spare the back |
+| **Cooling exhaust** | Up and out at the upper back, where warm air leaves naturally; intake low. Exhaust points away from the face and head sensors |
+| **Thermal-runaway venting** | A separate path from cooling, and never toward the head. Runaway gas is directed down and away from the body |
+| **Sealing and armour** | Openings in the torso break the seal and the armour; the torso is in every coverage band (spec 02.4). Baffled or labyrinth openings behind the protection layer |
+| **Compute placement** | The edge module (40–130 W) is not placed upstream of the cells in the airflow — cells keep a lower temperature window than compute |
 
 ### E — Electrical
 

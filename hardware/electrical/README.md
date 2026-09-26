@@ -353,6 +353,13 @@ from the specification summary of the CubeMars page**: peak torque is
 and 78 / 0.879 = 88.74 Nm/kg exactly. The three figures are consistent, and
 the module is 7 Nm smaller than this document assumed until then — hip yaw,
 at 81 Nm, and shoulder roll, at 84 Nm, moved above it.
+The page's torque–speed curve at 48 VDC runs to 85 Nm, which is where the
+85 figure came from; at that end the module turns at about 53 rpm and puts
+out about 470 W, so its **peak specific power is about 0.53 kW/kg**, against
+the 3–5 kW/kg spec 02.6 declares — an open finding for spec 02.7, where the
+actuator side of the peak-power comparison rests on that band. The module's
+interface is dual CAN, not EtherCAT. Price on the page: USD 598.90, recorded
+in the AVL as the first verified price.
 
 **The continuous-torque gap.** Every figure in the sizing table is a peak, and
 the density band is peak over module mass. The rated figures are 26 of 78 Nm

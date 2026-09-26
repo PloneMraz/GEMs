@@ -39,6 +39,9 @@ import xml.etree.ElementTree as ET
 from xml.dom import minidom
 
 # -- declared in hardware/kinematics.md §2 ---------------------------------
+# URDF axes: x forward, y left, z up. For boxes, w is lateral (y), d is
+# fore-aft (x), h is along the segment (z). Segments hang below their joint
+# unless listed in UPWARD.
 
 SEG = {
     "pelvis":    dict(kind="box", w=0.30, d=0.18, h=0.16),
@@ -46,11 +49,12 @@ SEG = {
     "head":      dict(kind="box", w=0.16, d=0.19, h=0.22),
     "upper_arm": dict(kind="cyl", r=0.048, h=0.32),   # declared 0.32
     "forearm":   dict(kind="cyl", r=0.040, h=0.26),   # declared 0.26
-    "hand":      dict(kind="box", w=0.09, d=0.04, h=0.12),
+    "hand":      dict(kind="box", w=0.04, d=0.09, h=0.12),   # palm faces the thigh
     "thigh":     dict(kind="cyl", r=0.062, h=0.42),   # declared 0.42
     "shank":     dict(kind="cyl", r=0.050, h=0.42),   # declared 0.42
     "foot":      dict(kind="box", w=0.10, d=0.26, h=0.07),
 }
+UPWARD = {"torso", "head"}
 SHOULDER_WIDTH = 0.40       # declared
 HIP_WIDTH = 0.18
 DECLARED_REACH = 0.70       # declared: shoulder to fingertip
@@ -87,8 +91,8 @@ def inertia(seg, m):
         iz = m * r * r / 2.0
     else:
         w, d, h = seg["w"], seg["d"], seg["h"]
-        ix = m * (d * d + h * h) / 12.0
-        iy = m * (w * w + h * h) / 12.0
+        ix = m * (w * w + h * h) / 12.0
+        iy = m * (d * d + h * h) / 12.0
         iz = m * (w * w + d * d) / 12.0
     return ix, iy, iz
 
@@ -98,23 +102,46 @@ def seg_length(name):
     return s["h"]
 
 
+DUMMY_MASS = 1e-3
+DUMMY_INERTIA = 1e-6
+
+
+def seg_centre_z(seg_name):
+    h = SEG[seg_name]["h"]
+    return h / 2.0 if seg_name in UPWARD else -h / 2.0
+
+
 def add_link(robot, name, seg_name, mass):
     s = SEG[seg_name]
     link = ET.SubElement(robot, "link", name=name)
     ix, iy, iz = inertia(s, mass)
+    cz = "0 0 %.4f" % seg_centre_z(seg_name)
     inert = ET.SubElement(link, "inertial")
-    ET.SubElement(inert, "origin", xyz="0 0 %.4f" % (-s["h"] / 2.0), rpy="0 0 0")
+    ET.SubElement(inert, "origin", xyz=cz, rpy="0 0 0")
     ET.SubElement(inert, "mass", value="%.4f" % mass)
     ET.SubElement(inert, "inertia", ixx="%.6f" % ix, iyy="%.6f" % iy,
                   izz="%.6f" % iz, ixy="0", ixz="0", iyz="0")
     for tag in ("visual", "collision"):
         el = ET.SubElement(link, tag)
-        ET.SubElement(el, "origin", xyz="0 0 %.4f" % (-s["h"] / 2.0), rpy="0 0 0")
+        ET.SubElement(el, "origin", xyz=cz, rpy="0 0 0")
         geo = ET.SubElement(el, "geometry")
         if s["kind"] == "cyl":
             ET.SubElement(geo, "cylinder", radius="%.4f" % s["r"], length="%.4f" % s["h"])
         else:
-            ET.SubElement(geo, "box", size="%.4f %.4f %.4f" % (s["w"], s["d"], s["h"]))
+            ET.SubElement(geo, "box", size="%.4f %.4f %.4f" % (s["d"], s["w"], s["h"]))
+    return link
+
+
+def add_dummy(robot, name):
+    """Intermediate link between two axes of one joint. It carries a gram and
+    no geometry: drawing the next segment here would duplicate it."""
+    link = ET.SubElement(robot, "link", name=name)
+    inert = ET.SubElement(link, "inertial")
+    ET.SubElement(inert, "origin", xyz="0 0 0", rpy="0 0 0")
+    ET.SubElement(inert, "mass", value="%.4f" % DUMMY_MASS)
+    ET.SubElement(inert, "inertia", ixx="%.6f" % DUMMY_INERTIA,
+                  iyy="%.6f" % DUMMY_INERTIA, izz="%.6f" % DUMMY_INERTIA,
+                  ixy="0", ixz="0", iyz="0")
     return link
 
 
@@ -148,7 +175,7 @@ def build(total_mass):
     add_link(robot, "pelvis", "pelvis", masses["pelvis"])
 
     # waist 2 + torso
-    add_link(robot, "waist_yaw_link", "pelvis", 1e-3)
+    add_dummy(robot, "waist_yaw_link")
     add_joint(robot, "waist_yaw", "pelvis", "waist_yaw_link", "0 0 0", Z)
     add_link(robot, "torso", "torso", masses["torso"])
     add_joint(robot, "waist_pitch", "waist_yaw_link", "torso", "0 0 0", Y)
@@ -156,7 +183,7 @@ def build(total_mass):
     th = seg_length("torso")
 
     # neck 2 + head
-    add_link(robot, "neck_yaw_link", "head", 1e-3)
+    add_dummy(robot, "neck_yaw_link")
     add_joint(robot, "neck_yaw", "torso", "neck_yaw_link", "0 0 %.4f" % th, Z)
     add_link(robot, "head", "head", masses["head"])
     add_joint(robot, "neck_pitch", "neck_yaw_link", "head", "0 0 0", Y)
@@ -166,10 +193,10 @@ def build(total_mass):
         sy = sgn * SHOULDER_WIDTH / 2.0
 
         # arm: 7 DOF
-        add_link(robot, p + "shoulder_pitch_link", "upper_arm", 1e-3)
+        add_dummy(robot, p + "shoulder_pitch_link")
         add_joint(robot, p + "shoulder_pitch", "torso", p + "shoulder_pitch_link",
                   "0 %.4f %.4f" % (sy, th), Y)
-        add_link(robot, p + "shoulder_roll_link", "upper_arm", 1e-3)
+        add_dummy(robot, p + "shoulder_roll_link")
         add_joint(robot, p + "shoulder_roll", p + "shoulder_pitch_link",
                   p + "shoulder_roll_link", "0 0 0", X)
         add_link(robot, p + "upper_arm", "upper_arm", masses["upper_arm"])
@@ -178,10 +205,10 @@ def build(total_mass):
         add_link(robot, p + "forearm", "forearm", masses["forearm"])
         add_joint(robot, p + "elbow", p + "upper_arm", p + "forearm",
                   "0 0 %.4f" % -seg_length("upper_arm"), Y)
-        add_link(robot, p + "wrist_yaw_link", "hand", 1e-3)
+        add_dummy(robot, p + "wrist_yaw_link")
         add_joint(robot, p + "wrist_yaw", p + "forearm", p + "wrist_yaw_link",
                   "0 0 %.4f" % -seg_length("forearm"), Z)
-        add_link(robot, p + "wrist_pitch_link", "hand", 1e-3)
+        add_dummy(robot, p + "wrist_pitch_link")
         add_joint(robot, p + "wrist_pitch", p + "wrist_yaw_link",
                   p + "wrist_pitch_link", "0 0 0", Y)
         add_link(robot, p + "hand", "hand", masses["hand"])
@@ -190,10 +217,10 @@ def build(total_mass):
 
         # leg: 6 DOF
         hy = sgn * HIP_WIDTH / 2.0
-        add_link(robot, p + "hip_roll_link", "thigh", 1e-3)
+        add_dummy(robot, p + "hip_roll_link")
         add_joint(robot, p + "hip_roll", "pelvis", p + "hip_roll_link",
                   "0 %.4f %.4f" % (hy, -seg_length("pelvis")), X)
-        add_link(robot, p + "hip_pitch_link", "thigh", 1e-3)
+        add_dummy(robot, p + "hip_pitch_link")
         add_joint(robot, p + "hip_pitch", p + "hip_roll_link",
                   p + "hip_pitch_link", "0 0 0", Y)
         add_link(robot, p + "thigh", "thigh", masses["thigh"])
@@ -202,7 +229,7 @@ def build(total_mass):
         add_link(robot, p + "shank", "shank", masses["shank"])
         add_joint(robot, p + "knee", p + "thigh", p + "shank",
                   "0 0 %.4f" % -seg_length("thigh"), Y)
-        add_link(robot, p + "ankle_pitch_link", "foot", 1e-3)
+        add_dummy(robot, p + "ankle_pitch_link")
         add_joint(robot, p + "ankle_pitch", p + "shank", p + "ankle_pitch_link",
                   "0 0 %.4f" % -seg_length("shank"), Y)
         add_link(robot, p + "foot", "foot", masses["foot"])
@@ -210,6 +237,36 @@ def build(total_mass):
                   "0 0 0", X)
 
     return robot
+
+
+def _xyz(el):
+    return [float(v) for v in el.get("xyz").split()]
+
+
+def geometry_extents(robot):
+    """Axis-aligned extents of every visual in the zero pose, keyed by link.
+    All joint and visual origins carry rpy="0 0 0", so a link's pose is the
+    sum of the joint offsets down to it."""
+    offset = {robot.find("link").get("name"): [0.0, 0.0, 0.0]}
+    for j in robot.findall("joint"):
+        parent = offset[j.find("parent").get("link")]
+        offset[j.find("child").get("link")] = [
+            a + b for a, b in zip(parent, _xyz(j.find("origin")))]
+    ext = {}
+    for link in robot.findall("link"):
+        vis = link.find("visual")
+        if vis is None:
+            continue
+        c = [a + b for a, b in zip(offset[link.get("name")],
+                                   _xyz(vis.find("origin")))]
+        g = vis.find("geometry")[0]
+        if g.tag == "box":
+            half = [float(v) / 2.0 for v in g.get("size").split()]
+        else:
+            r, h = float(g.get("radius")), float(g.get("length"))
+            half = [r, r, h / 2.0]
+        ext[link.get("name")] = [(ci - hi, ci + hi) for ci, hi in zip(c, half)]
+    return ext
 
 
 def audit(robot, total_mass):
@@ -224,6 +281,14 @@ def audit(robot, total_mass):
     height = (seg_length("foot") + seg_length("shank") + seg_length("thigh")
               + seg_length("pelvis") + seg_length("torso") + seg_length("head"))
 
+    ext = geometry_extents(robot)
+    drawn_height = (max(e[2][1] for e in ext.values())
+                    - min(e[2][0] for e in ext.values()))
+    foot = ext["l_foot"]
+    foot_forward = (foot[0][1] - foot[0][0]) > (foot[1][1] - foot[1][0])
+    torso = ext["torso"]
+    torso_above_waist = torso[2][0] >= -1e-9
+
     checks = [
         ("core DOF", len(dof), 30, len(dof) == 30),
         ("total mass kg", round(mass, 1), total_mass,
@@ -232,6 +297,11 @@ def audit(robot, total_mass):
          abs(reach - DECLARED_REACH) < 0.005),
         ("standing height m", round(height, 3), DECLARED_HEIGHT,
          abs(height - DECLARED_HEIGHT) < 0.02),
+        ("drawn height m", round(drawn_height, 3), DECLARED_HEIGHT,
+         abs(drawn_height - DECLARED_HEIGHT) < 0.02),
+        ("drawn segments", len(ext), 15, len(ext) == 15),
+        ("torso above waist", torso_above_waist, True, torso_above_waist),
+        ("feet point forward", foot_forward, True, foot_forward),
     ]
     return checks
 

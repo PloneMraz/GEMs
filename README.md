@@ -98,9 +98,10 @@ One directory per group, and the body's three design disciplines nest under
 | [`hardware/electrical/`](hardware/electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint sizing | ◐ selection done |
 | [`hardware/sim-model/`](hardware/sim-model/) | URDF generated from the kinematics, audited against it | ✅ |
 | [`hardware/bom/`](hardware/bom/) | EBOM, MBOM and SBOM from one definition, checked against each other; approved manufacturer list, blanks where not yet verified | ◐ 281 parts, none priced |
-| [`firmware/`](firmware/) | Code on the embedded devices, and every hard real-time task: joint control, balance loop, reflex path with agency tagging, power-state machine, secure boot and attestation, low-power trace emission | ◐ architecture; source awaits a target |
-| [`software/`](software/) | Code on the application processors: capture drivers, feature extraction and compression, sensor fusion, log synchronisation, link management, and the audit-log reference implementation | ◐ audit log implemented |
-| [`realtime/`](realtime/) | Timing policy, apart from code: every task's layer, rate, deadline and deadline class, checked against `spec/` and the firmware architecture | ✅ |
+| [`firmware/`](firmware/) | Code that runs directly on the microcontrollers, bare metal or RTOS: joint control, battery management, secure boot and attestation, low-power beacon — and the real-time controller's balance, reflex and supervisor modules if D-3 makes it a microcontroller | ◐ architecture; source awaits a target |
+| [`software/`](software/) | Code that runs under Linux on the embedded computers: capture drivers, feature extraction and compression, sensor fusion, log synchronisation, link management | 🔜 no source yet |
+| [`reference/`](reference/) | Executable specifications the on-body code is checked against: audit log, agency tagging. They run on no target | ✅ with tests |
+| [`realtime_config/`](realtime_config/) | Timing policy, apart from code: each task's deadline class (the requirement) and its platform, scheduling policy and latency bound (how it is met), checked against `spec/` and the firmware architecture | ◐ requirement set; scheduling waits for D-2, D-3 |
 | [`scripts/`](scripts/) | The coupled mass–energy–power loop, executable; checks the figures in `spec/` | ✅ |
 
 Directories marked 🔜 do not exist yet. They are named in advance so that the
@@ -108,18 +109,18 @@ place a file belongs is never in question at the moment it is added.
 
 **Firmware and software sit at the root rather than under one heading**, because
 they are different disciplines under one specification chapter: firmware runs
-on the embedded devices and carries every hard real-time task, software runs on
-the application processors under a general-purpose OS, and the line between them
-is load-bearing enough to show in the layout. Terms follow standard usage — see
+directly on a microcontroller, software runs under an operating system, and the
+line between them is load-bearing enough to show in the layout. How late each
+task may be is a separate axis, held in `realtime_config/` and never inferred
+from the folder a file is in. Terms follow standard usage — see
 the [glossary](spec/glossary.md), which also says where the vocabulary of the
 RSIL contract belongs.
 
-**Python outside `firmware/` and `software/` is tooling, not body code.** The
-generators and checks under `hardware/`, `protocol/`, `scripts/` and `realtime/`
-produce and verify the design; none of it runs on the body, and the
-[SBOM](hardware/bom/sbom.cdx.json) marks it `excluded`. The Python under
-`firmware/reference/` and `software/` is reference implementations — the
-specifications the on-body code will be checked against.
+**Only `firmware/` and `software/` hold code that will run on the body.** The
+Python under `reference/` is executable specification, checked against by the
+on-body ports. The generators and checks under `hardware/`, `protocol/`,
+`scripts/` and `realtime_config/` produce and verify the design; none of it runs
+on the body, and the [SBOM](hardware/bom/sbom.cdx.json) marks it `excluded`.
 
 
 ---

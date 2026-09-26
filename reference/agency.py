@@ -7,7 +7,8 @@ or did something else?
 
 This is the specification the firmware port (plan F-7) is checked against. The
 runtime tag is written by firmware at acquisition; this module is the golden
-model, which is why it lives under firmware/ although it is Python.
+model it is checked against, and lives in reference/ because it runs on no
+target at all.
 
 Specification: spec/05-sensing.md §5.5, spec/07-firmware-and-software.md §7.3
 (guarantee 7). Contract: RSIL INV-6 (spec 08.1).
@@ -37,14 +38,10 @@ It writes a tag and passes the sample on.
 
 from __future__ import annotations
 
-import sys
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Iterable
 
-# The agency tag is a record type shared with software (plan S-0).
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "software"))
-from audit_log import Agency  # noqa: E402
+from audit_log import Agency
 
 # Matching window between a command and the return it explains. The
 # specification leaves this open (spec 07.7); it is bounded above by the reflex

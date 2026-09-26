@@ -5,8 +5,10 @@ and [`../software/README.md`](../software/README.md) down to the task. Levels
 L0–L5 are defined in [`README.md`](README.md#levels-of-detail).
 
 **Scope.** Software as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division)
-defines it: code on the edge AI module under a general-purpose OS. Its tasks are
-firm, soft or non-real-time; every hard real-time task is firmware.
+defines it: code on the edge AI module under Linux. Its tasks here are firm, soft
+or non-real-time; their classes are set in
+[`../realtime_config/`](../realtime_config/). The real-time controller's modules
+are planned in [`firmware.md`](firmware.md), whichever layer D-3 puts them in.
 
 **Almost none of this waits for hardware.** Every module except the capture
 drivers of S-9 can be written and tested now against synthetic or simulated
@@ -25,7 +27,7 @@ it; what to do with that information is not this repository's
 | Task | To | Waits for |
 |---|---|---|
 | Record types shared with firmware: sensor record, agency tag, telemetry, fault, intent | L4 | — |
-| The firmware–software interface of architecture §4, as a versioned message definition | L4 | — |
+| The interface between the real-time code and the edge software (architecture §4), as a versioned message definition | L4 | — |
 | Synthetic data generators per channel, for tests that do not need the full simulator | L4 | — |
 
 ## S-1 — Feature extraction and compression
@@ -46,7 +48,7 @@ conservative configuration (spec 05.4).
 
 | Task | To | Waits for |
 |---|---|---|
-| Reference implementation — the specification the firmware port F-7 is checked against | ✅ L4 | done — [`agency.py`](../firmware/reference/agency.py) |
+| Reference implementation — the specification the firmware port F-7 is checked against | ✅ L4 | done — [`agency.py`](../reference/agency.py) |
 | Run on simulated whole-body motion rather than synthetic returns | L5 | V-5 |
 | Carry the firmware's tag through every stage and refuse untagged input (spec 07.4 guarantee 2) — enforced by the pipeline, not by convention | L4 | S-3 |
 
@@ -62,7 +64,7 @@ conservative configuration (spec 05.4).
 
 | Task | To | Waits for |
 |---|---|---|
-| Audit log: format, hash chain, Merkle batches, verifier | ✅ L4 | done — [`audit_log.py`](../software/audit_log.py) |
+| Audit log: format, hash chain, Merkle batches, verifier | ✅ L4 | done — [`audit_log.py`](../reference/audit_log.py) |
 | Two tiers — full and anchored — assembled from firmware records | L4 | F-10 |
 | Synchronisation to the off-board compute after an outage, oldest first, nothing dropped | L4 | S-5 |
 | Storage accounting: 1.15 GB/h full tier against the log device | L4 | E-5 |

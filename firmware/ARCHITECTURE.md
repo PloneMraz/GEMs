@@ -1,7 +1,10 @@
 # Firmware architecture
 
-The specification states what firmware must guarantee. This document states how
-the work is divided so that it can, and — the part that is genuinely new here —
+The architecture of the body's real-time code: the firmware on the
+microcontrollers, and the real-time controller's modules, which are firmware or
+software according to decision D-3 ([spec 07.1](../spec/07-firmware-and-software.md#71-the-division)).
+Their deadlines are the same either way. The specification states what this
+code must guarantee; this document states how the work is divided so that it can, and — the part that is genuinely new here —
 **how the 10 ms reflex budget is spent**.
 
 Nothing below fixes a part. Where a figure depends on hardware not yet chosen it
@@ -18,7 +21,7 @@ is marked `⟦IMPL⟧` and stays marked.
 | **Balance controller** | Posture and ZMP | **≥ 500 Hz** | 07.2 |
 | **Reflex path** | Reflex decision and command | **≤ 10 ms** end to end | 07.2 |
 | **Power state machine** | The four levels, and wake latency per level | transition-bounded | [03.4](../spec/03-energy.md#34-four-state-levels) |
-| **Safe-state supervisor** | Reaching a supported posture on fault | must beat the fall | [07.3](../spec/07-firmware-and-software.md#73-what-firmware-must-guarantee) |
+| **Safe-state supervisor** | Reaching a supported posture on fault | must beat the fall | [07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee) |
 | **Attestation agent** | Measured boot, per-node signatures, challenge responses | boot and on demand | [06.3](../spec/06-audit-surface.md#63-three-tiers-of-attestation) |
 | **Log writer** | Full-tier records, hash-chained at loop rate | loop rate | [06.4](../spec/06-audit-surface.md#64-audit-log) |
 | **Low-power beacon** | Signed summary at quiescent power | duty-cycled | [06.5](../spec/06-audit-surface.md#65-low-power-beacon) |
@@ -59,8 +62,8 @@ the compute portion of it. A proposed division:
 
 The split is `⟦IMPL⟧` and will move once real parts exist. The same figures are
 held, with every task's layer and deadline class, in
-[`../realtime/tasks.csv`](../realtime/tasks.csv), and
-`python realtime/check_timing.py` fails if the two disagree. The margin is not
+[`../realtime_config/tasks.csv`](../realtime_config/tasks.csv), and
+`python realtime_config/check_timing.py` fails if the two disagree. The margin is not
 spare capacity to be spent later — it absorbs the jitter that measurement will
 find.
 
@@ -80,9 +83,11 @@ Balance and reflex share sensors and actuators but not deadlines. Where they
 contend, **balance wins**: a body that reflexes correctly while falling has
 failed at the thing that keeps the reflex worth having.
 
-## 4. The interface to software
+## 4. The interface to the edge software
 
-Firmware hands up, software hands down. The boundary is narrow on purpose.
+The real-time code — firmware, and the real-time controller whichever layer D-3
+puts it in — hands up; the edge AI module's software hands down. The boundary is
+narrow on purpose.
 
 | Direction | Carries | Rate |
 |---|---|---|
@@ -93,21 +98,22 @@ Firmware hands up, software hands down. The boundary is narrow on purpose.
 | **Down** | Power state requests | on event |
 | **Down** | Gating: which channels run at full rate | on event |
 
-**Agency tagging is firmware.** It is a hard real-time stage of the reflex path,
+**Agency tagging is real-time code.** It is a hard real-time stage of the reflex path,
 and it needs the commanded value and the measured value in the same place at the
 same time
-([07.3](../spec/07-firmware-and-software.md#73-what-firmware-must-guarantee), guarantee 7):
+([07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee), guarantee 7):
 once a stream has crossed upward without its tag, the information that would
 have carried it has already been averaged away.
 
-**Software sends intent, not commands.** The final command belongs to a hard
-real-time task, so it belongs to firmware. Software that could write actuator
-values directly could also miss a deadline while holding them, and nothing on the
-application processor has a watchdog that bounds it.
+**The edge software sends intent, not commands.** The final command belongs to a
+hard real-time task, so it belongs to the real-time code. Edge software that
+could write actuator values directly could also miss a deadline while holding
+them, and nothing on the edge module bounds its latency.
 
 ## 5. Link loss
 
-The local core is firmware plus the minimum software needed to keep logging. On
+The local core is the real-time code plus the minimum edge software needed to
+keep logging. On
 link loss it maintains balance, preserves state and log, continues recording at
 both tiers, and attempts re-establishment.
 

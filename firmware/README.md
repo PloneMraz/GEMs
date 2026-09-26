@@ -1,16 +1,17 @@
 # Firmware
 
-Code resident on the body's embedded devices — joint drive boards, the
-real-time controller, the battery management board, the secure element, the
-beacon radio — as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division)
-defines firmware. Every **hard real-time** task on the body is here, because
-only here can its worst-case timing be bounded.
+Code that runs directly on the body's microcontrollers, bare metal or under an
+RTOS — joint drive boards, the battery management board, the secure element,
+the beacon radio, and the real-time controller if decision D-3 makes it a
+microcontroller — as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division)
+defines firmware. Which of its tasks are hard, firm or soft real-time is decided
+in [`../realtime_config/`](../realtime_config/), not here.
 
 | Document | Contents | Status |
 |---|---|---|
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Modules and the deadline each carries, the reflex budget split across stages, and the firmware/software interface | ✅ |
 | Source | — | 🔜 *waiting a target* |
-| [`reference/`](reference/) | Golden models in Python that firmware ports are checked against — [`agency.py`](reference/agency.py), agency tagging by efference copy (plan F-7) | ✅ with tests |
+| Reference models | Executable specifications the ports are checked against — in [`../reference/`](../reference/) | ✅ |
 
 ## Why there is no source yet
 

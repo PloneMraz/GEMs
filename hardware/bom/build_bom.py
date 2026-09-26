@@ -502,14 +502,14 @@ REPO = HERE.parent.parent
 REFERENCE, TOOL = "reference-implementation", "design-tool"
 SBOM_SOURCES = [
     # path, CycloneDX type, role, description, depends on
-    ("software/audit_log.py", "library", REFERENCE, "Audit log: format, hash chain, Merkle batches, verifier", []),
-    ("firmware/reference/agency.py", "library", REFERENCE, "Agency tagging by efference copy; golden model for the firmware port", ["software/audit_log.py"]),
+    ("reference/audit_log.py", "library", REFERENCE, "Audit log: format, hash chain, Merkle batches, verifier", []),
+    ("reference/agency.py", "library", REFERENCE, "Agency tagging by efference copy; golden model for the firmware port", ["reference/audit_log.py"]),
     ("hardware/electrical/actuator_sizing.py", "application", TOOL, "Joint torque table and actuator sizing", []),
     ("scripts/gems_budget.py", "application", TOOL, "Mass-energy-power budget model and spec check", ["hardware/electrical/actuator_sizing.py"]),
-    ("protocol/assess.py", "application", TOOL, "Conformance assessment of the simulated body", ["software/audit_log.py", "firmware/reference/agency.py", "scripts/gems_budget.py"]),
+    ("protocol/assess.py", "application", TOOL, "Conformance assessment of the simulated body", ["reference/audit_log.py", "reference/agency.py", "scripts/gems_budget.py"]),
     ("hardware/sim-model/generate_urdf.py", "application", TOOL, "URDF generator and audit", []),
     ("hardware/bom/build_bom.py", "application", TOOL, "EBOM, MBOM and SBOM generator and check", ["hardware/electrical/actuator_sizing.py"]),
-    ("realtime/check_timing.py", "application", TOOL, "Timing table check against the specification and the firmware architecture", []),
+    ("realtime_config/check_timing.py", "application", TOOL, "Timing table check against the specification and the firmware architecture", []),
 ]
 
 

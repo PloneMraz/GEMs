@@ -6,7 +6,7 @@
 Each test names the conformance requirement it exercises, so a failure points
 at a clause rather than at a function.
 
-    python -m unittest discover -s software -v
+    python -m unittest discover -s reference -v
 """
 
 import hashlib

@@ -6,7 +6,7 @@ line of firmware and software written, and all of it exercised in simulation.
 
 | Document | Contents |
 |---|---|
-| This file | Definition of done, the levels of detail, the open decisions, and the work packages for mechanical, electrical, simulation and costing |
+| This file | Definition of done, the levels of detail, the open decisions, and the work packages for industrial and expressive design, mechanical, electrical, simulation and costing |
 | [`firmware.md`](firmware.md) | Firmware work, module by module, down to the task |
 | [`software.md`](software.md) | Software work, module by module, down to the task |
 
@@ -96,19 +96,47 @@ declares the one it drew.
 Every package lists its tasks, the level it takes its subject to, and what it
 waits for. IDs are stable so that commits and issues can name them.
 
+### ID — Industrial and expressive design
+
+How the body looks, and how it can show things. Two halves that share one
+surface: the **form** — proportion, silhouette, colour, material and finish —
+and the **expressive capability** — face, gaze and posture as a set of
+controllable degrees of freedom with ranges and speeds.
+
+**Scope boundary kept.** This package specifies what the body *can* express,
+never *when* or *why* it does. Choosing an expression is the controller's, and
+the controller is not specified here ([README](../README.md#scope-boundary)).
+
+Two standard references anchor it. The **Facial Action Coding System** (Ekman
+and Friesen, 1978) is the vocabulary for facial movement, and robot heads have
+been designed around its action units [Yan et al., 2014](https://onlinelibrary.wiley.com/doi/10.1155/2014/208924).
+The **uncanny valley** (Mori) is the design risk: a face that nearly but not
+quite passes as human is received worse than one that does not try.
+
+| ID | Task | To | Waits for |
+|---|---|---|---|
+| ID-1 | Design brief: proportions from `kinematics.md`, the gynoid form, the uncanny-valley position the design takes and why | L1 | — |
+| ID-2 | Form development: silhouette and proportion studies, form language, then class-A outer surfaces in CAD. Constraints: shell thickness (spec 04.5), armour coverage (spec 02.4), joint range of motion from the URDF | L4 | ID-1, M-1 |
+| ID-3 | Human-contact surfaces: pinch-point elimination at every joint, contact zones for safe touch (spec 01 group 4), lift and handling points | L4 | ID-2 |
+| ID-4 | Colour, material and finish by zone, within what the shell layers allow: electrochromic range (spec 04.3), the sense-and-heal skin's feel, the fire layer's constraints | L4 | ID-2, M-8 — **LAB** in part |
+| ID-5 | Face: static geometry, eyes, skin; the FACS action units the face will actuate, which fixes the count of facial actuators (EBOM `GEM-11090`) | L4 | ID-1 — **LAB** |
+| ID-6 | Expressive capability specification: range, speed and simultaneity per action unit; gaze from neck and eyes; posture; colour change as a slow channel | L4 | ID-5 |
+| ID-7 | Visual model: renders and a textured visual model for the simulator, replacing the primitives of `sim-model/` | L4 | ID-2 |
+| ID-8 | Evaluation without hardware: a rendered-stimulus perception study protocol for the face and form — the protocol and stimuli are in scope, running it needs people | L5 | ID-6, ID-7 |
+
 ### M — Mechanical
 
 | ID | Task | To | Waits for |
 |---|---|---|---|
 | M-1 | Parametric CAD skeleton generated from `kinematics.md`, the same way the URDF is — joint frames, segment envelopes, keep-out volumes | L4 | — |
-| M-2 | Packaging study: where the pack, compute, drives, radios and sensors sit, checked against segment envelopes and the centre of mass | L1 | D-4, D-5 |
+| M-2 | Packaging study: where the pack, compute, drives, radios and sensors sit, checked against segment envelopes, the outer form and the centre of mass | L1 | D-4, D-5, ID-2 |
 | M-3 | Joint modules per class — hip/knee (cycloidal), shoulder/elbow (QDD planetary), wrist/neck (harmonic): bearings, seals, encoder mounts, joint locks (spec 03.2 measure 4), series-elastic elements (measure 5) | L4 | D-1, D-2 |
 | M-4 | Hands at the reference configuration | L4 | D-6 |
 | M-5 | Structure per segment — composite tubes, 7075 load-introduction fittings, fastener schedule | L4 | M-2, M-3 |
 | M-6 | Structural FEA per segment against peak joint loads and a fall case | L5 | M-5 |
 | M-7 | Protection layer — integrated multi-threat package, panel layout at the declared coverage | L4 | D-8 |
-| M-8 | Shell, three layers (spec 04.5): sense-and-heal, variable stiffness, load-and-fire | L4 | M-7 — **LAB** for the first two |
-| M-9 | Head and sensor mounting — stereo baseline, thermal, LiDAR, microphone array geometry | L4 | E-6 |
+| M-8 | Shell, three layers (spec 04.5): sense-and-heal, variable stiffness, load-and-fire, on the surfaces of ID-2 | L4 | M-7, ID-2 — **LAB** for the first two |
+| M-9 | Head and sensor mounting — stereo baseline, thermal, LiDAR, microphone array geometry, inside the face of ID-5 | L4 | E-6, ID-5 |
 | M-10 | Dock — seat form, charging contacts, alignment | L4 | E-2 |
 | M-11 | Thermal design — conduction paths, compute and drive cooling, sealed-body dissipation | L5 | M-2, E-3, E-5 |
 | M-12 | Mass properties exported from CAD into the simulation model, replacing the estimated inertias | L5 | M-5 |
@@ -178,8 +206,11 @@ Nothing here waits for money. What waits is decisions.
    the mass loop from converging, and it is cheap to settle.
 2. **D-2 to D-5**, with **B-2** alongside, because pricing the candidates is
    part of choosing between them.
-3. **S** work in parallel from now: it needs no hardware.
-4. **M-1**, **E-1**, and the target-independent parts of **F**, once D-3 and D-4
-   are settled.
+3. **S** work in parallel from now: it needs no hardware. **ID-1** and **ID-5**
+   can start now as well — the brief and the face depend on the kinematics and
+   the specification, not on parts.
+4. **M-1**, **E-1**, **ID-2**, and the target-independent parts of **F**, once
+   D-3 and D-4 are settled. Form and packaging iterate against each other from
+   here: neither is fixed first.
 5. Detailed design — M-3 to M-11, E-2 to E-12, F source against the target.
 6. Verification — V-1 to V-9 — as each piece reaches L4, not at the end.

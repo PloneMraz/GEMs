@@ -11,9 +11,10 @@ Component selection against the specification. Every figure below is sourced;
 
 ## 1. The actuator finding — raised, and resolved
 
-> **Resolved by option A on 2026-09-22.** The specification now declares
+> **Resolved by option A on 2026-09-22.** The specification then declared
 > **75–90 Nm/kg peak, on a peak-torque-over-module-mass basis**, and states the
-> basis explicitly. `spec/` and this document agree again; the record below is
+> basis explicitly. **Revised 2026-09-26 to 80–90 Nm/kg** when the trunk was
+> re-sized from measured human strength and gained a lateral-bend axis (§6a). `spec/` and this document agree again; the record below is
 > kept because the reasoning is what justifies a figure at the top of the
 > commercial band.
 
@@ -191,7 +192,7 @@ down cannot explain itself later.
 
 ### What option A committed the design to
 
-**75–90 Nm/kg peak, over module mass.** Only a handful of commercial modules
+**75–90 Nm/kg peak, over module mass — 80–90 since 2026-09-26.** Only a handful of commercial modules
 reach it — the hollow-shaft planetary at 88.7 Nm/kg is at the very top of what
 is claimed, and a mainstream 52 Nm/kg module does not qualify. Supply is thin
 and will stay thin.
@@ -202,8 +203,8 @@ is a reasonable figure *on the integrated basis*, and it was being used as if it
 were peak-over-module. A density with no basis attached is a number waiting to
 be misread.
 
-**The two bands are now one constraint.** 75–90 Nm/kg maps onto `f_act`
-0.29–0.35, each derivable from the other, and `scripts/gems_budget.py --check`
+**The two bands are now one constraint.** 80–90 Nm/kg maps onto `f_act`
+0.30–0.34, each derivable from the other, and `scripts/gems_budget.py --check`
 holds them together — including the actuator-mass column, which it did not
 cover before and which is exactly where this drift hid.
 
@@ -214,9 +215,9 @@ Decision D-9 added a lateral-bend axis to the trunk
 has no torque figure yet. Two things were found, and one was not.
 
 **What the trunk figures already in the table rest on.** Nothing. The waist
-rows — trunk pitch 1.54 Nm/kg (200 Nm at 130 kg) and trunk yaw 0.77 Nm/kg — have
+rows — trunk pitch 1.54 Nm/kg (200 Nm at 130 kg) and trunk yaw 0.77 Nm/kg — had
 no source in §7; they were assumed when the table was written. The source found
-for lateral bend below covers all three axes, so it can replace both.
+for lateral bend below covers all three axes, and has replaced both.
 
 **Human trunk torque per kilogram, all three axes — Pan et al. 2025 [14]
 (open access at the DOI; its licence is CC BY-NC-ND, so it is cited, not
@@ -247,8 +248,13 @@ are not a dynamic peak. Lateral bending is **0.55 × extension**.
 Human strength and a waist engineered to match human balance agree at
 **about 0.5–0.55**. The G1 ratio is set by its small-travel design, not by need.
 
-**Options, not yet adopted** — the sizing table still carries 30 joints. At the
-130 kg point:
+**Decision, 2026-09-26: option B, floor 80.** All three trunk axes take the
+male isometric figures of [14]; the declared density floor of spec 02.6 moves
+from 75 to 80 Nm/kg — 80 rather than the computed 78 so that the next figure
+sized does not break the band again, and because 80 is the density the
+shoulder-torque table of spec 02.6 already used. The band narrows to 80–90:
+the design stands 10 Nm/kg, not 15, below the top of the commercial market.
+The options as they were weighed, at the 130 kg point:
 
 | | Pitch | Roll | Yaw | Σ torque | `f_act` at 75 | at 80 | at 88.7 | Density for `f_act` ≤ 0.35 |
 |---|---|---|---|---|---|---|---|---|
@@ -258,7 +264,7 @@ Human strength and a waist engineered to match human balance agree at
 
 Either option moves the floor of the declared density band (spec 02.6) from
 75 to about 78 Nm/kg; B also replaces two unsourced constants with sourced
-ones. Both are specification changes and wait for the author.
+ones. B was taken.
 
 **What was not found:** a dynamic lateral trunk moment during the motions the
 axis is for — twisting to protect the body in a fall, righting from the ground.

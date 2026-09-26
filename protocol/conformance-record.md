@@ -63,8 +63,8 @@ measured.
 | Endurance ceiling | 9.0 h |
 | Sleep states supported | none implemented |
 | Protection level and coverage | NIJ IIIA + stab, 65% coverage — selected, not built |
-| Actuator specific torque | 75–90 Nm/kg peak over module mass — selected, not procured |
-| Summed joint torque | 3405 Nm across the 30 joints sized; trunk lateral bend not yet sized |
+| Actuator specific torque | 80–90 Nm/kg peak over module mass — selected, not procured |
+| Summed joint torque | 3550 Nm across 31 joints |
 | Peak power at the source | 51.8 kW at 5C |
 | Link bandwidth and latency | 8 Gbps, ~1 ms PHY — specified, no radio |
 | Sensor configuration | 41 logged joints; no sensor exists |

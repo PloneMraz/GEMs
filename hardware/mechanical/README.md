@@ -25,7 +25,7 @@ load-introduction points.**
 
 > **This is not a preference, it is what the mass loop leaves room for.** The
 > actuator finding in [`../electrical/`](../electrical/) shows `f_act` is under
-> severe pressure — nothing below 75 Nm/kg keeps it inside the assumed range. If
+> severe pressure — nothing below 80 Nm/kg keeps it inside the assumed range. If
 > actuators are going to sit at the top of their band, structure has to sit at
 > the top of its own, and a 40% saving against 7075 is the difference between a
 > loop that closes and one that does not.

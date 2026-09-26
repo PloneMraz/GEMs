@@ -117,9 +117,10 @@ lumbar — is the reference the mechanical design should move toward. The
 battery pack sits on the top segment, rigid with the shoulders, so the spine
 turns beneath it.
 
-**Lateral bend is new with this decision.** It has no torque in the sizing table
-yet ([`electrical/actuator_sizing.py`](electrical/actuator_sizing.py)), so `f_act`
-figures elsewhere cover 30 of the 31 core joints until it is sized.
+**Lateral bend is new with this decision.** It is sized, with the other two
+trunk axes, from measured human trunk strength per kilogram
+([`electrical/`](electrical/README.md#6a-trunk-lateral-bend-torque--research-2026-09-26)):
+0.95 Nm/kg, 124 Nm at 130 kg.
 
 ### 1.5 Range of motion: mechanism, not biology
 
@@ -208,7 +209,6 @@ that gap.
 |---|---|
 | Joint range of motion, per joint — the mechanical travel actually achieved, against the targets of 1.5 | Mechanical design |
 | Spine coupling mechanism and ratios | Mechanical design (D-9) |
-| Trunk lateral-bend torque | Sizing, D-9 |
 | Reducer ratio, per joint | Actuator selection |
 | Segment mass distribution | Structural design |
 | Hand configuration fitted | `⟦CTRL⟧` — see 1.2 |

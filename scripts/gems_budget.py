@@ -242,12 +242,15 @@ def collect_claims():
     c.append(("joint torque total", "spec/02-structure-and-motion.md",
               "**%d Nm**" % round(total_nm),
               "summed joint torque of the declared kinematics at 130 kg"))
-    for d in (75, 80, 90):
+    for d in (80, 85, 90):
         m = total_nm / d
         c.append(("f_act @%d" % d, "spec/02-structure-and-motion.md",
-                  "%.1f kg | **%.2f**" % (m, m / 130.0) if d != 80
+                  "%.1f kg | **%.2f**" % (m, m / 130.0) if d != 85
                   else "%.1f kg | %.2f" % (m, m / 130.0),
                   "actuator mass and f_act at %d Nm/kg" % d))
+    c.append(("f_act band", "spec/02-structure-and-motion.md",
+              "80–90 Nm/kg maps onto `f_act` %.2f–%.2f" % (total_nm / 90 / 130.0, total_nm / 80 / 130.0),
+              "the density band and the f_act band, stated as one constraint"))
 
     # 02.7 both operating points, derived here rather than transcribed
     for t in (2, 4):

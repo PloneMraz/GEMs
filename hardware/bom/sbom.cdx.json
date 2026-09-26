@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-09-26T14:46:16Z",
+    "timestamp": "2026-09-26T15:36:40Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -91,7 +91,7 @@
       "type": "application",
       "bom-ref": "hardware/electrical/actuator_sizing.py",
       "name": "hardware/electrical/actuator_sizing.py",
-      "version": "sha256:10a77f03f6cd",
+      "version": "sha256:857e10871788",
       "description": "Joint torque table and actuator sizing",
       "supplier": {
         "name": "Plone Mraz"
@@ -106,7 +106,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "10a77f03f6cd93f090c24b935f80e804815fc266eb4c9358e88628f4d5efcb39"
+          "content": "857e10871788b8cd8a8b8ef1075d952cb8564db8519ad65904b0991c070e5241"
         }
       ],
       "scope": "excluded",
@@ -121,7 +121,7 @@
       "type": "application",
       "bom-ref": "scripts/gems_budget.py",
       "name": "scripts/gems_budget.py",
-      "version": "sha256:4974c366e912",
+      "version": "sha256:6ab7bac1dd76",
       "description": "Mass-energy-power budget model and spec check",
       "supplier": {
         "name": "Plone Mraz"
@@ -136,7 +136,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "4974c366e912045cc312fb27ad0e1917180b326693b3096c45c46e74ff4e136b"
+          "content": "6ab7bac1dd76ca87b4ac228a866744f6521b4c2828f4fc591c2a4ada75809f4d"
         }
       ],
       "scope": "excluded",
@@ -151,7 +151,7 @@
       "type": "application",
       "bom-ref": "protocol/assess.py",
       "name": "protocol/assess.py",
-      "version": "sha256:7503784dcbe9",
+      "version": "sha256:166c66649f24",
       "description": "Conformance assessment of the simulated body",
       "supplier": {
         "name": "Plone Mraz"
@@ -166,7 +166,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "7503784dcbe926d791eaa9a97d77d634128739428d96b75f62182072ff241040"
+          "content": "166c66649f24faa808d864cd80c4af1af4c6cb88216536caae834c1aad9734d1"
         }
       ],
       "scope": "excluded",
@@ -211,7 +211,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:5c7a6eadeb66",
+      "version": "sha256:3b9e8c969ca4",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -226,7 +226,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "5c7a6eadeb66ce09a57294eee04fbadec4028e33c925f869842b507720de65f6"
+          "content": "3b9e8c969ca46172b249d2708b2a61e4051c84f6376b1a4e061ae27e6c05c316"
         }
       ],
       "scope": "excluded",

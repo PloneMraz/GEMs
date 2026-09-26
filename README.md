@@ -146,7 +146,7 @@ on the body, and the [SBOM](hardware/bom/sbom.cdx.json) marks it `excluded`.
 | 🔜 | Firmware source (awaits a target board) |
 | 🔜 | Feature extraction, fusion, link management |
 | ✅ | Component selection, sourced — actuators, power, compute, bus, materials, reducers |
-| ✅ | Actuator torque density reconciled with `f_act` — 75–90 Nm/kg peak over module mass, and the basis now declared |
+| ✅ | Actuator torque density reconciled with `f_act` — 80–90 Nm/kg peak over module mass, the basis declared, the trunk sized from measured human strength |
 | ✅ | Work plan to a complete design — decisions, packages, firmware and software task lists ([`plan/`](plan/)) |
 | ◐ | EBOM, MBOM and SBOM — 281 part numbers, 57 routings, CycloneDX SBOM; sources and prices filled only where verified ([`hardware/bom/`](hardware/bom/)) |
 | 🔜 | Mechanical CAD |

@@ -67,10 +67,6 @@ def actuator_mass_for_torque(torque_nm, nm_per_kg=33.0):
     return torque_nm / nm_per_kg
 
 
-def actuator_peak_kw(body_mass_kg, f_act, kw_per_kg):
-    return body_mass_kg * f_act * kw_per_kg
-
-
 def source_peak_kw(pack_kwh, c_rate):
     return pack_kwh * c_rate
 
@@ -98,6 +94,25 @@ def joint_torque_total(body_mass_kg):
     return sum(r[3] for r in torque_table(body_mass_kg))
 
 
+def torque_split():
+    """(Nm per kg of body for legs and trunk, fixed Nm for arms, wrists, neck)."""
+    import sys
+    from pathlib import Path
+    d = str(Path(__file__).resolve().parent.parent / "hardware" / "electrical")
+    if d not in sys.path:
+        sys.path.insert(0, d)
+    from actuator_sizing import split
+    return split()
+
+
+def actuator_split(density):
+    """f_act_s: the actuator fraction that scales with body mass (legs, trunk);
+    m_act_fixed: the actuator mass that does not (arms, wrists, neck), which
+    the loop carries in m_ext."""
+    per_kg, fixed = torque_split()
+    return per_kg / density, fixed / density
+
+
 def log_bytes_per_s(dof=41, channels=4, bytes_per_sample=4, hz=500):
     return dof * channels * bytes_per_sample * hz
 
@@ -110,21 +125,24 @@ def gbps(bytes_per_s):
 # a full budget at one operating point
 # --------------------------------------------------------------------------
 
-def budget(f_str, f_act, p, endurance, e, coverage, areal, m_fixed,
+def budget(f_str, density, p, endurance, e, coverage, areal, m_fixed,
            kw_per_kg=4.0, c_rate=5.0):
-    sf = sigma_f(f_str, f_act, p, endurance, e)
+    f_act_s, m_act_fixed = actuator_split(density)
+    sf = sigma_f(f_str, f_act_s, p, endurance, e)
     gamma = growth_factor(sf)
-    t_max = endurance_ceiling(f_str, f_act, e, p)
+    t_max = endurance_ceiling(f_str, f_act_s, e, p)
     m_arm = armour_mass(coverage, areal)
-    m_ext = m_arm + m_fixed
+    m_ext = m_arm + m_fixed + m_act_fixed
 
     out = {
         "inputs": {
-            "f_str": f_str, "f_act": f_act, "p_W_per_kg": p,
+            "f_str": f_str, "density_Nm_per_kg": density, "p_W_per_kg": p,
             "endurance_h": endurance, "e_Wh_per_kg": e,
             "armour_coverage": coverage, "armour_areal_kg_per_m2": areal,
             "m_fixed_kg": m_fixed,
         },
+        "f_act_scaling": round(f_act_s, 4),
+        "actuator_fixed_kg": round(m_act_fixed, 2),
         "sigma_f": round(sf, 4),
         "converges": gamma is not None,
         "endurance_ceiling_h": round(t_max, 2),
@@ -140,15 +158,17 @@ def budget(f_str, f_act, p, endurance, e, coverage, areal, m_fixed,
         return out
 
     m = gamma * m_ext
+    m_act = m * f_act_s + m_act_fixed
     pack_kwh = m * battery_fraction(p, endurance, e) * e / 1000.0
     out.update({
         "gamma": round(gamma, 2),
         "body_mass_kg": round(m, 1),
         "structure_kg": round(m * f_str, 1),
-        "actuator_kg": round(m * f_act, 1),
+        "actuator_kg": round(m_act, 1),
+        "f_act": round(m_act / m, 3),
         "battery_kg": round(m * battery_fraction(p, endurance, e), 1),
         "pack_kWh": round(pack_kwh, 2),
-        "actuator_peak_kW": round(actuator_peak_kw(m, f_act, kw_per_kg), 0),
+        "actuator_peak_kW": round(m_act * kw_per_kg, 0),
         "source_peak_kW": round(source_peak_kw(pack_kwh, c_rate), 1),
         "mass_price_per_kg_added": round(gamma, 2),
     })
@@ -162,10 +182,13 @@ def print_report(b):
     i = b["inputs"]
     print("GEMs budget — one operating point")
     print("=" * 60)
-    print("inputs   f_str %.2f  f_act %.2f  p %g W/kg  t %g h  e %g Wh/kg"
-          % (i["f_str"], i["f_act"], i["p_W_per_kg"], i["endurance_h"], i["e_Wh_per_kg"]))
+    print("inputs   f_str %.2f  actuators %g Nm/kg  p %g W/kg  t %g h  e %g Wh/kg"
+          % (i["f_str"], i["density_Nm_per_kg"], i["p_W_per_kg"], i["endurance_h"], i["e_Wh_per_kg"]))
     print("         armour %d%% coverage at %g kg/m2, fixed mass %g kg"
           % (i["armour_coverage"] * 100, i["armour_areal_kg_per_m2"], i["m_fixed_kg"]))
+    print()
+    print("actuators  scaling part f_act_s = %.3f of body (legs, trunk)" % b["f_act_scaling"])
+    print("           fixed part   %.1f kg (arms, wrists, neck) -> in m_ext" % b["actuator_fixed_kg"])
     print()
     print("loop     Sf = %.3f   (converges when Sf < 1)" % b["sigma_f"])
     print("         endurance ceiling t_max = %.1f h" % b["endurance_ceiling_h"])
@@ -178,11 +201,11 @@ def print_report(b):
     print()
     print("mass     body           %6.1f kg" % b["body_mass_kg"])
     print("         structure      %6.1f kg" % b["structure_kg"])
-    print("         actuators      %6.1f kg" % b["actuator_kg"])
+    print("         actuators      %6.1f kg   (f_act %.2f)" % (b["actuator_kg"], b["f_act"]))
     print("         battery        %6.1f kg   (%.2f kWh)"
           % (b["battery_kg"], b["pack_kWh"]))
     print("         armour         %6.1f kg" % b["armour_kg"])
-    print("         fixed          %6.1f kg" % i["m_fixed_kg"])
+    print("         fixed          %6.1f kg   (compute, sensors, hands, skin, harness)" % i["m_fixed_kg"])
     print()
     print("power    actuators accept %5.0f kW" % b["actuator_peak_kW"])
     print("         source delivers  %5.1f kW" % b["source_peak_kW"])
@@ -201,27 +224,45 @@ def collect_claims():
     """(id, spec file, computed string, description)"""
     c = []
 
-    # 02.3 endurance ceilings, f_str+f_act = 0.60
-    for p, exp in ((10, 18.0), (15, 12.0), (20, 9.0), (25, 7.2)):
+    F_STR = 0.30
+    DENSITY = 80.0
+    f_act_s, m_act_fixed = actuator_split(DENSITY)
+    M_EXT_MID = 28.8                   # mid of the m_ext range of 02.5, before actuators
+
+    # 02.2 the split
+    c.append(("f_act_s", "spec/02-structure-and-motion.md",
+              "**%.3f**" % f_act_s, "scaling actuator fraction, legs and trunk at 80 Nm/kg"))
+    c.append(("m_act_fixed", "spec/02-structure-and-motion.md",
+              "**%.1f kg**" % m_act_fixed, "fixed actuator mass, arms, wrists and neck at 80 Nm/kg"))
+
+    # 02.3 endurance ceilings, f_str + f_act_s
+    for p in (10, 15, 20, 25):
         c.append(("t_max e450 p%d" % p, "spec/02-structure-and-motion.md",
-                  _fmt(endurance_ceiling(0.30, 0.30, 450, p)) + " h",
+                  _fmt(endurance_ceiling(F_STR, f_act_s, 450, p)) + " h",
                   "endurance ceiling at e=450, p=%d" % p))
-    for p, exp in ((10, 36.0), (15, 24.0), (20, 18.0), (25, 14.4)):
+    for p in (10, 15, 20, 25):
         c.append(("t_max e900 p%d" % p, "spec/02-structure-and-motion.md",
-                  _fmt(endurance_ceiling(0.30, 0.30, 900, p)) + " h",
+                  _fmt(endurance_ceiling(F_STR, f_act_s, 900, p)) + " h",
                   "endurance ceiling at e=900, p=%d" % p))
 
     # 02.3 growth factors at e=450
-    for p, t in ((20, 2), (20, 4), (20, 6), (20, 8), (15, 10)):
-        g = growth_factor(sigma_f(0.30, 0.30, p, t, 450))
+    for p, t in ((10, 2), (10, 10), (15, 4), (15, 10), (20, 2), (20, 4), (20, 6), (20, 8), (20, 10), (25, 8)):
+        g = growth_factor(sigma_f(F_STR, f_act_s, p, t, 450))
         c.append(("gamma p%d t%d" % (p, t), "spec/02-structure-and-motion.md",
-                  _fmt(g, 1), "growth factor at p=%d, t=%dh" % (p, t)))
+                  _fmt(g, 1) if g else "*diverges*", "growth factor at p=%d, t=%dh" % (p, t)))
 
-    # 02.4 armour mass
+    # 02.4 armour mass, and its price at the 4 h point
     for cov, areal in ((0.50, 6), (0.50, 9), (0.65, 6), (0.65, 9), (0.80, 6), (0.80, 9)):
         c.append(("armour %d%% @%d" % (cov * 100, areal), "spec/02-structure-and-motion.md",
                   _fmt(armour_mass(cov, areal)) + " kg",
                   "armour at %d%% coverage, %d kg/m2" % (cov * 100, areal)))
+    g4 = growth_factor(sigma_f(F_STR, f_act_s, 20, 4, 450))
+    d_arm = armour_mass(0.80, 6) - armour_mass(0.50, 6)
+    c.append(("gamma 4h", "spec/02-structure-and-motion.md", "γ=%.1f" % g4,
+              "growth factor at the 4 h point"))
+    c.append(("armour price", "spec/02-structure-and-motion.md",
+              "~%d kg of armour — and **~%d kg of\n> body**" % (round(d_arm), round(d_arm * g4)),
+              "body cost of 80% over 50% coverage at 6 kg/m2, times γ"))
 
     # 02.5 Asimov scaling cross-check
     scaled = 35.0 * (1.75 / 1.2) ** 3
@@ -230,18 +271,42 @@ def collect_claims():
     c.append(("asimov mass", "spec/02-structure-and-motion.md",
               "~%d kg" % round(scaled), "35 kg body scaled to 1.75 m"))
 
-    # 02.6 shoulder torque, and the actuator mass that follows at 80 Nm/kg
-    for load, reach in ((5, 0.40), (15, 0.70), (30, 0.70), (50, 0.70)):
+    # 02.5 mass envelope: gamma and body range per operating point
+    for label, t, e in (("2h durable", 2, 450), ("4h durable", 4, 450),
+                        ("8h ceiling", 8, 900), ("6h durable", 6, 450)):
+        g = growth_factor(sigma_f(F_STR, f_act_s, 20, t, e))
+        lo, hi = (20 + m_act_fixed) * g, (38 + m_act_fixed) * g
+        c.append(("envelope %s" % label, "spec/02-structure-and-motion.md",
+                  "| %.1f | **%d–%d kg** |" % (g, round(lo), round(hi)) if t != 6
+                  else "| %.1f | %d–%d kg" % (g, round(lo), round(hi)),
+                  "growth factor and body range, %s" % label))
+
+    # 02.6 shoulder torque as a lever, M*g*L, and the sized arm joints
+    for load, reach in ((5, 0.40), (15, 0.64), (30, 0.64), (50, 0.64)):
         t = shoulder_torque(load, reach)
         c.append(("torque %dkg %.2fm" % (load, reach), "spec/02-structure-and-motion.md",
-                  "%d Nm (%.2f kg)" % (round(t), actuator_mass_for_torque(t, 80.0)),
+                  "%d Nm (%.2f kg)" % (round(t), actuator_mass_for_torque(t, DENSITY)),
                   "shoulder torque and actuator mass, %d kg at %.2f m" % (load, reach)))
+    from actuator_sizing import arm_torques, SHOULDER_TO_GRIP, ELBOW_TO_GRIP  # noqa: E402
+    arms = arm_torques(DENSITY)
+    for key, label in (("shoulder", "shoulder pitch"), ("shoulder_roll", "shoulder roll"), ("elbow", "elbow")):
+        pay, own = arms[key]
+        c.append(("sized %s" % key, "spec/02-structure-and-motion.md",
+                  "| %d | %d | **%d Nm** |" % (round(pay), round(own), round(pay + own)),
+                  "%s: payload, self-weight, total" % label))
+    c.append(("grip levers", "spec/02-structure-and-motion.md",
+              "%.2f m from the shoulder and %.2f m from the elbow" % (SHOULDER_TO_GRIP, ELBOW_TO_GRIP),
+              "grip-centre levers"))
 
     # 02.6 the density-to-f_act mapping — the coupling that must not drift
     total_nm = joint_torque_total(130.0)
+    per_kg, fixed_nm = torque_split()
     c.append(("joint torque total", "spec/02-structure-and-motion.md",
               "**%d Nm**" % round(total_nm),
               "summed joint torque of the declared kinematics at 130 kg"))
+    c.append(("torque split", "spec/02-structure-and-motion.md",
+              "%d Nm of it scales with body mass and %d Nm does not" % (round(per_kg * 130), round(fixed_nm)),
+              "the two parts of the summed torque"))
     for d in (80, 85, 90):
         m = total_nm / d
         c.append(("f_act @%d" % d, "spec/02-structure-and-motion.md",
@@ -251,18 +316,20 @@ def collect_claims():
     c.append(("f_act band", "spec/02-structure-and-motion.md",
               "80–90 Nm/kg maps onto `f_act` %.2f–%.2f" % (total_nm / 90 / 130.0, total_nm / 80 / 130.0),
               "the density band and the f_act band, stated as one constraint"))
+    c.append(("f_act floor", "spec/02-structure-and-motion.md",
+              "allow a floor near %d Nm/kg" % round(total_nm / 0.35 / 130.0),
+              "the density at which f_act touches 0.35"))
 
     # 02.7 both operating points, derived here rather than transcribed
     for t in (2, 4):
-        g = growth_factor(sigma_f(0.30, 0.30, 20, t, 450))
-        m = g * 28.8                       # mid of the m_ext range of 02.5
-        kwh = m * battery_fraction(20, t, 450) * 450 / 1000.0
+        b = budget(F_STR, DENSITY, 20, t, 450, 0.65, 7.5, 20.0)
+        m, kwh, m_act = b["body_mass_kg"], b["pack_kWh"], b["actuator_kg"]
         c.append(("body t%dh" % t, "spec/02-structure-and-motion.md",
                   "~%d kg" % round(m), "body mass at the %d h point" % t))
         c.append(("pack t%dh" % t, "spec/02-structure-and-motion.md",
                   "%.1f kWh" % kwh, "pack size at the %d h point" % t))
         c.append(("actuators t%dh" % t, "spec/02-structure-and-motion.md",
-                  "%d–%d kW" % (round(m * 0.30 * 3), round(m * 0.30 * 5)),
+                  "%d–%d kW" % (round(m_act * 3), round(m_act * 5)),
                   "actuator power band at the %d h point" % t))
         for cr in (3, 5, 10):
             c.append(("source t%dh %dC" % (t, cr), "spec/02-structure-and-motion.md",
@@ -270,7 +337,7 @@ def collect_claims():
                       "source peak at the %d h point, %dC" % (t, cr)))
 
     # 03.6 self-discharge and sleep, on the pack figure 02.7 quotes
-    PACK = 10.4
+    PACK = round(budget(F_STR, DENSITY, 20, 4, 450, 0.65, 7.5, 20.0)["pack_kWh"], 1)
     for pct in (1, 2, 3):
         c.append(("selfdisch %d%%" % pct, "spec/03-energy.md",
                   "%d mW" % round(self_discharge_w(PACK, pct) * 1000),
@@ -336,7 +403,8 @@ def main(argv=None):
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="Defaults sit at the 4-hour durable-pack point of spec 02.5.")
     ap.add_argument("--f-str", type=float, default=0.30, help="structure mass fraction")
-    ap.add_argument("--f-act", type=float, default=0.30, help="actuator mass fraction")
+    ap.add_argument("--density", type=float, default=80.0,
+                    help="actuator torque density, Nm/kg peak over module mass")
     ap.add_argument("--p", type=float, default=20.0, help="specific power, W/kg")
     ap.add_argument("--endurance", type=float, default=4.0, help="free-running hours")
     ap.add_argument("--e", type=float, default=450.0, help="battery density, Wh/kg")
@@ -354,7 +422,7 @@ def main(argv=None):
     if a.check:
         return run_check(root)
 
-    b = budget(a.f_str, a.f_act, a.p, a.endurance, a.e,
+    b = budget(a.f_str, a.density, a.p, a.endurance, a.e,
                a.coverage, a.areal, a.m_fixed, a.kw_per_kg, a.c_rate)
     if a.json:
         print(json.dumps(b, indent=2))

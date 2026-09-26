@@ -57,7 +57,7 @@ STATUS = {"SELECTED", "CANDIDATE"}
 MODULE_NM_PER_KG = 88.7
 PACK_KWH, CELLS_KG = 10.36, 23.0          # gems_budget at the declared point
 ARMOUR_M2, ARMOUR_KG_M2 = 1.17, 7.5       # 65% of 1.8 m2, mid-band areal density
-BODY_MASS_BUDGET = 129.5
+BODY_MASS_BUDGET = 129.3   # scripts/gems_budget.py at the 4 h point
 
 # -- joint table: stable index -> part-number block. Never renumber. -------
 #    idx, joint, reducer class, placement

@@ -50,7 +50,7 @@ not exist.
 | Coefficient | Range | Status |
 |---|---|---|
 | `f_str` — structure | ~0.25–0.35 | `⟦IMPL⟧` — material and safety factor |
-| `f_act` — actuators | ~0.25–0.35 | Derived, not assumed: the summed joint torque of the declared kinematics divided by actuator torque density. See [2.6](#26-actuation-and-manipulation) |
+| `f_act` — actuators | ~0.25–0.35 | Derived, not assumed: the summed joint torque of the declared kinematics divided by actuator torque density, in two parts — see below and [2.6](#26-actuation-and-manipulation) |
 | `p` — specific power | **~10–25 W/kg** in motion | *Sourced* — commercial humanoids draw 300–1500 W walking; a 2.3 kWh pack supporting ~2 h of dynamic work implies ~1.1 kW continuous. Armoured bodies sit in the upper half |
 | `e` — battery density | **450** (durable) / **900** (ceiling) Wh/kg | [03](03-energy.md) |
 
@@ -61,6 +61,16 @@ range is narrow enough that no conclusion below changes sign.
 and the declared torque density, and 2.6 shows the derivation. It is listed as a
 coefficient because the loop consumes it as one, not because it is free.
 
+**It has two parts, and the loop treats them differently.** Leg and trunk
+torque scales with body mass, so their actuators are a true fraction of the
+body: `f_act_s` = **0.226** at 80 Nm/kg, and this is the part that enters `Σf`.
+Arm, wrist and neck torque is fixed by payload and geometry, not by body mass,
+so their actuators are non-scaling mass — **9.5 kg** at 80 Nm/kg — and enter
+`m_ext` beside armour and sensors, where `γ` multiplies them. The `f_act` of the
+table is the sum of both over the body, 0.30 at the 4-hour point. Treating the
+whole of it as scaling, as this section did before 2026-09-26, overstated `γ`
+and made a lighter body look worse than it is.
+
 ## 2.3 The endurance ceiling
 
 Setting `Σf = 1` and solving for `t`:
@@ -69,26 +79,27 @@ Setting `Σf = 1` and solving for `t`:
 t_max  =  (1 − f_str − f_act) · e / p
 ```
 
-At `f_str + f_act = 0.60`:
+Here `f_act` is the scaling part of 2.2, `f_act_s` = 0.226 at 80 Nm/kg; the
+fixed part sits in `m_ext` and does not bound `t`. At `f_str` = 0.30:
 
 | | `p`=10 | `p`=15 | `p`=20 | `p`=25 W/kg |
 |---|---|---|---|---|
-| **e = 450** Wh/kg | 18.0 h | 12.0 h | **9.0 h** | 7.2 h |
-| **e = 900** Wh/kg | 36.0 h | 24.0 h | **18.0 h** | 14.4 h |
+| **e = 450** Wh/kg | 21.3 h | 14.2 h | **10.7 h** | 8.5 h |
+| **e = 900** Wh/kg | 42.6 h | 28.4 h | **21.3 h** | 17.1 h |
 
 And `γ` inflates sharply on approach (`e`=450):
 
 | `p` \ `t` | 2 h | 4 h | 6 h | 8 h | 10 h |
 |---|---|---|---|---|---|
-| 10 W/kg | 2.8 | 3.2 | 3.7 | 4.5 | 5.6 |
-| 15 W/kg | 3.0 | 3.7 | 5.0 | 7.5 | 15.0 |
-| **20 W/kg** | 3.2 | 4.5 | 7.5 | **22.5** | *diverges* |
-| 25 W/kg | 3.5 | 5.6 | 15.0 | *diverges* | *diverges* |
+| 10 W/kg | 2.3 | 2.6 | 2.9 | 3.4 | 4.0 |
+| 15 W/kg | 2.5 | 2.9 | 3.7 | 4.8 | 7.1 |
+| **20 W/kg** | 2.6 | 3.4 | 4.8 | **8.5** | 34.0 |
+| 25 W/kg | 2.8 | 4.0 | 7.1 | 34.0 | *diverges* |
 
-> **Read this correctly.** It does not say the body runs for 9 hours. It says
+> **Read this correctly.** It does not say the body runs for 10 hours. It says
 > that at `p`=20 W/kg on a durable-grade pack, **no free-running body beyond
-> 9 hours exists** — and that from about 6 hours the price is already
-> meaningless, since γ=7.5 means each kilogram of armour costs 7.5 kg of body.
+> 10.7 hours exists** — and that from about 8 hours the price is already
+> meaningless, since γ=8.5 means each kilogram of armour costs 8.5 kg of body.
 >
 > Endurance remains `⟦CTRL⟧`. What this ceiling adds is a bound the controller
 > cannot choose past, because on the far side there is no expensive design —
@@ -116,7 +127,7 @@ a single body facing both needs a multi-layer package.
 | 80% — near full body | 1.44 m² | 8.6 kg | 13.0 kg |
 
 > Armour is non-scaling mass, so it enters `m_ext` and is multiplied by `γ`. At
-> γ=4.5, choosing 80% coverage over 50% adds ~3 kg of armour — and **~14 kg of
+> γ=3.4, choosing 80% coverage over 50% adds ~3 kg of armour — and **~11 kg of
 > body**. This is where the trade bites hardest, and it is `⟦CTRL⟧`.
 >
 > Rifle-rated protection (NIJ III/IV) is achievable but adds substantially more
@@ -126,18 +137,19 @@ a single body facing both needs a multi-layer package.
 ## 2.5 Mass envelope
 
 `m = γ · m_ext`, with `m_ext` = armour (5–13 kg) plus fixed mass — compute,
-sensors, hands, skin, harness: **15–25 kg**, `⟦IMPL⟧`.
+sensors, hands, skin, harness: **15–25 kg**, `⟦IMPL⟧` — plus the arm, wrist and
+neck actuators of 2.2, 9.5 kg at 80 Nm/kg, which do not scale with the body.
 
 | Operating point | γ | Body mass |
 |---|---|---|
-| 2 h, durable pack | 3.2 | **70–114 kg** |
-| 4 h, durable pack | 4.5 | **99–160 kg** |
-| 8 h, ceiling pack | 4.5 | **99–160 kg** |
-| 6 h, durable pack | 7.5 | 165–266 kg — *outside the sensible region* |
+| 2 h, durable pack | 2.6 | **77–123 kg** |
+| 4 h, durable pack | 3.4 | **100–160 kg** |
+| 8 h, ceiling pack | 3.4 | **100–160 kg** |
+| 6 h, durable pack | 4.8 | 142–229 kg — *outside the sensible region* |
 
 **Independent cross-check.** A real 1.2 m, 35 kg, 25-DOF humanoid scaled by mass
 ratio `(1.75/1.2)³ = 3.10` gives **~109 kg** for a 1.75 m body of the same
-architecture, before armour. That figure lands in the middle of the 99–160 kg
+architecture, before armour. That figure lands in the middle of the 100–160 kg
 band at the 4-hour mark. Two independent derivations — one from the coupled
 loop, one from geometric scaling of a machine that exists — agree to an order of
 magnitude.
@@ -170,47 +182,67 @@ away later.
 
 ### Why 80 is the floor
 
-The declared kinematics need **3560 Nm** summed across 31 joints at the 130 kg
-operating point ([joint-by-joint sizing](../hardware/electrical/)); the three
-trunk axes are sized from measured human trunk strength per kilogram
-([electrical §6a](../hardware/electrical/README.md#6a-trunk-lateral-bend-torque--research-2026-09-26)).
+The declared kinematics need **3112 Nm** summed across 31 joints at the 130 kg
+operating point ([joint-by-joint sizing](../hardware/electrical/)); 2352 Nm of it scales with body mass and 760 Nm does not.
+The three trunk axes are sized from measured human trunk strength per kilogram
+([electrical §6a](../hardware/electrical/README.md#6a-trunk-lateral-bend-torque--research-2026-09-26)),
+the arms from the declared payload below
+([electrical §6b](../hardware/electrical/README.md#6b-arm-payload-and-the-two-parts-of-f_act--2026-09-26)).
 Divide:
 
 | Density | Actuator mass | `f_act` |
 |---|---|---|
-| 80 Nm/kg | 44.5 kg | **0.34** |
-| 85 Nm/kg | 41.9 kg | 0.32 |
-| 90 Nm/kg | 39.6 kg | **0.30** |
+| 80 Nm/kg | 38.9 kg | **0.30** |
+| 85 Nm/kg | 36.6 kg | 0.28 |
+| 90 Nm/kg | 34.6 kg | **0.27** |
 
 **The declared band and the `f_act` band of 2.2 are the same constraint seen
-twice.** 80–90 Nm/kg maps onto `f_act` 0.30–0.34. The arithmetic alone would
-allow a floor near 78 Nm/kg, where `f_act` touches 0.35; the declared floor
-is set at 80 so that the next joint sized — or a dynamic trunk figure above the
-isometric one — does not immediately break the band. Below the floor the
-actuators eat the mass budget and the loop stops converging. The two figures cannot drift
-apart, because each is derivable from the other and
+twice.** 80–90 Nm/kg maps onto `f_act` 0.27–0.30. The arithmetic alone would
+allow a floor near 68 Nm/kg, where `f_act` touches 0.35; the declared floor
+was kept at 80 when the arm payload came down on 2026-09-26, as margin — for
+decision D-1 on the knee, for a dynamic trunk figure above the isometric one,
+and for the continuous-torque question electrical §6b leaves open. Below the
+floor the actuators eat the mass budget and the loop stops converging. The two
+figures cannot drift apart, because each is derivable from the other and
 `scripts/gems_budget.py --check` holds them together.
 
-### Shoulder torque
-
-`τ = M·g·L`, with the corresponding actuator mass at 80 Nm/kg. Full reach for
-this body is **0.70 m**, declared at
-[`hardware/kinematics.md`](../hardware/kinematics.md):
-
-| Load | reach 0.40 m | reach 0.55 m | reach 0.70 m |
-|---|---|---|---|
-| 5 kg | 20 Nm (0.25 kg) | 27 Nm (0.34 kg) | 34 Nm (0.43 kg) |
-| 15 kg | 59 Nm (0.74 kg) | 81 Nm (1.01 kg) | 103 Nm (1.29 kg) |
-| 30 kg | 118 Nm (1.47 kg) | 162 Nm (2.02 kg) | 206 Nm (2.58 kg) |
-| 50 kg | 196 Nm (2.45 kg) | 270 Nm (3.37 kg) | 343 Nm (4.29 kg) |
-
-**A single joint is not the binding constraint.** Even 50 kg at full reach needs
-only ~4.3 kg of shoulder actuator. What binds is the **sum across all the
-joints**, and the legs carry 1906 Nm of the 3560 — which is why arm payload is a
-poor lever on total actuator mass.
+### Arm torque
 
 **Declared group 2 capability:** daily manipulation and moderate precision, with
-per-arm loads in the tens of kilograms at short to medium reach.
+**15 kg in one hand, arm straight and horizontal, load at the grip centre** —
+the posture of maximum gravitational moment. Shoulder roll carries the same
+posture abducted, at 11 kg. Decided 2026-09-26; the reasoning is at
+[electrical §6b](../hardware/electrical/README.md#6b-arm-payload-and-the-two-parts-of-f_act--2026-09-26).
+
+The lever is to the grip centre, not the fingertip: 0.64 m from the shoulder and 0.32 m from the elbow
+([`hardware/kinematics.md`](../hardware/kinematics.md#2-reach-and-segment-lengths)).
+The arm's own weight is added — its joint modules weighed at 80 Nm/kg from
+their own torque, plus structure and hand allowances that are `⟦IMPL⟧` until
+CAD exists:
+
+| Joint | Payload | Self-weight | Peak |
+|---|---|---|---|
+| Shoulder pitch | 94 | 15 | **109 Nm** |
+| Shoulder roll | 69 | 15 | **84 Nm** |
+| Elbow | 47 | 5 | **52 Nm** |
+
+For the lever alone, `τ = M·g·L`, with the corresponding actuator mass at
+80 Nm/kg:
+
+| Load | 0.40 m | 0.55 m | 0.64 m, grip at full reach |
+|---|---|---|---|
+| 5 kg | 20 Nm (0.25 kg) | 27 Nm (0.34 kg) | 31 Nm (0.39 kg) |
+| 15 kg | 59 Nm (0.74 kg) | 81 Nm (1.01 kg) | 94 Nm (1.18 kg) |
+| 30 kg | 118 Nm (1.47 kg) | 162 Nm (2.02 kg) | 188 Nm (2.35 kg) |
+| 50 kg | 196 Nm (2.45 kg) | 270 Nm (3.37 kg) | 314 Nm (3.92 kg) |
+
+**A single joint is not the binding constraint, but the arms are the lever on
+`f_act`.** The legs and trunk carry 2352 Nm of the 3112 and scale with the body,
+so they set the absolute torque each module must deliver and the peak power of
+2.7, not the fraction. The arms, wrists and neck are the fixed 760 Nm, and the
+fixed part is what moves `f_act` when the body gets lighter — halving the
+payload from the 30 kg this table once declared took the total from 3560 to
+3112 Nm and `f_act` at 80 Nm/kg from 0.34 to 0.30.
 
 ## 2.7 Peak power is limited by the source, not the actuators
 
@@ -219,10 +251,10 @@ have to be priced separately:
 
 | Operating point | Body | Actuators accept | Pack | @3C | @5C | @10C |
 |---|---|---|---|---|---|---|
-| 2 h, durable | ~93 kg | **83–139 kW** | 3.7 kWh | 11 kW | 19 kW | 37 kW |
-| 4 h, durable | ~130 kg | **117–194 kW** | 10.4 kWh | 31 kW | 52 kW | 104 kW |
+| 2 h, durable | ~99 kg | **96–160 kW** | 4.0 kWh | 12 kW | 20 kW | 40 kW |
+| 4 h, durable | ~129 kg | **116–194 kW** | 10.3 kWh | 31 kW | 52 kW | 103 kW |
 
-**The source falls short in every cell — by between 1.1× and 12.5×.** The
+**The source falls short in every cell — by between 1.1× and 13×.** The
 actuators' 3–5 kW/kg ceiling is not reachable from the battery at any point on
 this table, and high-energy-density chemistries generally trade away C-rate, so
 choosing the ceiling-grade pack widens the gap rather than closing it.

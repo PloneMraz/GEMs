@@ -127,10 +127,10 @@ licence to be checked against this repository's.
 ## Where it stands
 
 The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time
-of writing: 281 part numbers, including 9 software images and 6 consumables; 472
-operations across 57 routings; one selected manufacturer part (the Jetson T5000
+of writing: 294 part numbers, including 9 software images and 6 consumables; 494
+operations across 59 routings; one selected manufacturer part (the Jetson T5000
 module), candidates for nine parts, **no verified price**, and a mass roll-up of
-70.3 kg out of the 129.5 kg budget — the rest is blank rather than guessed.
+66.9 kg out of the 129.3 kg budget — the rest is blank rather than guessed.
 
 Prices were looked for on 2026-09-26. Most supplier pages were unreachable from
 the environment this was written in, so the AVL rests on search results and on
@@ -139,8 +139,9 @@ the pages that could be read, and each entry's notes say which.
 ## What building it turned up
 
 **The actuator density has one module behind it, and it is small.** The only
-module found at or above 80 Nm/kg peaks at 85 Nm. 10 of the 18 joint
-types — 17 of the 31 joints — need more, up to 230 Nm at the hip and knee.
+module found at or above 80 Nm/kg peaks at 85 Nm. 8 of the 18 joint
+types — 13 of the 31 joints — need more, up to 230 Nm at the hip and knee
+(17 of 31 before the arm payload came down on 2026-09-26).
 
 **The reducer classes and the actuator family disagree.** `hardware/mechanical`
 §2 assigns cycloidal reducers to hips and knees and harmonic drives to wrists

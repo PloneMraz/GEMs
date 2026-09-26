@@ -38,7 +38,7 @@ form or by choosing a different operating point (D-8).
 
 | Concept | Specification | Tension |
 |---|---|---|
-| Very narrow waist and slender torso | The torso carries ~23 kg of cells (10.4 kWh), the compute and the waist actuators, 200 Nm in waist pitch | The largest volume in the body sits where the concept is narrowest |
+| Very narrow waist and slender torso | The torso carries ~23 kg of cells (10.3 kWh), the compute and the spine actuators, 226 Nm in trunk pitch | The largest volume in the body sits where the concept is narrowest |
 | Slim knees and ankles | Knee and hip pitch need ~230 Nm peak; at 88.7 Nm/kg that is ~2.6 kg of actuator per joint, ankle pitch ~180 Nm | Joint housings of that torque are wider than the concept's joints; see the actuator finding in [`../../bom/`](../../bom/README.md#what-building-it-turned-up) |
 | Glossy hard shell | The outer layer is sense-and-heal e-skin, soft, 600% stretch (spec 04.5); armour at 6–9 kg/m² beneath | A soft, self-healing skin does not read as hard gloss; the finish is a CMF decision (ID-4) |
 | Articulated five-finger hands | The anchor configuration is 5 DOF per hand, and the hand choice is open (D-6) | The drawn hands look closer to the moderate or anthropomorphic tier |

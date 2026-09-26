@@ -94,7 +94,7 @@ GEM-20806,A,"Joint torque sensor, trunk yaw",OTS,BUY,EA,,,TM,L0,CONCEPT,spec 05.
 GEM-20807,A,"Joint drive PCBA, trunk yaw",PCBA,MAKE,EA,,,TM,L1,CONCEPT,plan E-3,,PCBA BOM is generated from its schematic (plan E-3); none exists yet
 GEM-20808,A,"Housing, 7075-T6, trunk yaw",MFG,MAKE,EA,,,TM,L0,CONCEPT,hardware/mechanical 1,,
 GEM-20809,A,"Fastener set, trunk yaw",OTS,BUY,SET,,,TM,L0,CONCEPT,plan M-3,,
-GEM-20900,A,"Joint module, shoulder pitch",ASSY,MAKE,EA,2.323,estimate: 206 Nm peak / 88.7 Nm/kg,TM,L2,CONCEPT,spec 02.6; hardware/kinematics.md 1,206 Nm peak; >=80 Nm/kg over module mass,D-2 open: procure as one module or build from the children below. No module found at this torque and density.
+GEM-20900,A,"Joint module, shoulder pitch",ASSY,MAKE,EA,1.232,estimate: 109 Nm peak / 88.7 Nm/kg,TM,L2,CONCEPT,spec 02.6; hardware/kinematics.md 1,109 Nm peak; >=80 Nm/kg over module mass,D-2 open: procure as one module or build from the children below. No module found at this torque and density.
 GEM-20901,A,"Motor, frameless BLDC, shoulder pitch",OTS,BUY,EA,,,TM,L0,CONCEPT,hardware/electrical 2,,
 GEM-20902,A,"Reducer, planetary, shoulder pitch",OTS,BUY,EA,,,TM,L1,CONCEPT,hardware/mechanical 2,,class per hardware/mechanical 2
 GEM-20903,A,"Output bearing, shoulder pitch",OTS,BUY,EA,,,TM,L0,CONCEPT,hardware/mechanical 5,,
@@ -104,7 +104,7 @@ GEM-20906,A,"Joint torque sensor, shoulder pitch",OTS,BUY,EA,,,TM,L0,CONCEPT,spe
 GEM-20907,A,"Joint drive PCBA, shoulder pitch",PCBA,MAKE,EA,,,TM,L1,CONCEPT,plan E-3,,PCBA BOM is generated from its schematic (plan E-3); none exists yet
 GEM-20908,A,"Housing, 7075-T6, shoulder pitch",MFG,MAKE,EA,,,TM,L0,CONCEPT,hardware/mechanical 1,,
 GEM-20909,A,"Fastener set, shoulder pitch",OTS,BUY,SET,,,TM,L0,CONCEPT,plan M-3,,
-GEM-21000,A,"Joint module, shoulder roll",ASSY,MAKE,EA,1.703,estimate: 151 Nm peak / 88.7 Nm/kg,TM,L2,CONCEPT,spec 02.6; hardware/kinematics.md 1,151 Nm peak; >=80 Nm/kg over module mass,D-2 open: procure as one module or build from the children below. No module found at this torque and density.
+GEM-21000,A,"Joint module, shoulder roll",ASSY,MAKE,EA,0.949,estimate: 84 Nm peak / 88.7 Nm/kg,TM,L2,CONCEPT,spec 02.6; hardware/kinematics.md 1,84 Nm peak; >=80 Nm/kg over module mass,D-2 open: procure as one module or build from the children below.
 GEM-21001,A,"Motor, frameless BLDC, shoulder roll",OTS,BUY,EA,,,TM,L0,CONCEPT,hardware/electrical 2,,
 GEM-21002,A,"Reducer, planetary, shoulder roll",OTS,BUY,EA,,,TM,L1,CONCEPT,hardware/mechanical 2,,class per hardware/mechanical 2
 GEM-21003,A,"Output bearing, shoulder roll",OTS,BUY,EA,,,TM,L0,CONCEPT,hardware/mechanical 5,,
@@ -124,7 +124,7 @@ GEM-21106,A,"Joint torque sensor, shoulder yaw",OTS,BUY,EA,,,TM,L0,CONCEPT,spec 
 GEM-21107,A,"Joint drive PCBA, shoulder yaw",PCBA,MAKE,EA,,,TM,L1,CONCEPT,plan E-3,,PCBA BOM is generated from its schematic (plan E-3); none exists yet
 GEM-21108,A,"Housing, 7075-T6, shoulder yaw",MFG,MAKE,EA,,,TM,L0,CONCEPT,hardware/mechanical 1,,
 GEM-21109,A,"Fastener set, shoulder yaw",OTS,BUY,SET,,,TM,L0,CONCEPT,plan M-3,,
-GEM-21200,A,"Joint module, elbow",ASSY,MAKE,EA,1.261,estimate: 112 Nm peak / 88.7 Nm/kg,TM,L2,CONCEPT,spec 02.6; hardware/kinematics.md 1,112 Nm peak; >=80 Nm/kg over module mass,D-2 open: procure as one module or build from the children below. No module found at this torque and density.
+GEM-21200,A,"Joint module, elbow",ASSY,MAKE,EA,0.582,estimate: 52 Nm peak / 88.7 Nm/kg,TM,L2,CONCEPT,spec 02.6; hardware/kinematics.md 1,52 Nm peak; >=80 Nm/kg over module mass,D-2 open: procure as one module or build from the children below.
 GEM-21201,A,"Motor, frameless BLDC, elbow",OTS,BUY,EA,,,TM,L0,CONCEPT,hardware/electrical 2,,
 GEM-21202,A,"Reducer, planetary, elbow",OTS,BUY,EA,,,TM,L1,CONCEPT,hardware/mechanical 2,,class per hardware/mechanical 2
 GEM-21203,A,"Output bearing, elbow",OTS,BUY,EA,,,TM,L0,CONCEPT,hardware/mechanical 5,,
@@ -194,7 +194,7 @@ GEM-21806,A,"Joint torque sensor, trunk roll",OTS,BUY,EA,,,TM,L0,CONCEPT,spec 05
 GEM-21807,A,"Joint drive PCBA, trunk roll",PCBA,MAKE,EA,,,TM,L1,CONCEPT,plan E-3,,PCBA BOM is generated from its schematic (plan E-3); none exists yet
 GEM-21808,A,"Housing, 7075-T6, trunk roll",MFG,MAKE,EA,,,TM,L0,CONCEPT,hardware/mechanical 1,,
 GEM-21809,A,"Fastener set, trunk roll",OTS,BUY,SET,,,TM,L0,CONCEPT,plan M-3,,
-GEM-10000,A,"GEMs body, reference design A (4 h, 65% armour coverage)",ASSY,MAKE,EA,,,TM,L1,CONCEPT,spec 02.5; protocol/conformance-record.md,129.5 kg derived body mass,
+GEM-10000,A,"GEMs body, reference design A (4 h, 65% armour coverage)",ASSY,MAKE,EA,,,TM,L1,CONCEPT,spec 02.5; protocol/conformance-record.md,129.3 kg derived body mass,
 GEM-11000,A,Head assembly,ASSY,MAKE,EA,,,TM,L1,CONCEPT,plan M-9,,
 GEM-11010,A,Head structure,MFG,MAKE,EA,,,TM,L2,CONCEPT,hardware/mechanical 1,"CFRP long members, 7075-T6 at joints",Section sizing IMPL; structure allowance 38.8 kg in total
 GEM-11020,A,"Camera module, 4K 30 fps 12 bit",OTS,BUY,EA,,,TM,L1,CONCEPT,spec 05.3,"stereo pair; optical zoom, multispectral",

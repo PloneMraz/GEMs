@@ -178,14 +178,17 @@ For a ~1.75 m body, taken from ordinary human proportion:
 | Shoulder to fingertip | **~0.70 m** |
 | Shoulder to elbow | ~0.32 m |
 | Elbow to wrist | ~0.26 m |
+| Wrist to grip centre | ~0.06 m — assumed, `⟦IMPL⟧` |
+| Shoulder to grip centre | **~0.64 m** — the lever a held object acts on |
+| Elbow to grip centre | ~0.32 m |
 | Shoulder width | ~0.40 m |
 | Hip to knee | ~0.42 m |
 | Knee to ankle | ~0.42 m |
 
-The **0.70 m** figure is the one the shoulder-torque table of [spec
-02.6](../spec/02-structure-and-motion.md#26-actuation-and-manipulation) takes as
-full reach. It was used there before being declared here; this document closes
-that gap.
+The **0.70 m** figure is full reach. The arm-torque sizing of [spec
+02.6](../spec/02-structure-and-motion.md#26-actuation-and-manipulation) uses
+the **0.64 m** grip-centre lever, since 2026-09-26; before that it used the
+fingertip, which overstated the shoulder lever by a tenth.
 
 ## 3. What this configuration commits elsewhere
 
@@ -194,7 +197,7 @@ that gap.
 | 41 logged joints | Full-tier log rate, [spec 06.4](../spec/06-audit-surface.md#64-audit-log) |
 | 41 joints × 4 channels | Proprioception channel, [spec 05.3](../spec/05-sensing.md#53-channels) |
 | Joint count and gearing | `f_act`, [spec 02.2](../spec/02-structure-and-motion.md#22-the-four-coefficients) — still `⟦IMPL⟧`, because count alone does not fix mass |
-| 0.70 m reach | Shoulder torque, [spec 02.6](../spec/02-structure-and-motion.md#26-actuation-and-manipulation) |
+| 0.64 m shoulder-to-grip, 0.32 m elbow-to-grip | Arm torque, [spec 02.6](../spec/02-structure-and-motion.md#26-actuation-and-manipulation) |
 | Joint count | Module count in [firmware](../firmware/ARCHITECTURE.md) |
 
 > **Joint count does not fix `f_act`.** More joints means more actuators, but a

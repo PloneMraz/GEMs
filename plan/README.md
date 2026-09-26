@@ -64,7 +64,7 @@ that they cannot be mistaken for purchasable items.
 | Everything else | L0 | — |
 
 No item is at L3. The engineering BOM exists — [`hardware/bom/`](../hardware/bom/),
-281 part numbers in a multi-level structure, with MBOM routings and an SBOM — with one selected manufacturer
+294 part numbers in a multi-level structure, with MBOM routings and an SBOM — with one selected manufacturer
 part and no verified price yet.
 
 ---
@@ -77,7 +77,7 @@ it can move past L2. None can be settled by arithmetic alone.
 | # | Decision | Blocks | Status |
 |---|---|---|---|
 | **D-1** | **Knee torque requirement.** The sizing script assumes knee = hip pitch, flagged there as an assumption, not a source | Actuator sizing, `f_act`, the mass loop | open — check against published gait data |
-| **D-2** | **Actuators: procure modules or design them.** An 88.7 Nm/kg module exists commercially, but it peaks at 85 Nm and 17 of the 31 joints need more ([`hardware/bom/`](../hardware/bom/README.md#what-building-it-turned-up)). This decision also settles the conflict between the per-class reducers of `hardware/mechanical` and the single module family of `hardware/electrical`. Designing our own motor, reducer and drive puts every capacitor of the drive inside this repository | M-3, E-3, F-3 — the largest single block of work | open |
+| **D-2** | **Actuators: procure modules or design them.** An 88.7 Nm/kg module exists commercially, but it peaks at 85 Nm and 13 of the 31 joints need more ([`hardware/bom/`](../hardware/bom/README.md#what-building-it-turned-up)). This decision also settles the conflict between the per-class reducers of `hardware/mechanical` and the single module family of `hardware/electrical`. Designing our own motor, reducer and drive puts every capacitor of the drive inside this repository | M-3, E-3, F-3 — the largest single block of work | open |
 | **D-3** | **Real-time controller: a microcontroller under an RTOS, or an embedded computer under Linux with a real-time kernel.** The Jetson carries perception and compression; it is not the target for the 500 Hz balance loop and the 10 ms reflex path. The choice decides whether that code is firmware or software (spec 07.1), and how its latency bound is established — by construction or by measurement | All firmware, E-5 | open |
 | **D-4** | **High-voltage bus voltage** | Every power stage, cell count in series, harness gauge | open |
 | **D-5** | **Cell and pack format** at the durable tier (400–500 Wh/kg) | Pack mechanics, BMS, thermal | open — candidates sourced in `hardware/electrical/` |
@@ -85,6 +85,7 @@ it can move past L2. None can be settled by arithmetic alone.
 | **D-7** | **Secure element and low-power beacon radio** | Attestation, beacon, C-10, C-11 | open |
 | **D-8** | **Operating point for the reference design** — endurance, armour coverage | Mass, pack size, every downstream figure | open — the conformance record uses 4 h, 65% |
 | **D-9** | **Trunk architecture** | M-5, E-3, F-5, the URDF | **decided 2026-09-26: a coupled multi-segment spine** — three segments, one actuator per axis for yaw, pitch and lateral bend ([kinematics §1.4](../hardware/kinematics.md#14-the-trunk-is-a-spine-not-a-waist)). Open within it: the coupling mechanism and ratios. All three trunk axes are sized from Pan et al. 2025 |
+| **D-10** | **Arm payload** | Shoulder and elbow sizing, `f_act`, the mass loop | **decided 2026-09-26: 15 kg in one hand, arm horizontal, load at the grip centre; shoulder roll 11 kg** ([electrical §6b](../hardware/electrical/README.md#6b-arm-payload-and-the-two-parts-of-f_act--2026-09-26)). Replaced a 30 kg fingertip stress test. With it `f_act` splits into a scaling part (legs, trunk) and a fixed part (arms, wrists, neck) carried in `m_ext`; the density floor stays at 80 Nm/kg as margin |
 
 D-6 and D-8 are choices of *which* point to draw, not changes to the
 specification: the specification keeps its ranges, and a reference design
@@ -156,10 +157,10 @@ cells improve — `gems_budget.py` at 4 h and 65% coverage:
 
 | Cell energy density | Body | Pack | Centre of mass raised by moving the pack from pelvis to upper back |
 |---|---|---|---|
-| 450 Wh/kg — durable tier, today | 129.5 kg | 23.0 kg, 10.4 kWh | ~6 cm |
-| 550 Wh/kg | 113.0 kg | 16.4 kg | ~5 cm |
-| 700 Wh/kg — low end of the ceiling tier (spec 03.1) | 100.7 kg | 11.5 kg | ~4 cm |
-| 1000 Wh/kg | 89.9 kg | 7.2 kg | ~3 cm |
+| 450 Wh/kg — durable tier, today | 129.3 kg | 23.0 kg, 10.3 kWh | ~6 cm |
+| 550 Wh/kg | 116.6 kg | 17.0 kg | ~5 cm |
+| 700 Wh/kg — low end of the ceiling tier (spec 03.1) | 106.5 kg | 12.2 kg | ~4 cm |
+| 1000 Wh/kg | 97.2 kg | 7.8 kg | ~3 cm |
 
 The pack shrinks faster than the energy it holds would suggest, because the
 mass loop compounds: a lighter pack makes a lighter body, which needs less pack.
@@ -171,7 +172,7 @@ Constraints the decision carries into the design:
 
 | | |
 |---|---|
-| **Trunk load** | Pack mass high above the waist adds pitch inertia about the waist (~1.8 kg·m² at 23 kg, against ~3.7 kg·m² estimated for the torso itself — about +50%). Trunk pitch, already 200 Nm, is sized with it; the pack rides the top spine segment, so the spine turns beneath it |
+| **Trunk load** | Pack mass high above the waist adds pitch inertia about the waist (~1.8 kg·m² at 23 kg, against ~3.7 kg·m² estimated for the torso itself — about +50%). Trunk pitch, already 226 Nm, is sized with it; the pack rides the top spine segment, so the spine turns beneath it |
 | **Impact protection** | A pack frame with a crush zone between the outer shell and the cells, so that an impact reaches the cells as shock within their qualified level, never as deformation or penetration — the path to thermal runaway. The upper back has the volume for that crush zone; the waist, in the concept's form, does not |
 | **Falls** | The upper back is among the first regions to land in a backward fall, at speed. **Verification requirement (V-4):** the pack survives the worst-case backward fall from standing with no cell deformation and cell acceleration within the qualified shock level. The supported failure state (spec 07.3 g2) should still favour falls that spare the back |
 | **Strikes** | The flank and waist are primary targets for kicks and knees; many combat rule sets forbid strikes to the spine and the back of the head. The upper back is the least-struck region of the torso |

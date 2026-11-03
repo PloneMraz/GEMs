@@ -35,7 +35,7 @@ lịch sử sửa.
   `claude.ai/code/session…`. Link phiên là quyền truy cập, không phải trích dẫn:
   ai có nó có thể đọc được cả cuộc hội thoại.
 - **Không đưa lên dữ liệu cá nhân của tác giả**: tên thật ngoài danh tính GitHub
-  công khai (Plone Mraz), email, số tài khoản hay thông tin thanh toán, ảnh chụp
+  công khai (Plone Mraz), số tài khoản hay thông tin thanh toán, ảnh chụp
   tài khoản, số dư, nội dung ghi chú riêng của workspace. Kể cả khi nó nằm trong
   metadata của file: tác giả trong docx, pdf, xlsx; EXIF của ảnh.
   Tên thật không nằm trong số đó ở chỗ Plone ký tên tác giả (Plone, 2026-11-03):

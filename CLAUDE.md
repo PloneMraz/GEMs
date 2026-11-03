@@ -38,6 +38,10 @@ lịch sử sửa.
   công khai (Plone Mraz), email, số tài khoản hay thông tin thanh toán, ảnh chụp
   tài khoản, số dư, nội dung ghi chú riêng của workspace. Kể cả khi nó nằm trong
   metadata của file: tác giả trong docx, pdf, xlsx; EXIF của ảnh.
+  Tên thật không nằm trong số đó ở chỗ Plone ký tên tác giả (Plone, 2026-11-03):
+  "Huỳnh Mai Phúc (Plone Mraz)" (`Huynh, Mai Phuc`), kèm đơn vị và ORCID, được
+  đứng trong metadata trích dẫn — `CITATION.cff`, BibTeX trong README, bản ghi
+  DOI — và trong dòng hoặc trường tác giả của một văn bản.
 - **Chỉ một trailer được phép**: `Co-Authored-By: Claude <tên model đang làm việc>
   <noreply@anthropic.com>`. Không thêm footer, badge hay dòng nào khác nhận diện
   công cụ hoặc phiên.

@@ -6,7 +6,7 @@ File này ghi các luật làm việc cho kho GEMs. Claude đọc nó ở đầu
 
 Sau khi báo cáo kết quả một công việc, commit ngay các thay đổi thuộc công việc đó rồi push lên `origin/main` — không gộp dồn sang công việc sau, không cần hỏi lại trước khi push.
 
-Sau mỗi lần push, đồng bộ ngay sang dataset Hugging Face `plonemraz/GEMs` trong cùng lượt (Plone, 2026-11-05). Bản trên HF là snapshot, không phải bản sao lịch sử git: lịch sử có PDF và PNG nằm thẳng trong git, Hub không nhận. Các file được theo dõi ở commit vừa push (`git archive`) được đưa lên bằng `hf upload`, message nêu commit đó; xong thì so hash từng file với bản trên Hub. README là dataset card: khối YAML ở đầu khai báo giấy phép và sáu bảng CSV mà Dataset Viewer đọc, nên đổi tên hay chuyển chỗ một bảng trong `hardware/bom/` hoặc `realtime_config/` thì sửa khối đó cùng lúc.
+Sau mỗi lần push, đồng bộ ngay sang dataset Hugging Face `plonemraz/GEMs` trong cùng lượt (Plone, 2026-11-05). Bản trên HF là snapshot, không phải bản sao lịch sử git: lịch sử có PDF và PNG nằm thẳng trong git, Hub không nhận. Các file được theo dõi ở commit vừa push (`git archive`) được đưa lên bằng `hf upload`, message nêu commit đó; xong thì so hash từng file với bản trên Hub. Trừ `.gitattributes`: bản của kho chỉ chuẩn hóa xuống dòng, còn bản của Hub khai các đuôi đi qua LFS; đè lên thì ai clone dataset sẽ nhận file con trỏ thay cho PNG và PDF. README là dataset card: khối YAML ở đầu khai báo giấy phép và sáu bảng CSV mà Dataset Viewer đọc, nên đổi tên hay chuyển chỗ một bảng trong `hardware/bom/` hoặc `realtime_config/` thì sửa khối đó cùng lúc.
 
 Nếu công việc không tạo ra thay đổi nào trong kho (ví dụ chỉ đọc mã, tra cứu, giải thích, hay chạy thử), thì không cần commit.
 

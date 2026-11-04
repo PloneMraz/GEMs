@@ -1,14 +1,8 @@
 # Firmware architecture
 
-The architecture of the body's real-time code: the firmware on the
-microcontrollers, and the real-time controller's modules, which are firmware or
-software according to decision D-3 ([spec 07.1](../spec/07-firmware-and-software.md#71-the-division)).
-Their deadlines are the same either way. The specification states what this
-code must guarantee; this document states how the work is divided so that it can, and — the part that is genuinely new here —
-**how the 10 ms reflex budget is spent**.
+The architecture of the body's real-time code: the firmware on the microcontrollers, and the real-time controller's modules, which are firmware or software according to decision D-3 ([spec 07.1](../spec/07-firmware-and-software.md#71-the-division)). Their deadlines are the same either way. The specification states what this code must guarantee; this document states how the work is divided so that it can, and — the part that is genuinely new here — **how the 10 ms reflex budget is spent**.
 
-Nothing below fixes a part. Where a figure depends on hardware not yet chosen it
-is marked `⟦IMPL⟧` and stays marked.
+Nothing below fixes a part. Where a figure depends on hardware not yet chosen it is marked `⟦IMPL⟧` and stays marked.
 
 ## 1. Modules and the deadline each owns
 
@@ -26,15 +20,11 @@ is marked `⟦IMPL⟧` and stays marked.
 | **Log writer** | Full-tier records, hash-chained at loop rate | loop rate | [06.4](../spec/06-audit-surface.md#64-audit-log) |
 | **Low-power beacon** | Signed summary at quiescent power | duty-cycled | [06.5](../spec/06-audit-surface.md#65-low-power-beacon) |
 
-**One rule across all of them.** A module that misses its deadline must say so.
-A late result delivered silently is worse than a reported miss, because the
-layer above cannot tell the difference between fresh and stale, and the log will
-record a decision made on data that was not what it appeared to be.
+**One rule across all of them.** A module that misses its deadline must say so. A late result delivered silently is worse than a reported miss, because the layer above cannot tell the difference between fresh and stale, and the log will record a decision made on data that was not what it appeared to be.
 
 ## 2. The reflex budget
 
-10 ms is the whole path — stimulus at a sensor to motion at an actuator, not
-the compute portion of it. A proposed division:
+10 ms is the whole path — stimulus at a sensor to motion at an actuator, not the compute portion of it. A proposed division:
 
 | Stage | Budget | Note |
 |---|---|---|
@@ -47,25 +37,11 @@ the compute portion of it. A proposed division:
 | **Margin** | **1.45 ms** | Unallocated, deliberately |
 | **Total** | **10.0 ms** | |
 
-> **The log write is 0.5% of the budget.** This is the number that answers the
-> objection that a context record per reflex (RSIL: traced appraisal) costs too
-> much to run at reflex speed. It does
-> not. What it costs is the discipline of having a place to write to, which is a
-> design constraint rather than a time cost — see
-> [06.7](../spec/06-audit-surface.md#67-hard-constraints).
+> **The log write is 0.5% of the budget.** This is the number that answers the objection that a context record per reflex (RSIL: traced appraisal) costs too much to run at reflex speed. It does not. What it costs is the discipline of having a place to write to, which is a design constraint rather than a time cost — see [06.7](../spec/06-audit-surface.md#67-hard-constraints).
 >
-> **The reflex decision stage is not optional and not zero.** It still runs,
-> however little it has left to decide; that is what makes the output event
-> re-appraisable from outside, which is what RSIL INV-8 asks. A
-> firmware design that discovers it is over budget and reclaims this millisecond
-> has stopped conforming ([protocol C-9](../protocol/conformance.md)).
+> **The reflex decision stage is not optional and not zero.** It still runs, however little it has left to decide; that is what makes the output event re-appraisable from outside, which is what RSIL INV-8 asks. A firmware design that discovers it is over budget and reclaims this millisecond has stopped conforming ([protocol C-9](../protocol/conformance.md)).
 
-The split is `⟦IMPL⟧` and will move once real parts exist. The same figures are
-held, with every task's layer and deadline class, in
-[`../realtime_config/tasks.csv`](../realtime_config/tasks.csv), and
-`python realtime_config/check_timing.py` fails if the two disagree. The margin is not
-spare capacity to be spent later — it absorbs the jitter that measurement will
-find.
+The split is `⟦IMPL⟧` and will move once real parts exist. The same figures are held, with every task's layer and deadline class, in [`../realtime_config/tasks.csv`](../realtime_config/tasks.csv), and `python realtime_config/check_timing.py` fails if the two disagree. The margin is not spare capacity to be spent later — it absorbs the jitter that measurement will find.
 
 ## 3. The balance loop
 
@@ -79,15 +55,11 @@ find.
 | Log write | 0.05 ms |
 | Margin | 0.25 ms |
 
-Balance and reflex share sensors and actuators but not deadlines. Where they
-contend, **balance wins**: a body that reflexes correctly while falling has
-failed at the thing that keeps the reflex worth having.
+Balance and reflex share sensors and actuators but not deadlines. Where they contend, **balance wins**: a body that reflexes correctly while falling has failed at the thing that keeps the reflex worth having.
 
 ## 4. The interface to the edge software
 
-The real-time code — firmware, and the real-time controller whichever layer D-3
-puts it in — hands up; the edge AI module's software hands down. The boundary is
-narrow on purpose.
+The real-time code — firmware, and the real-time controller whichever layer D-3 puts it in — hands up; the edge AI module's software hands down. The boundary is narrow on purpose.
 
 | Direction | Carries | Rate |
 |---|---|---|
@@ -99,34 +71,17 @@ narrow on purpose.
 | **Down** | Gating: which channels run at full rate | on event |
 | **Down** | The loop's self-report for the beacon (`loop_state`, RSIL C5), carried unaltered | on event |
 
-**Agency tagging is real-time code.** It is a hard real-time stage of the reflex path,
-and it needs the commanded value and the measured value in the same place at the
-same time
-([07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee), guarantee 7):
-once a stream has crossed upward without its tag, the information that would
-have carried it has already been averaged away.
+**Agency tagging is real-time code.** It is a hard real-time stage of the reflex path, and it needs the commanded value and the measured value in the same place at the same time ([07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee), guarantee 7): once a stream has crossed upward without its tag, the information that would have carried it has already been averaged away.
 
-**The edge software sends intent, not commands.** The final command belongs to a
-hard real-time task, so it belongs to the real-time code. Edge software that
-could write actuator values directly could also miss a deadline while holding
-them, and nothing on the edge module bounds its latency.
+**The edge software sends intent, not commands.** The final command belongs to a hard real-time task, so it belongs to the real-time code. Edge software that could write actuator values directly could also miss a deadline while holding them, and nothing on the edge module bounds its latency.
 
 ## 5. Link loss
 
-The local core is the real-time code plus the minimum edge software needed to
-keep logging. On
-link loss it maintains balance, preserves state and log, continues recording at
-both tiers, and attempts re-establishment.
+The local core is the real-time code plus the minimum edge software needed to keep logging. On link loss it maintains balance, preserves state and log, continues recording at both tiers, and attempts re-establishment.
 
-**It does not decide.** The boundary is stated at
-[07.5](../spec/07-firmware-and-software.md#75-link-loss-and-the-local-core) and
-it is architectural: reflexes are loadable, and the interpretation of priorities
-in an unforeseen situation is not a reflex.
+**It does not decide.** The boundary is stated at [07.5](../spec/07-firmware-and-software.md#75-link-loss-and-the-local-core) and it is architectural: reflexes are loadable, and the interpretation of priorities in an unforeseen situation is not a reflex.
 
-A practical consequence for this layer: the log must not be trimmed to save
-space during an outage. An outage is exactly when the record matters most, and a
-body that discards its own unsynchronised history has made the outage
-unauditable.
+A practical consequence for this layer: the log must not be trimmed to save space during an outage. An outage is exactly when the record matters most, and a body that discards its own unsynchronised history has made the outage unauditable.
 
 ## 6. Open
 

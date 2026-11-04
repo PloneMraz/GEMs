@@ -1,8 +1,6 @@
 # 03 — Energy
 
-Every trade in this specification is ultimately a division of a kilowatt-hour
-budget. This chapter states the budget, the measures that stretch it, and the
-ceilings that cannot be stretched.
+Every trade in this specification is ultimately a division of a kilowatt-hour budget. This chapter states the budget, the measures that stretch it, and the ceilings that cannot be stretched.
 
 ## 3.1 Source
 
@@ -18,17 +16,11 @@ Solid-state cells, declared in two configurations:
 - Commercial Li-ion today: ~250–260 Wh/kg at cell level
 - Semi-solid already shipping in vehicles: ~300–350 Wh/kg
 - Expected solid-state packs: 300–500+ Wh/kg; demonstrated cells at 600 Wh/kg
-- Li-S: ~2600 Wh/kg theoretical; lab results 743 Wh/kg (6 mg/cm² cathode
-  loading) to 1100 Wh/kg (18 mg/cm²); record cell 695 Wh/kg but **under 100
-  cycles**, against >1000 for Li-ion
+- Li-S: ~2600 Wh/kg theoretical; lab results 743 Wh/kg (6 mg/cm² cathode loading) to 1100 Wh/kg (18 mg/cm²); record cell 695 Wh/kg but **under 100 cycles**, against >1000 for Li-ion
 
 **Hot-swap under 2 minutes** — the pack is a replaceable module.
 
-**Peak-burst supercapacitor: optional.** Fitted when the mission needs sudden
-high-power motion (catching, jumping, fast reflex); omitted when lightness
-matters more. Its role is millisecond-scale discharge without sagging the pack.
-See [02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators)
-for why this option decides more than its name suggests.
+**Peak-burst supercapacitor: optional.** Fitted when the mission needs sudden high-power motion (catching, jumping, fast reflex); omitted when lightness matters more. Its role is millisecond-scale discharge without sagging the pack. See [02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators) for why this option decides more than its name suggests.
 
 ## 3.2 Six energy measures
 
@@ -43,15 +35,9 @@ for why this option decides more than its name suggests.
 
 ## 3.3 Tiered sleep
 
-The body drops to quiescent power on a cycle: actuators off with the body resting on
-a mechanical support, full-rate sensing off, heavy compute off. A very
-low-power always-on wake-up circuit and wake-on-event remain.
+The body drops to quiescent power on a cycle: actuators off with the body resting on a mechanical support, full-rate sensing off, heavy compute off. A very low-power always-on wake-up circuit and wake-on-event remain.
 
-**Delegated watch.** While the body sleeps, the **off-board compute of the
-controller stays awake**, observing through other sources — environmental
-devices, other units, signal networks. The body sleeps **without the system going
-blind.** This is an architectural advantage biology does not have, and it is
-available only because of the on-board / off-board split of [01](01-architecture.md).
+**Delegated watch.** While the body sleeps, the **off-board compute of the controller stays awake**, observing through other sources — environmental devices, other units, signal networks. The body sleeps **without the system going blind.** This is an architectural advantage biology does not have, and it is available only because of the on-board / off-board split of [01](01-architecture.md).
 
 | # | Constraint | Content |
 |---|---|---|
@@ -69,14 +55,9 @@ available only because of the on-board / off-board split of [01](01-architecture
 | **3. Rest-and-charge** | **External** | Light support | **Spatial sensing retained** | **Resting without going blind, charging without going dead** |
 | **4. Deep sleep on dock** | External | Off | Minimal | Fast full charge plus maximum rest; suits standby units |
 
-> **Level 3 is the state characteristic of this architecture.** On external
-> power, the constraint "switch things off to save the battery" disappears —
-> nothing is drawing from the pack. The body recovers energy *while maintaining
-> observational presence*. Organisms cannot do this.
+> **Level 3 is the state characteristic of this architecture.** On external power, the constraint "switch things off to save the battery" disappears — nothing is drawing from the pack. The body recovers energy *while maintaining observational presence*. Organisms cannot do this.
 >
-> Even where power is free, the dock should still carry most of the body's
-> weight — not for the electricity, but for **heat** (actuators holding a pose
-> get hot) and **mechanical wear**.
+> Even where power is free, the dock should still carry most of the body's weight — not for the electricity, but for **heat** (actuators holding a pose get hot) and **mechanical wear**.
 
 ## 3.5 Dock
 
@@ -87,9 +68,7 @@ available only because of the on-board / off-board split of [01](01-architecture
 
 Both charging methods are provided:
 
-- **Wireless** — slow or maintenance charging across long rests. Convenient, no
-  connector wear. *Limits: lower efficiency than contacts, and heat at the
-  interface at high power.*
+- **Wireless** — slow or maintenance charging across long rests. Convenient, no connector wear. *Limits: lower efficiency than contacts, and heat at the interface at high power.*
 - **Wired contacts** — fast charging when turnaround matters.
 
 Which method is used when: `⟦CTRL⟧`.
@@ -106,11 +85,7 @@ Components of quiescent power:
 | Spatial sensing, passive mode | **~18 µW** | *Sourced* |
 | Spatial sensing, full CSI, duty-cycled | **~50–200 mW** | `⟦IMPL⟧` — the expensive term |
 
-**But the always-on wake-up circuit is not the dominant term.** Cell self-discharge runs
-**1–3% per month** *(sourced; automotive standards require under 2%/month, and
-solid-state is expected to be lower but has yet to demonstrate it)*. On the
-3.9 kWh pack of the 2-hour reference body
-([02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators)):
+**But the always-on wake-up circuit is not the dominant term.** Cell self-discharge runs **1–3% per month** *(sourced; automotive standards require under 2%/month, and solid-state is expected to be lower but has yet to demonstrate it)*. On the 3.9 kWh pack of the 2-hour reference body ([02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators)):
 
 | Self-discharge | Equivalent power |
 |---|---|
@@ -118,8 +93,7 @@ solid-state is expected to be lower but has yet to demonstrate it)*. On the
 | 2%/month | **108 mW** |
 | 3%/month | **162 mW** |
 
-A deep-sleeping always-on wake-up circuit costs **tens of µW** — about **four orders of
-magnitude below self-discharge**.
+A deep-sleeping always-on wake-up circuit costs **tens of µW** — about **four orders of magnitude below self-discharge**.
 
 Sleep duration at 2%/month, linear approximation:
 
@@ -129,48 +103,28 @@ Sleep duration at 2%/month, linear approximation:
 | Plus passive spatial sensing | ~127 mW | ~3.5 years |
 | Plus full-CSI spatial sensing | ~309 mW | **~1.4 years** |
 
-> **Deep-sleep duration does not depend on pack size.** Energy and drain scale
-> together, so a 4 kWh pack and a 20 kWh pack both reach ~4.1 years at 2%/month.
-> A larger pack buys sleep duration only once there is a **fixed** load beside
-> self-discharge: with full-CSI sensing running, the reference 3.9 kWh pack
-> gives ~1.4 years where a 10 kWh pack would give ~2.4.
+> **Deep-sleep duration does not depend on pack size.** Energy and drain scale together, so a 4 kWh pack and a 20 kWh pack both reach ~4.1 years at 2%/month. A larger pack buys sleep duration only once there is a **fixed** load beside self-discharge: with full-CSI sensing running, the reference 3.9 kWh pack gives ~1.4 years where a 10 kWh pack would give ~2.4.
 
 > **Two design consequences.**
 >
-> **(1)** Optimising the always-on wake-up circuit below ~10 mW is wasted effort — it
-> disappears beneath self-discharge. The only term worth optimising is full-rate
-> spatial sensing, because it alone is the same order as the chemistry.
+> **(1)** Optimising the always-on wake-up circuit below ~10 mW is wasted effort — it disappears beneath self-discharge. The only term worth optimising is full-rate spatial sensing, because it alone is the same order as the chemistry.
 >
-> **(2)** What bounds sleep is **not the standby electronics — it is the cell
-> chemistry.** A deep-sleeping body runs its pack down in a few years even if
-> the always-on wake-up circuit drew nothing at all.
+> **(2)** What bounds sleep is **not the standby electronics — it is the cell chemistry.** A deep-sleeping body runs its pack down in a few years even if the always-on wake-up circuit drew nothing at all.
 >
-> The bound disappears at levels 3 and 4, where the dock both carries the body
-> and offsets self-discharge.
+> The bound disappears at levels 3 and 4, where the dock both carries the body and offsets self-discharge.
 
 ## 3.7 Environmental harvesting — add-on
 
-Peak solar irradiance is ~1000 W/m². The effective collecting area of a ~1.65 m
-body is ~0.45–0.6 m²; good cell efficiency is 20–25% — giving a maximum harvest
-of **~90–150 W**.
+Peak solar irradiance is ~1000 W/m². The effective collecting area of a ~1.65 m body is ~0.45–0.6 m²; good cell efficiency is 20–25% — giving a maximum harvest of **~90–150 W**.
 
-Against that, a humanoid in motion draws **hundreds to over 1000 W**. Solar
-**extends standby; it does not run a working body.** It counts toward waiting
-time and toward charging at rest, never toward the operating budget.
+Against that, a humanoid in motion draws **hundreds to over 1000 W**. Solar **extends standby; it does not run a working body.** It counts toward waiting time and toward charging at rest, never toward the operating budget.
 
 ## 3.8 Hard constraints
 
-**No configuration yields unlimited energy in free-running mode.** This is
-battery physics and it is not negotiable — it is only widened by the six
-measures and by charging infrastructure.
+**No configuration yields unlimited energy in free-running mode.** This is battery physics and it is not negotiable — it is only widened by the six measures and by charging infrastructure.
 
-"Unlimited" is reached only at levels 3 and 4, on external power, where the
-ceiling is the external supply rather than the pack.
+"Unlimited" is reached only at levels 3 and 4, on external power, where the ceiling is the external supply rather than the pack.
 
-This is the honest substitute for an inexhaustible source: **not an infinite
-supply, but a finite budget plus an infrastructure that makes it sufficient.**
+This is the honest substitute for an inexhaustible source: **not an infinite supply, but a finite budget plus an infrastructure that makes it sufficient.**
 
-**Operating endurance: `⟦CTRL⟧`.** No figure is set here. The designer supplies
-the range and the trade; the controller picks the point — a large pack for long
-outings, a light one for short work, more or less sleep as context demands —
-within the ceiling derived in [02.3](02-structure-and-motion.md#23-the-endurance-ceiling).
+**Operating endurance: `⟦CTRL⟧`.** No figure is set here. The designer supplies the range and the trade; the controller picks the point — a large pack for long outings, a light one for short work, more or less sleep as context demands — within the ceiling derived in [02.3](02-structure-and-motion.md#23-the-endurance-ceiling).

@@ -1,24 +1,12 @@
 # Software work
 
-Module by module, from [spec 07.4](../spec/07-firmware-and-software.md#74-what-software-must-guarantee)
-and [`../software/README.md`](../software/README.md) down to the task. Levels
-L0–L5 are defined in [`README.md`](README.md#levels-of-detail).
+Module by module, from [spec 07.4](../spec/07-firmware-and-software.md#74-what-software-must-guarantee) and [`../software/README.md`](../software/README.md) down to the task. Levels L0–L5 are defined in [`README.md`](README.md#levels-of-detail).
 
-**Scope.** Software as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division)
-defines it: code on the edge AI module under Linux. Its tasks here are firm, soft
-or non-real-time; their classes are set in
-[`../realtime_config/`](../realtime_config/). The real-time controller's modules
-are planned in [`firmware.md`](firmware.md), whichever layer D-3 puts them in.
+**Scope.** Software as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division) defines it: code on the edge AI module under Linux. Its tasks here are firm, soft or non-real-time; their classes are set in [`../realtime_config/`](../realtime_config/). The real-time controller's modules are planned in [`firmware.md`](firmware.md), whichever layer D-3 puts them in.
 
-**Almost none of this waits for hardware.** Every module except the capture
-drivers of S-9 can be written and tested now against synthetic or simulated
-sensor data (V-7). That makes this the one
-package that can move to L5 before any part is chosen.
+**Almost none of this waits for hardware.** Every module except the capture drivers of S-9 can be written and tested now against synthetic or simulated sensor data (V-7). That makes this the one package that can move to L5 before any part is chosen.
 
-**Scope boundary kept.** Nothing here specifies the controller that operates
-the body. Software turns what the body acquires into information and carries
-it; what to do with that information is not this repository's
-([README](../README.md#scope-boundary)).
+**Scope boundary kept.** Nothing here specifies the controller that operates the body. Software turns what the body acquires into information and carries it; what to do with that information is not this repository's ([README](../README.md#scope-boundary)).
 
 ---
 
@@ -32,8 +20,7 @@ it; what to do with that information is not this repository's
 
 ## S-1 — Feature extraction and compression
 
-Guarantee 1: **≥ 2:1, realistically 8:1**, on 15.1 Gbps raw at the
-conservative configuration (spec 05.4).
+Guarantee 1: **≥ 2:1, realistically 8:1**, on 15.1 Gbps raw at the conservative configuration (spec 05.4).
 
 | Task | To | Waits for |
 |---|---|---|
@@ -83,8 +70,7 @@ Guarantee 5: **reduced fidelity before dropped streams.**
 
 ## S-6 — Predictive modelling
 
-Named in [spec 07.1](../spec/07-firmware-and-software.md#71-the-division) and
-not yet planned anywhere else.
+Named in [spec 07.1](../spec/07-firmware-and-software.md#71-the-division) and not yet planned anywhere else.
 
 | Task | To | Waits for |
 |---|---|---|
@@ -109,9 +95,7 @@ not yet planned anywhere else.
 
 ## S-9 — Capture on the application processor
 
-Drivers are software when they run under the general-purpose OS (spec 07.1).
-Frame capture and encoding are firm real-time: a late frame is dropped, not
-used.
+Drivers are software when they run under the general-purpose OS (spec 07.1). Frame capture and encoding are firm real-time: a late frame is dropped, not used.
 
 | Task | To | Waits for |
 |---|---|---|

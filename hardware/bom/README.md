@@ -1,18 +1,12 @@
 # Bills of materials
 
-The three bills of materials of the GEMs reference design, in the form hardware
-teams use:
+The three bills of materials of the GEMs reference design, in the form hardware teams use:
 
 - **EBOM** — engineering BOM: the product as designed, a multi-level structure.
-- **MBOM** — manufacturing BOM: the same parts regrouped into routings — build
-  operations at work centres — plus the consumables the design never shows.
-- **SBOM** — software BOM, in two senses the industry uses side by side:
-  software images carried as virtual part numbers in the EBOM, so a shipped body
-  records what it runs; and a machine-readable component inventory in
-  CycloneDX, for supply-chain security.
+- **MBOM** — manufacturing BOM: the same parts regrouped into routings — build operations at work centres — plus the consumables the design never shows.
+- **SBOM** — software BOM, in two senses the industry uses side by side: software images carried as virtual part numbers in the EBOM, so a shipped body records what it runs; and a machine-readable component inventory in CycloneDX, for supply-chain security.
 
-**To read them, open [`EBOM.md`](EBOM.md) and [`MBOM.md`](MBOM.md).** The CSV
-and JSON files are the data; those pages are generated from them.
+**To read them, open [`EBOM.md`](EBOM.md) and [`MBOM.md`](MBOM.md).** The CSV and JSON files are the data; those pages are generated from them.
 
 | File | Contents | Kept by |
 |---|---|---|
@@ -29,16 +23,13 @@ python hardware/bom/build_bom.py            # regenerate
 python hardware/bom/build_bom.py --check    # verify only; non-zero on any error
 ```
 
-Python 3, standard library only. This is work package B of
-[`plan/`](../../plan/README.md#b--bill-of-materials-and-cost).
+Python 3, standard library only. This is work package B of [`plan/`](../../plan/README.md#b--bill-of-materials-and-cost).
 
 ---
 
 ## Why this shape
 
-A flat list of what the specification names is a requirements list, not a BOM.
-Industry practice, and the open humanoid projects that publish theirs, converge
-on a few features, and each one is here for a reason.
+A flat list of what the specification names is a requirements list, not a BOM. Industry practice, and the open humanoid projects that publish theirs, converge on a few features, and each one is here for a reason.
 
 | Practice | Here | Why |
 |---|---|---|
@@ -58,37 +49,24 @@ on a few features, and each one is here for a reason.
 
 ## Columns
 
-**`parts.csv`** — `part_number`, `rev`, `description`, `category`, `make_buy`,
-`uom` (EA, SET, M2), `unit_mass_kg` and `mass_basis`, `maturity` (TM or LAB, as
-in [spec 00](../../spec/00-scope-and-criteria.md)), `design_level` (L0–L5, as in
-[`plan/`](../../plan/README.md#levels-of-detail)), `lifecycle` (all `CONCEPT`
-until a design is released), `spec_ref`, `requirement`, `notes`.
+**`parts.csv`** — `part_number`, `rev`, `description`, `category`, `make_buy`, `uom` (EA, SET, M2), `unit_mass_kg` and `mass_basis`, `maturity` (TM or LAB, as in [spec 00](../../spec/00-scope-and-criteria.md)), `design_level` (L0–L5, as in [`plan/`](../../plan/README.md#levels-of-detail)), `lifecycle` (all `CONCEPT` until a design is released), `spec_ref`, `requirement`, `notes`.
 
-**`ebom.csv`** — `parent`, `find_no` (10, 20, 30… per parent), `child`, `qty`,
-`qty_basis` (required when `qty` is empty), `ref_des` (for PCBA lines, once they
-exist), `notes`.
+**`ebom.csv`** — `parent`, `find_no` (10, 20, 30… per parent), `child`, `qty`, `qty_basis` (required when `qty` is empty), `ref_des` (for PCBA lines, once they exist), `notes`.
 
-**`avl.csv`** — `part_number`, `rank`, `status`, `manufacturer`, `mpn`,
-`supplier`, `supplier_pn`, `source_url`, `unit_price`, `currency`, `price_qty`
-(the order quantity the price is for), `price_date`, `price_url`, `notes`.
+**`avl.csv`** — `part_number`, `rank`, `status`, `manufacturer`, `mpn`, `supplier`, `supplier_pn`, `source_url`, `unit_price`, `currency`, `price_qty` (the order quantity the price is for), `price_date`, `price_url`, `notes`.
 
 ## Rules the check enforces
 
-- Every part is used by an assembly, every line points at a part, and the
-  structure has no cycles.
+- Every part is used by an assembly, every line points at a part, and the structure has no cycles.
 - An empty quantity carries a basis saying why it is empty.
-- A price carries all of its currency, order quantity, date and page. A price
-  that cannot be re-checked is refused.
-- A `SELECTED` AVL entry carries a manufacturer, a manufacturer part number and
-  a source.
+- A price carries all of its currency, order quantity, date and page. A price that cannot be re-checked is refused.
+- A `SELECTED` AVL entry carries a manufacturer, a manufacturer part number and a source.
 - A **LAB** part carries no manufacturer part number: none exists to give.
 - The generated files match what the generator produces now.
 
 ## MBOM
 
-Routings are generated for every assembly and every PCBA that carries software.
-Leaf parts — machined, composite and bought-in — have no routing here; theirs
-is fabrication to drawing, and belongs with the drawing.
+Routings are generated for every assembly and every PCBA that carries software. Leaf parts — machined, composite and bought-in — have no routing here; theirs is fabrication to drawing, and belongs with the drawing.
 
 | Work centre | Covers |
 |---|---|
@@ -102,55 +80,29 @@ is fabrication to drawing, and belongs with the drawing.
 | `WC-COM` | Commissioning the audit surface: root-of-trust keys and measured-boot baseline (spec 06.2), physical-fingerprint baselines for attestation tier 2 (spec 06.3) |
 | `WC-PACK` | Packaging |
 
-Commissioning is a work centre of its own because the specification makes it
-one: attestation tier 2 compares a body against the fingerprint taken here, so a
-body that skips it cannot be attested later.
+Commissioning is a work centre of its own because the specification makes it one: attestation tier 2 compares a body against the fingerprint taken here, so a body that skips it cannot be attested later.
 
-Consumable quantities are "as consumed" and set by work instructions, which do
-not exist yet. Cycle times and labour are not estimated.
+Consumable quantities are "as consumed" and set by work instructions, which do not exist yet. Cycle times and labour are not estimated.
 
 ## SBOM
 
-`sbom.cdx.json` lists the software that exists in this repository: each module
-with its SHA-256, licence, supplier and the modules it imports, and the Python
-interpreter they all run on. There are no third-party packages. Its version
-field is a content hash, so a changed file is a changed version, and the check
-fails until the SBOM is regenerated. The timestamp is set at generation and is
-the one field the check ignores.
+`sbom.cdx.json` lists the software that exists in this repository: each module with its SHA-256, licence, supplier and the modules it imports, and the Python interpreter they all run on. There are no third-party packages. Its version field is a content hash, so a changed file is a changed version, and the check fails until the SBOM is regenerated. The timestamp is set at generation and is the one field the check ignores.
 
-The firmware images and the edge module's OS image are in the EBOM as virtual
-parts but **not** in the SBOM, because none of them has been built. They join it
-when they exist — with the RTOS, the EtherCAT master stack and the operating
-system distribution as the third-party components they will bring, each with its
-licence to be checked against this repository's.
+The firmware images and the edge module's OS image are in the EBOM as virtual parts but **not** in the SBOM, because none of them has been built. They join it when they exist — with the RTOS, the EtherCAT master stack and the operating system distribution as the third-party components they will bring, each with its licence to be checked against this repository's.
 
 ## Where it stands
 
-The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time
-of writing: 294 part numbers, including 9 software images and 6 consumables; 494
-operations across 59 routings; one selected manufacturer part (the Jetson T5000
-module), candidates for seventeen parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of
-44.2 kg out of the 96.2 kg budget — the rest is blank rather than guessed.
+The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 294 part numbers, including 9 software images and 6 consumables; 494 operations across 59 routings; one selected manufacturer part (the Jetson T5000 module), candidates for seventeen parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 44.2 kg out of the 96.2 kg budget — the rest is blank rather than guessed.
 
-Prices were looked for on 2026-09-26. Most supplier pages were unreachable from
-the environment this was written in, so the AVL rests on search results and on
-the pages that could be read, and each entry's notes say which.
+Prices were looked for on 2026-09-26. Most supplier pages were unreachable from the environment this was written in, so the AVL rests on search results and on the pages that could be read, and each entry's notes say which.
 
 ## What building it turned up
 
-**The actuator density has one motor behind it, at two ratios.** At 16:1 the
-module peaks at 78 Nm and 10 of the 18 joint types — 17 of the 31 joints —
-need more. At 48:1 the same motor peaks at 222 Nm and only hip pitch, knee and
-trunk pitch fall short, by 4–8 Nm, at about a third of the output speed; both
-are in the AVL, and whether the slower one is fast enough is D-2's question.
+**The actuator density has one motor behind it, at two ratios.** At 16:1 the module peaks at 78 Nm and 10 of the 18 joint types — 17 of the 31 joints — need more. At 48:1 the same motor peaks at 222 Nm and only hip pitch, knee and trunk pitch fall short, by 4–8 Nm, at about a third of the output speed; both are in the AVL, and whether the slower one is fast enough is D-2's question.
 
-**The reducer classes and the actuator family disagree.** `hardware/mechanical`
-§2 assigns cycloidal reducers to hips and knees and harmonic drives to wrists
-and neck; `hardware/electrical` §2 selects a hollow-shaft planetary module for
-every joint. The reducer rows carry the conflict until D-2 decides.
+**The reducer classes and the actuator family disagree.** `hardware/mechanical` §2 assigns cycloidal reducers to hips and knees and harmonic drives to wrists and neck; `hardware/electrical` §2 selects a hollow-shaft planetary module for every joint. The reducer rows carry the conflict until D-2 decides.
 
-**Ankle and waist have no reducer class.** The mechanical table stops at hip,
-knee, shoulder, elbow, wrist and neck.
+**Ankle and waist have no reducer class.** The mechanical table stops at hip, knee, shoulder, elbow, wrist and neck.
 
 ## References
 

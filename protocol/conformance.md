@@ -4,26 +4,15 @@
 
 ## 1. Introduction
 
-[Chapter 08](../spec/08-platform-contract.md) of the platform specification maps
-what an external processing loop requires of a body onto where this body supplies
-it. A map is enough to design against and not enough to certify with. This
-document is the test.
+[Chapter 08](../spec/08-platform-contract.md) of the platform specification maps what an external processing loop requires of a body onto where this body supplies it. A map is enough to design against and not enough to certify with. This document is the test.
 
-It states, for each requirement, **what a body must do** and **what evidence
-demonstrates it**. It does not specify the loop, and it does not specify the
-controller.
+It states, for each requirement, **what a body must do** and **what evidence demonstrates it**. It does not specify the loop, and it does not specify the controller.
 
-**What conformance means here.** A conforming body satisfies the preconditions an
-external processing loop needs in order to run on it at all. It does not mean the
-body is good, safe, or suitable for any particular use — those are judgements
-this protocol does not make and cannot make.
+**What conformance means here.** A conforming body satisfies the preconditions an external processing loop needs in order to run on it at all. It does not mean the body is good, safe, or suitable for any particular use — those are judgements this protocol does not make and cannot make.
 
 ## 2. Conformance language
 
-**MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT** and **MAY** carry their
-standards-document force. Violating a MUST forfeits the conformance claim. A
-SHOULD may be overridden with stated reason; the reason MUST appear in the
-conformance record.
+**MUST**, **MUST NOT**, **SHOULD**, **SHOULD NOT** and **MAY** carry their standards-document force. Violating a MUST forfeits the conformance claim. A SHOULD may be overridden with stated reason; the reason MUST appear in the conformance record.
 
 ## 3. Terminology
 
@@ -39,20 +28,15 @@ conformance record.
 
 ## 4. Applicability
 
-This protocol applies to a physical body with sensors and actuators operating in
-an environment that can return something other than what the body predicted.
+This protocol applies to a physical body with sensors and actuators operating in an environment that can return something other than what the body predicted.
 
-A **simulated** body MAY claim conformance. If it does, the claim MUST state that
-it is simulated. A simulation can satisfy every structural requirement here and
-none of the physical ones, and a claim that hides which kind it is, is worthless.
+A **simulated** body MAY claim conformance. If it does, the claim MUST state that it is simulated. A simulation can satisfy every structural requirement here and none of the physical ones, and a claim that hides which kind it is, is worthless.
 
-A body that fails any MUST **MUST NOT** describe itself as GEMs-conforming.
-Partial conformance is not a conformance claim; it is a gap list.
+A body that fails any MUST **MUST NOT** describe itself as GEMs-conforming. Partial conformance is not a conformance claim; it is a gap list.
 
 ## 5. Requirements
 
-C-1 to C-10 come from the platform contract. C-11 and C-12 are the two matters
-that contract explicitly places outside itself and assigns to the platform.
+C-1 to C-10 come from the platform contract. C-11 and C-12 are the two matters that contract explicitly places outside itself and assigns to the platform.
 
 | # | Requirement | Normative statement | Evidence | Spec |
 |---|---|---|---|---|
@@ -78,8 +62,7 @@ that contract explicitly places outside itself and assigns to the platform.
 | **C-15** | Shared time base | All sensor channels MUST carry timestamps on a common time base, established at the transport layer. Inter-channel skew MUST be below the reflex budget | **M** |
 | **C-16** | Supported failure state | On fault the body MUST reach a posture a passive structure can hold | **C** |
 
-Spec reference for all four: [07.2](../spec/07-firmware-and-software.md#72-real-time-requirements),
-[07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee).
+Spec reference for all four: [07.2](../spec/07-firmware-and-software.md#72-real-time-requirements), [07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee).
 
 ## 6. Evidence classes
 
@@ -92,93 +75,61 @@ Spec reference for all four: [07.2](../spec/07-firmware-and-software.md#72-real-
 
 A requirement marked with more than one class requires all of them.
 
-**Declaration alone never satisfies a MUST.** Every C-numbered requirement above
-carries at least one of M, T or C.
+**Declaration alone never satisfies a MUST.** Every C-numbered requirement above carries at least one of M, T or C.
 
 ## 7. Test procedures
 
-Procedures are stated to the level that fixes what is being tested. Rigs,
-tolerances and sample sizes are `⟦IMPL⟧`.
+Procedures are stated to the level that fixes what is being tested. Rigs, tolerances and sample sizes are `⟦IMPL⟧`.
 
 ### 7.1 C-8 — agency classification
 
-**Procedure.** Command a known motion. During that motion, apply an external
-force at a surface the body is not moving with. Inspect the log.
+**Procedure.** Command a known motion. During that motion, apply an external force at a surface the body is not moving with. Inspect the log.
 
-**Pass.** The log distinguishes the commanded motion from the applied force, and
-the distinction is present in records written **before** any fusion or
-compression stage.
+**Pass.** The log distinguishes the commanded motion from the applied force, and the distinction is present in records written **before** any fusion or compression stage.
 
-**Why this test.** A body that classifies after fusion produces a log that looks
-correct while the information that would have supported the classification has
-already been averaged away. Reading the pipeline position is the test; reading
-the conclusion is not.
+**Why this test.** A body that classifies after fusion produces a log that looks correct while the information that would have supported the classification has already been averaged away. Reading the pipeline position is the test; reading the conclusion is not.
 
 ### 7.2 C-9 — traced appraisal
 
-**Procedure.** Provoke a reflex — one of the fastest responses the body has.
-Inspect the record for that emission.
+**Procedure.** Provoke a reflex — one of the fastest responses the body has. Inspect the record for that emission.
 
-**Pass.** Anchored context is present, and it is sufficient for the assessor to
-re-appraise the emission without asking the body anything further.
+**Pass.** Anchored context is present, and it is sufficient for the assessor to re-appraise the emission without asking the body anything further.
 
-**Fail.** The emission appears in the log as an action with no context, or does
-not appear at all. Speed is not a defence: the requirement is that fast responses
-leave a trace, not that they be slow.
+**Fail.** The emission appears in the log as an action with no context, or does not appear at all. Speed is not a defence: the requirement is that fast responses leave a trace, not that they be slow.
 
 ### 7.3 C-11 — integrity attestation
 
 **Procedure.** Three tiers, all required.
 
-1. **Signature.** Verify measured-boot signatures for every sensor and actuator
-   node against the root of trust.
-2. **Physical fingerprint.** Compare current sensor noise and offset signatures
-   against the commissioning baseline. Deviation beyond declared tolerance is a
-   flag, not a pass.
-3. **Active challenge.** Command an actuator through a known displacement; the
-   corresponding encoder MUST report it within tolerance. Cross-check IMU, joint
-   encoders and vision for mutual agreement.
+1. **Signature.** Verify measured-boot signatures for every sensor and actuator node against the root of trust.
+2. **Physical fingerprint.** Compare current sensor noise and offset signatures against the commissioning baseline. Deviation beyond declared tolerance is a flag, not a pass.
+3. **Active challenge.** Command an actuator through a known displacement; the corresponding encoder MUST report it within tolerance. Cross-check IMU, joint encoders and vision for mutual agreement.
 
 **Pass.** All three tiers clear.
 
-**Scope of the result.** A pass supports the conclusion *the sensor–actuator
-chain is consistent with itself as commissioned*. It does **not** establish
-resistance to an adversary with physical access, and a conformance record MUST
-NOT present it as such.
+**Scope of the result.** A pass supports the conclusion *the sensor–actuator chain is consistent with itself as commissioned*. It does **not** establish resistance to an adversary with physical access, and a conformance record MUST NOT present it as such.
 
 ### 7.4 C-10 — low-power trace
 
-**Procedure.** Through the intent interface, write a known test value as the
-loop's self-report. Place the body in each power state it declares, sleep states
-included. In each, receive the beacon from outside and read `loop_state` and
-`loop_state_age`; measure quiescent power. Then write a second value and confirm
-the change reaches the beacon; stop writing and confirm the age grows.
+**Procedure.** Through the intent interface, write a known test value as the loop's self-report. Place the body in each power state it declares, sleep states included. In each, receive the beacon from outside and read `loop_state` and `loop_state_age`; measure quiescent power. Then write a second value and confirm the change reaches the beacon; stop writing and confirm the age grows.
 
-**Pass.** In every declared state the received `loop_state` is byte for byte
-the value written, its age is consistent with when it was written, and quiescent
-power is within the declared figure.
+**Pass.** In every declared state the received `loop_state` is byte for byte the value written, its age is consistent with when it was written, and quiescent power is within the declared figure.
 
-**Not tested here.** The beacon's `alive` field is not C5 and passing this
-procedure says nothing about whether the loop is alive. Dead-loop detection is
-assessed from the synchronised audit log (C-3, C-6), as RSIL places it.
+**Not tested here.** The beacon's `alive` field is not C5 and passing this procedure says nothing about whether the loop is alive. Dead-loop detection is assessed from the synchronised audit log (C-3, C-6), as RSIL places it.
 
 ### 7.5 C-16 — failure state
 
-**Procedure.** Remove power to the balance solver while the body is standing,
-under conditions where a fall is safe to allow.
+**Procedure.** Remove power to the balance solver while the body is standing, under conditions where a fall is safe to allow.
 
 **Pass.** The body reaches a supported posture. Collapsing is a fail.
 
 ### 7.6 C-13, C-14, C-15 — timing
 
-Measure. Rates and latencies are stated as measured, with method and instrument
-recorded. A figure without a method is a declaration, not a measurement.
+Measure. Rates and latencies are stated as measured, with method and instrument recorded. A figure without a method is a declaration, not a measurement.
 
 ## 8. The declaration
 
-Separately from pass/fail, a conformance record MUST state the body's envelope.
-These figures are **declared, not graded** — the specification sets ranges and
-the operator picks the point, so there is nothing here to pass or fail.
+Separately from pass/fail, a conformance record MUST state the body's envelope. These figures are **declared, not graded** — the specification sets ranges and the operator picks the point, so there is nothing here to pass or fail.
 
 | Declared | Unit |
 |---|---|
@@ -195,9 +146,7 @@ the operator picks the point, so there is nothing here to pass or fail.
 | Log rates and retention, both tiers | GB/h, hours |
 | Contact surfaces instrumented | list |
 
-A body whose declared endurance exceeds the ceiling derived at
-[02.3](../spec/02-structure-and-motion.md#23-the-endurance-ceiling) for its
-declared mass and power MUST state how, or withdraw the figure.
+A body whose declared endurance exceeds the ceiling derived at [02.3](../spec/02-structure-and-motion.md#23-the-endurance-ceiling) for its declared mass and power MUST state how, or withdraw the figure.
 
 ## 9. Claiming conformance
 
@@ -210,15 +159,13 @@ A claim MUST state:
 5. Every SHOULD overridden, with the reason
 6. The declaration of §8
 
-**Self-declared conformance is a valid claim and a weaker one.** The distinction
-MUST be visible in the claim, not buried in it.
+**Self-declared conformance is a valid claim and a weaker one.** The distinction MUST be visible in the claim, not buried in it.
 
 ### 9.1 Re-assessment
 
 A conformance claim lapses when:
 
-- Any sensor or actuator is replaced or repositioned — the commissioning baseline
-  no longer describes the body, so C-11 cannot be evaluated against it
+- Any sensor or actuator is replaced or repositioned — the commissioning baseline no longer describes the body, so C-11 cannot be evaluated against it
 - Firmware governing any timing requirement changes
 - A declared envelope figure changes
 
@@ -226,9 +173,7 @@ Re-assessment after a lapse MUST establish a new commissioning baseline.
 
 ### 9.2 Non-conformance
 
-A body failing any MUST **MUST NOT** be described as GEMs-conforming, in
-documentation, marketing or metadata. Naming the gaps is permitted and
-encouraged; claiming the name is not.
+A body failing any MUST **MUST NOT** be described as GEMs-conforming, in documentation, marketing or metadata. Naming the gaps is permitted and encouraged; claiming the name is not.
 
 ## 10. What this protocol does not do
 

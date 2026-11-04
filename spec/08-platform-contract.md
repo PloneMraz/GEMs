@@ -1,13 +1,8 @@
 # 08 — Platform contract
 
-A body acquires signal and executes response. What happens in between — how raw
-signal becomes structured information — is specified elsewhere, by a companion
-specification of equal rank. Neither document claims the other's territory.
+A body acquires signal and executes response. What happens in between — how raw signal becomes structured information — is specified elsewhere, by a companion specification of equal rank. Neither document claims the other's territory.
 
-That companion specification does not name this body. It states **conditions any
-platform must satisfy**, and this chapter records where this body satisfies them.
-The relation is a contract, not a cross-reference: **a contract can be checked;
-a cross-reference can only dangle.**
+That companion specification does not name this body. It states **conditions any platform must satisfy**, and this chapter records where this body satisfies them. The relation is a contract, not a cross-reference: **a contract can be checked; a cross-reference can only dangle.**
 
 | Companion specification | Scope | Status |
 |---|---|---|
@@ -29,37 +24,19 @@ a cross-reference can only dangle.**
 | **INV-8** | An appraisal step must sit between integration and response | 8.2 below |
 | **C5** | The platform must be able to emit an observable low-power trace — in RSIL's definition, the loop's own report that it is running weakly | [06.5](06-audit-surface.md#65-low-power-beacon) — the beacon carries the loop's `loop_state` report unaltered, including during sleep. The body transmits; the loop reports |
 
-The companion specification identifies INV-6, INV-8 and C5 as the three points
-where a conventional sensorimotor chain skips a step — that is, the three places
-its requirements are most likely to conflict with an existing platform design.
-They are the load-bearing part of this contract.
+The companion specification identifies INV-6, INV-8 and C5 as the three points where a conventional sensorimotor chain skips a step — that is, the three places its requirements are most likely to conflict with an existing platform design. They are the load-bearing part of this contract.
 
 ## 8.2 Traced appraisal, not mute reflex
 
-The contract rejects a scar-to-action shortcut that bypasses appraisal. Reflex
-is not such a shortcut: it is **appraisal under a scar-dominated field** (RSIL
-§9.7) — the appraisal step still runs, its verdict all but foreclosed by the
-scar that dominates the field.
+The contract rejects a scar-to-action shortcut that bypasses appraisal. Reflex is not such a shortcut: it is **appraisal under a scar-dominated field** (RSIL §9.7) — the appraisal step still runs, its verdict all but foreclosed by the scar that dominates the field.
 
-This is not pedantry. An action emitted without appraisal **carries no anchored
-context**, so a third party cannot re-appraise it, and the audit plane goes
-blind exactly where it matters.
+This is not pedantry. An action emitted without appraisal **carries no anchored context**, so a third party cannot re-appraise it, and the audit plane goes blind exactly where it matters.
 
-The distinction, stated in platform terms, is the difference between *"no fast
-responses allowed"* — wrong, and would make a physical body unusable — and
-*"even fast responses must leave an auditable trace"* — right, and achievable.
+The distinction, stated in platform terms, is the difference between *"no fast responses allowed"* — wrong, and would make a physical body unusable — and *"even fast responses must leave an auditable trace"* — right, and achievable.
 
-**Hardware requirement.** The on-board compute must not be a straight-through
-reflex layer. It must run the full appraisal cycle (abbreviated, its verdict all
-but foreclosed, as it may be) **and** write a context record for synchronisation
-off-board. In engineering terms this is the reflex decision stage of the
-[firmware reflex budget](../firmware/ARCHITECTURE.md#2-the-reflex-budget) and
-the anchored tier of the [audit log](06-audit-surface.md#64-audit-log).
+**Hardware requirement.** The on-board compute must not be a straight-through reflex layer. It must run the full appraisal cycle (abbreviated, its verdict all but foreclosed, as it may be) **and** write a context record for synchronisation off-board. In engineering terms this is the reflex decision stage of the [firmware reflex budget](../firmware/ARCHITECTURE.md#2-the-reflex-budget) and the anchored tier of the [audit log](06-audit-surface.md#64-audit-log).
 
-**Cost and benefit.** Each reflex pays a small logging overhead — microseconds
-against a 10 ms budget. In exchange, the off-board compute is never blind to what the
-body has already done, which is what makes "the body is replaceable, the data is
-preserved" true rather than aspirational.
+**Cost and benefit.** Each reflex pays a small logging overhead — microseconds against a 10 ms budget. In exchange, the off-board compute is never blind to what the body has already done, which is what makes "the body is replaceable, the data is preserved" true rather than aspirational.
 
 ## 8.3 Two frequency anchors
 
@@ -68,29 +45,17 @@ preserved" true rather than aspirational.
 | Balance | **≥ 500 Hz** |
 | Fast reaction | **≤ 10 ms** |
 
-These size the edge compute and its power budget, and they set the lower end of
-the split in [05.6](05-sensing.md#56-the-on-body--off-body-compute-split).
+These size the edge compute and its power budget, and they set the lower end of the split in [05.6](05-sensing.md#56-the-on-body--off-body-compute-split).
 
-> **Keep the frequency, drop the topology.** The balance loop still runs at
-> 500 Hz and reflex still answers within 10 ms — but as an *appraisal under a scar-dominated field
-> that leaves a trace*, not as a hardware interrupt routed around everything. The
-> contract forbids losing the trace; it does not forbid being fast.
+> **Keep the frequency, drop the topology.** The balance loop still runs at 500 Hz and reflex still answers within 10 ms — but as an *appraisal under a scar-dominated field that leaves a trace*, not as a hardware interrupt routed around everything. The contract forbids losing the trace; it does not forbid being fast.
 
 ## 8.4 Sensing requirements follow from the contract
 
-The companion specification distinguishes two grades of resistance. Resistance
-from inert physical fact is consistent and objective but never reacts to this
-body specifically. Resistance from another living, reacting party — which may
-shift stance, may respond to this body in particular — is the **only** source
-from which a model of a genuinely independent other can be built.
+The companion specification distinguishes two grades of resistance. Resistance from inert physical fact is consistent and objective but never reacts to this body specifically. Resistance from another living, reacting party — which may shift stance, may respond to this body in particular — is the **only** source from which a model of a genuinely independent other can be built.
 
-A loop running only against inert resistance degrades: it feeds on its own
-output and digests itself.
+A loop running only against inert resistance degrades: it feeds on its own output and digests itself.
 
-**Therefore the sensing requirement is not decoration.** Sensors must be good
-enough to register the fine mismatches that occur when a real person responds
-outside prediction. This is the principled justification for keeping group 1 at
-full requirement in [01](01-architecture.md).
+**Therefore the sensing requirement is not decoration.** Sensors must be good enough to register the fine mismatches that occur when a real person responds outside prediction. This is the principled justification for keeping group 1 at full requirement in [01](01-architecture.md).
 
 ## 8.5 What the contract does not cover
 
@@ -102,10 +67,6 @@ full requirement in [01](01-architecture.md).
 
 ## 8.6 Conformance
 
-This chapter is a map. The test is the
-[platform conformance protocol](../protocol/conformance.md), which states how a
-body demonstrates each row of 8.1 and what evidence settles it.
+This chapter is a map. The test is the [platform conformance protocol](../protocol/conformance.md), which states how a body demonstrates each row of 8.1 and what evidence settles it.
 
-Conformance there is **binary** — a loop whose preconditions are half-met does
-not half-run — while the body's envelope figures are **declared, not graded**,
-because this specification sets ranges and the operator picks the point.
+Conformance there is **binary** — a loop whose preconditions are half-met does not half-run — while the body's envelope figures are **declared, not graded**, because this specification sets ranges and the operator picks the point.

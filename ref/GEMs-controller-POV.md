@@ -1,8 +1,6 @@
-GEMs — GÓC NHÌN CỦA TÁC GIẢ VỀ BỘ ĐIỀU KHIỂN
-(GEMs — Author's POV about the Controller)
+GEMs — GÓC NHÌN CỦA TÁC GIẢ VỀ BỘ ĐIỀU KHIỂN (GEMs — Author's POV about the Controller)
 ---
-Tài liệu kèm theo: GEMs — đặc tả phần cứng (bản v2, là bản hiện hành khi tài liệu này được viết).
-Quan hệ: tài liệu phần cứng mô tả *cơ thể*. Tài liệu này nói về *cái điều khiển cơ thể* — và nói từ một vị trí mà tác giả buộc phải thừa nhận là không có thẩm quyền.
+Tài liệu kèm theo: GEMs — đặc tả phần cứng (bản v2, là bản hiện hành khi tài liệu này được viết). Quan hệ: tài liệu phần cứng mô tả *cơ thể*. Tài liệu này nói về *cái điều khiển cơ thể* — và nói từ một vị trí mà tác giả buộc phải thừa nhận là không có thẩm quyền.
 ---
 
 # 0. TÌNH TRẠNG NHẬN THỨC CỦA TOÀN BỘ TÀI LIỆU

@@ -1,8 +1,6 @@
 # Plan — from specification to a complete design
 
-What remains between this repository and a GEMs body that is **fully written
-down**: every part identified, every circuit drawn to the last passive, every
-line of firmware and software written, and all of it exercised in simulation.
+What remains between this repository and a GEMs body that is **fully written down**: every part identified, every circuit drawn to the last passive, every line of firmware and software written, and all of it exercised in simulation.
 
 | Document | Contents |
 |---|---|
@@ -14,15 +12,9 @@ line of firmware and software written, and all of it exercised in simulation.
 
 ## 1. What "done" means here
 
-GEMs is specified at the ceiling of current science and technology, not at the
-level of a budget. **The target is a complete design, not a built body.** A
-design is complete when a competent team with funding could procure, fabricate
-and assemble it without making a design decision of their own.
+GEMs is specified at the ceiling of current science and technology, not at the level of a budget. **The target is a complete design, not a built body.** A design is complete when a competent team with funding could procure, fabricate and assemble it without making a design decision of their own.
 
-Physical validation is out of reach and is not claimed. Verification is by
-simulation — mechanical, electrical, thermal, and the full body in a physics
-engine — and every simulated result says it is simulated, as
-[protocol §4](../protocol/conformance.md) already requires.
+Physical validation is out of reach and is not claimed. Verification is by simulation — mechanical, electrical, thermal, and the full body in a physics engine — and every simulated result says it is simulated, as [protocol §4](../protocol/conformance.md) already requires.
 
 ### Levels of detail
 
@@ -41,13 +33,7 @@ Every item in this plan is tracked against the same ladder.
 
 ### Where L3 cannot be reached
 
-The specification admits laboratory technology where the physics exists but
-the product does not (see [spec 00](../spec/00-scope-and-criteria.md)). For
-items marked **LAB** there is no part number to identify. Their L3 is a
-*reference design traced to a cited publication*, and their L4 is our own
-design of whatever surrounds them — readout, drive electronics, mounting —
-drawn to the same standard as everything else. The plan marks these rows so
-that they cannot be mistaken for purchasable items.
+The specification admits laboratory technology where the physics exists but the product does not (see [spec 00](../spec/00-scope-and-criteria.md)). For items marked **LAB** there is no part number to identify. Their L3 is a *reference design traced to a cited publication*, and their L4 is our own design of whatever surrounds them — readout, drive electronics, mounting — drawn to the same standard as everything else. The plan marks these rows so that they cannot be mistaken for purchasable items.
 
 ---
 
@@ -63,16 +49,13 @@ that they cannot be mistaken for purchasable items.
 | Kinematic simulation model | L4 for kinematics only | `hardware/sim-model/` — inertias estimated |
 | Everything else | L0 | — |
 
-No item is at L3. The engineering BOM exists — [`hardware/bom/`](../hardware/bom/),
-294 part numbers in a multi-level structure, with MBOM routings and an SBOM — with one selected manufacturer
-part and no verified price yet.
+No item is at L3. The engineering BOM exists — [`hardware/bom/`](../hardware/bom/), 294 part numbers in a multi-level structure, with MBOM routings and an SBOM — with one selected manufacturer part and no verified price yet.
 
 ---
 
 ## 3. Decisions that block everything else
 
-These are ordered: each one is needed before the work packages that depend on
-it can move past L2. None can be settled by arithmetic alone.
+These are ordered: each one is needed before the work packages that depend on it can move past L2. None can be settled by arithmetic alone.
 
 | # | Decision | Blocks | Status |
 |---|---|---|---|
@@ -88,33 +71,21 @@ it can move past L2. None can be settled by arithmetic alone.
 | **D-10** | **Arm payload** | Shoulder and elbow sizing, `f_act`, the mass loop | **decided 2026-09-26: 15 kg in one hand, arm horizontal, load at the grip centre; shoulder roll 11 kg** ([electrical §6b](../hardware/electrical/README.md#6b-arm-payload-and-the-two-parts-of-f_act--2026-09-26)). Replaced a 30 kg fingertip stress test. With it `f_act` splits into a scaling part (legs, trunk) and a fixed part (arms, wrists, neck) carried in `m_ext`; the density floor stays at 80 Nm/kg as margin |
 | **D-11** | **Load cases** | Leg and trunk sizing, carry capacity, D-8 | **decided 2026-09-26: static objects only; lifting, carrying or dragging a person is out, contact stays in** ([spec 02.6](../spec/02-structure-and-motion.md#load-cases)). A held load adds to the leg and trunk per-kg rows. Open within it: the masses of the four proposed cases |
 
-D-6 and D-8 are choices of *which* point to draw, not changes to the
-specification: the specification keeps its ranges, and a reference design
-declares the one it drew.
+D-6 and D-8 are choices of *which* point to draw, not changes to the specification: the specification keeps its ranges, and a reference design declares the one it drew.
 
 ---
 
 ## 4. Work packages
 
-Every package lists its tasks, the level it takes its subject to, and what it
-waits for. IDs are stable so that commits and issues can name them.
+Every package lists its tasks, the level it takes its subject to, and what it waits for. IDs are stable so that commits and issues can name them.
 
 ### ID — Industrial and expressive design
 
-How the body looks, and how it can show things. Two halves that share one
-surface: the **form** — proportion, silhouette, colour, material and finish —
-and the **expressive capability** — face, gaze and posture as a set of
-controllable degrees of freedom with ranges and speeds.
+How the body looks, and how it can show things. Two halves that share one surface: the **form** — proportion, silhouette, colour, material and finish — and the **expressive capability** — face, gaze and posture as a set of controllable degrees of freedom with ranges and speeds.
 
-**Scope boundary kept.** This package specifies what the body *can* express,
-never *when* or *why* it does. Choosing an expression is the controller's, and
-the controller is not specified here ([README](../README.md#scope-boundary)).
+**Scope boundary kept.** This package specifies what the body *can* express, never *when* or *why* it does. Choosing an expression is the controller's, and the controller is not specified here ([README](../README.md#scope-boundary)).
 
-Two standard references anchor it. The **Facial Action Coding System** (Ekman
-and Friesen, 1978) is the vocabulary for facial movement, and robot heads have
-been designed around its action units [Yan et al., 2014](https://onlinelibrary.wiley.com/doi/10.1155/2014/208924).
-The **uncanny valley** (Mori) is the design risk: a face that nearly but not
-quite passes as human is received worse than one that does not try.
+Two standard references anchor it. The **Facial Action Coding System** (Ekman and Friesen, 1978) is the vocabulary for facial movement, and robot heads have been designed around its action units [Yan et al., 2014](https://onlinelibrary.wiley.com/doi/10.1155/2014/208924). The **uncanny valley** (Mori) is the design risk: a face that nearly but not quite passes as human is received worse than one that does not try.
 
 | ID | Task | To | Waits for |
 |---|---|---|---|
@@ -146,15 +117,9 @@ quite passes as human is received worse than one that does not try.
 
 #### Pack location, decided
 
-The author's decision, 2026-09-26: **the battery pack sits in the scapular
-region of the upper back, on the torso frame** — not on the arms, and not in the
-waist or pelvis. It frees the waist the concept art asks for
-([`hardware/design/concept/`](../hardware/design/concept/)), and it places the
-body's largest heat source where an exhaust is easiest to design.
+The author's decision, 2026-09-26: **the battery pack sits in the scapular region of the upper back, on the torso frame** — not on the arms, and not in the waist or pelvis. It frees the waist the concept art asks for ([`hardware/design/concept/`](../hardware/design/concept/)), and it places the body's largest heat source where an exhaust is easiest to design.
 
-What the decision costs, at the declared point (URDF geometry at 1.65 m: pelvis centre
-~0.94 m above the sole, scapular region ~1.30 m), and how the cost falls as
-cells improve — `gems_budget.py` at the D-8 point, 2 h and 65% coverage:
+What the decision costs, at the declared point (URDF geometry at 1.65 m: pelvis centre ~0.94 m above the sole, scapular region ~1.30 m), and how the cost falls as cells improve — `gems_budget.py` at the D-8 point, 2 h and 65% coverage:
 
 | Cell energy density | Body | Pack | Centre of mass raised by moving the pack from pelvis to upper back |
 |---|---|---|---|
@@ -163,14 +128,9 @@ cells improve — `gems_budget.py` at the D-8 point, 2 h and 65% coverage:
 | 700 Wh/kg — low end of the ceiling tier (spec 03.1) | 88.9 kg | 5.1 kg | ~2 cm |
 | 1000 Wh/kg | 85.3 kg | 3.4 kg | ~1 cm |
 
-(At the 4 h point this section was written for, the pack was 23 kg and the
-shift ~6 cm; the move to 2 h on 2026-09-26 took most of the cost away.)
+(At the 4 h point this section was written for, the pack was 23 kg and the shift ~6 cm; the move to 2 h on 2026-09-26 took most of the cost away.)
 
-The pack shrinks faster than the energy it holds would suggest, because the
-mass loop compounds: a lighter pack makes a lighter body, which needs less pack.
-Two things do not improve with it. The ceiling tier trades rate for density
-(spec 02.7, 03.1), so the peak-power shortfall widens; and its cycle life is
-presently ~100 cycles. A denser cell is not free — it moves the problem.
+The pack shrinks faster than the energy it holds would suggest, because the mass loop compounds: a lighter pack makes a lighter body, which needs less pack. Two things do not improve with it. The ceiling tier trades rate for density (spec 02.7, 03.1), so the peak-power shortfall widens; and its cycle life is presently ~100 cycles. A denser cell is not free — it moves the problem.
 
 Constraints the decision carries into the design:
 
@@ -207,9 +167,7 @@ Constraints the decision carries into the design:
 
 ### F — Firmware
 
-See [`firmware.md`](firmware.md). Waits for D-3 to reach L4; the parts that do
-not depend on a target — algorithms, state machines, protocols — can be written
-now and run in simulation.
+See [`firmware.md`](firmware.md). Waits for D-3 to reach L4; the parts that do not depend on a target — algorithms, state machines, protocols — can be written now and run in simulation.
 
 ### S — Software
 
@@ -231,12 +189,7 @@ See [`software.md`](software.md). Needs no hardware decision and can proceed now
 
 ### DK — Dock
 
-With the reference point at 2 h free-running (D-8), the dock is part of the
-design, not an accessory: the body's day is a sequence of free-running spans
-and dock returns, and nothing in the repository designs the dock yet. Spec
-[03.5](../spec/03-energy.md#35-dock) declares its forms (seat or couch by
-default, load-bearing hanger for storage) and both charging methods; the
-pack-location decision above puts the contacts in the backrest.
+With the reference point at 2 h free-running (D-8), the dock is part of the design, not an accessory: the body's day is a sequence of free-running spans and dock returns, and nothing in the repository designs the dock yet. Spec [03.5](../spec/03-energy.md#35-dock) declares its forms (seat or couch by default, load-bearing hanger for storage) and both charging methods; the pack-location decision above puts the contacts in the backrest.
 
 | ID | Task | To | Waits for |
 |---|---|---|---|
@@ -255,8 +208,7 @@ pack-location decision above puts the contacts in the backrest.
 | B-3 | Extend the BOM as each work package reaches L3 | L3 | each package |
 | B-4 | Cost roll-up by subsystem, with "quote only" and **LAB** rows counted separately rather than guessed | L3 | B-3 |
 
-Prices are recorded with the date they were read and the page they were read
-from. A price that could not be found is left empty and says so.
+Prices are recorded with the date they were read and the page they were read from. A price that could not be found is left empty and says so.
 
 ---
 
@@ -264,15 +216,9 @@ from. A price that could not be found is left empty and says so.
 
 Nothing here waits for money. What waits is decisions.
 
-1. **D-1**, the knee torque, first — it is the one open figure that could stop
-   the mass loop from converging, and it is cheap to settle.
-2. **D-2 to D-5**, with **B-2** alongside, because pricing the candidates is
-   part of choosing between them.
-3. **S** work in parallel from now: it needs no hardware. **ID-1** and **ID-5**
-   can start now as well — the brief and the face depend on the kinematics and
-   the specification, not on parts.
-4. **M-1**, **E-1**, **ID-2**, and the target-independent parts of **F**, once
-   D-3 and D-4 are settled. Form and packaging iterate against each other from
-   here: neither is fixed first.
+1. **D-1**, the knee torque, first — it is the one open figure that could stop the mass loop from converging, and it is cheap to settle.
+2. **D-2 to D-5**, with **B-2** alongside, because pricing the candidates is part of choosing between them.
+3. **S** work in parallel from now: it needs no hardware. **ID-1** and **ID-5** can start now as well — the brief and the face depend on the kinematics and the specification, not on parts.
+4. **M-1**, **E-1**, **ID-2**, and the target-independent parts of **F**, once D-3 and D-4 are settled. Form and packaging iterate against each other from here: neither is fixed first.
 5. Detailed design — M-3 to M-11, E-2 to E-12, F source against the target.
 6. Verification — V-1 to V-9 — as each piece reaches L4, not at the end.

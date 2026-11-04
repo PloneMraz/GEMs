@@ -15,13 +15,9 @@ python scripts/gems_budget.py --json          # machine-readable
 python scripts/gems_budget.py --help          # every input
 ```
 
-The specification declares envelopes rather than a configuration, because
-structure, actuation and energy sit on one coupled loop. This script *is* that
-loop: give it a point and it returns the body mass, the growth factor, the pack
-size, and which of the actuators or the source limits peak power.
+The specification declares envelopes rather than a configuration, because structure, actuation and energy sit on one coupled loop. This script *is* that loop: give it a point and it returns the body mass, the growth factor, the pack size, and which of the actuators or the source limits peak power.
 
-It also refuses to pretend. Past the endurance ceiling it reports that the
-design does not converge rather than printing a large number:
+It also refuses to pretend. Past the endurance ceiling it reports that the design does not converge rather than printing a large number:
 
 ```
 loop     Sf = 1.022   (converges when Sf < 1)
@@ -38,25 +34,14 @@ Exit status is `0` when the point converges, `2` when it does not.
 python scripts/gems_budget.py --check
 ```
 
-Recomputes every figure the specification quotes — endurance ceilings, growth
-factors, armour masses, shoulder torques, both operating points with their pack
-sizes and power bands, self-discharge, sleep durations, log rates — and confirms
-each one still appears in the chapter that claims it.
+Recomputes every figure the specification quotes — endurance ceilings, growth factors, armour masses, shoulder torques, both operating points with their pack sizes and power bands, self-discharge, sleep durations, log rates — and confirms each one still appears in the chapter that claims it.
 
 Exit status is `0` when all agree, `1` otherwise.
 
-**What a mismatch means.** Either the arithmetic drifted, or the chapter's
-wording changed. The check says which figure and where; it does not guess which
-of the two is wrong. Look at both.
+**What a mismatch means.** Either the arithmetic drifted, or the chapter's wording changed. The check says which figure and where; it does not guess which of the two is wrong. Look at both.
 
-This is the only thing in the repository that holds the specification's numbers
-to account. Without it, the figures in `spec/` rest on having been calculated
-carefully once.
+This is the only thing in the repository that holds the specification's numbers to account. Without it, the figures in `spec/` rest on having been calculated carefully once.
 
 ## Scope
 
-The model prices a **declared** point. It does not recommend one — that choice
-belongs to whoever operates the body, as
-[spec 00](../spec/00-scope-and-criteria.md) sets out. Nor does it invent
-constants: everything it returns is derived from inputs you supply, and inputs
-the specification leaves open stay open here too.
+The model prices a **declared** point. It does not recommend one — that choice belongs to whoever operates the body, as [spec 00](../spec/00-scope-and-criteria.md) sets out. Nor does it invent constants: everything it returns is derived from inputs you supply, and inputs the specification leaves open stay open here too.

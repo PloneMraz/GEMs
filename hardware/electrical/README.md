@@ -1,7 +1,6 @@
 # Electrical
 
-Component selection against the specification. Every figure below is sourced;
-§7 lists the references.
+Component selection against the specification. Every figure below is sourced; §7 lists the references.
 
 | File | Contents |
 |---|---|
@@ -11,20 +10,9 @@ Component selection against the specification. Every figure below is sourced;
 
 ## 1. The actuator finding — raised, and resolved
 
-> **Resolved by option A on 2026-09-22.** The specification then declared
-> **75–90 Nm/kg peak, on a peak-torque-over-module-mass basis**, and states the
-> basis explicitly. **Revised 2026-09-26 to 80–90 Nm/kg** when the trunk was
-> re-sized from measured human strength and gained a lateral-bend axis (§6a).
-> **The arm payload came down to 15 kg the same day (§6b)**, which took `f_act`
-> at 80 Nm/kg from 0.34 to 0.30; the floor stayed at 80. `spec/` and this
-> document agree again; the record below is kept because the reasoning is what
-> justifies a figure at the top of the commercial band. Note that the §1
-> tables below were computed with the whole of `f_act` treated as scaling with
-> body mass; §6b explains why only the leg and trunk part does.
+> **Resolved by option A on 2026-09-22.** The specification then declared **75–90 Nm/kg peak, on a peak-torque-over-module-mass basis**, and states the basis explicitly. **Revised 2026-09-26 to 80–90 Nm/kg** when the trunk was re-sized from measured human strength and gained a lateral-bend axis (§6a). **The arm payload came down to 15 kg the same day (§6b)**, which took `f_act` at 80 Nm/kg from 0.34 to 0.30; the floor stayed at 80. `spec/` and this document agree again; the record below is kept because the reasoning is what justifies a figure at the top of the commercial band. Note that the §1 tables below were computed with the whole of `f_act` treated as scaling with body mass; §6b explains why only the leg and trunk part does.
 
-Sizing the declared 30 joints against published torque densities did not
-reproduce the actuator mass fraction the specification assumed. Tool output as
-run on 2026-09-22, before the correction:
+Sizing the declared 30 joints against published torque densities did not reproduce the actuator mass fraction the specification assumed. Tool output as run on 2026-09-22, before the correction:
 
 ```
 Nm/kg    mass kg    f_act    source
@@ -35,24 +23,15 @@ Nm/kg    mass kg    f_act    source
   88.7       38.5     0.30   commercial hollow-shaft planetary module, peak
 ```
 
-[Spec 02.2](../../spec/02-structure-and-motion.md#22-the-four-coefficients)
-assumes `f_act` between **0.25 and 0.35**. [Spec
-02.6](../../spec/02-structure-and-motion.md#26-actuation-and-manipulation)
-declared, at that time, actuator specific torque of **30–36 Nm/kg**, and sized
-its own worked example at 33.
+[Spec 02.2](../../spec/02-structure-and-motion.md#22-the-four-coefficients) assumes `f_act` between **0.25 and 0.35**. [Spec 02.6](../../spec/02-structure-and-motion.md#26-actuation-and-manipulation) declared, at that time, actuator specific torque of **30–36 Nm/kg**, and sized its own worked example at 33.
 
-**Those two figures were not compatible.** At 33 Nm/kg the actuators weigh 80%
-of the body, `Σf` exceeds 1 before a single cell of battery is fitted, and the
-coupled loop does not converge at any endurance — not at four hours, not at two.
+**Those two figures were not compatible.** At 33 Nm/kg the actuators weigh 80% of the body, `Σf` exceeds 1 before a single cell of battery is fitted, and the coupled loop does not converge at any endurance — not at four hours, not at two.
 
-Both figures in that paragraph have since been corrected; they are quoted here
-as they stood when the contradiction was found.
+Both figures in that paragraph have since been corrected; they are quoted here as they stood when the contradiction was found.
 
 ### It is not the arms
 
-Halving the per-arm payload from 30 kg to 15 kg takes the total from 3414 Nm to
-3000 Nm: `f_act` falls from 0.80 to 0.70. The legs carry 1905 Nm of the total,
-and leg torque is set by body mass, not by what the hands hold.
+Halving the per-arm payload from 30 kg to 15 kg takes the total from 3414 Nm to 3000 Nm: `f_act` falls from 0.80 to 0.70. The legs carry 1905 Nm of the total, and leg torque is set by body mass, not by what the hands hold.
 
 ### A lighter body is worse, not better
 
@@ -63,15 +42,11 @@ and leg torque is set by body mass, not by what the hands hold.
 | 110 kg | 3075 Nm | 0.85 |
 | 130 kg | 3414 Nm | 0.80 |
 
-Leg and waist torque scale with mass; wrist, neck and arm torques do not. Shed
-mass and the fixed torques dominate a smaller budget. **There is no lighter
-version of this body that closes at 33 Nm/kg.**
+Leg and waist torque scale with mass; wrist, neck and arm torques do not. Shed mass and the fixed torques dominate a smaller budget. **There is no lighter version of this body that closes at 33 Nm/kg.**
 
 ### What does close
 
-The lowest density that puts `f_act` inside the assumed range is **75 Nm/kg**,
-and only the best commercially claimed module reaches it. At a mainstream QDD
-module's 52 Nm/kg, `f_act` = 0.51 and the loop is already marginal:
+The lowest density that puts `f_act` inside the assumed range is **75 Nm/kg**, and only the best commercially claimed module reaches it. At a mainstream QDD module's 52 Nm/kg, `f_act` = 0.51 and the loop is already marginal:
 
 | `f_act` | 2 h | 4 h |
 |---|---|---|
@@ -79,15 +54,13 @@ module's 52 Nm/kg, `f_act` = 0.51 and the loop is already marginal:
 | 0.51 — at 52 Nm/kg | γ = 9.9 | γ = 81.8 |
 | 0.80 — at 33 Nm/kg | **diverges** | **diverges** |
 
-This was a decision for the author, not something to be silently patched. The
-options as put are kept at §6, with the one taken marked.
+This was a decision for the author, not something to be silently patched. The options as put are kept at §6, with the one taken marked.
 
 ---
 
 ## 2. Actuators
 
-**Selection: quasi-direct drive, hollow-shaft planetary, at the top of the
-commercial torque-density band.** Nothing lower closes the mass loop.
+**Selection: quasi-direct drive, hollow-shaft planetary, at the top of the commercial torque-density band.** Nothing lower closes the mass loop.
 
 | Property | Figure | Source |
 |---|---|---|
@@ -101,20 +74,9 @@ commercial torque-density band.** Nothing lower closes the mass loop.
 | QDD reduction ratios | **6:1 to 15:1**, against 50:1–120:1 industrial | [2] |
 | QDD mass saving | **40–60%** against high-ratio gearboxes | [2] |
 
-> **The two families of number.** A module advertised at 88.7 Nm/kg quotes peak
-> torque over motor-plus-gearbox mass; an integrated figure of 18–22 Nm/kg
-> counts housing, cooling and wiring as well. They differ by a factor of four
-> and both are honest. The sizing script prints both so the gap cannot be
-> read past.
+> **The two families of number.** A module advertised at 88.7 Nm/kg quotes peak torque over motor-plus-gearbox mass; an integrated figure of 18–22 Nm/kg counts housing, cooling and wiring as well. They differ by a factor of four and both are honest. The sizing script prints both so the gap cannot be read past.
 
-**Why QDD and not harmonic drive.** [Spec
-01](../../spec/01-architecture.md#application-frame) puts safe human contact at
-the core of the application frame. High-ratio harmonic drives are effectively
-non-backdrivable: a stalled arm cannot yield, so contact force is whatever the
-controller commands and nothing mechanical limits it. QDD at 6:1–15:1 stays
-backdrivable, which makes compliance a property of the mechanism rather than a
-promise made by software. That is a specification-driven reason, not a
-preference.
+**Why QDD and not harmonic drive.** [Spec 01](../../spec/01-architecture.md#application-frame) puts safe human contact at the core of the application frame. High-ratio harmonic drives are effectively non-backdrivable: a stalled arm cannot yield, so contact force is whatever the controller commands and nothing mechanical limits it. QDD at 6:1–15:1 stays backdrivable, which makes compliance a property of the mechanism rather than a promise made by software. That is a specification-driven reason, not a preference.
 
 ## 3. Power
 
@@ -126,17 +88,9 @@ preference.
 | All-solid-state pouch for robots | mass production targeted 2027, robots first | Samsung SDI [6] |
 | Rate capability demonstrated | 80% retention after 400 cycles at 4C | QuantumScape [6] |
 
-> **The durable tier of [spec 03.1](../../spec/03-energy.md#31-source) is now
-> real.** It declares 400–500 Wh/kg, and 450–465 Wh/kg cells are commercially
-> available or at validated stack level. The ceiling tier at 700–1100 Wh/kg
-> remains laboratory-only, exactly as the specification states.
+> **The durable tier of [spec 03.1](../../spec/03-energy.md#31-source) is now real.** It declares 400–500 Wh/kg, and 450–465 Wh/kg cells are commercially available or at validated stack level. The ceiling tier at 700–1100 Wh/kg remains laboratory-only, exactly as the specification states.
 >
-> **The rate trade the specification asserts is confirmed.** The literature
-> frames it as a straight choice between high C-rate and high energy density
-> [7], which is the mechanism behind
-> [spec 02.7](../../spec/02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators):
-> choosing the ceiling pack widens the peak-power shortfall rather than closing
-> it.
+> **The rate trade the specification asserts is confirmed.** The literature frames it as a straight choice between high C-rate and high energy density [7], which is the mechanism behind [spec 02.7](../../spec/02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators): choosing the ceiling pack widens the peak-power shortfall rather than closing it.
 
 ## 4. Compute
 
@@ -148,17 +102,9 @@ preference.
 | Memory | 128 GB | [9] |
 | Interconnect | PCIe Gen 5, Blackwell architecture | [9] |
 
-**Against the specification.** At 130 W on a 130 kg body this is **1 W/kg** —
-between 4% and 10% of the 10–25 W/kg motion budget of
-[spec 02.2](../../spec/02-structure-and-motion.md#22-the-four-coefficients). Edge
-compute is affordable in the power budget; what it is not is free, and
-[spec 05.6](../../spec/05-sensing.md#56-the-on-body--off-body-compute-split)
-states why that matters.
+**Against the specification.** At 130 W on a 130 kg body this is **1 W/kg** — between 4% and 10% of the 10–25 W/kg motion budget of [spec 02.2](../../spec/02-structure-and-motion.md#22-the-four-coefficients). Edge compute is affordable in the power budget; what it is not is free, and [spec 05.6](../../spec/05-sensing.md#56-the-on-body--off-body-compute-split) states why that matters.
 
-The compression duty is **≥2:1 and realistically 8:1** of 15.8 Gbps raw
-([spec 05.4](../../spec/05-sensing.md#54-aggregate-rate-against-the-link)) — about
-2 GB/s of sensor data processed in real time. Whether this part meets it is a
-measurement, not a datasheet reading, and it stays open until measured.
+The compression duty is **≥2:1 and realistically 8:1** of 15.8 Gbps raw ([spec 05.4](../../spec/05-sensing.md#54-aggregate-rate-against-the-link)) — about 2 GB/s of sensor data processed in real time. Whether this part meets it is a measurement, not a datasheet reading, and it stays open until measured.
 
 ## 5. Bus
 
@@ -172,22 +118,13 @@ measurement, not a datasheet reading, and it stays open until measured.
 | CAN FD | 64-byte data field, faster data phase, CAN arbitration retained | [11] |
 | Common practice | hybrid: EtherCAT for high-performance joints, CAN FD for distributed controllers | [11] |
 
-> Boston Dynamics moved from CAN in Petman to EtherCAT in Atlas [10]. The
-> balance loop needs **≥500 Hz**
-> ([spec 07.2](../../spec/07-firmware-and-software.md#72-real-time-requirements))
-> and joint current loops need kHz-class service; EtherCAT at a demonstrated
-> 2–4 kHz clears both with margin, and CAN FD does not.
+> Boston Dynamics moved from CAN in Petman to EtherCAT in Atlas [10]. The balance loop needs **≥500 Hz** ([spec 07.2](../../spec/07-firmware-and-software.md#72-real-time-requirements)) and joint current loops need kHz-class service; EtherCAT at a demonstrated 2–4 kHz clears both with margin, and CAN FD does not.
 >
-> **This also bears on the timestamp requirement.** EtherCAT distributed clocks
-> give the shared time base
-> [spec 07.2](../../spec/07-firmware-and-software.md#72-real-time-requirements)
-> demands, rather than leaving skew to be inferred later.
+> **This also bears on the timestamp requirement.** EtherCAT distributed clocks give the shared time base [spec 07.2](../../spec/07-firmware-and-software.md#72-real-time-requirements) demands, rather than leaving skew to be inferred later.
 
 ## 6. The decision
 
-The finding of §1 had no technical answer — three options, trading against each
-other. They are kept here because a design that does not record what it turned
-down cannot explain itself later.
+The finding of §1 had no technical answer — three options, trading against each other. They are kept here because a design that does not record what it turned down cannot explain itself later.
 
 | Option | What it costs | |
 |---|---|---|
@@ -197,38 +134,19 @@ down cannot explain itself later.
 
 ### What option A committed the design to
 
-**75–90 Nm/kg peak, over module mass — 80–90 since 2026-09-26.** Only a handful of commercial modules
-reach it — the hollow-shaft planetary at 88.7 Nm/kg is at the very top of what
-is claimed, and a mainstream 52 Nm/kg module does not qualify. Supply is thin
-and will stay thin.
+**75–90 Nm/kg peak, over module mass — 80–90 since 2026-09-26.** Only a handful of commercial modules reach it — the hollow-shaft planetary at 88.7 Nm/kg is at the very top of what is claimed, and a mainstream 52 Nm/kg module does not qualify. Supply is thin and will stay thin.
 
-**The specification now states the basis**, which is the part that actually
-prevents a repeat. The original error was not only a wrong number: 30–36 Nm/kg
-is a reasonable figure *on the integrated basis*, and it was being used as if it
-were peak-over-module. A density with no basis attached is a number waiting to
-be misread.
+**The specification now states the basis**, which is the part that actually prevents a repeat. The original error was not only a wrong number: 30–36 Nm/kg is a reasonable figure *on the integrated basis*, and it was being used as if it were peak-over-module. A density with no basis attached is a number waiting to be misread.
 
-**The two bands are now one constraint.** 80–90 Nm/kg maps onto `f_act`
-0.30–0.34, each derivable from the other, and `scripts/gems_budget.py --check`
-holds them together — including the actuator-mass column, which it did not
-cover before and which is exactly where this drift hid.
+**The two bands are now one constraint.** 80–90 Nm/kg maps onto `f_act` 0.30–0.34, each derivable from the other, and `scripts/gems_budget.py --check` holds them together — including the actuator-mass column, which it did not cover before and which is exactly where this drift hid.
 
 ## 6a. Trunk lateral-bend torque — research, 2026-09-26
 
-Decision D-9 added a lateral-bend axis to the trunk
-([kinematics §1.4](../kinematics.md#14-the-trunk-is-a-spine-not-a-waist)). It
-has no torque figure yet. Two things were found, and one was not.
+Decision D-9 added a lateral-bend axis to the trunk ([kinematics §1.4](../kinematics.md#14-the-trunk-is-a-spine-not-a-waist)). It has no torque figure yet. Two things were found, and one was not.
 
-**What the trunk figures already in the table rest on.** Nothing. The waist
-rows — trunk pitch 1.54 Nm/kg (200 Nm at 130 kg) and trunk yaw 0.77 Nm/kg — had
-no source in §7; they were assumed when the table was written. The source found
-for lateral bend below covers all three axes, and has replaced both.
+**What the trunk figures already in the table rest on.** Nothing. The waist rows — trunk pitch 1.54 Nm/kg (200 Nm at 130 kg) and trunk yaw 0.77 Nm/kg — had no source in §7; they were assumed when the table was written. The source found for lateral bend below covers all three axes, and has replaced both.
 
-**Human trunk torque per kilogram, all three axes — Pan et al. 2025 [14]
-(open access at the DOI; its licence is CC BY-NC-ND, so it is cited, not
-vendored).** 122 asymptomatic adults, 61 male
-(24.5 ± 2.3 y, 73.4 ± 15.0 kg, 175.6 ± 6.8 cm) and 61 female; Bionix Sim3 Pro
-dynamometer; median peak torque, normalised to body weight:
+**Human trunk torque per kilogram, all three axes — Pan et al. 2025 [14] (open access at the DOI; its licence is CC BY-NC-ND, so it is cited, not vendored).** 122 asymptomatic adults, 61 male (24.5 ± 2.3 y, 73.4 ± 15.0 kg, 175.6 ± 6.8 cm) and 61 female; Bionix Sim3 Pro dynamometer; median peak torque, normalised to body weight:
 
 | Axis | Isometric, male | Isometric, female | Isokinetic 15°/s, male | Isokinetic 15°/s, female |
 |---|---|---|---|---|
@@ -237,10 +155,7 @@ dynamometer; median peak torque, normalised to body weight:
 | **Lateral bending, left / right (trunk roll)** | **0.95 / 0.91** | 1.00 / 0.86 | 0.47 / 0.46 | 0.88 / 0.78 |
 | Axial rotation, left / right (trunk yaw) | **0.74 / 0.64** | 0.66 / 0.66 | 0.35 / 0.40 | 0.43 / 0.53 |
 
-Sex differences vanish once normalised (P > 0.05), so the male isometric
-column is used as the figure. The isokinetic values are lower because the
-device's slow constant-velocity protocol is not a peak-effort condition; they
-are not a dynamic peak. Lateral bending is **0.55 × extension**.
+Sex differences vanish once normalised (P > 0.05), so the male isometric column is used as the figure. The isokinetic values are lower because the device's slow constant-velocity protocol is not a peak-effort condition; they are not a dynamic peak. Lateral bending is **0.55 × extension**.
 
 **Cross-check, two engineered waists and one robot URDF:**
 
@@ -250,16 +165,9 @@ are not a dynamic peak. Lateral bending is **0.55 × extension**.
 | Flexinoid tensegrity spine, *Scientific Reports* 2025 [18] | — | No torque figures for pitch or roll; actuators are 1.89 N·m servos with elastic assistance. Its value is as a mechanism reference — see kinematics §1.4 |
 | Unitree G1 URDF, 29-DOF [16] | 1.0 | waist_roll = waist_pitch = 35 Nm, waist_yaw 88 Nm, robot 35.1 kg. An outlier: G1's pitch and roll travel only ±30°, both sized far below its yaw |
 
-Human strength and a waist engineered to match human balance agree at
-**about 0.5–0.55**. The G1 ratio is set by its small-travel design, not by need.
+Human strength and a waist engineered to match human balance agree at **about 0.5–0.55**. The G1 ratio is set by its small-travel design, not by need.
 
-**Decision, 2026-09-26: option B, floor 80.** All three trunk axes take the
-male isometric figures of [14]; the declared density floor of spec 02.6 moves
-from 75 to 80 Nm/kg — 80 rather than the computed 78 so that the next figure
-sized does not break the band again, and because 80 is the density the
-shoulder-torque table of spec 02.6 already used. The band narrows to 80–90:
-the design stands 10 Nm/kg, not 15, below the top of the commercial market.
-The options as they were weighed, at the 130 kg point:
+**Decision, 2026-09-26: option B, floor 80.** All three trunk axes take the male isometric figures of [14]; the declared density floor of spec 02.6 moves from 75 to 80 Nm/kg — 80 rather than the computed 78 so that the next figure sized does not break the band again, and because 80 is the density the shoulder-torque table of spec 02.6 already used. The band narrows to 80–90: the design stands 10 Nm/kg, not 15, below the top of the commercial market. The options as they were weighed, at the 130 kg point:
 
 | | Pitch | Roll | Yaw | Σ torque | `f_act` at 75 | at 80 | at 88.7 | Density for `f_act` ≤ 0.35 |
 |---|---|---|---|---|---|---|---|---|
@@ -267,35 +175,15 @@ The options as they were weighed, at the 130 kg point:
 | **A** — add roll at 0.95 Nm/kg, keep the assumed pitch and yaw | 200 | 124 | 100 | 3537 Nm | 0.363 | 0.340 | 0.307 | **77.7** |
 | **B** — all three trunk axes from [14]: 1.74 / 0.95 / 0.74 Nm/kg | 226 | 124 | 96 | 3560 Nm | 0.365 | 0.342 | 0.309 | **78.2** |
 
-Either option moves the floor of the declared density band (spec 02.6) from
-75 to about 78 Nm/kg; B also replaces two unsourced constants with sourced
-ones. B was taken.
+Either option moves the floor of the declared density band (spec 02.6) from 75 to about 78 Nm/kg; B also replaces two unsourced constants with sourced ones. B was taken.
 
-**What was not found:** a dynamic lateral trunk moment during the motions the
-axis is for — twisting to protect the body in a fall, righting from the ground.
-Isometric strength is a floor on capability, not a peak dynamic demand.
-Asymmetric-lifting biomechanics report lateral bending moments at L5/S1 rising
-with task asymmetry [17], but no peak figure was obtained.
+**What was not found:** a dynamic lateral trunk moment during the motions the axis is for — twisting to protect the body in a fall, righting from the ground. Isometric strength is a floor on capability, not a peak dynamic demand. Asymmetric-lifting biomechanics report lateral bending moments at L5/S1 rising with task asymmetry [17], but no peak figure was obtained.
 
 ## 6b. Arm payload and the two parts of `f_act` — 2026-09-26
 
-**What was found.** The shoulder rows were sized for 30 kg in one hand at
-0.70 m, the fingertip, and shoulder roll for 22 kg at the same lever, with the
-arm's own weight left out. 30 kg one-handed with the arm straight out is above
-what a strong human does; it was a stress test that had drifted into the
-table, and spec 02.6 described it only as "loads in the tens of kilograms at
-short to medium reach". The lever was also wrong in kind: a held object's
-weight acts at the grip centre, about 0.06 m beyond the wrist, not at the
-fingertip.
+**What was found.** The shoulder rows were sized for 30 kg in one hand at 0.70 m, the fingertip, and shoulder roll for 22 kg at the same lever, with the arm's own weight left out. 30 kg one-handed with the arm straight out is above what a strong human does; it was a stress test that had drifted into the table, and spec 02.6 described it only as "loads in the tens of kilograms at short to medium reach". The lever was also wrong in kind: a held object's weight acts at the grip centre, about 0.06 m beyond the wrist, not at the fingertip.
 
-**Decision: 15 kg in one hand, arm straight and horizontal, load at the grip
-centre; shoulder roll 11 kg in the same posture abducted.** Sized at the grip
-centre — 0.64 m from the shoulder, 0.32 m from the elbow
-([kinematics §2](../kinematics.md#2-reach-and-segment-lengths)) — with the
-arm's own weight added: the joint modules distal to each joint, weighed at the
-floor density from their own torque in the same table, plus allowances of
-0.8 kg upper-arm structure, 0.6 kg forearm structure and 0.6 kg hand that are
-`⟦IMPL⟧` until CAD exists.
+**Decision: 15 kg in one hand, arm straight and horizontal, load at the grip centre; shoulder roll 11 kg in the same posture abducted.** Sized at the grip centre — 0.64 m from the shoulder, 0.32 m from the elbow ([kinematics §2](../kinematics.md#2-reach-and-segment-lengths)) — with the arm's own weight added: the joint modules distal to each joint, weighed at the floor density from their own torque in the same table, plus allowances of 0.8 kg upper-arm structure, 0.6 kg forearm structure and 0.6 kg hand that are `⟦IMPL⟧` until CAD exists.
 
 | Joint | Before | Payload now | Self-weight | Peak now |
 |---|---|---|---|---|
@@ -303,24 +191,9 @@ floor density from their own torque in the same table, plus allowances of
 | Shoulder roll | 151 Nm | 69 | 15 | **84 Nm** |
 | Elbow | 112 Nm | 47 | 5 | **52 Nm** |
 
-The total falls from 3560 to **3112 Nm**; `f_act` at 80 Nm/kg from 0.34 to
-**0.30**; the arithmetic would now allow a floor of 68 Nm/kg. **The floor stays
-at 80**: the margin is kept for D-1 on the knee, for a dynamic trunk figure
-above the isometric one, and for the continuous-torque question below.
+The total falls from 3560 to **3112 Nm**; `f_act` at 80 Nm/kg from 0.34 to **0.30**; the arithmetic would now allow a floor of 68 Nm/kg. **The floor stays at 80**: the margin is kept for D-1 on the knee, for a dynamic trunk figure above the isometric one, and for the continuous-torque question below.
 
-**The two parts of `f_act`.** The finding of §1 that "a lighter body is
-worse" and its option C were argued with the whole actuator mass treated as a
-fraction of the body. It is not. Leg and trunk torque scales with body mass —
-18.09 Nm per kilogram of body, 2352 Nm at 130 kg — so those actuators are a
-true fraction, `f_act_s` = 0.226 at 80 Nm/kg. Arm, wrist and neck torque is
-fixed by payload and geometry — 760 Nm, **9.5 kg** of actuator at 80 Nm/kg —
-and is non-scaling mass, which belongs in `m_ext` of the loop beside armour
-and sensors. `scripts/gems_budget.py` now takes the torque density and
-carries the split; with it the 4-hour point comes out at 129.3 kg and
-γ = 3.38, where the lumped model said 129.5 kg and γ = 4.5. The body mass is
-the same because the fixed part was hiding inside the 0.30; the growth factor
-is lower because the arms do not grow with the armour. Consequences, at the
-same operating point and 15 kg payload:
+**The two parts of `f_act`.** The finding of §1 that "a lighter body is worse" and its option C were argued with the whole actuator mass treated as a fraction of the body. It is not. Leg and trunk torque scales with body mass — 18.09 Nm per kilogram of body, 2352 Nm at 130 kg — so those actuators are a true fraction, `f_act_s` = 0.226 at 80 Nm/kg. Arm, wrist and neck torque is fixed by payload and geometry — 760 Nm, **9.5 kg** of actuator at 80 Nm/kg — and is non-scaling mass, which belongs in `m_ext` of the loop beside armour and sensors. `scripts/gems_budget.py` now takes the torque density and carries the split; with it the 4-hour point comes out at 129.3 kg and γ = 3.38, where the lumped model said 129.5 kg and γ = 4.5. The body mass is the same because the fixed part was hiding inside the 0.30; the growth factor is lower because the arms do not grow with the armour. Consequences, at the same operating point and 15 kg payload:
 
 | Change | Body | Hip pitch | `f_act` |
 |---|---|---|---|
@@ -330,15 +203,9 @@ same operating point and 15 kg payload:
 | Both | 76 kg | 134 Nm | 0.35 |
 | **D-8 as decided that evening: 2 h with a dock, 65% armour, 1.65 m** | **96 kg** | **170 Nm** | **0.32** |
 
-A lighter body lowers every leg and trunk module's torque and the peak power
-the pack must supply, and raises `f_act` slightly because the fixed part is
-divided by less body. At 30 kg payload the last row would be 0.39, outside the
-band: the payload decision is what lets the body get lighter. No row brings
-the hip under the 78 Nm of the one qualifying module, so D-2 is not settled
-by mass.
+A lighter body lowers every leg and trunk module's torque and the peak power the pack must supply, and raises `f_act` slightly because the fixed part is divided by less body. At 30 kg payload the last row would be 0.39, outside the band: the payload decision is what lets the body get lighter. No row brings the hip under the 78 Nm of the one qualifying module, so D-2 is not settled by mass.
 
-**Where the ceiling is, on three bases.** The density band is at the top of
-the market, and the market is not the ceiling:
+**Where the ceiling is, on three bases.** The density band is at the top of the market, and the market is not the ceiling:
 
 | Tier | Figure | Basis |
 |---|---|---|
@@ -346,25 +213,9 @@ the market, and the market is not the ceiling:
 | Laboratory | **64.2 Nm/kg** peak — cycloidal quasi-direct drive, 89.9 Nm peak, 37.5 Nm continuous, Zhu et al. 2024 [21]; 1.40 kg by division, the paper's own mass figure not read | Peak over module mass |
 | Market | **78 Nm peak, 26 Nm rated, 879 g** in the one module found at or above the floor, CubeMars AKH70-16 [22]: 78 / 0.879 = 88.7 Nm/kg, the figure the band's top rests on | Peak over module mass, as claimed |
 
-The laboratory record is below the market claim, which is the usual sign that
-the two are not on the same basis: the laboratory figure is a full module
-with its housing, the market figure a compact planetary module at 16:1 whose
-879 g the datasheet does not break down. **Resolved 2026-09-26 by the author
-from the specification summary of the CubeMars page**: peak torque is
-**78 Nm**, not the 85 Nm the search excerpts and reseller listings carried,
-and 78 / 0.879 = 88.74 Nm/kg exactly. The three figures are consistent, and
-the module is 7 Nm smaller than this document assumed until then — hip yaw,
-at 81 Nm, and shoulder roll, at 84 Nm, moved above it.
-The page's torque–speed curve at 48 VDC runs to 85 Nm, which is where the
-85 figure came from; at that end the module turns at about 53 rpm and puts
-out about 470 W, so its **peak specific power is about 0.53 kW/kg**, against
-the 3–5 kW/kg spec 02.6 declares — an open finding for spec 02.7, where the
-actuator side of the peak-power comparison rests on that band. The module's
-interface is dual CAN, not EtherCAT. Price on the page: USD 598.90, recorded
-in the AVL as the first verified price.
+The laboratory record is below the market claim, which is the usual sign that the two are not on the same basis: the laboratory figure is a full module with its housing, the market figure a compact planetary module at 16:1 whose 879 g the datasheet does not break down. **Resolved 2026-09-26 by the author from the specification summary of the CubeMars page**: peak torque is **78 Nm**, not the 85 Nm the search excerpts and reseller listings carried, and 78 / 0.879 = 88.74 Nm/kg exactly. The three figures are consistent, and the module is 7 Nm smaller than this document assumed until then — hip yaw, at 81 Nm, and shoulder roll, at 84 Nm, moved above it. The page's torque–speed curve at 48 VDC runs to 85 Nm, which is where the 85 figure came from; at that end the module turns at about 53 rpm and puts out about 470 W, so its **peak specific power is about 0.53 kW/kg**, against the 3–5 kW/kg spec 02.6 declares — an open finding for spec 02.7, where the actuator side of the peak-power comparison rests on that band. The module's interface is dual CAN, not EtherCAT. Price on the page: USD 598.90, recorded in the AVL as the first verified price.
 
-**From the manufacturer's documents, read 2026-09-26** (supplied by the
-author; copyrighted, so cited and not vendored — [23][24][25]):
+**From the manufacturer's documents, read 2026-09-26** (supplied by the author; copyrighted, so cited and not vendored — [23][24][25]):
 
 | Item | Figure | Source |
 |---|---|---|
@@ -375,45 +226,15 @@ author; copyrighted, so cited and not vendored — [23][24][25]):
 | AKH70-48 specification table, as far as the page shows it | 48:1, 21 pole pairs; **74 Nm rated at 28 rpm and 6 A DC** (≈ 217 W mechanical); back-drive torque 2.22 Nm; backlash 12 arcmin; NTC temperature sensor (MF51B103F3950); bearing ratings C 5680 N, C₀ 8680 N; 65 dB at 65 cm; 1396 g. The peak-torque, inertia, motor-constant and time-constant cells were blank in the copy read | [26], screenshot supplied by the author |
 | Peak torque duration, thermal time constant | **not stated in any of the three documents, nor on the page.** A search engine's generated answer offering "under 0.5 s", "0.5–2 s" and "over 2 s" phases was seen and is not evidence: no CubeMars document read here gives those figures | — |
 
-So 78 Nm at 2.83 Nm/A is 27.5 A, inside the board's 60 A peak, and the
-manual's ±110 Nm command range is the drive's limit, not the motor's rating.
-The thermal question of the previous paragraph stays open: the documents give
-rated and peak, not how long peak may be held.
+So 78 Nm at 2.83 Nm/A is 27.5 A, inside the board's 60 A peak, and the manual's ±110 Nm command range is the drive's limit, not the motor's rating. The thermal question of the previous paragraph stays open: the documents give rated and peak, not how long peak may be held.
 
-**Torque density is a ratio choice.** The AKH70-48 is the same motor and
-drive behind a three-stage 48:1 reducer: 222 Nm peak, 74 Nm rated, 1396 g,
-**159 Nm/kg** [26] — 1.8 times the density this document called the top of
-the market, bought with output speed: ±5 rad/s against ±13 rad/s. Against
-the 130 kg table of that morning, at 48:1 every leg and trunk joint was covered except hip
-pitch and knee at 230 Nm (short by 8) and trunk pitch at 226 (short by 4);
-at the 96 kg reference point of D-8, decided that evening, every joint is
-covered, hip pitch and knee at 170 Nm with 29 kg of carry capacity to spare. What is not known is whether ~5 rad/s
-at the output is enough for gait and for catching a fall; that is the
-measurement D-2 now turns on, and the sizing table gains a speed column
-when it exists.
+**Torque density is a ratio choice.** The AKH70-48 is the same motor and drive behind a three-stage 48:1 reducer: 222 Nm peak, 74 Nm rated, 1396 g, **159 Nm/kg** [26] — 1.8 times the density this document called the top of the market, bought with output speed: ±5 rad/s against ±13 rad/s. Against the 130 kg table of that morning, at 48:1 every leg and trunk joint was covered except hip pitch and knee at 230 Nm (short by 8) and trunk pitch at 226 (short by 4); at the 96 kg reference point of D-8, decided that evening, every joint is covered, hip pitch and knee at 170 Nm with 29 kg of carry capacity to spare. What is not known is whether ~5 rad/s at the output is enough for gait and for catching a fall; that is the measurement D-2 now turns on, and the sizing table gains a speed column when it exists.
 
-**Load cases and carry capacity.** Decision D-11 of the same day limits the
-declared loads to static objects and puts a held load onto the leg and trunk
-rows ([spec 02.6](../../spec/02-structure-and-motion.md#load-cases)). The
-sizing script prints the case table and the mass the legs can carry against
-this module's 222 Nm peak and 74 Nm rated torque; at the old 4-hour point the
-body alone exceeded the peak, at the 2-hour, 1.65 m reference point of D-8
-29 kg is left for the hands.
+**Load cases and carry capacity.** Decision D-11 of the same day limits the declared loads to static objects and puts a held load onto the leg and trunk rows ([spec 02.6](../../spec/02-structure-and-motion.md#load-cases)). The sizing script prints the case table and the mass the legs can carry against this module's 222 Nm peak and 74 Nm rated torque; at the old 4-hour point the body alone exceeded the peak, at the 2-hour, 1.65 m reference point of D-8 29 kg is left for the hands.
 
-**In-house design is not an option.** By the author's rule of 2026-09-26
-([`CLAUDE.md`](../../CLAUDE.md) §2), no part of this design may be proposed
-as something to build rather than buy. The "design them" branch of D-2 is
-withdrawn; what remains is which bought module, at which ratio, and how
-several combine.
+**In-house design is not an option.** By the author's rule of 2026-09-26 ([`CLAUDE.md`](../../CLAUDE.md) §2), no part of this design may be proposed as something to build rather than buy. The "design them" branch of D-2 is withdrawn; what remains is which bought module, at which ratio, and how several combine.
 
-**The continuous-torque gap.** Every figure in the sizing table is a peak, and
-the density band is peak over module mass. The rated figures are 26 of 78 Nm
-for the market module and 37.5 of 89.9 Nm for the laboratory one — about a
-third. A joint that must hold its peak for longer than the module's thermal
-time constant is sized by the rated figure, at roughly three times the mass.
-Which joints those are — the trunk holding a lift, the shoulder holding the
-declared 15 kg — is not decided here, and is the third reason the floor stays
-at 80 rather than falling to 68.
+**The continuous-torque gap.** Every figure in the sizing table is a peak, and the density band is peak over module mass. The rated figures are 26 of 78 Nm for the market module and 37.5 of 89.9 Nm for the laboratory one — about a third. A joint that must hold its peak for longer than the module's thermal time constant is sized by the rated figure, at roughly three times the mass. Which joints those are — the trunk holding a lift, the shoulder holding the declared 15 kg — is not decided here, and is the third reason the floor stays at 80 rather than falling to 68.
 
 ## 7. References
 
@@ -431,12 +252,7 @@ at 80 rather than falling to 68.
 | 10 | [An EtherCAT-Based Real-Time Control System Architecture for Humanoid Robots](https://mediatum.ub.tum.de/doc/1394924/0185778354196.pdf) |
 | 11 | [CAN vs EtherCAT vs RS-485 vs UART for robot motors and actuators](https://openelab.io/blogs/learn/can-vs-ethercat-vs-rs-485-vs-uart-for-robot-motors-and-actuators) |
 
-Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at
-push-off and 2.5–3.5 W/kg push-off power from normative gait data; hip
-100–150 Nm peak for a 70 kg humanoid during stair climbing and squat rise,
-scaled by mass [12][13]. Knee is assumed equal to hip pitch — **an assumption,
-not a source**, and the one figure in the table that most deserves checking
-against a real gait dataset.
+Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at push-off and 2.5–3.5 W/kg push-off power from normative gait data; hip 100–150 Nm peak for a 70 kg humanoid during stair climbing and squat rise, scaled by mass [12][13]. Knee is assumed equal to hip pitch — **an assumption, not a source**, and the one figure in the table that most deserves checking against a real gait dataset.
 
 | # | Source |
 |---|---|

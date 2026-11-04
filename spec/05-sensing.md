@@ -1,12 +1,10 @@
 # 05 — Sensing
 
-This is the primary axis: the body exists to acquire physical experience.
-Quantifying it forces a question that a single multiplier cannot answer.
+This is the primary axis: the body exists to acquire physical experience. Quantifying it forces a question that a single multiplier cannot answer.
 
 ## 5.1 "× human" is not one number — it is five axes
 
-"As sensitive as human skin, times N" decomposes into five independent
-quantities, and they do not all move together:
+"As sensitive as human skin, times N" decomposes into five independent quantities, and they do not all move together:
 
 | Axis | Human | Can it exceed human |
 |---|---|---|
@@ -18,18 +16,10 @@ quantities, and they do not all move together:
 
 **Density is blocked twice, independently:**
 
-1. **Fabrication.** The densest published e-skin array reaches **~347
-   elements/cm²** *(sourced)* — roughly **level with human skin**, not above it.
-   A 100× density means 24,100/cm², about **69× beyond anything yet built**.
-2. **Bandwidth.** Even if it could be built: 24,100/cm² over 1.6 m² is **386
-   million points**. At 1 kHz and 12 bits that is **~4,600 Gbps of tactile data
-   alone** — **580×** the 8 Gbps link of [01](01-architecture.md). No compression
-   ratio rescues that.
+1. **Fabrication.** The densest published e-skin array reaches **~347 elements/cm²** *(sourced)* — roughly **level with human skin**, not above it. A 100× density means 24,100/cm², about **69× beyond anything yet built**.
+2. **Bandwidth.** Even if it could be built: 24,100/cm² over 1.6 m² is **386 million points**. At 1 kHz and 12 bits that is **~4,600 Gbps of tactile data alone** — **580×** the 8 Gbps link of [01](01-architecture.md). No compression ratio rescues that.
 
-**Declared tactile capability:** density **level with human skin** in the fine
-regions (hands, face), thinning across the torso; **20–100× human in temporal
-bandwidth**; above human in sensitivity threshold, dynamic range, and number of
-simultaneously measured quantities.
+**Declared tactile capability:** density **level with human skin** in the fine regions (hands, face), thinning across the torso; **20–100× human in temporal bandwidth**; above human in sensitivity threshold, dynamic range, and number of simultaneously measured quantities.
 
 ## 5.2 Tactile layout
 
@@ -41,9 +31,7 @@ Uniform whole-body density is wasteful — human skin is not uniform either.
 | Ordinary — remainder | ~15,500 cm² | ~20/cm² | ~310,000 |
 | **Total** | 1.6 m² | — | **~460,000** |
 
-At 1 kHz and 12 bits: **5.5 Gbps** raw — two thirds of the link, from one
-channel. (1.8 m², ~500,000 points and 6.0 Gbps until the height came to 1.65 m
-on 2026-09-26.)
+At 1 kHz and 12 bits: **5.5 Gbps** raw — two thirds of the link, from one channel. (1.8 m², ~500,000 points and 6.0 Gbps until the height came to 1.65 m on 2026-09-26.)
 
 ## 5.3 Channels
 
@@ -63,10 +51,7 @@ on 2026-09-26.)
 | Biological response | pupil, expression | — | Micro facial actuators and microfluidics. **TM/LAB** |
 | Cardiac co-regulation | vibration, warmth, rhythm | — | **Optional module, not always-on.** Instrumented per [06.6](06-audit-surface.md#66-contact-amplitude) |
 
-> **On olfaction.** Parts-per-billion thresholds **are** achieved. What has to be
-> reduced is not sensitivity but **sensitivity × breadth of compounds × speed
-> simultaneously**: a sensor reaching 5 ppb for one compound takes 5–10 seconds,
-> and no array reaches ppb across hundreds of compounds in real time.
+> **On olfaction.** Parts-per-billion thresholds **are** achieved. What has to be reduced is not sensitivity but **sensitivity × breadth of compounds × speed simultaneously**: a sensor reaching 5 ppb for one compound takes 5–10 seconds, and no array reaches ppb across hundreds of compounds in real time.
 
 ## 5.4 Aggregate rate against the link
 
@@ -78,24 +63,16 @@ on 2026-09-26.)
 
 Available link: **8 Gbps**.
 
-> The on-board / off-board split of [01](01-architecture.md) is not a design
-> preference. **It falls short by 2× in the most conservative configuration and
-> by 8× in a sensible one.** On-body processing is arithmetic, not taste.
+> The on-board / off-board split of [01](01-architecture.md) is not a design preference. **It falls short by 2× in the most conservative configuration and by 8× in a sensible one.** On-body processing is arithmetic, not taste.
 
 ## 5.5 Proprioception is mandatory
 
-Joint encoders, IMU and force/torque sensing, dense enough to distinguish **"I
-just moved"** from **"something moved me"**.
+Joint encoders, IMU and force/torque sensing, dense enough to distinguish **"I just moved"** from **"something moved me"**.
 
-This is the cheapest channel on the list and the one that cannot be omitted.
-Two separate requirements land on it:
+This is the cheapest channel on the list and the one that cannot be omitted. Two separate requirements land on it:
 
-- **Experience.** A touch from another person must be cleanly separable from the
-  body's own motion, or the experience being acquired is corrupted at source.
-- **The platform contract.** An external processing loop requires that every
-  change be classified as self-caused or not *before* it is interpreted — see
-  [08](08-platform-contract.md). Without adequate proprioceptive hardware that
-  requirement cannot be enforced, and every layer above it reads wrong.
+- **Experience.** A touch from another person must be cleanly separable from the body's own motion, or the experience being acquired is corrupted at source.
+- **The platform contract.** An external processing loop requires that every change be classified as self-caused or not *before* it is interpreted — see [08](08-platform-contract.md). Without adequate proprioceptive hardware that requirement cannot be enforced, and every layer above it reads wrong.
 
 The same hardware serves a third purpose in [06.3](06-audit-surface.md#63-three-tiers-of-attestation).
 
@@ -112,10 +89,7 @@ The split is a dial with **two hard ends and a soft middle**.
 | Fast reaction loop | **≤ 10 ms** |
 | Context record for every output event (RSIL INV-8: anchored context on every emission) | per event ([08.2](08-platform-contract.md#82-traced-appraisal-not-mute-reflex)) |
 
-Link round-trip is ~1 ms at ideal short range, but at kilometre range with beam
-tracking it cannot be relied on for ≤10 ms. **Balance and reflex are therefore
-on-body — not because the design prefers it, but because there is no
-alternative.**
+Link round-trip is ~1 ms at ideal short range, but at kilometre range with beam tracking it cannot be relied on for ≤10 ms. **Balance and reflex are therefore on-body — not because the design prefers it, but because there is no alternative.**
 
 **Upper end — what must not be on the body:**
 
@@ -126,13 +100,8 @@ alternative.**
 | Heat | A sealed body in human contact dissipates worse than a rack |
 | Memory and world model | Off-body by architectural definition, not by capacity |
 
-> **Edge compute is not "add as much as you like, it only costs battery." It
-> eats into the convergence condition of the whole body**, and
-> [02.3](02-structure-and-motion.md#23-the-endurance-ceiling) shows `γ` inflating
-> non-linearly near the ceiling.
+> **Edge compute is not "add as much as you like, it only costs battery." It eats into the convergence condition of the whole body**, and [02.3](02-structure-and-motion.md#23-the-endurance-ceiling) shows `γ` inflating non-linearly near the ceiling.
 >
-> The middle — feature extraction, compression, predictive modelling, tracking
-> of other agents — is `⟦CTRL⟧`, and **should be adjustable per mission** rather
-> than a compile-time constant.
+> The middle — feature extraction, compression, predictive modelling, tracking of other agents — is `⟦CTRL⟧`, and **should be adjustable per mission** rather than a compile-time constant.
 
 **Operating point: `⟦CTRL⟧`.**

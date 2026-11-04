@@ -1,3 +1,33 @@
+---
+license: other
+license_name: cern-ohl-s-2.0-apache-2.0-cc-by-4.0
+license_link: LICENSE.md
+language:
+  - en
+pretty_name: GEMs — Gynoid Entity Models
+tags:
+  - robotics
+  - humanoid
+  - open-hardware
+  - urdf
+  - bill-of-materials
+  - specification
+configs:
+  - config_name: parts
+    data_files: "hardware/bom/parts.csv"
+    default: true
+  - config_name: ebom
+    data_files: "hardware/bom/ebom.csv"
+  - config_name: mbom
+    data_files: "hardware/bom/mbom.csv"
+  - config_name: avl
+    data_files: "hardware/bom/avl.csv"
+  - config_name: tasks
+    data_files: "realtime_config/tasks.csv"
+  - config_name: scheduler
+    data_files: "realtime_config/scheduler.csv"
+---
+
 # GEMs — GYNOID ENTITY MODELS
 
 Open-source designs of a physical robot body.
@@ -42,6 +72,8 @@ Every figure above is reproducible — `python scripts/gems_budget.py --check` r
 ## What is where
 
 This repository holds the source: hardware designs, the firmware and software that run on them, and the specifications they implement. Issues, pull requests and releases belong here.
+
+The same tree is mirrored as the Hugging Face dataset [plonemraz/GEMs](https://huggingface.co/datasets/plonemraz/GEMs), a snapshot of `main` after each push. There the tables load as subsets — `parts`, `ebom`, `mbom` and `avl` from [`hardware/bom/`](hardware/bom/), `tasks` and `scheduler` from [`realtime_config/`](realtime_config/) — for example `load_dataset("plonemraz/GEMs", "parts")`. They are the design's tables, not measurements: every caution above holds for them too.
 
 The documentation pages are built and published from [plonemraz.github.io](https://github.com/PloneMraz/plonemraz.github.io) so that they share the site's navigation and theme. GitHub Pages is intentionally disabled on this repository — `/vault/gems/` is served by the main site.
 
@@ -118,7 +150,7 @@ GEMs answers *what the body consists of and what it can do*. It is deliberately 
 
 Neither document claims the other's territory. The relation is complementary scopes, not upper and lower tiers.
 
-> Both links go to the author's site, which carries the full PDF of each. DOIs for these papers are being reissued on a new platform; until they are, cite the site copy.
+> Both links go to the author's site, which carries the full PDF of each. Both papers are also deposited in the Hugging Face dataset [plonemraz/Plones_documents](https://huggingface.co/datasets/plonemraz/Plones_documents), DOI [10.57967/hf/11396](https://doi.org/10.57967/hf/11396).
 
 ---
 

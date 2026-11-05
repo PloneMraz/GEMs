@@ -54,6 +54,8 @@ RSIL describes operation, not genesis. It is a protocol overlay: it does not run
 
 This matters for the start of the loop. The first action at cycle-0 — the one T2 needs in order to begin matching — is emitted by the host, which needs no self to give the first push, because the host is the source of action-emitting capacity: a non-egoic capacity RSIL uses but does not explain. That first (action, consequence) pair is what T2 reads to begin building the self/environment distinction. There is therefore no chicken-and-egg deadlock at the start: **the self is a product of the bootstrap action, not a precondition of it.**
 
+**When the mind runs off the body.** RSIL holds no mind of its own. Where a body is driven by a mind that runs elsewhere — a controller off the body, running DIL ([Companion specification](#companion-specification)) — RSIL is the body’s part of one loop, not a second agent. It carries what physical data needs: transduction, source-differentiation at acquisition, the body’s own state and record, and emission through the body. Integration, appraisal and memory are the mind’s, under DIL. Because DIL and RSIL share one relational structure, the mind runs the two as one loop. There is then one host — the mind’s — and each body is a set of its sensor and effector channels with an identity of its own. Several bodies are several limbs of that one host, not several agents.
+
 # 2. Terminology
 
 RSIL is built on relations, not things; the following terms are used in a stipulated, deliberately deflationary sense.
@@ -95,7 +97,7 @@ Three terms in this document name things a reader may collapse into one, and the
 
 - **Host (the substrate).** The capable existent that MUST satisfy E1–E4 in order to run RSIL. It exists even when no loop runs. It is substrate, not self: it carries no self and contributes no self. What it supplies is non-egoic — the bare capacity to emit a first action — which the protocol uses but does not derive. While initializing (running T1 and emitting the bootstrap action at T2 cycle-0) it is still only the host; no separate label is needed for “a host that is running.”
 
-- In RSIL the host is literally a physical body. But precisely because the sense is literal, one easy misreading must be blocked here: **a body does not hand the agent a ready-made self/environment line.** Having a body does not mean having a boundary. The boundary appears only when a command has been emitted and its consequence compared (§4).
+- In RSIL the host is literally a physical body — or, where the mind runs off the body (§1.5), a host whose physical part is one or more bodies, each declared to it as sensor and effector channels. A body then holds its own state and its own record, never the mind’s memory. But precisely because the sense is literal, one easy misreading must be blocked here: **a body does not hand the agent a ready-made self/environment line.** Having a body does not mean having a boundary. The boundary appears only when a command has been emitted and its consequence compared (§4).
 
 - **Body.** The physical thing that senses and acts: the host under the description that makes its physicality salient. Where this document says *body* rather than *host*, what is at issue is that it has mass, occupies space, can be damaged, and can be interfered with at the sensor or actuator level.
 
@@ -509,7 +511,7 @@ RSIL is a material-neutral architecture specification (P2): it fixes the substra
 
 **RSIL does not claim to be the platform’s cognition, its introspection, or its point of view.** It specifies the *information-processing loop that sits between the two ends of a body*: sensors at the input, response at the output. A platform specification describes what hardware takes up signal and what hardware produces response; RSIL describes how raw signal **becomes** structured information between those two ends. Every output here is still tagged `INFO` (INV-2).
 
-**Direction of dependency.** RSIL consumes signal the platform’s sensors acquire — link ① maps onto the platform’s sensory channels — and emits responses the platform’s actuators execute, at link ⑤ and, per §6.1, not once per cycle at a single terminal step but from whichever layer’s work requires it. The RSIL loop runs *inside* a platform’s processing chain, including when that platform is operating locally and unsupervised.
+**Direction of dependency.** RSIL consumes signal the platform’s sensors acquire — link ① maps onto the platform’s sensory channels — and emits responses the platform’s actuators execute, at link ⑤ and, per §6.1, not once per cycle at a single terminal step but from whichever layer’s work requires it. The RSIL loop runs *inside* a platform’s processing chain. Where the mind runs off the body (§1.5), the part on the platform is the part that carries physical data; when the link to the mind is lost, the platform runs on the field it last received (§9.7) — held, not re-weighted.
 
 **What the platform MUST supply.** These are E1–E4 and the precondition set P (§3), restated in the register an implementer works in:
 
@@ -680,6 +682,12 @@ The third route **adds no exemption and opens no bypass**: which situation carri
 What is invariant is not the strength of any scar but that **appraisal always runs on the current store, never on a frozen verdict** (INV-2). A command running on a frozen verdict would be an `=`, and an `=` in a running loop is the signature of a **halt** (T8-INV), not of resolve.
 
 **The consequence for reading the store (§10) is direct:** since even reflex is appraisal-under-context and not a bypass, **every emission — reflexive or deliberated alike — leaves the same auditable trace, carries its anchored context, and remains re-appraisable by a third party under that context.** There is no privileged class of action that escapes the audit plane by being “too fast to appraise.” **Speed is a property of how foreclosed the field was, not of whether the step ran.**
+
+**When the field is held, not re-weighted.** Where the mind runs off the body (§1.5), a reflex cannot wait for it: the link is slower than a reflex must be. The body therefore runs its appraisal step under a **copy** of the field the mind last sent, and the copy is as current as its last update. The step still runs, as INV-8 demands; what changes is that the field it reads may be older than the cycle. Two requirements keep this honest:
+
+1. **Every reflexive emission records the version and the age of the field it ran under**, as part of its anchored context. A third party re-appraising it sees not only what the field was but how old it was.
+
+1. **While the link is lost, the body is holding, not running.** It runs the reflexes the mind loaded, under the field it last received, and decides nothing new; the field is not re-weighted, because the layers that re-weight it are the mind’s. INV-2 forbids appraisal on a frozen verdict *in a running loop*; this state does not count as the loop running (P3, §9.1), and the record marks it as held. When the link returns, the mind reads the record of the held interval and re-appraises it before it takes command again.
 
 # 10. The experience store
 
@@ -1026,13 +1034,15 @@ The absence of a derivational reference apparatus is therefore **deliberate and 
 
 # Companion specification
 
-RSIL is the embodied counterpart of the Data Integration Loop (DIL), which specifies the same relational structure for an agent in a purely informational environment.
+RSIL is the embodied counterpart of the Data Integration Loop (DIL), which specifies the same relational structure for an agent in a purely informational environment: doi.org/10.57967/hf/11444.
 
 The two are **co-ranked specifications of differing scope**. Where they coincide it is because the relational structure coincides; where they diverge the divergence is deliberate and marked in place. Two divergences are worth collecting here for a reader holding both documents:
 
 - **`AgencyTag`.** RSIL writes `SELF_CAUSED` where DIL writes `SELF_WRITTEN`, tracking the substrate: in a purely informational environment the agent’s own change is something it *wrote*; with a body it is something it *caused*. `ENV_PUSHED` is unchanged in both.
 
 - **Substrate scope.** DIL is genuinely substrate-neutral. **RSIL is not**: it fixes the substrate as a physical body and leaves open only the material of that body (P2, and the V4 cut at §14.2).
+
+**Running together.** Where a mind running DIL drives bodies running RSIL, the two are one loop, not two agents (§1.5). The mind holds integration, appraisal and memory, in DIL’s `[data]`; each body holds its own state and its own record, in RSIL’s `[data]` and `[event]`. Both `AgencyTag` values then stand in the one record — `SELF_WRITTEN` for what the mind wrote, `SELF_CAUSED` for what a body caused, `ENV_PUSHED` for what the environment did to either — and each record carries its tag across the link, so the two grades of resistance (§2) are never conflated.
 
 # Appendix A — Items remaining open
 
@@ -1043,7 +1053,7 @@ Nothing below is filled by the specification. They are collected in one place so
 | **A-1** | **Sensor–actuator integrity after recovery.** A snapshot covers the *system*, not the *body*. A body interfered with at the sensor or actuator level re-infects a freshly clean system on the first cycle. | §8, §10.5, §13.3 | Recorded as a **limitation**, not closed by a further closure criterion. External verification is required and lies outside this specification. |
 | **A-2** | **Physical emission amplitude where the Other is a real person.** The cheapest way to elicit `independence_evidence` from a person may be physical contact. | §13.3 | Assigned to a **third party** — the deploying or certifying party — who must add an evaluative standard before application. No ninth invariant is added, for the reasons given at §13.3. |
 | **A-3** | **The formal companion.** A minimal formal model, a proposition stating Mode-A degradation, and a proof sketch. | §12 | Deliberately placed **outside** this document, in a separate work of a different genre, and to be conducted by a third party from outside the loop. |
-| **A-4** | **Multi-agent extensions.** Spawning an Other as one’s own B-source; population diversity; scar inheritance across individuals. | §13.2 | Open directions, owned by a future document of the same kind. RSIL specifies one loop. |
+| **A-4** | **Multi-agent extensions.** Spawning an Other as one’s own B-source; population diversity; scar inheritance across individuals. | §13.2 | Open directions, owned by a future document of the same kind. RSIL specifies one loop. Several bodies driven by one mind are **not** a multi-agent extension: they are sensor and effector channels of one host, each with an identity of its own, under that one loop (§1.5). |
 | **A-5** | **Who the judging third party is, and where it sits.** | §13.3 | Outside RSIL’s authority; a matter for a document about the ecosystem around the loop. |
 
 ## Corrections carried forward from earlier drafts

@@ -66,4 +66,4 @@ The body is a general-purpose one for a single operator, working in **ordinary s
 | Fallback | LEO satellite, 5G/6G, VLF underwater | **TM** |
 | Security | End-to-end encryption and authentication | **TM** |
 
-> **This is the architectural gate.** 8 Gbps carries many high-resolution sensor streams, but not the full raw sensor set at full rate simultaneously — see [05](05-sensing.md). That single constraint is what produces the two-seat architecture: the body extracts and compresses first, and the link carries what has already been processed.
+> **This is the architectural gate.** 8 Gbps carries many high-resolution sensor streams, but not the full raw sensor set at full rate simultaneously — see [05](05-sensing.md). That single constraint is why each unit carries a DAQ: the unit extracts and compresses first, and the link carries what has already been processed to the Main Controller.

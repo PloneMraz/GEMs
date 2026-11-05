@@ -17,8 +17,8 @@ repository-code: "https://github.com/PloneMraz/GEMs"
 url: "https://plonemraz.github.io/vault/gems/"
 identifiers:
   - type: doi
-    value: "10.57967/hf/11436"
-    description: "Hugging Face snapshot of the repository at commit 2d6382f"
+    value: "10.57967/hf/11438"
+    description: "Hugging Face snapshot of the repository at commit ae0a990"
 license:
   - CERN-OHL-S-2.0
   - Apache-2.0

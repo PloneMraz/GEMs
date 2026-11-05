@@ -36,7 +36,7 @@ Contributions are accepted under the licence that already governs the file being
 
 All three licences require attribution, and all three are satisfied by keeping the notices intact. Attribute as:
 
-> Plone Mraz — GEMs (GYNOID ENTITY MODELS), https://github.com/PloneMraz/GEMs ORCID [0009-0009-0571-7151](https://orcid.org/0009-0009-0571-7151)
+> Huỳnh Mai Phúc (Plone Mraz) — GEMs (GYNOID ENTITY MODELS), https://github.com/PloneMraz/GEMs ORCID [0009-0009-0571-7151](https://orcid.org/0009-0009-0571-7151)
 
 Machine-readable citation metadata is in [CITATION.cff](CITATION.cff); GitHub renders it as a *Cite this repository* button. The DOI, [10.57967/hf/11436](https://doi.org/10.57967/hf/11436), is the Hugging Face dataset [plonemraz/GEMs](https://huggingface.co/datasets/plonemraz/GEMs).
 

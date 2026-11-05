@@ -9,8 +9,9 @@ abstract: >-
   paper design — nothing in it has been built or physically validated.
 type: software
 authors:
-  - family-names: Mraz
-    given-names: Plone
+  - family-names: "Huynh"
+    given-names: "Mai Phuc"
+    alias: "Plone Mraz"
     orcid: "https://orcid.org/0009-0009-0571-7151"
 repository-code: "https://github.com/PloneMraz/GEMs"
 url: "https://plonemraz.github.io/vault/gems/"

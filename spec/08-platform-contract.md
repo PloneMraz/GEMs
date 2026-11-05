@@ -15,7 +15,7 @@ That companion specification does not name this body. It states **conditions any
 |---|---|---|
 | **E1** | Sensors and internal state must make an inside/outside distinction *possible*. The platform does not draw the line; it must not foreclose it | [05.5](05-sensing.md#55-proprioception-is-mandatory) — proprioception |
 | **E2** | Actuators must act on the region, and the region must be able to return something other than what was predicted | [02.6](02-structure-and-motion.md#26-actuation-and-manipulation) |
-| **E3** | State must persist across cycles | [01](01-architecture.md) — off-body memory; on-body storage |
+| **E3** | State must persist across cycles | [01](01-architecture.md) — memory in the Main Controller's `[data]`; each unit's own state in the unit's `[data]`, and its record in the unit's `[event]` |
 | **E4** | Emissions must leave a trace a third party can read | [06.4](06-audit-surface.md#64-audit-log) — the audit log, synchronised off-board; also where a stopped loop becomes detectable, as the stored behaviour-record RSIL requires for it |
 | **P(a)** | The platform must emit an action distinguishable from ambient fluctuation | [02.6](02-structure-and-motion.md#26-actuation-and-manipulation) |
 | **P(b)** | It must hold state so history accrues | [01](01-architecture.md) |

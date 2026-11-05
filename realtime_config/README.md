@@ -16,7 +16,7 @@ python realtime_config/check_timing.py
 
 | Axis | Question | Values | Where |
 |---|---|---|---|
-| **Layer** | Where does the code run? | `FIRMWARE` — directly on a microcontroller, bare metal or RTOS; `SOFTWARE` — under an operating system; `IMPL` — the real-time controller, until decision D-3 | `tasks.csv`, `layer` |
+| **Layer** | Where does the code run? | `FIRMWARE` — directly on a microcontroller, bare metal or RTOS; `SOFTWARE` — under an operating system; `IMPL` — the Real-time Control Layer, until decision D-3 chooses its computer | `tasks.csv`, `layer` |
 | **Deadline class** | What happens if it is late? | `DEADLINE_HARD` — a failure, may cause harm; `DEADLINE_FIRM` — the result is discarded; `DEADLINE_SOFT` — the result is degraded; `DEADLINE_NONE` | `tasks.csv`, `deadline_class` |
 
 Definitions and sources are in the [glossary](../spec/glossary.md). The class names carry the `DEADLINE_` prefix so that "hard", "firm" and "soft" can never be read as hardware, firmware and software.
@@ -40,7 +40,7 @@ Definitions and sources are in the [glossary](../spec/glossary.md). The class na
 3. A periodic task's deadline equals its period; a pipeline's stage budgets add up to its deadline, margin included; `SCHED_DEADLINE` parameters are ordered.
 4. Spec 07.2's loops, rates and classes, and the reflex and balance budgets in [`firmware/ARCHITECTURE.md`](../firmware/ARCHITECTURE.md) §2 and §3, are the figures in `tasks.csv`.
 
-It prints which hard real-time tasks still have no established bound. Today that is all five: the joint drive boards wait for the drive electronics (D-2), and the real-time controller for its platform (D-3). The specification sets the requirement; no platform, policy or priority is filled in before the hardware that would justify it.
+It prints which hard real-time tasks still have no established bound. Today that is all five: the joint drive boards wait for the drive electronics (D-2), and the Real-time Control Layer for its platform (D-3). The specification sets the requirement; no platform, policy or priority is filled in before the hardware that would justify it.
 
 ## What is not here yet
 

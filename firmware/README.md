@@ -1,6 +1,6 @@
 # Firmware
 
-Code that runs directly on the body's microcontrollers, bare metal or under an RTOS — joint drive boards, the battery management board, the secure element, the beacon radio, and the real-time controller if decision D-3 makes it a microcontroller — as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division) defines firmware. Which of its tasks are hard, firm or soft real-time is decided in [`../realtime_config/`](../realtime_config/), not here.
+Code that runs directly on the body's microcontrollers, bare metal or under an RTOS — joint drive boards, the battery management board, the secure element, the beacon radio, and the real-time computer, which carries the Real-time Control Layer, if decision D-3 makes it a microcontroller — as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division) defines firmware. Which of its tasks are hard, firm or soft real-time is decided in [`../realtime_config/`](../realtime_config/), not here.
 
 | Document | Contents | Status |
 |---|---|---|

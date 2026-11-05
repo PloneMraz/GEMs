@@ -4,7 +4,7 @@ Module by module, from [`../firmware/ARCHITECTURE.md`](../firmware/ARCHITECTURE.
 
 **What can start now.** Algorithms, state machines, protocol logic and their tests do not depend on a processor. They are written against a thin hardware abstraction and run on the host in software-in-the-loop (V-5). Only drivers, board support and timing measurements wait for D-3.
 
-**Scope.** Firmware as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division) defines it — code running directly on a microcontroller — together with the real-time controller's modules (F-4 to F-10), which are firmware if decision D-3 selects a microcontroller and software under a real-time Linux kernel if it does not. They are planned here either way, because their deadlines, not their layer, decide how they are built. Capture drivers on the edge module are software and are listed in [`software.md`](software.md#s-9--capture-on-the-application-processor).
+**Scope.** Firmware as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division) defines it — code running directly on a microcontroller — together with the Real-time Control Layer's modules (F-4 to F-10), which are firmware if decision D-3 selects a microcontroller and software under a real-time Linux kernel if it does not. They are planned here either way, because their deadlines, not their layer, decide how they are built. Capture drivers on the edge module are software and are listed in [`software.md`](software.md#s-9--capture-on-the-application-processor).
 
 **One rule carried from the architecture.** Every module that carries a deadline reports its misses. Each task below that implements a timed loop includes the deadline monitor for it; it is not a separate task that can be skipped.
 
@@ -155,7 +155,7 @@ Runs on each joint drive board. If D-2 chooses procured modules, most of this is
 |---|---|---|
 | mmWave radio bring-up and beam tracking interface | L4 | E-8 |
 | Fallback link handover | L4 | E-8 |
-| Local-core behaviour on link loss — maintain, preserve, continue, attempt; never decide (spec 07.5) | L4 | — |
+| OBC: stand-by while the IPC is online, the two triggers (heartbeat missed, Main Controller hands over), and command given back only when the Main Controller takes it; in command, maintain, preserve, continue, attempt; never decide (spec 07.5) | L4 | — |
 
 ## F-15 — Expressive actuators
 

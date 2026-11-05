@@ -34,7 +34,7 @@ Open-source designs of a physical robot body.
 
 **Documentation:** https://plonemraz.github.io/vault/gems/
 
-GEMs specifies a ~1.65 m humanoid body whose purpose is to acquire physical experience on behalf of a controller that does not live entirely on it. It is a **platform specification**: it declares capability envelopes and the trade-offs between them, and deliberately leaves the operating point to whoever runs the body.
+GEMs specifies a ~1.65 m humanoid body whose purpose is to acquire physical experience on behalf of a controller that lives wholly off it: the Main Controller, on an IPC, for which each GEMs unit is a set of sensors and effectors. It is a **platform specification**: it declares capability envelopes and the trade-offs between them, and deliberately leaves the operating point to whoever runs the body.
 
 ---
 
@@ -60,7 +60,7 @@ GEMs does not publish one configuration. Structure, actuation and energy sit on 
 | Actuation | 80–90 Nm/kg peak over module mass at ~16:1; 3–5 kW/kg declared, under review. Peak power is limited by **the source, not the actuators** |
 | Uplink | mmWave, up to ~8 Gbps, ~1 ms PHY latency at short range |
 | Sensing | **16–67 Gbps** raw aggregate; ≥2:1 on-body compression is mandatory, ~8:1 realistic |
-| Compute | Split between body and external system. Balance loop ≥500 Hz and reflex ≤10 ms **must** be on-body |
+| Compute | The Main Controller wholly off the body, on an IPC; on each unit, processing only, by four tiers that do not decide — the Real-time Control Layer, MCUs, DAQ and the OBC for link loss. Balance loop ≥500 Hz and reflex ≤10 ms **must** be on the unit |
 | Audit surface | Signed sensor–actuator trace; a readable trace remains emittable at quiescent power while the body sleeps |
 
 Every figure above is reproducible — `python scripts/gems_budget.py --check` recomputes them against the chapters that state them.
@@ -95,8 +95,8 @@ One directory per group, and the body's three design disciplines nest under `har
 | [`hardware/electrical/`](hardware/electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint sizing | ◐ selection done |
 | [`hardware/sim-model/`](hardware/sim-model/) | URDF generated from the kinematics, audited against it | ✅ |
 | [`hardware/design/`](hardware/design/) | Concept art, then industrial design and expressive capability (plan ID) | ◐ concept art |
-| [`hardware/bom/`](hardware/bom/) | EBOM, MBOM and SBOM from one definition, checked against each other; approved manufacturer list, blanks where not yet verified | ◐ 294 parts, one priced |
-| [`firmware/`](firmware/) | Code that runs directly on the microcontrollers, bare metal or RTOS: joint control, battery management, secure boot and attestation, low-power beacon — and the real-time controller's balance, reflex and supervisor modules if D-3 makes it a microcontroller | ◐ architecture; source awaits a target |
+| [`hardware/bom/`](hardware/bom/) | EBOM, MBOM and SBOM from one definition, checked against each other; approved manufacturer list, blanks where not yet verified | ◐ 296 parts, one priced |
+| [`firmware/`](firmware/) | Code that runs directly on the microcontrollers, bare metal or RTOS: joint control, battery management, secure boot and attestation, low-power beacon — and the Real-time Control Layer's balance, reflex and supervisor modules if D-3 makes its computer a microcontroller | ◐ architecture; source awaits a target |
 | [`software/`](software/) | Code that runs under Linux on the embedded computers: capture drivers, feature extraction and compression, sensor fusion, log synchronisation, link management | 🔜 no source yet |
 | [`reference/`](reference/) | Executable specifications the on-body code is checked against: audit log, agency tagging. They run on no target | ✅ with tests |
 | [`realtime_config/`](realtime_config/) | Timing policy, apart from code: each task's deadline class (the requirement) and its platform, scheduling policy and latency bound (how it is met), checked against `spec/` and the firmware architecture | ◐ requirement set; scheduling waits for D-2, D-3 |
@@ -133,7 +133,7 @@ Directories marked 🔜 do not exist yet. They are named in advance so that the 
 | ✅ | Component selection, sourced — actuators, power, compute, bus, materials, reducers |
 | ✅ | Actuator torque density reconciled with `f_act` — 80–90 Nm/kg peak over module mass, the basis declared, the trunk sized from measured human strength, the arms from a declared 15 kg payload; `f_act` split into its scaling and fixed parts |
 | ✅ | Work plan to a complete design — decisions, packages, firmware and software task lists ([`plan/`](plan/)) |
-| ◐ | EBOM, MBOM and SBOM — 294 part numbers, 59 routings, CycloneDX SBOM; sources and prices filled only where verified ([`hardware/bom/`](hardware/bom/)) |
+| ◐ | EBOM, MBOM and SBOM — 296 part numbers, 60 routings, CycloneDX SBOM; sources and prices filled only where verified ([`hardware/bom/`](hardware/bom/)) |
 | 🔜 | Mechanical CAD |
 | 🔜 | Electrical schematics |
 

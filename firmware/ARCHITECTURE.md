@@ -1,6 +1,6 @@
 # Firmware architecture
 
-The architecture of the body's real-time code: the firmware on the microcontrollers, and the real-time controller's modules, which are firmware or software according to decision D-3 ([spec 07.1](../spec/07-firmware-and-software.md#71-the-division)). Their deadlines are the same either way. The specification states what this code must guarantee; this document states how the work is divided so that it can, and — the part that is genuinely new here — **how the 10 ms reflex budget is spent**.
+The architecture of the body's real-time code: the firmware on the microcontrollers, and the Real-time Control Layer's modules, which are firmware or software according to decision D-3 ([spec 07.1](../spec/07-firmware-and-software.md#71-the-division)). Their deadlines are the same either way. The specification states what this code must guarantee; this document states how the work is divided so that it can, and — the part that is genuinely new here — **how the 10 ms reflex budget is spent**.
 
 Nothing below fixes a part. Where a figure depends on hardware not yet chosen it is marked `⟦IMPL⟧` and stays marked.
 
@@ -59,7 +59,7 @@ Balance and reflex share sensors and actuators but not deadlines. Where they con
 
 ## 4. The interface to the edge software
 
-The real-time code — firmware, and the real-time controller whichever layer D-3 puts it in — hands up; the edge AI module's software hands down. The boundary is narrow on purpose.
+The real-time code — firmware, and the Real-time Control Layer whichever layer D-3 puts it in — hands up; the edge AI module's software hands down. What it hands down comes from the one source of commands the unit has at the time: the Main Controller, through the link, or the OBC while it holds command ([spec 07.5](../spec/07-firmware-and-software.md#75-link-loss-and-the-obc)) — never both. The boundary is narrow on purpose.
 
 | Direction | Carries | Rate |
 |---|---|---|
@@ -77,9 +77,9 @@ The real-time code — firmware, and the real-time controller whichever layer D-
 
 ## 5. Link loss
 
-The local core is the real-time code plus the minimum edge software needed to keep logging. On link loss it maintains balance, preserves state and log, continues recording at both tiers, and attempts re-establishment.
+The OBC is a small computer of its own, standing by while the IPC is online and taking command only on a trigger: a heartbeat missed beyond the threshold, or the Main Controller handing over when the link lags. In command it maintains balance through the Real-time Control Layer, which runs throughout, preserves state and log, continues recording at both tiers, and attempts re-establishment; it gives command back only when the Main Controller takes it.
 
-**It does not decide.** The boundary is stated at [07.5](../spec/07-firmware-and-software.md#75-link-loss-and-the-local-core) and it is architectural: reflexes are loadable, and the interpretation of priorities in an unforeseen situation is not a reflex.
+**It does not decide.** The boundary is stated at [07.5](../spec/07-firmware-and-software.md#75-link-loss-and-the-obc) and it is architectural: reflexes are loadable, and the interpretation of priorities in an unforeseen situation is not a reflex.
 
 A practical consequence for this layer: the log must not be trimmed to save space during an outage. An outage is exactly when the record matters most, and a body that discards its own unsynchronised history has made the outage unauditable.
 

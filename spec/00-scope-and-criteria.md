@@ -2,7 +2,7 @@
 
 ## What this specification is
 
-GEMs specifies a ~1.65 m humanoid body built to acquire physical experience on behalf of a controller that does not live entirely on it.
+GEMs specifies a ~1.65 m humanoid body built to acquire physical experience on behalf of a controller that lives wholly off it: the Main Controller, on an IPC, for which each GEMs unit is a set of sensors and effectors ([01](01-architecture.md)).
 
 It specifies **the range of what the body can do and what each capability costs**. It does not set the operating point. Wherever a value is marked `⟦CTRL⟧`, the blank is deliberate: it marks a decision that is not the body's to make.
 

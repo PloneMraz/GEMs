@@ -22,7 +22,7 @@ Two configurations, declared by what the cell must deliver rather than by its ch
 - Expected solid-state packs: 300–500+ Wh/kg; demonstrated cells at 600 Wh/kg
 - Li-S: ~2600 Wh/kg theoretical; lab results 743 Wh/kg (6 mg/cm² cathode loading) to 1100 Wh/kg (18 mg/cm²); record cell 695 Wh/kg but **under 100 cycles**, against >1000 for Li-ion
 
-**Hot-swap under 2 minutes** — the pack is a replaceable module.
+**The pack is fixed in the unit**: a part replaced in service, not during operation (Plone, 2026-11-05). Endurance beyond one pack comes from the dock ([3.5](#35-dock)); presence beyond one unit's endurance comes from other units, and which unit runs, and when another takes over, is the Main Controller's decision ([01](01-architecture.md)). As the bill of materials stands, the always-on rail and the supercapacitor sit in the power assembly with the cells, so removing the pack in service cuts the always-on rail ([3.6](#36-quiescent-power-and-the-sleep-ceiling)); what must survive a service removal is `⟦IMPL⟧`.
 
 **Peak-burst supercapacitor: optional.** Fitted when the mission needs sudden high-power motion (catching, jumping, fast reflex); omitted when lightness matters more. Its role is millisecond-scale discharge without sagging the pack. See [02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators) for why this option decides more than its name suggests.
 

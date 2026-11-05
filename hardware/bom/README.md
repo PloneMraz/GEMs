@@ -92,7 +92,7 @@ The firmware images and the edge module's OS image are in the EBOM as virtual pa
 
 ## Where it stands
 
-The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 294 part numbers, including 9 software images and 6 consumables; 494 operations across 59 routings; one selected manufacturer part (the Jetson T5000 module), candidates for seventeen parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 44.2 kg out of the 96.2 kg budget — the rest is blank rather than guessed.
+The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 296 part numbers, including 10 software images and 6 consumables; 497 operations across 60 routings; one selected manufacturer part (the Jetson T5000 module), candidates for seventeen parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 44.2 kg out of the 96.2 kg budget — the rest is blank rather than guessed.
 
 Prices were looked for on 2026-09-26. Most supplier pages were unreachable from the environment this was written in, so the AVL rests on search results and on the pages that could be read, and each entry's notes say which.
 

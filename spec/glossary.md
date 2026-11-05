@@ -6,7 +6,15 @@ Technical terms in this repository follow standard usage in robotics, embedded s
 
 | Term | Meaning here | Standard source |
 |---|---|---|
-| **Firmware** | Code running directly on a microcontroller, bare metal or under an RTOS — joint drive boards, the battery management board, the secure element, the beacon radio, and the real-time controller if D-3 makes it a microcontroller | ISO/IEC 12207: "a combination of a hardware device and computer instructions or computer data that reside as read-only software on the hardware device"; vocabulary per ISO/IEC/IEEE 24765 |
+| **Main Controller** | The operating intelligence: it decides, and holds the memory, the world model and the accumulated experience. It runs by DIL, wholly off the body, and is not specified in this repository ([01](01-architecture.md)) | This repository's term (Plone, 2026-11-05) |
+| **IPC** | Industrial PC: the computer at the control station where the Main Controller runs | General usage |
+| **Unit** | One GEMs body: a set of sensor and effector channels the Main Controller's host takes in, with an identity of its own (GEMs01, GEMs02). It runs by RSIL | This repository's term |
+| **Real-time Control Layer** | The unit's tier for the whole-body loops the link is too slow to close — state estimation, balance, reflex, the safe-state supervisor. It executes setpoints; it does not decide | This repository's term, for a role, not a product |
+| **Real-time computer** | The processor that carries the Real-time Control Layer; decision D-3 chooses a microcontroller under an RTOS or an embedded computer under a real-time Linux kernel | — |
+| **MCU** | Microcontroller: here, the tier of per-device loops — joint current and position, battery management, secure element, beacon | General usage |
+| **DAQ** | Data acquisition: sensor front-ends, capture and timestamping at source, feature extraction and compression; its computer is the edge AI module | General usage, widened here to include compression |
+| **OBC** | On-board computer: the unit's kernel for a lagging or lost link. It stands by while the IPC is online and holds command only on a trigger ([07.5](07-firmware-and-software.md#75-link-loss-and-the-obc)) | General usage (spacecraft and vehicle on-board computers) |
+| **Firmware** | Code running directly on a microcontroller, bare metal or under an RTOS — joint drive boards, the battery management board, the secure element, the beacon radio, and the real-time computer if D-3 makes it a microcontroller | ISO/IEC 12207: "a combination of a hardware device and computer instructions or computer data that reside as read-only software on the hardware device"; vocabulary per ISO/IEC/IEEE 24765 |
 | **Software** | Code running under an operating system on an embedded computer — Linux, with or without a real-time kernel — device drivers included | General usage; drawing the line at the processor is this repository's application of the firmware definition above |
 | **Hard real-time** | A task whose deadline miss is a failure and may cause harm; its worst case must be bounded by construction | Real-time systems literature (Kopetz; Buttazzo) |
 | **Firm real-time** | A task whose late result has no value and is discarded, without harm | same |
@@ -39,7 +47,10 @@ Two vocabularies meet in this repository, and each has a place.
 | Low-power trace (the component), trace emitter, trace radio | **Low-power beacon**, beacon radio | *Low-power trace* stays as the name of RSIL C5, which the beacon satisfies |
 | Floor power | **Quiescent power** | Also avoids a clash with RSIL's unrelated *floor-tag* |
 | Vigilance circuit, vigilance rail | **Always-on wake-up circuit**, always-on rail | Not an RSIL term |
-| On-body / off-body seat | **On-board / off-board compute** | "One intelligence, two seats" stays as the name of the architectural principle in [spec 01](01-architecture.md), where it is defined; "seat" is not an RSIL term |
+| On-body / off-body seat | **On-board / off-board compute** | "Seat" is not an RSIL term |
+| "One intelligence, two seats" | **The controller is off the body**: the Main Controller on the IPC; each unit its sensors and effectors ([spec 01](01-architecture.md)) | The old principle put part of the intelligence on the body, where 07.5 said nothing decides (Plone, 2026-11-05) |
+| Real-time controller | **Real-time Control Layer** for the tier; **real-time computer** for its processor | "Controller" now names only the Main Controller, off the body |
+| Local core | **OBC**, the on-board computer | The kernel is a computer of its own, and holds command only on a trigger |
 | Pre-closed appraisal | **Reflex decision** in engineering text; **appraisal under a scar-dominated field** (RSIL §9.7) in the contract | "Pre-closed" was this repository's paraphrase, not RSIL's wording |
 | Appraisal, integration (reflex stages) | Reflex decision, state assembly | |
 | Agency classification | **Agency tagging**, a firmware task | *Agency* itself is the contract's term and stays |

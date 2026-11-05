@@ -1,6 +1,6 @@
 part_number,rev,description,category,make_buy,uom,unit_mass_kg,mass_basis,maturity,design_level,lifecycle,spec_ref,requirement,notes
 GEM-40010,A,"Firmware image, joint drive",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-3,,Virtual part: version recorded at programming. Nothing built yet.
-GEM-40020,A,"Firmware image, real-time controller",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-0 to F-11,,Virtual part: version recorded at programming. Nothing built yet.
+GEM-40020,A,"Firmware image, real-time computer",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-0 to F-11,,Virtual part: version recorded at programming. Nothing built yet.
 GEM-40030,A,"Firmware image, battery management",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-9,,Virtual part: version recorded at programming. Nothing built yet.
 GEM-40040,A,"Firmware image, beacon radio",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-12,,Virtual part: version recorded at programming. Nothing built yet.
 GEM-40050,A,"Firmware image, secure element",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-11,,Virtual part: version recorded at programming. Nothing built yet.
@@ -8,6 +8,7 @@ GEM-40060,A,"Firmware image, tactile readout",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-
 GEM-40070,A,"Firmware image, shell field driver",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-13,,Virtual part: version recorded at programming. Nothing built yet.
 GEM-40080,A,"OS image, edge AI module",SW,MAKE,EA,,,TM,L0,CONCEPT,spec 07.1,,Virtual part: version recorded at programming. Nothing built yet.
 GEM-40090,A,"GEMs software stack, edge AI module",SW,MAKE,EA,,,TM,L0,CONCEPT,plan S-0 to S-9,,Virtual part: version recorded at programming. Nothing built yet.
+GEM-40100,A,"Kernel image, on-board computer",SW,MAKE,EA,,,TM,L0,CONCEPT,spec 07.5; plan F-14,,Virtual part: version recorded at programming. Nothing built yet.
 GEM-50010,A,"Threadlocker, medium strength",CONS,BUY,ML,,,TM,L0,CONCEPT,MBOM only,,
 GEM-50020,A,Reducer grease,CONS,BUY,G,,,TM,L0,CONCEPT,MBOM only,,
 GEM-50030,A,Thermal interface material,CONS,BUY,G,,,TM,L0,CONCEPT,MBOM only,,
@@ -226,9 +227,10 @@ GEM-13170,A,Always-on rail PCBA,PCBA,MAKE,EA,,,TM,L1,CONCEPT,spec 03.6,tens of m
 GEM-13200,A,Compute assembly,ASSY,MAKE,EA,,,TM,L1,CONCEPT,plan E-5,,
 GEM-13210,A,Edge AI module,OTS,BUY,EA,,,TM,L2,CONCEPT,hardware/electrical 4,"40-130 W, 128 GB",
 GEM-13220,A,Edge module carrier PCBA,PCBA,MAKE,EA,,,TM,L1,CONCEPT,plan E-5,,
-GEM-13230,A,"Real-time controller PCBA, EtherCAT master",PCBA,MAKE,EA,,,TM,L0,CONCEPT,spec 07.2; firmware/README,"balance 500 Hz, reflex 10 ms",D-3 open: processor not chosen; not the edge module
+GEM-13230,A,"Real-time computer PCBA, EtherCAT master",PCBA,MAKE,EA,,,TM,L0,CONCEPT,spec 07.2; firmware/README,"balance 500 Hz, reflex 10 ms",D-3 open: processor not chosen; not the edge module
 GEM-13240,A,"Audit log storage, 2 TB",OTS,BUY,EA,,,TM,L1,CONCEPT,spec 07.6,~1700 h full tier,
 GEM-13250,A,"SDR front-end, 2 ch x 56 MHz",OTS,BUY,EA,,,TM,L1,CONCEPT,spec 05.3,16 bit I/Q,
+GEM-13260,A,"On-board computer (OBC), link-loss kernel",OTS,BUY,EA,,,TM,L0,CONCEPT,spec 07.5,,"a small computer of its own, bought; stands by while the IPC is online"
 GEM-13300,A,Communications assembly,ASSY,MAKE,EA,,,TM,L1,CONCEPT,spec 01 Link,,
 GEM-13310,A,"mmWave uplink radio, 60 GHz",OTS,BUY,EA,,,TM,L1,CONCEPT,spec 01 Link,"~8 Gbps, ~1 ms PHY",
 GEM-13320,A,"Fallback link module, LEO / cellular",OTS,BUY,EA,,,TM,L1,CONCEPT,spec 01 Link,,

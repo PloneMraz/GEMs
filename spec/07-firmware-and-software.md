@@ -2,7 +2,7 @@
 
 What runs on the body. This chapter states responsibilities, rates and guarantees; it does not specify an implementation.
 
-It does not describe the controller. The stack here executes, processes and records — it does not decide. Where the line between them is not obvious, 9.5 draws it.
+It does not describe the Main Controller, which runs off the body, on the IPC ([01](01-architecture.md)). The stack here executes, processes and records — it does not decide. Where the line between them is not obvious, 9.5 draws it.
 
 ## 7.1 The division
 
@@ -12,11 +12,12 @@ Two classifications apply to every piece of code on the body, and they are indep
 
 | Layer | Runs on | Contents |
 |---|---|---|
-| **Firmware** | Joint drive boards, the battery management board, the secure element, the beacon radio | Current and position loops, battery management, secure boot and attestation, low-power beacon |
-| **Software** | The edge AI module, under Linux | Camera, LiDAR, audio and SDR drivers and capture, feature extraction and compression, sensor fusion, predictive modelling, log assembly and synchronisation, link management |
-| **Either, by decision D-3** | The real-time controller: a microcontroller under an RTOS, or an embedded computer under Linux with a real-time kernel | State estimation, balance loop, reflex path including agency tagging, safety supervisor, power-state machine, full-tier log writing at loop rate |
+| **Firmware** | The MCU tier: joint drive boards, the battery management board, the secure element, the beacon radio | Current and position loops, battery management, secure boot and attestation, low-power beacon |
+| **Software** | The edge AI module, under Linux — the DAQ's computer | Camera, LiDAR, audio and SDR drivers and capture, feature extraction and compression, sensor fusion, predictive modelling, log assembly and synchronisation, link management |
+| **Either, by decision D-3** | The real-time computer, which carries the Real-time Control Layer: a microcontroller under an RTOS, or an embedded computer under Linux with a real-time kernel | State estimation, balance loop, reflex path including agency tagging, safety supervisor, power-state machine, full-tier log writing at loop rate |
+| **Either, by its processor** | The OBC, a small computer of its own | The kernel for a lagging or lost link: the loaded reflexes and field, and the four duties of [7.5](#75-link-loss-and-the-obc) |
 
-The real-time controller's code is firmware or software according to which processor D-3 selects ([plan](../plan/README.md#3-decisions-that-block-everything-else)). Its deadlines do not change with the choice; only the evidence that they are met does.
+The Real-time Control Layer's code is firmware or software according to which processor D-3 selects ([plan](../plan/README.md#3-decisions-that-block-everything-else)). Its deadlines do not change with the choice; only the evidence that they are met does.
 
 **How late it may be — the real-time class.** A task's class is set by the consequence of missing its deadline, as the real-time systems literature defines it:
 
@@ -53,7 +54,7 @@ Every task's layer, rate, deadline, stage budget and deadline class is held in [
 
 ## 7.3 What the real-time code must guarantee
 
-These bind the firmware and the real-time controller together — whichever layer decision D-3 places the controller in.
+These bind the firmware and the Real-time Control Layer together — whichever layer decision D-3 places that layer in.
 
 | # | Guarantee | Note |
 |---|---|---|
@@ -81,9 +82,20 @@ These bind the firmware and the real-time controller together — whichever laye
 
 **On guarantee 3.** The cost is a compact context record per output event, microseconds against a 10 ms budget. This is what makes *the body is replaceable, the data is preserved* true rather than aspirational: the off-board compute is never blind to what the body has already done.
 
-## 7.5 Link loss and the local core
+## 7.5 Link loss and the OBC
 
-A local core is mandatory ([01](01-architecture.md)). On link loss it MUST:
+The OBC is mandatory ([01](01-architecture.md)). It is the unit's kernel for a link to the IPC that lags or fails, and it holds command only on a trigger, so that the unit never has two sources of commands at once (Plone, 2026-11-05):
+
+| Link | Source of setpoints | OBC |
+|---|---|---|
+| IPC online | The Main Controller | Stands by: powered, receiving the reflexes and field the Main Controller loads, with no command authority |
+| Heartbeat missed beyond the threshold | The OBC, on the unit's own trigger | In command |
+| Lagging, and the Main Controller hands over | The OBC, on the Main Controller's trigger | In command |
+| Restored | The OBC, until the Main Controller takes command back after reading the record of the outage | Hands back, then stands by |
+
+The unit triggers the OBC itself because an IPC that is gone cannot. Command returns only when the Main Controller takes it, never because the link happens to come back, so a link that flickers cannot pass command back and forth, and the two sources never overlap at the handover. The Real-time Control Layer runs through every row; only the source of its setpoints changes. The heartbeat threshold is `⟦IMPL⟧`: it depends on the link and on how long the Real-time Control Layer can hold without new setpoints.
+
+In command, the OBC MUST:
 
 | | Behaviour |
 |---|---|
@@ -92,7 +104,7 @@ A local core is mandatory ([01](01-architecture.md)). On link loss it MUST:
 | **Continue** | Logging, at both tiers, so that the outage is itself auditable |
 | **Attempt** | Link re-establishment |
 
-**What the local core does not do: decide.** It runs pre-loaded reflexes and preserves what it holds. It is not a reduced controller and must not be specified as one, because a body that substitutes its own judgement during an outage produces actions no one can attribute afterwards — the precise failure the audit surface exists to prevent.
+**What the OBC does not do: decide.** It runs the reflexes the Main Controller loaded, choosing among them only within the bounds the Main Controller set, and preserves what it holds. Each reflex is appraised when the Main Controller loads it and again, from the record, when command returns. The OBC is not a reduced controller and must not be specified as one, because a body that substitutes its own judgement during an outage produces actions no one can attribute afterwards — the precise failure the audit surface exists to prevent.
 
 > The boundary is architectural, not cautious. Reflexes are loadable; the interpretation of priorities in an unforeseen situation is not a reflex, and nothing in this repository claims to supply it.
 
@@ -113,5 +125,6 @@ A local core is mandatory ([01](01-architecture.md)). On link loss it MUST:
 | Permitted inter-channel timestamp skew | Bounded above by the reflex budget; the working figure depends on the transport |
 | Thermal envelope for edge compute | Depends on packaging |
 | Split of processing between body and external system | `⟦CTRL⟧` within the two hard ends of [05.6](05-sensing.md#56-the-on-body--off-body-compute-split) |
+| Heartbeat threshold that triggers the OBC | Depends on the link and on how long the Real-time Control Layer can hold without new setpoints ([7.5](#75-link-loss-and-the-obc)) |
 
 **Operating point: `⟦CTRL⟧`.**

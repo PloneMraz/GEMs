@@ -91,7 +91,7 @@ MODULE_CHILDREN = [
 SOFTWARE = [
     # pn, description, parent boards, spec_ref
     ("GEM-40010", "Firmware image, joint drive", "joint drive PCBAs", "plan F-3"),
-    ("GEM-40020", "Firmware image, real-time controller", "GEM-13230", "plan F-0 to F-11"),
+    ("GEM-40020", "Firmware image, real-time computer", "GEM-13230", "plan F-0 to F-11"),
     ("GEM-40030", "Firmware image, battery management", "GEM-13120", "plan F-9"),
     ("GEM-40040", "Firmware image, beacon radio", "GEM-13330", "plan F-12"),
     ("GEM-40050", "Firmware image, secure element", "GEM-13350", "plan F-11"),
@@ -99,6 +99,7 @@ SOFTWARE = [
     ("GEM-40070", "Firmware image, shell field driver", "GEM-18090", "plan F-13"),
     ("GEM-40080", "OS image, edge AI module", "GEM-13200", "spec 07.1"),
     ("GEM-40090", "GEMs software stack, edge AI module", "GEM-13200", "plan S-0 to S-9"),
+    ("GEM-40100", "Kernel image, on-board computer", "GEM-13260", "spec 07.5; plan F-14"),
 ]
 
 # Manufacturing-only items: in the MBOM, never in the EBOM.
@@ -261,10 +262,12 @@ def build():
     for pn, d, cat, lvl, ref, req, n in [
         ("GEM-13210", "Edge AI module", "OTS", "L2", "hardware/electrical 4", "40-130 W, 128 GB", ""),
         ("GEM-13220", "Edge module carrier PCBA", "PCBA", "L1", "plan E-5", "", ""),
-        ("GEM-13230", "Real-time controller PCBA, EtherCAT master", "PCBA", "L0", "spec 07.2; firmware/README",
+        ("GEM-13230", "Real-time computer PCBA, EtherCAT master", "PCBA", "L0", "spec 07.2; firmware/README",
          "balance 500 Hz, reflex 10 ms", "D-3 open: processor not chosen; not the edge module"),
         ("GEM-13240", "Audit log storage, 2 TB", "OTS", "L1", "spec 07.6", "~1700 h full tier", ""),
         ("GEM-13250", "SDR front-end, 2 ch x 56 MHz", "OTS", "L1", "spec 05.3", "16 bit I/Q", ""),
+        ("GEM-13260", "On-board computer (OBC), link-loss kernel", "OTS", "L0", "spec 07.5", "",
+         "a small computer of its own, bought; stands by while the IPC is online"),
     ]:
         b.use(compute, b.part(pn, d, cat, "BUY" if cat == "OTS" else "MAKE", level=lvl,
                               ref=ref, req=req, notes=n))

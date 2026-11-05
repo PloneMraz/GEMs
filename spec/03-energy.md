@@ -4,12 +4,16 @@ Every trade in this specification is ultimately a division of a kilowatt-hour bu
 
 ## 3.1 Source
 
-Solid-state cells, declared in two configurations:
+Two configurations, declared by what the cell must deliver rather than by its chemistry:
 
 | Configuration | Density | Trade |
 |---|---|---|
-| **Durable** | **~400–500 Wh/kg** | Good cycle life, good thermal safety — suits a body in human contact. **Recommended as the design target** |
+| **Durable** | **~400–500 Wh/kg** | Good cycle life; thermal safety from the cell where it is solid-state, from the pack where it is not. **Recommended as the design target** |
 | **Ceiling** | **~700–1100 Wh/kg** (solid-state Li-S) | Maximum endurance. **Cycle-life debt: presently ~100 cycles** — the pack becomes a consumable |
+
+**What the durable tier requires.** Density of 400–500 Wh/kg at cell level, which is the `e` of the mass loop ([02.2](02-structure-and-motion.md#22-the-four-coefficients)); a cycle life that keeps the pack from becoming a consumable; the discharge rate that [02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators) prices; and an abuse test the pack must pass. The figures for the last three are `⟦IMPL⟧`: they are set when the cell is chosen (plan D-5), not invented here.
+
+**Solid-state is preferred, not required** (Plone, 2026-11-05). It is preferred for a body in human contact: a solid electrolyte has no liquid to leak or burn. But this is a reading of present technology, not a lock. As of 2026-11, the durable density can be bought only as silicon-anode lithium-ion, with a liquid electrolyte; solid-state cells at that density stand at stack level, not on sale ([hardware/electrical §3](../hardware/electrical/README.md#3-power)). Either fills the tier. Where the cell is not solid-state, the pack carries the safety the cell does not: a crush zone between shell and cells, and a venting path for thermal runaway away from the head ([plan, pack location](../plan/README.md#pack-location-decided)). When solid-state cells at this density can be bought, the preference decides.
 
 *Sourced, for positioning the three maturity tiers:*
 

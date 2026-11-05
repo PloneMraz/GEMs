@@ -88,7 +88,7 @@ This was a decision for the author, not something to be silently patched. The op
 | All-solid-state pouch for robots | mass production targeted 2027, robots first | Samsung SDI [6] |
 | Rate capability demonstrated | 80% retention after 400 cycles at 4C | QuantumScape [6] |
 
-> **The durable tier of [spec 03.1](../../spec/03-energy.md#31-source) is now real.** It declares 400–500 Wh/kg, and 450–465 Wh/kg cells are commercially available or at validated stack level. The ceiling tier at 700–1100 Wh/kg remains laboratory-only, exactly as the specification states.
+> **The durable tier's density can be bought; its preferred chemistry cannot yet.** [Spec 03.1](../../spec/03-energy.md#31-source) declares 400–500 Wh/kg, solid-state preferred but not required (Plone, 2026-11-05). At 450 Wh/kg the cell on sale is silicon-anode with a liquid electrolyte (Amprius [4]); solid-state at that density is at validated stack level, not a product (SOLiTHOR [5]), and Samsung SDI targets mass production in 2027 [6]. So under present technology the tier is filled by silicon-anode, and the pack carries the safety a solid electrolyte would. Neither the Amprius cell's cycle life nor an abuse-test result is in hand: its row in the AVL leaves them blank. The ceiling tier at 700–1100 Wh/kg remains laboratory-only, exactly as the specification states.
 >
 > **The rate trade the specification asserts is confirmed.** The literature frames it as a straight choice between high C-rate and high energy density [7], which is the mechanism behind [spec 02.7](../../spec/02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators): choosing the ceiling pack widens the peak-power shortfall rather than closing it.
 

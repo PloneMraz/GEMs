@@ -33,6 +33,7 @@ Two kinds of blank, and they are not the same:
 | RAM retention and root-of-trust clock power | [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) | Depends on the parts chosen. Immaterial against self-discharge |
 | Full-CSI spatial sensing power | [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) | The one floor term that matters; depends on implementation |
 | Merkle batch period for log signing | [06.4](06-audit-surface.md#64-audit-log) | Trades trace granularity against signing load |
+| Durable-tier cycle life, discharge rate and pack abuse test | [03.1](03-energy.md#31-source) | Set when the cell is chosen (plan D-5). The density, `e`, is the one figure the mass loop needs, and it is established |
 | Exact self-discharge rate | [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) | Depends on the chemistry chosen. **The order of magnitude and the dominant term are established**, which is what the sleep ceiling needs |
 
 ## What is deliberately *not* here

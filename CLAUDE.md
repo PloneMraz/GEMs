@@ -10,11 +10,15 @@ Sau mỗi lần push, đồng bộ ngay sang dataset Hugging Face `plonemraz/GEM
 
 Nếu công việc không tạo ra thay đổi nào trong kho (ví dụ chỉ đọc mã, tra cứu, giải thích, hay chạy thử), thì không cần commit.
 
-## 2. Không đề xuất tự thiết kế linh kiện
+## 2. Thiết kế hệ thống, mua linh kiện
 
-Không đề xuất phương án tự thiết kế motor, hộp giảm tốc, bo driver, cell pin hay bất kỳ linh kiện nào tương tự. Mọi phương án đưa ra phải mua được từ nhà sản xuất, hoặc là cách ghép và cấu hình những thứ mua được. Lý do, do tác giả nêu ngày 2026-09-26: không có chuyên môn, không có xưởng hay phòng thí nghiệm, không có thời gian, và quan trọng nhất là không có kinh phí.
+GEMs là bản đặc tả một hệ thống, do một tác giả độc lập viết, chưa được thử nghiệm; mọi con số trong đó chỉ có độ tin cậy mà nguồn và mức trưởng thành (TM, LAB) ghi kèm. Ở mức hệ thống, GEMs thiết kế: kiến trúc, yêu cầu, bố trí, kết cấu cơ khí, harness, cấu hình và cách ghép các phần với nhau.
 
-Nếu không có linh kiện nào mua được đáp ứng yêu cầu, ghi rõ khoảng thiếu và để mở, không lấp bằng phương án tự chế.
+Ở mức linh kiện, GEMs nêu yêu cầu và chọn trong những thứ mua được, không đề xuất tự thiết kế. Ranh giới theo chức năng: một phần làm một chức năng mà thị trường đã bán — biến đổi hay lưu năng lượng, điều khiển motor, giảm tốc, cảm biến, tính toán — là linh kiện, và được mua. Một phần chỉ để gắn những thứ mua được vào thân này — khung, vỏ, giá đỡ, cáp, bo nối không làm chức năng nào ngoài việc nối — là tích hợp, và GEMs thiết kế nó, theo bản vẽ mà một dịch vụ gia công mua được làm ra.
+
+Lý do (tác giả, 2026-09-26, sửa 2026-11-05): một linh kiện tự thiết kế ở đây không kiểm chứng được và không làm ra được ở đây — không có xưởng, phòng thí nghiệm, thời gian hay kinh phí — trong khi thứ mua được đã được nhà sản xuất kiểm chứng.
+
+Nếu không có thứ mua được nào đáp ứng yêu cầu, ghi rõ khoảng thiếu và để mở (`OPEN` trong BOM), kèm yêu cầu nó phải đạt; không lấp bằng phương án tự chế.
 
 ## 3. Chống rò rỉ thông tin (tuyệt đối)
 

@@ -49,7 +49,7 @@ The specification admits laboratory technology where the physics exists but the 
 | Kinematic simulation model | L4 for kinematics only | `hardware/sim-model/` — inertias estimated |
 | Everything else | L0 | — |
 
-No item is at L3. The engineering BOM exists — [`hardware/bom/`](../hardware/bom/), 294 part numbers in a multi-level structure, with MBOM routings and an SBOM — with one selected manufacturer part and no verified price yet.
+No item is at L3. The engineering BOM exists — [`hardware/bom/`](../hardware/bom/), 294 part numbers in a multi-level structure, with MBOM routings and an SBOM — with one selected manufacturer part and one verified price (the AKH70-16, [`avl.csv`](../hardware/bom/avl.csv)).
 
 ---
 

@@ -301,7 +301,7 @@ def collect_claims():
     c.append(("gamma ref", "spec/02-structure-and-motion.md", "γ=%.1f" % g_ref,
               "growth factor at the reference point"))
     c.append(("armour price", "spec/02-structure-and-motion.md",
-              "~%d kg of armour — and **~%d kg of\n> body**" % (round(d_arm), round(d_arm * g_ref)),
+              "~%d kg of armour — and **~%d kg of body**" % (round(d_arm), round(d_arm * g_ref)),
               "body cost of 80% over 50% coverage at 6 kg/m2, times γ"))
 
     # 02.5 scaling cross-check
@@ -398,7 +398,7 @@ def collect_claims():
     c.append(("tactile points", "spec/05-sensing.md", "**~%s**" % format(int(round(points, -4)), ","), "tactile point count"))
     c.append(("tactile Gbps", "spec/05-sensing.md", "**%.1f Gbps** raw" % tact_gbps, "tactile raw rate"))
     c.append(("aggregate A", "spec/05-sensing.md", "**%.1f Gbps**" % (5.97 + tact_gbps + 3.58), "aggregate raw rate, configuration A"))
-    c.append(("dense points", "spec/05-sensing.md", "**%d\n   million points**" % round(24100 * BODY_SKIN_AREA_M2 * 1e4 / 1e6), "points at 100x human density"))
+    c.append(("dense points", "spec/05-sensing.md", "**%d million points**" % round(24100 * BODY_SKIN_AREA_M2 * 1e4 / 1e6), "points at 100x human density"))
 
     # 03.6 self-discharge and sleep, on the pack figure 02.7 quotes
     PACK = round(REF["pack_kWh"], 1)

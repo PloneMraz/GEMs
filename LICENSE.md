@@ -38,7 +38,7 @@ All three licences require attribution, and all three are satisfied by keeping t
 
 > Plone Mraz — GEMs (GYNOID ENTITY MODELS), https://github.com/PloneMraz/GEMs ORCID [0009-0009-0571-7151](https://orcid.org/0009-0009-0571-7151)
 
-Machine-readable citation metadata is in [CITATION.cff](CITATION.cff); GitHub renders it as a *Cite this repository* button and Zenodo reads it when minting a DOI.
+Machine-readable citation metadata is in [CITATION.cff](CITATION.cff); GitHub renders it as a *Cite this repository* button. The DOI, [10.57967/hf/11436](https://doi.org/10.57967/hf/11436), is the Hugging Face dataset [plonemraz/GEMs](https://huggingface.co/datasets/plonemraz/GEMs).
 
 New files should carry an SPDX header naming the author and the licence that governs them, in whatever comment syntax the file uses:
 

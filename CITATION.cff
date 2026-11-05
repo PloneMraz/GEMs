@@ -14,6 +14,10 @@ authors:
     orcid: "https://orcid.org/0009-0009-0571-7151"
 repository-code: "https://github.com/PloneMraz/GEMs"
 url: "https://plonemraz.github.io/vault/gems/"
+identifiers:
+  - type: doi
+    value: "10.57967/hf/11436"
+    description: "Hugging Face snapshot of the repository at commit 2d6382f"
 license:
   - CERN-OHL-S-2.0
   - Apache-2.0

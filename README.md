@@ -150,7 +150,7 @@ GEMs answers *what the body consists of and what it can do*. It is deliberately 
 
 Neither document claims the other's territory. The relation is complementary scopes, not upper and lower tiers.
 
-> Both links go to the author's site, which carries the full PDF of each. Both papers are also deposited in the Hugging Face dataset [plonemraz/Plones_documents](https://huggingface.co/datasets/plonemraz/Plones_documents), DOI [10.57967/hf/11396](https://doi.org/10.57967/hf/11396).
+> Both links go to the author's site, which carries the full PDF of each. Both papers are also deposited in the Hugging Face dataset [plonemraz/Plones_documents](https://huggingface.co/datasets/plonemraz/Plones_documents), DOI [10.57967/hf/11444](https://doi.org/10.57967/hf/11444).
 
 ---
 

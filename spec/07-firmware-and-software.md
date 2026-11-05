@@ -104,7 +104,7 @@ In command, the OBC MUST:
 | **Continue** | Logging, at both tiers, so that the outage is itself auditable |
 | **Attempt** | Link re-establishment |
 
-**What the OBC does not do: decide.** It runs the reflexes the Main Controller loaded, choosing among them only within the bounds the Main Controller set, and preserves what it holds. Each reflex is appraised when the Main Controller loads it and again, from the record, when command returns. The OBC is not a reduced controller and must not be specified as one, because a body that substitutes its own judgement during an outage produces actions no one can attribute afterwards — the precise failure the audit surface exists to prevent.
+**What the OBC does not do: decide.** It runs the reflexes the Main Controller loaded, choosing among them only within the bounds the Main Controller set, and preserves what it holds. Each reflex still runs its appraisal step on the unit, under the field the Main Controller loaded ([firmware §2](../firmware/ARCHITECTURE.md#2-the-reflex-budget); RSIL §9.7); the Main Controller appraised what it loaded, and appraises the record again when command returns. The OBC is not a reduced controller and must not be specified as one, because a body that substitutes its own judgement during an outage produces actions no one can attribute afterwards — the precise failure the audit surface exists to prevent.
 
 > The boundary is architectural, not cautious. Reflexes are loadable; the interpretation of priorities in an unforeseen situation is not a reflex, and nothing in this repository claims to supply it.
 

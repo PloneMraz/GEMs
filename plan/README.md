@@ -49,7 +49,7 @@ The specification admits laboratory technology where the physics exists but the 
 | Kinematic simulation model | L4 for kinematics only | `hardware/sim-model/` — inertias estimated |
 | Everything else | L0 | — |
 
-No item is at L3. The engineering BOM exists — [`hardware/bom/`](../hardware/bom/), 296 part numbers in a multi-level structure, with MBOM routings and an SBOM — with one selected manufacturer part and one verified price (the AKH70-16, [`avl.csv`](../hardware/bom/avl.csv)).
+No item is at L3. The engineering BOM exists — [`hardware/bom/`](../hardware/bom/), 206 part numbers in a multi-level structure, with MBOM routings and an SBOM — with one selected manufacturer part and one verified price (the AKH70-16, [`avl.csv`](../hardware/bom/avl.csv)).
 
 ---
 
@@ -151,18 +151,18 @@ Constraints the decision carries into the design:
 | ID | Task | To | Waits for |
 |---|---|---|---|
 | E-1 | System block diagram: every board, every bus, every power rail, every connector | L1 | D-3, D-4 |
-| E-2 | Power: pack, BMS, pre-charge and contactor, fusing, supercapacitor tier (spec 03.2 measure 3), regeneration path, dock charger interface | L4 | D-4, D-5 |
-| E-3 | Joint drive board: inverter, gate driver, phase current sensing, encoder interface, EtherCAT slave controller, temperature sensing, brake and lock driver | L4 | D-2, D-4 |
-| E-4 | Power distribution and conversion: HV to logic rails, isolated domains, the always-on rail at quiescent power (spec 03.6) | L4 | E-2 |
-| E-5 | Compute boards: Jetson carrier, real-time computer board, EtherCAT master interface, storage for the audit log, and the OBC (spec 07.5) | L4 | D-3 |
-| E-6 | Sensor front-ends: camera links, thermal, LiDAR, microphone array, SDR, IMUs, e-nose | L4 | E-5 |
-| E-7 | Tactile skin readout for ~460,000 taxels (spec 05.2): multiplexing, ADCs, local event compression | L4 | **LAB** |
+| E-2 | Power: pack, BMS, pre-charge and contactor, fusing, supercapacitor tier (spec 03.2 measure 3), regeneration path, dock charger interface. The BMS and the dock charger are bought and wired to each other over CAN, the charger running under the BMS (candidates in the AVL) | L4 | D-4, D-5 |
+| E-3 | Joint bus integration. The drive board is inside the bought actuator module (D-2; [`CLAUDE.md`](../CLAUDE.md) §2): what is designed here is how the modules reach the real-time computer — CAN bus segments, how many joints per segment at the balance rate, the bought CAN-to-EtherCAT bridges (none if D-2's module speaks EtherCAT), the joint torque sensors' interface, the brake and lock wiring. The bridge's latency counts in the 4.0 ms command stage of the reflex budget | L4 | D-2, D-4 |
+| E-4 | Power distribution and conversion: HV to logic rails, isolated domains, the always-on rail at quiescent power (spec 03.6). Converters and regulators are bought modules; what is designed here is which rails, from which module, through which fuses and harness | L4 | E-2 |
+| E-5 | Compute: Jetson carrier, real-time computer, EtherCAT master interface, storage for the audit log, and the OBC (spec 07.5) — all bought; what is designed here is their packaging, wiring and cooling in the torso | L4 | D-3 |
+| E-6 | Sensor front-ends: camera links, thermal, LiDAR, microphone array, SDR, IMUs, e-nose, through bought interface boards | L4 | E-5 |
+| E-7 | Tactile skin readout for ~460,000 taxels (spec 05.2): multiplexing, ADCs, local event compression. **Open**: nothing on sale was found (2026-11-05); research systems reach about 8,000 taxels. Left open, not designed here ([`CLAUDE.md`](../CLAUDE.md) §2) | L4 | **LAB** |
 | E-8 | Radios: mmWave uplink, fallback link, low-power beacon radio | L4 | D-7 |
 | E-9 | Root of trust: secure element per node or per bus segment | L4 | D-7 |
-| E-10 | Shell drivers: magnetorheological coils or electrorheological high-voltage supply, electrochromic drivers | L4 | M-8 — **LAB** |
+| E-10 | Shell drivers: magnetorheological coils or electrorheological high-voltage supply, electrochromic drivers. **Open** while the layers they drive are LAB | L4 | M-8 — **LAB** |
 | E-11 | Contact-amplitude instrumentation (spec 06.6) | L4 | E-7 |
 | E-12 | Harness: every cable, gauge, connector, length, routed through the CAD | L4 | M-5, E-1 |
-| E-13 | Circuit simulation: power stages, gate drive, current sensing, rail sequencing, in SPICE | L5 | E-2 … E-4 |
+| E-13 | Circuit simulation of the integration, from the bought parts' models: rail sequencing, inrush and pre-charge, voltage sag at peak draw, in SPICE | L5 | E-2 … E-4 |
 | E-14 | Power and energy budget rebuilt from part datasheets, checked against spec 02 and 03 | L5 | E-2 … E-10 |
 
 ### F — Firmware

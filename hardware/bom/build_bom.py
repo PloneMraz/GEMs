@@ -49,6 +49,9 @@ AVL_FIELDS = ["part_number", "rank", "status", "manufacturer", "mpn",
               "price_qty", "price_date", "price_url", "notes"]
 
 CATEGORIES = {"ASSY", "MFG", "OTS", "PCBA", "CABLE", "MATL", "SW", "CONS"}
+# OPEN: nothing that can be bought meets the requirement, and by CLAUDE.md §2
+# the gap is recorded, not filled with an in-house design.
+MAKE_BUY = {"MAKE", "BUY", "OPEN"}
 MATURITY = {"TM", "LAB"}
 STATUS = {"SELECTED", "CANDIDATE"}
 
@@ -73,39 +76,40 @@ JOINTS = [
     (17, "neck_pitch", "harmonic", "neck"),
     (18, "trunk_roll", "unassigned", "torso"),     # lateral bend, D-9
 ]
+# A joint is a bought actuator module — motor, reducer, encoders and drive
+# board are the manufacturer's (CLAUDE.md §2, 2026-11-05) — and what joins it
+# to the body. Offsets 1-5 and 7 belonged to the in-house module withdrawn
+# from D-2 and are not reused.
 MODULE_CHILDREN = [
     # offset, description, category, make/buy, spec_ref
-    (1, "Motor, frameless BLDC", "OTS", "BUY", "hardware/electrical 2"),
-    (2, "Reducer", "OTS", "BUY", "hardware/mechanical 2"),
-    (3, "Output bearing", "OTS", "BUY", "hardware/mechanical 5"),
-    (4, "Absolute encoder, motor side", "OTS", "BUY", "spec 05.3 proprioception"),
-    (5, "Absolute encoder, output side", "OTS", "BUY", "spec 05.3 proprioception"),
+    (10, "Actuator module (motor, reducer, encoders, drive board)", "OTS", "BUY",
+     "plan D-2; hardware/electrical 2"),
     (6, "Joint torque sensor", "OTS", "BUY", "spec 05.3; spec 06.6"),
-    (7, "Joint drive PCBA", "PCBA", "MAKE", "plan E-3"),
-    (8, "Housing, 7075-T6", "MFG", "MAKE", "hardware/mechanical 1"),
+    (8, "Adapter, module to structure, 7075-T6", "MFG", "MAKE", "hardware/mechanical 1"),
     (9, "Fastener set", "OTS", "BUY", "plan M-3"),
 ]
 
 # Software carried as virtual part numbers: each image is a child of the board
 # it is programmed into, so a shipped body records which image it carries.
+# BUY: the manufacturer's image, configured and its version recorded.
 SOFTWARE = [
-    # pn, description, parent boards, spec_ref
-    ("GEM-40010", "Firmware image, joint drive", "joint drive PCBAs", "plan F-3"),
-    ("GEM-40020", "Firmware image, real-time computer", "GEM-13230", "plan F-0 to F-11"),
-    ("GEM-40030", "Firmware image, battery management", "GEM-13120", "plan F-9"),
-    ("GEM-40040", "Firmware image, beacon radio", "GEM-13330", "plan F-12"),
-    ("GEM-40050", "Firmware image, secure element", "GEM-13350", "plan F-11"),
-    ("GEM-40060", "Firmware image, tactile readout", "GEM-18080", "plan F-1"),
-    ("GEM-40070", "Firmware image, shell field driver", "GEM-18090", "plan F-13"),
-    ("GEM-40080", "OS image, edge AI module", "GEM-13200", "spec 07.1"),
-    ("GEM-40090", "GEMs software stack, edge AI module", "GEM-13200", "plan S-0 to S-9"),
-    ("GEM-40100", "Kernel image, on-board computer", "GEM-13260", "spec 07.5; plan F-14"),
+    # pn, description, parent boards, spec_ref, make/buy
+    ("GEM-40010", "Firmware image, actuator module (the manufacturer's)", "actuator modules", "plan F-3", "BUY"),
+    ("GEM-40020", "Firmware image, real-time computer", "GEM-13230", "plan F-0 to F-11", "MAKE"),
+    ("GEM-40030", "Firmware image, battery management (the manufacturer's)", "GEM-13120", "plan F-9", "BUY"),
+    ("GEM-40040", "Firmware image, beacon radio", "GEM-13330", "plan F-12", "MAKE"),
+    ("GEM-40050", "Firmware image, secure element", "GEM-13350", "plan F-11", "MAKE"),
+    ("GEM-40060", "Firmware image, tactile readout", "GEM-18080", "plan F-1", "MAKE"),
+    ("GEM-40070", "Firmware image, shell field driver", "GEM-18090", "plan F-13", "MAKE"),
+    ("GEM-40080", "OS image, edge AI module", "GEM-13200", "spec 07.1", "MAKE"),
+    ("GEM-40090", "GEMs software stack, edge AI module", "GEM-13200", "plan S-0 to S-9", "MAKE"),
+    ("GEM-40100", "Kernel image, on-board computer", "GEM-13260", "spec 07.5; plan F-14", "MAKE"),
 ]
 
-# Manufacturing-only items: in the MBOM, never in the EBOM.
+# Manufacturing-only items: in the MBOM, never in the EBOM. GEM-50020, reducer
+# grease, left with the in-house module: a bought module comes sealed.
 CONSUMABLES = [
     ("GEM-50010", "Threadlocker, medium strength", "ML"),
-    ("GEM-50020", "Reducer grease", "G"),
     ("GEM-50030", "Thermal interface material", "G"),
     ("GEM-50040", "Adhesive, shell layer bonding", "ML"),
     ("GEM-50050", "Cable ties and heat-shrink", "SET"),
@@ -143,46 +147,38 @@ class Bom:
 def build():
     b = Bom()
     torque = {name: t for name, _, t, _ in torque_table(REF_MASS)}
-    for pn, d, _, ref in SOFTWARE:
-        b.part(pn, d, "SW", "MAKE", uom="EA", level="L0", ref=ref,
+    for pn, d, _, ref, mb in SOFTWARE:
+        b.part(pn, d, "SW", mb, uom="EA", level="L0", ref=ref,
                notes="Virtual part: version recorded at programming. Nothing built yet.")
     for pn, d, uom in CONSUMABLES:
         b.part(pn, d, "CONS", "BUY", uom=uom, level="L0", ref="MBOM only")
 
-    # -- joint modules: one part number per joint type, shared left/right --
+    # -- joints: one part number per joint type, shared left/right ---------
     for idx, name, red, _ in JOINTS:
         nm = torque.get(name)
         pn = module_pn(idx)
-        if nm is None:                    # declared, not yet sized
-            b.part(pn, "Joint module, %s" % name.replace("_", " "), "ASSY", "MAKE",
-                   level="L1", ref="hardware/kinematics.md 1.4",
-                   req="torque not yet sized (D-9); >=80 Nm/kg over module mass",
-                   notes="Trunk lateral bend, added by D-9. No torque source yet.")
-        else:
-            b.part(pn, "Joint module, %s" % name.replace("_", " "), "ASSY", "MAKE",
-                   mass="%.3f" % (nm / MODULE_NM_PER_KG),
-                   basis="estimate: %.0f Nm peak / %.1f Nm/kg" % (nm, MODULE_NM_PER_KG),
-                   level="L2", ref="spec 02.6; hardware/kinematics.md 1",
-                   req="%.0f Nm peak; >=80 Nm/kg over module mass" % nm,
-                   notes="D-2 open: procure as one module or build from the children below."
-                   + ("" if nm <= 85 else " No module found at this torque and density."))
+        b.part(pn, "Joint assembly, %s" % name.replace("_", " "), "ASSY", "MAKE",
+               level="L1", ref="hardware/kinematics.md 1")
         for off, desc, cat, mb, ref in MODULE_CHILDREN:
             cpn = "GEM-2%02d%02d" % (idx, off)
-            d = desc
-            n = ""
-            if off == 2:
-                d = "Reducer, %s" % red if red != "unassigned" else "Reducer"
-                n = ("class per hardware/mechanical 2" if red != "unassigned" else
-                     "no class assigned in hardware/mechanical 2")
+            kw = {}
+            if off == 10:
+                n = ("reducer class per hardware/mechanical 2: %s" % red if red != "unassigned" else
+                     "no reducer class assigned in hardware/mechanical 2")
                 if red != "planetary":
                     n += "; conflicts with the planetary module family of hardware/electrical 2"
-            if off == 7:
-                n = "PCBA BOM is generated from its schematic (plan E-3); none exists yet"
-            b.part(cpn, "%s, %s" % (d, name.replace("_", " ")), cat, mb,
-                   uom="SET" if off == 9 else "EA",
-                   level="L1" if off in (2, 7) else "L0", ref=ref, notes=n)
+                if nm is None:            # declared, not yet sized
+                    kw = dict(level="L1", req="torque not yet sized (D-9); >=80 Nm/kg over module mass",
+                              notes="Trunk lateral bend, added by D-9. No torque source yet; " + n)
+                else:
+                    kw = dict(mass="%.3f" % (nm / MODULE_NM_PER_KG),
+                              basis="estimate: %.0f Nm peak / %.1f Nm/kg" % (nm, MODULE_NM_PER_KG),
+                              level="L2", req="%.0f Nm peak; >=80 Nm/kg over module mass" % nm,
+                              notes="D-2 open: which bought module, at which ratio; candidates in avl.csv; " + n)
+            b.part(cpn, "%s, %s" % (desc, name.replace("_", " ")), cat, mb,
+                   uom="SET" if off == 9 else "EA", ref=ref, **kw)
             b.use(pn, cpn)
-            if off == 7:
+            if off == 10:
                 b.use(cpn, "GEM-40010")
 
     # -- structure and sub-assemblies --------------------------------------
@@ -208,11 +204,12 @@ def build():
         ("GEM-11080", "Speaker and ultrasonic emitter", "1", "spec 05.3", "", "TM"),
         ("GEM-11090", "Micro facial and pupil actuator set", "1", "spec 05.3; kinematics 1.6", "", "LAB"),
     ]:
-        b.use(head, b.part(pn, d, "OTS" if mat == "TM" else "MFG",
-                           "BUY" if mat == "TM" else "MAKE", uom="SET" if pn == "GEM-11090" else "EA",
+        b.use(head, b.part(pn, d, "OTS", "BUY" if mat == "TM" else "OPEN",
+                           uom="SET" if pn == "GEM-11090" else "EA",
                            mat=mat, level="L1", ref=ref, req=req), q)
-    b.use(head, b.part("GEM-11100", "Head sensor hub PCBA", "PCBA", "MAKE", level="L0",
-                       ref="plan E-6", notes="PCBA BOM from schematic; none exists yet"))
+    b.use(head, b.part("GEM-11100", "Head sensor interface set", "OTS", "BUY", uom="SET",
+                       level="L0", ref="plan E-6",
+                       notes="bought interface boards for the head sensors: which, IMPL (plan E-6)"))
 
     neck = b.part("GEM-12000", "Neck assembly", "ASSY", "MAKE", level="L1", ref="hardware/kinematics.md 1")
     b.use(top, neck)
@@ -245,32 +242,40 @@ def build():
                         ref="spec 03.1; hardware/electrical 3", req="400-500 Wh/kg",
                         notes="D-5 open"),
           "", "%.2f kWh / per-cell energy of the part chosen" % PACK_KWH)
-    for pn, d, cat, ref, req in [
-        ("GEM-13120", "Battery management PCBA", "PCBA", "plan E-2", "monitoring, balancing, protection"),
-        ("GEM-13130", "Pack enclosure", "MFG", "plan M-2", ""),
-        ("GEM-13140", "Supercapacitor bank", "OTS", "spec 03.2 measure 3", "burst power"),
-        ("GEM-13150", "Pre-charge, contactor and fuse set", "OTS", "plan E-2", "bus voltage D-4"),
-        ("GEM-13160", "Power distribution and DC-DC PCBA", "PCBA", "plan E-4", "HV to logic rails"),
-        ("GEM-13170", "Always-on rail PCBA", "PCBA", "spec 03.6", "tens of microwatts"),
+    for pn, d, cat, ref, req, n in [
+        ("GEM-13120", "Battery management system", "OTS", "plan E-2", "monitoring, balancing, protection",
+         "bought, configured (plan F-9); cell count follows D-4"),
+        ("GEM-13130", "Pack enclosure", "MFG", "plan M-2", "", ""),
+        ("GEM-13140", "Supercapacitor bank", "OTS", "spec 03.2 measure 3", "burst power", ""),
+        ("GEM-13150", "Pre-charge, contactor and fuse set", "OTS", "plan E-2", "bus voltage D-4", ""),
+        ("GEM-13160", "DC-DC converter set, HV to logic rails", "OTS", "plan E-4", "HV to logic rails",
+         "bought modules, one per rail: rails and count IMPL (plan E-4)"),
+        ("GEM-13170", "Always-on rail regulator", "OTS", "spec 03.6", "tens of microwatts",
+         "no bought part checked against the quiescent budget yet (2026-11-05)"),
     ]:
         b.use(power, b.part(pn, d, cat, "MAKE" if cat != "OTS" else "BUY",
-                            uom="SET" if pn == "GEM-13150" else "EA", level="L1",
-                            ref=ref, req=req))
+                            uom="SET" if pn in ("GEM-13150", "GEM-13160") else "EA", level="L1",
+                            ref=ref, req=req, notes=n))
 
     compute = b.part("GEM-13200", "Compute assembly", "ASSY", "MAKE", level="L1", ref="plan E-5")
     b.use(torso, compute)
     for pn, d, cat, lvl, ref, req, n in [
         ("GEM-13210", "Edge AI module", "OTS", "L2", "hardware/electrical 4", "40-130 W, 128 GB", ""),
-        ("GEM-13220", "Edge module carrier PCBA", "PCBA", "L1", "plan E-5", "", ""),
-        ("GEM-13230", "Real-time computer PCBA, EtherCAT master", "PCBA", "L0", "spec 07.2; firmware/README",
-         "balance 500 Hz, reflex 10 ms", "D-3 open: processor not chosen; not the edge module"),
+        ("GEM-13220", "Edge module carrier board", "OTS", "L1", "plan E-5", "",
+         "bought; fit in the torso (mass, envelope, cooling) not checked"),
+        ("GEM-13230", "Real-time computer, EtherCAT master", "OTS", "L0", "spec 07.2; firmware/README",
+         "balance 500 Hz, reflex 10 ms", "D-3 open: which bought board; not the edge module"),
+        ("GEM-13270", "CAN to EtherCAT bridge", "OTS", "L0", "plan E-3; hardware/electrical 5", "",
+         "only while D-2's module speaks CAN; its latency counts in the 4.0 ms command stage"),
         ("GEM-13240", "Audit log storage, 2 TB", "OTS", "L1", "spec 07.6", "~1700 h full tier", ""),
         ("GEM-13250", "SDR front-end, 2 ch x 56 MHz", "OTS", "L1", "spec 05.3", "16 bit I/Q", ""),
         ("GEM-13260", "On-board computer (OBC), link-loss kernel", "OTS", "L0", "spec 07.5", "",
          "a small computer of its own, bought; stands by while the IPC is online"),
     ]:
         b.use(compute, b.part(pn, d, cat, "BUY" if cat == "OTS" else "MAKE", level=lvl,
-                              ref=ref, req=req, notes=n))
+                              ref=ref, req=req, notes=n),
+              *(("", "per CAN bus segment, IMPL (bus load at the balance rate)")
+                if pn == "GEM-13270" else ()))
 
     comms = b.part("GEM-13300", "Communications assembly", "ASSY", "MAKE", level="L1", ref="spec 01 Link")
     b.use(torso, comms)
@@ -338,23 +343,25 @@ def build():
         ("GEM-18040", "Fire layer, sacrificial", "", "coverage IMPL", "TM", "spec 04.4", "standard to be anchored"),
         ("GEM-18050", "Electrochromic colour layer", "", "coverage IMPL", "LAB", "spec 04.3", "~1-5 s"),
     ]:
-        b.use(shell, b.part(pn, d, "MATL", "MAKE" if mat == "LAB" else "BUY", uom="M2", mat=mat,
+        b.use(shell, b.part(pn, d, "MATL", "OPEN" if mat == "LAB" else "BUY", uom="M2", mat=mat,
                             level="L2", ref=ref, req=req), q, basis)
-    b.use(shell, b.part("GEM-18060", "Tactile taxel, fine region (hands, face)", "MFG", "MAKE",
+    b.use(shell, b.part("GEM-18060", "Tactile taxel, fine region (hands, face)", "OTS", "OPEN",
                         mat="LAB", level="L1", ref="spec 05.2", req="~300/cm2"),
           "150000", "~500 cm2 at ~300/cm2")
-    b.use(shell, b.part("GEM-18070", "Tactile taxel, ordinary region", "MFG", "MAKE",
+    b.use(shell, b.part("GEM-18070", "Tactile taxel, ordinary region", "OTS", "OPEN",
                         mat="LAB", level="L1", ref="spec 05.2", req="~20/cm2"),
           "350000", "~17,500 cm2 at ~20/cm2")
-    b.use(shell, b.part("GEM-18080", "Tactile readout PCBA", "PCBA", "MAKE", mat="LAB",
-                        level="L0", ref="plan E-7", notes="PCBA BOM from schematic; none exists yet"),
+    b.use(shell, b.part("GEM-18080", "Tactile readout electronics", "OTS", "OPEN", mat="LAB",
+                        level="L0", ref="plan E-7", req="~460,000 taxels",
+                        notes="none found on sale (2026-11-05); research systems reach ~8,000 taxels"),
           "", "count IMPL")
-    b.use(shell, b.part("GEM-18090", "Shell field driver PCBA (MR coils / ER HV / electrochromic)",
-                        "PCBA", "MAKE", mat="LAB", level="L0", ref="plan E-10"), "", "count IMPL")
+    b.use(shell, b.part("GEM-18090", "Shell field driver (MR coils / ER HV / electrochromic)",
+                        "OTS", "OPEN", mat="LAB", level="L0", ref="plan E-10",
+                        notes="the shell layers it drives are LAB"), "", "count IMPL")
 
     harness = b.part("GEM-19000", "Harness assembly", "ASSY", "MAKE", level="L0", ref="plan E-12")
     b.use(top, harness)
-    for pn, d in [("GEM-19010", "EtherCAT joint chain cable set"),
+    for pn, d in [("GEM-19010", "Joint bus cable set (EtherCAT, CAN segments)"),
                   ("GEM-19020", "CAN FD sensing bus cable set"),
                   ("GEM-19030", "HV power distribution cable set"),
                   ("GEM-19040", "Sensor link cable set (camera, LiDAR, audio)")]:
@@ -366,10 +373,10 @@ def build():
     b.use(dock, S("GEM-30010", "Dock structure"))
     b.use(dock, b.part("GEM-30020", "Charging contact set", "OTS", "BUY", uom="SET",
                        level="L1", ref="spec 03.5"))
-    b.use(dock, b.part("GEM-30030", "Dock charger PCBA", "PCBA", "MAKE", level="L0",
-                       ref="plan E-2", notes="PCBA BOM from schematic; none exists yet"))
+    b.use(dock, b.part("GEM-30030", "Dock charger", "OTS", "BUY", level="L0",
+                       ref="plan E-2", notes="bought; charges under the BMS's control"))
 
-    for pn, _, parents, _ in SOFTWARE:
+    for pn, _, parents, _, _ in SOFTWARE:
         if parents.startswith("GEM-"):
             b.use(parents, pn)
 
@@ -423,18 +430,19 @@ def build_mbom(b, roots):
                 return l
         raise KeyError((asm, off_desc))
 
+    def program(asm, l):
+        c = b.parts[l["child"]]
+        verb = "Verify and configure" if c["make_buy"] == "BUY" else "Program"
+        op(asm, "WC-PROG", "%s %s" % (verb, c["description"].lower()),
+           l["child"], l["qty"], l["qty_basis"])
+
     for asm in sorted(children):
         p = b.parts[asm]
-        if asm.startswith("GEM-2") and p["category"] == "ASSY":          # joint module
+        if asm.startswith("GEM-2") and p["category"] == "ASSY":          # joint
             name = p["description"].split(", ", 1)[1]
-            steps = [("Housing", "Prepare housing", None),
-                     ("Output bearing", "Press in output bearing", None),
-                     ("Motor", "Install motor stator and rotor", None),
-                     ("Reducer", "Install reducer; grease per work instruction", "GEM-50020"),
-                     ("Absolute encoder, motor side", "Install motor-side encoder", None),
-                     ("Absolute encoder, output side", "Install output-side encoder", None),
-                     ("Joint torque sensor", "Install joint torque sensor", None),
-                     ("Joint drive PCBA", "Mount drive PCBA; thermal interface to housing", "GEM-50030"),
+            steps = [("Adapter", "Prepare adapter", None),
+                     ("Actuator module", "Mount actuator module to adapter; thermal interface", "GEM-50030"),
+                     ("Joint torque sensor", "Install joint torque sensor at the output", None),
                      ("Fastener set", "Fasten and torque to drawing", "GEM-50010")]
             for key, text, cons in steps:
                 l = line(asm, key)
@@ -442,16 +450,21 @@ def build_mbom(b, roots):
                 if cons:
                     op(asm, "WC-JNT", "(consumable) %s" % b.parts[cons]["description"],
                        cons, "", AS_CONSUMED)
-            op(asm, "WC-CAL", "Commutation offset and encoder calibration, %s" % name)
+            op(asm, "WC-CAL", "Encoder zero offset and bus address, %s" % name)
             op(asm, "WC-CAL", "Joint torque sensor calibration")
             op(asm, "WC-CAL", "End-of-line test: peak torque, backdrive, thermal")
             continue
-        if p["category"] == "PCBA":
+        if p["category"] == "PCBA" and p["make_buy"] == "MAKE":
             op(asm, "WC-EMS", "Assemble board to its PCBA BOM (from schematic)")
             for l in children[asm]:
-                op(asm, "WC-PROG", "Program %s" % b.parts[l["child"]]["description"].lower(),
-                   l["child"], l["qty"], l["qty_basis"])
+                program(asm, l)
             op(asm, "WC-CAL", "Board-level functional test")
+            continue
+        if p["category"] != "ASSY" and all(b.parts[l["child"]]["category"] == "SW"
+                                           for l in children[asm]):     # bought part carrying software
+            for l in children[asm]:
+                program(asm, l)
+            op(asm, "WC-CAL", "Functional test")
             continue
         if asm == "GEM-13110":
             for l in children[asm]:
@@ -462,8 +475,7 @@ def build_mbom(b, roots):
         for l in children[asm]:
             c = b.parts[l["child"]]
             if c["category"] == "SW":
-                op(asm, "WC-PROG", "Install %s" % c["description"].lower(),
-                   l["child"], l["qty"], l["qty_basis"])
+                program(asm, l)
             elif c["uom"] == "M2":
                 op(asm, wc, "Apply %s" % c["description"].lower(), l["child"], l["qty"],
                    l["qty_basis"])
@@ -614,6 +626,10 @@ def check_structure(b, roots, consumed=()):
             errs.append("parts: %s is not used by any assembly" % pn)
         if p["category"] not in CATEGORIES or p["maturity"] not in MATURITY:
             errs.append("parts: %s has an unknown category or maturity" % pn)
+        if p["make_buy"] not in MAKE_BUY:
+            errs.append("parts: %s: make_buy must be MAKE, BUY or OPEN" % pn)
+        if p["maturity"] == "LAB" and p["make_buy"] == "MAKE":
+            errs.append("parts: %s is LAB and MAKE: nothing to buy is OPEN, not made (CLAUDE.md §2)" % pn)
     # cycles
     state = {}
 
@@ -699,6 +715,7 @@ def summary(b, children, avl, top):
     for p in b.parts.values():
         cats[p["category"]] += 1
     lab = sum(p["maturity"] == "LAB" for p in b.parts.values())
+    opened = sum(p["make_buy"] == "OPEN" for p in b.parts.values())
     massed = sum(bool(p["unit_mass_kg"]) for p in b.parts.values())
     sel = {a["part_number"] for a in avl if a["status"] == "SELECTED"}
     cand = {a["part_number"] for a in avl if a["status"] == "CANDIDATE"} - sel
@@ -707,6 +724,7 @@ def summary(b, children, avl, top):
         "| | |", "|---|---|",
         "| Part numbers | %d (%s) |" % (n, ", ".join("%s %d" % kv for kv in sorted(cats.items()))),
         "| LAB parts — no part number exists to give | %d |" % lab,
+        "| Open parts — nothing on sale meets them, left open (CLAUDE.md §2) | %d |" % opened,
         "| Parts with a selected manufacturer part | %d |" % len(sel),
         "| Parts with candidates only | %d |" % len(cand),
         "| Parts with a verified price | %d |" % len(priced),

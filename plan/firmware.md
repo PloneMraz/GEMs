@@ -42,18 +42,18 @@ Module by module, from [`../firmware/ARCHITECTURE.md`](../firmware/ARCHITECTURE.
 | Skew measurement and reporting against the permitted skew (`⟦IMPL⟧`) | L5 | V-6 |
 | **Closes C-15** in simulated form once V-6 runs it | L5 | V-6 |
 
-## F-3 — Actuator drivers (joint drive firmware)
+## F-3 — Actuator integration (the module's firmware)
 
-Runs on each joint drive board. If D-2 chooses procured modules, most of this is replaced by the module's own firmware and shrinks to integration.
+The drive board is inside each bought actuator module, and the firmware on it is the manufacturer's ([`CLAUDE.md`](../CLAUDE.md) §2). What GEMs writes is integration: it configures that firmware and drives it over the bus.
 
 | Task | To | Waits for |
 |---|---|---|
-| Field-oriented current control, at the kHz-class rate (`⟦IMPL⟧`) | L4 | D-2 |
-| Velocity and position loops, and impedance mode for compliant contact | L4 | D-2 |
-| Commutation and encoder calibration | L4 | D-2 |
-| Protections: overcurrent, overtemperature, overvoltage on regeneration, stall | L4 | E-3 |
+| Current loop: the module's own; its rate and gains read from the module's manual and configured (`⟦IMPL⟧`) | L4 | D-2 |
+| Velocity, position and impedance behaviour from the control modes the module's firmware offers; whether it offers impedance control for compliant contact is read from its manual, and if not, the gap is recorded | L4 | D-2 |
+| Commutation and encoder calibration, by the module's own procedure | L4 | D-2 |
+| Protections: the module's overcurrent, overtemperature, overvoltage on regeneration and stall limits, set to this body's values | L4 | E-3 |
 | Joint lock actuation and state (spec 03.2 measure 4) | L4 | M-3 |
-| EtherCAT slave application: process data, state machine | L4 | E-3 |
+| Bus protocol: the module's CAN messages through the bought bridge, or EtherCAT directly if D-2's module speaks it | L4 | E-3 |
 | Telemetry for the full-tier log: commanded and measured current, position, velocity, torque, temperature | L4 | — |
 
 ## F-4 — State estimator
@@ -110,9 +110,9 @@ Runs on each joint drive board. If D-2 chooses procured modules, most of this is
 |---|---|---|
 | The four state levels of spec 03.4, and every transition with its wake latency | L4 | — |
 | Tiered sleep with the always-on wake-up circuit on the always-on rail | L4 | E-4 |
-| Battery management: cell monitoring, balancing, state of charge and health, protection | L4 | D-5 |
+| Battery management: configure the bought BMS — cell limits, balancing, protection thresholds — and read its state of charge, health and faults | L4 | D-5 |
 | Pre-charge and contactor sequencing | L4 | E-2 |
-| Dock detection and charge control | L4 | E-2 |
+| Dock detection, and charge control through the BMS, which runs the bought charger | L4 | E-2 |
 | State-dependent gating (spec 03.2 measure 1) — which actuators and channels run | L4 | — |
 
 ## F-10 — Log writer

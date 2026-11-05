@@ -95,7 +95,7 @@ One directory per group, and the body's three design disciplines nest under `har
 | [`hardware/electrical/`](hardware/electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint sizing | ◐ selection done |
 | [`hardware/sim-model/`](hardware/sim-model/) | URDF generated from the kinematics, audited against it | ✅ |
 | [`hardware/design/`](hardware/design/) | Concept art, then industrial design and expressive capability (plan ID) | ◐ concept art |
-| [`hardware/bom/`](hardware/bom/) | EBOM, MBOM and SBOM from one definition, checked against each other; approved manufacturer list, blanks where not yet verified | ◐ 296 parts, one priced |
+| [`hardware/bom/`](hardware/bom/) | EBOM, MBOM and SBOM from one definition, checked against each other; approved manufacturer list, blanks where not yet verified | ◐ 206 parts, one priced |
 | [`firmware/`](firmware/) | Code that runs directly on the microcontrollers, bare metal or RTOS: joint control, battery management, secure boot and attestation, low-power beacon — and the Real-time Control Layer's balance, reflex and supervisor modules if D-3 makes its computer a microcontroller | ◐ architecture; source awaits a target |
 | [`software/`](software/) | Code that runs under Linux on the embedded computers: capture drivers, feature extraction and compression, sensor fusion, log synchronisation, link management | 🔜 no source yet |
 | [`reference/`](reference/) | Executable specifications the on-body code is checked against: audit log, agency tagging. They run on no target | ✅ with tests |
@@ -133,7 +133,7 @@ Directories marked 🔜 do not exist yet. They are named in advance so that the 
 | ✅ | Component selection, sourced — actuators, power, compute, bus, materials, reducers |
 | ✅ | Actuator torque density reconciled with `f_act` — 80–90 Nm/kg peak over module mass, the basis declared, the trunk sized from measured human strength, the arms from a declared 15 kg payload; `f_act` split into its scaling and fixed parts |
 | ✅ | Work plan to a complete design — decisions, packages, firmware and software task lists ([`plan/`](plan/)) |
-| ◐ | EBOM, MBOM and SBOM — 296 part numbers, 60 routings, CycloneDX SBOM; sources and prices filled only where verified ([`hardware/bom/`](hardware/bom/)) |
+| ◐ | EBOM, MBOM and SBOM — 206 part numbers, 60 routings, CycloneDX SBOM; sources and prices filled only where verified ([`hardware/bom/`](hardware/bom/)) |
 | 🔜 | Mechanical CAD |
 | 🔜 | Electrical schematics |
 

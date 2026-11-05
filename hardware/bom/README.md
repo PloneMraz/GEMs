@@ -40,16 +40,16 @@ A flat list of what the specification names is a requirements list, not a BOM. I
 | **Procurement type, lifecycle, unit of measure** [1] | `make_buy`, `lifecycle`, `uom` | |
 | **Manufactured, off-the-shelf and electrical kept apart** [7] | `category`: ASSY, MFG, OTS, PCBA, CABLE, MATL | They are sourced, costed and reviewed differently |
 | **Mass per line** [8] | `unit_mass_kg` with its basis, rolled up in `EBOM.md` | On this body, mass is the governing variable: every kilogram costs γ kilograms (spec 02.1) |
-| **PCBA BOMs with reference designators, footprint, value, DNP** [9][10] | Each PCBA is a part here; its own BOM comes from its schematic and joins this structure then | "Down to each capacitor" lives in those PCBA BOMs, and they cannot exist before the schematics |
+| **PCBA BOMs with reference designators, footprint, value, DNP** [9][10] | A board the design makes is a part here; its own BOM comes from its schematic and joins this structure then. By [`CLAUDE.md`](../../CLAUDE.md) §2 the only such board is one that does nothing but connect; none is in the structure today: every board that performs a function is bought | "Down to each capacitor" lives in those PCBA BOMs, and they cannot exist before the schematics |
 | **MBOM derived from the EBOM and validated back against it** [11][12] | Every EBOM line is consumed by exactly one operation of its parent's routing, with the same quantity; the check fails otherwise | An MBOM that drifts from the EBOM builds a different product from the one designed |
-| **Consumables, tooling and packaging in the MBOM only** [11][12] | Category `CONS`: threadlocker, reducer grease, thermal interface material, adhesive, cable ties, packaging | They are needed to build the body and are not part of its design |
+| **Consumables, tooling and packaging in the MBOM only** [11][12] | Category `CONS`: threadlocker, thermal interface material, adhesive, cable ties, packaging | They are needed to build the body and are not part of its design |
 | **Software as virtual part numbers** | Category `SW`: each firmware image is a child of the board it is programmed into; the edge module's OS and software stack are children of the compute assembly | A body leaves the line with a recorded software configuration, and an update is a revision |
 | **SBOM in a standard format** [13][14] | CycloneDX 1.7, validated against the official schema. SPDX (ISO/IEC 5962:2021) is the other accepted format | The EU Cyber Resilience Act requires a machine-readable SBOM for products with digital elements from 11 December 2027 [15]; CISA published updated minimum elements in 2026 [14] |
 | **Generated from one source** [8] | Structure generated from the kinematics and the torque table of `hardware/electrical/actuator_sizing.py` | A joint added to the declaration appears in the BOM, or the check fails |
 
 ## Columns
 
-**`parts.csv`** — `part_number`, `rev`, `description`, `category`, `make_buy`, `uom` (EA, SET, M2), `unit_mass_kg` and `mass_basis`, `maturity` (TM or LAB, as in [spec 00](../../spec/00-scope-and-criteria.md)), `design_level` (L0–L5, as in [`plan/`](../../plan/README.md#levels-of-detail)), `lifecycle` (all `CONCEPT` until a design is released), `spec_ref`, `requirement`, `notes`.
+**`parts.csv`** — `part_number`, `rev`, `description`, `category`, `make_buy` (MAKE, BUY, or OPEN: nothing on sale meets the requirement, and the gap is left open rather than filled with an in-house design, [`CLAUDE.md`](../../CLAUDE.md) §2), `uom` (EA, SET, M2), `unit_mass_kg` and `mass_basis`, `maturity` (TM or LAB, as in [spec 00](../../spec/00-scope-and-criteria.md)), `design_level` (L0–L5, as in [`plan/`](../../plan/README.md#levels-of-detail)), `lifecycle` (all `CONCEPT` until a design is released), `spec_ref`, `requirement`, `notes`.
 
 **`ebom.csv`** — `parent`, `find_no` (10, 20, 30… per parent), `child`, `qty`, `qty_basis` (required when `qty` is empty), `ref_des` (for PCBA lines, once they exist), `notes`.
 
@@ -62,21 +62,22 @@ A flat list of what the specification names is a requirements list, not a BOM. I
 - A price carries all of its currency, order quantity, date and page. A price that cannot be re-checked is refused.
 - A `SELECTED` AVL entry carries a manufacturer, a manufacturer part number and a source.
 - A **LAB** part carries no manufacturer part number: none exists to give.
+- `make_buy` is MAKE, BUY or OPEN, and a **LAB** part is never MAKE: what cannot be bought is OPEN.
 - The generated files match what the generator produces now.
 
 ## MBOM
 
-Routings are generated for every assembly and every PCBA that carries software. Leaf parts — machined, composite and bought-in — have no routing here; theirs is fabrication to drawing, and belongs with the drawing.
+Routings are generated for every assembly and every part that carries software. Leaf parts — machined, composite and bought-in — have no routing here; theirs is fabrication to drawing, and belongs with the drawing.
 
 | Work centre | Covers |
 |---|---|
 | `WC-EMS` | PCB assembly at an external contract manufacturer, to each board's own PCBA BOM |
-| `WC-PROG` | Programming every firmware image and installing the edge module's images |
+| `WC-PROG` | Programming every firmware image GEMs writes and installing the edge module's images; verifying and configuring the manufacturer's image in a bought part |
 | `WC-CELL` | Cell stack assembly at an external specialist |
 | `WC-HARN` | Harness manufacture, external |
-| `WC-JNT` | Joint module assembly — housing, bearing, motor, reducer, encoders, torque sensor, drive board, fasteners |
+| `WC-JNT` | Joint assembly — the bought actuator module on its adapter, the torque sensor at its output, fasteners |
 | `WC-SUB`, `WC-INT` | Sub-assembly and final integration |
-| `WC-CAL` | Calibration and end-of-line test: commutation and encoders, torque sensors, whole-body kinematics, power states, stand and balance, supported failure state |
+| `WC-CAL` | Calibration and end-of-line test: encoder zero offsets and bus addresses, torque sensors, whole-body kinematics, power states, stand and balance, supported failure state |
 | `WC-COM` | Commissioning the audit surface: root-of-trust keys and measured-boot baseline (spec 06.2), physical-fingerprint baselines for attestation tier 2 (spec 06.3) |
 | `WC-PACK` | Packaging |
 
@@ -92,15 +93,17 @@ The firmware images and the edge module's OS image are in the EBOM as virtual pa
 
 ## Where it stands
 
-The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 296 part numbers, including 10 software images and 6 consumables; 497 operations across 60 routings; one selected manufacturer part (the Jetson T5000 module), candidates for seventeen parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 44.2 kg out of the 96.2 kg budget — the rest is blank rather than guessed.
+The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 206 part numbers, including 10 software images and 5 consumables; 9 parts left open; 368 operations across 60 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 23 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 44.2 kg out of the 96.2 kg budget — the rest is blank rather than guessed.
 
-Prices were looked for on 2026-09-26. Most supplier pages were unreachable from the environment this was written in, so the AVL rests on search results and on the pages that could be read, and each entry's notes say which.
+Prices were looked for on 2026-09-26. Most supplier pages were unreachable from the environment this was written in, so the AVL rests on search results and on the pages that could be read, and each entry's notes say which. The candidates for the boards bought instead of designed were looked for on 2026-11-05, from search excerpts; no price among them is recorded as verified.
 
 ## What building it turned up
 
+**Every board that performs a function is bought** (2026-11-05, [`CLAUDE.md`](../../CLAUDE.md) §2). The structure first carried 27 boards to be designed here, 18 of them joint drive boards, although the actuator module D-2 procures already contains its drive board, the AK70-4820-2D-A3 ([electrical §6b](../electrical/README.md#6b-arm-payload-and-the-two-parts-of-f_act--2026-09-26)). A joint is now the bought module, the torque sensor at its output and the adapter that joins it to the structure; the BMS, the dock charger, the DC-DC converters, the edge module carrier and the real-time computer are bought, and the module's CAN bus reaches the EtherCAT master through a bought bridge. What nothing on sale meets — the tactile skin and its readout, the shell layers and their driver, the taste analyser, the facial actuators — is `OPEN`.
+
 **The actuator density has one motor behind it, at two ratios.** At 16:1 the module peaks at 78 Nm and 10 of the 18 joint types — 17 of the 31 joints — need more. At 48:1 the same motor peaks at 222 Nm and only hip pitch, knee and trunk pitch fall short, by 4–8 Nm, at about a third of the output speed; both are in the AVL, and whether the slower one is fast enough is D-2's question.
 
-**The reducer classes and the actuator family disagree.** `hardware/mechanical` §2 assigns cycloidal reducers to hips and knees and harmonic drives to wrists and neck; `hardware/electrical` §2 selects a hollow-shaft planetary module for every joint. The reducer rows carry the conflict until D-2 decides.
+**The reducer classes and the actuator family disagree.** `hardware/mechanical` §2 assigns cycloidal reducers to hips and knees and harmonic drives to wrists and neck; `hardware/electrical` §2 selects a hollow-shaft planetary module for every joint. The actuator module rows carry the conflict in their notes until D-2 decides.
 
 **Ankle and waist have no reducer class.** The mechanical table stops at hip, knee, shoulder, elbow, wrist and neck.
 

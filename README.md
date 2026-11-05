@@ -73,7 +73,7 @@ Every figure above is reproducible — `python scripts/gems_budget.py --check` r
 
 This repository holds the source: hardware designs, the firmware and software that run on them, and the specifications they implement. Issues, pull requests and releases belong here.
 
-The same tree is mirrored as the Hugging Face dataset [plonemraz/GEMs](https://huggingface.co/datasets/plonemraz/GEMs), a snapshot of `main` after each push. There the tables load as subsets — `parts`, `ebom`, `mbom` and `avl` from [`hardware/bom/`](hardware/bom/), `tasks` and `scheduler` from [`realtime_config/`](realtime_config/) — for example `load_dataset("plonemraz/GEMs", "parts")`. They are the design's tables, not measurements: every caution above holds for them too. The dataset's DOI, [10.57967/hf/11438](https://doi.org/10.57967/hf/11438), names the snapshot of commit `ae0a990`.
+The same tree is mirrored as the Hugging Face dataset [plonemraz/GEMs](https://huggingface.co/datasets/plonemraz/GEMs), a snapshot of `main` after each push. There the tables load as subsets — `parts`, `ebom`, `mbom` and `avl` from [`hardware/bom/`](hardware/bom/), `tasks` and `scheduler` from [`realtime_config/`](realtime_config/) — for example `load_dataset("plonemraz/GEMs", "parts")`. They are the design's tables, not measurements: every caution above holds for them too. The dataset's DOI, [10.57967/hf/11442](https://doi.org/10.57967/hf/11442), names the snapshot of commit `e2bb849`.
 
 The documentation pages are built and published from [plonemraz.github.io](https://github.com/PloneMraz/plonemraz.github.io) so that they share the site's navigation and theme. GitHub Pages is intentionally disabled on this repository — `/vault/gems/` is served by the main site.
 

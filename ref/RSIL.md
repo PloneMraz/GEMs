@@ -1034,7 +1034,7 @@ The absence of a derivational reference apparatus is therefore **deliberate and 
 
 # Companion specification
 
-RSIL is the embodied counterpart of the Data Integration Loop (DIL), which specifies the same relational structure for an agent in a purely informational environment: doi.org/10.57967/hf/11444.
+RSIL is the embodied counterpart of the Data Integration Loop (DIL), which specifies the same relational structure for an agent in a purely informational environment: doi.org/10.57967/hf/11683.
 
 The two are **co-ranked specifications of differing scope**. Where they coincide it is because the relational structure coincides; where they diverge the divergence is deliberate and marked in place. Two divergences are worth collecting here for a reader holding both documents:
 

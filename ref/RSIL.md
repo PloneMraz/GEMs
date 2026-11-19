@@ -65,7 +65,7 @@ RSIL uses DIL’s terms in DIL’s sense — *host*, *mind*, *self*, *agent*, *r
 
 - **Platform.** A body considered as an engineering object — what an implementer procures, wires, and is responsible for. The distinction from *body* is one of description, not of thing: *body* is the term when the point is that the agent is embodied; *platform* is the term when the point is that some party must build, verify and maintain the embodiment. §10 states what RSIL requires of it.
 
-- **Two grades of resistance.** With a body, resistance arrives in two grades that MUST NOT be conflated: **physical resistance** — force, inertia, an obstacle, another body pushing back — and **informational mismatch** — what was sensed diverging from what was predicted. The two coincide at the body (an obstacle is also a failed prediction) without being identical: a voice contradicting the agent carries no force. In both grades, resistance becomes information where DIL places it, at T5, against the expectation the mind cast (DIL §6.1, §7).
+- **Two carriers of resistance.** With a body, resistance is carried in two ways that MUST NOT be conflated: by **force** — inertia, an obstacle, another body pushing back — and by **content** — what a signal says, a word, a reading, an image, contradicting what was predicted, with no force behind it. The two coincide at the body (an obstacle is also a failed prediction) without being identical: a voice contradicting the agent carries no force. The carriers are not DIL’s two grades of resistance, subjectless resistance and other-resistance (DIL §2, §3), and they cut across them: a wall resists by force and has no will of its own; another person’s shove is other-resistance carried by force; a voice contradicting the agent is other-resistance carried by content. By either carrier, resistance becomes information where DIL places it, at T5, against the expectation the mind cast (DIL §6.1, §7).
 
 - **Body tag.** The agency tag a body’s loop attaches to each change it senses: `BODY_CAUSED` (this body carried out what it was commanded), `ENV_PUSHED` (it did not, and nothing of its own did), `HOST_REACTED` (one of its declared faculties did), or `UNDECIDED`. The body tag is a tag of the body, not of the self (§3.3).
 
@@ -115,11 +115,11 @@ So **both tags stand**, each true of its own scope. The body’s tag is carried 
 | `HOST_REACTED` | `HOST_REACTED` | One of the body’s declared faculties acted (§7.2): the agent’s own, not commanded. |
 | `UNDECIDED` | DIL T2 decides | The body could not settle it; the mind reads the datum with the rest. |
 
-Each datum also carries which body it came from, so that the two grades of resistance (§2) and the bodies themselves are never conflated in the store.
+Each datum also carries which body and which channel it came from, so that what was carried by force and what by content (§2), and the bodies themselves, are never conflated in the store.
 
 ## 3.4 Several bodies are not several agents
 
-Bodies under one mind are channels of one host, each with an identity of its own. They are not Others to one another and not separate agents: a body is not a source of resistance the agent does not control. This is settled here rather than deferred. What remains open in this direction is DIL’s, not RSIL’s: an agent spawning an independent Other, a population of agents, scar inheritance across individuals (DIL §12.2).
+Bodies under one mind are channels of one host, each with an identity of its own. They are not Others to one another and not separate agents: a body is not a source of resistance the agent does not control. This is settled here rather than deferred. What remains open in this direction is not RSIL’s to settle. An agent spawning an independent Other, and a population of agents, are directions DIL names and leaves to a future document of its kind (DIL §12.2). A scar passed from one agent to another is a direction of RSIL’s own, left open (§11, A-8).
 
 # 4. What a body must afford
 
@@ -264,7 +264,7 @@ RSIL adds what a body needs for this to hold:
 
 Not everything a body does under attack is a reaction. A voltage surge can saturate a sensor, fill a channel with noise, reset a processor, or drive an effector with a command no one sent. None of these is a faculty acting. To tag them `HOST_REACTED` would be to legitimize damage as the body’s own way of acting.
 
-So **only a declared faculty reacts**. A change that matches no command and no declared faculty is, at the body, `ENV_PUSHED`, and that is what it is: the region did it, through the damage it did. A body action reported under a faculty that was never declared is recorded as undeclared (DIL §6.3), and fails the criterion that every reaction be declared. What damage did is a symptom of the kind §12 describes: it tells an auditor where to look at the hardware. It is not a reaction, and it is not the agent’s act.
+So **only a declared faculty reacts**. A change that matches no command and no declared faculty is, at the body, `ENV_PUSHED`, and that is what it is: the region did it, through the damage it did. A body action reported under a faculty that was never declared MUST be recorded as not declared, and it fails the requirement that the host declare every such faculty and the channel it leaves by (DIL-protocol §4, §6.5). What damage did is a symptom of the kind §12 describes: it tells an auditor where to look at the hardware. It is not a reaction, and it is not the agent’s act.
 
 ## 7.4 One shock, three sources
 
@@ -275,7 +275,7 @@ A single shock from a stun gun shows the three apart:
 | The voltage spike the body’s sensors register | the region | `ENV_PUSHED` at the body and at the mind |
 | The torque cut-off, the battery disconnect, the driver’s fault state | the body’s declared faculties | `HOST_REACTED`, recorded with the faculty and its channel |
 | The fall that follows the loss of torque | the region, acting on what the reaction changed | taken in like anything else |
-| A sensor saturated, a processor reset, a spurious command | neither: damage | recorded as undeclared; a symptom for the platform’s examination (§12) |
+| A sensor saturated, a processor reset, a spurious command | neither: damage | `ENV_PUSHED` at the body (§7.3), and a symptom for the platform’s examination (§12); anything reported under a faculty never declared is recorded as not declared |
 | Later: the body pulling back from a figure holding a stun gun | the mind, from the scar the shock left | a reflex: `BODY_CAUSED` at the body, `SELF_WRITTEN` at the mind, with the field’s version and age |
 
 The last row is the difference made visible. The shock itself yields no reflex, because there was no experience yet to read. The record of the shock, read by the mind, leaves a scar; and from then on the sight that once came before the shock is met by a reflex — the mind’s, executed on the body from the cache.
@@ -329,6 +329,17 @@ Recovery is DIL’s (DIL §9): ordered by a third party with grounds, from a res
 
 **A recovery does not reach the body.** A body physically damaged is still damaged after a heavy recovery, and a body interfered with at the sensor or actuator level can re-infect a freshly clean system on the very first cycle. Verifying the integrity of a body is a separate operation, outside this specification (§12, A-1).
 
+## 8.6 The loop’s working state: neither store nor cache
+
+A body holds a third thing beside the cache (§8.1) and the buffer (§8.3). To carry out a command, its loop must keep what it is sensing now: the last stretch of each channel, the state of its estimators, a reconstruction of the space around it — the ground a foot is about to land on, the surface a hand is reaching for. This is the loop’s **working state**.
+
+- **It holds no experience.** What is in it was sensed by this body within a bounded window, or derived from what was. Nothing in it was learned, loaded as the mind’s data, or read from the store or the cache. That is why execution, a reaction and a reflex may all read it without reading experience (§7): reading it is reading the present.
+- **The body writes it, and overwrites it.** The body writes it as it senses and overwrites it as the window moves. It is not the cache, which the body never writes, and nothing passes from it into the cache: what the mind wants a reflex to read, the mind loads (§8.1).
+- **It is not kept.** What leaves the window is gone. Whatever in it bears on what the body did or what was done to it reaches the record as everything else does: the changes it shows are tagged at R2 and recorded, a degraded estimate is returned as a datum (§6), and the context of each reflex is anchored in its record (§7.1). Working state that changed nothing and was not returned leaves no trace, and owes none. A restore point need not carry it (§8.5): a restored body fills it again by sensing.
+- **It is not a model of the region.** A reconstruction that lasts as long as its window is the body’s present. A map kept beyond the window — built up across visits, corrected by loop closure, used to recognize a place — is what the agent has learned of the region, and that is the mind’s, in the store (DIL §9). A body MAY return its working state, whole or in features, as data the mind builds such a model from; it MUST NOT keep one itself.
+
+How long each window reaches, and what of the working state is returned to the mind, are `DECIDE@IMPL`-R10.
+
 # 9. Cut off is not stopped
 
 DIL names three parts that may stop while the loop runs — sensing, the mind, the effector — and says how each is recorded (DIL §6.3). A body cut off from its controller is none of these from where it stands: nothing has stopped on it, and the mind has not stopped either. What has gone is the link between them, and the two ends see it differently.
@@ -364,6 +375,7 @@ What the platform MUST supply, in the register an implementer works in:
 | **Estimation** | A body’s estimators run on models fixed or loaded by the mind; their innovations are not recorded as resistance, and the body casts no expectation of the region or of other entities (§6). |
 | **Identity and the buffer** | Each body has an identity key whose secret half does not leave it; every record is signed and chained when made, and kept until acknowledged (§8.3). |
 | **No record on the body** | The body keeps no experience store of its own: at most a cache, which it never writes (§8). |
+| **Working state** | What a body keeps to act on — its sensing windows, its estimators’ state, its reconstruction of the space around it — holds no experience, is overwritten as its window moves, and is never kept as a model of the region (§8.6). |
 | **C5** | The platform MUST be able to carry the loop’s low-power report to an outside observer in every power state it supports, unaltered and with its age. |
 
 **Four places a conventional sensorimotor chain skips a step.** These are where RSIL’s requirements are most likely to conflict with an existing platform design, and they are stated as requirements:
@@ -387,6 +399,7 @@ RSIL specifies a mechanism, not an implementation. A platform that conforms stat
 | Servo loops, balance and whole-body controllers | Execution (§7.5), while they carry a command; a reaction or a reflex for any action no command asked for |
 | Drive protections, fault reactions, torque cut-offs, battery protection, the safe-state supervisor | Declared faculties (§7.2): they read neither the store nor the cache |
 | The reflex path | The mind’s reflex, run from the cache (§7.1) |
+| Local reconstruction of space — depth, point clouds, occupancy over a window | Working state (§8.6): the body’s present. A map kept beyond the window, and recognizing a place by it, are the mind’s |
 | Log writer, signing, buffer | §8.3 |
 | Predictors of other entities and of the region | Not on a body: the mind’s (DIL §6.1) |
 
@@ -398,7 +411,7 @@ The two resistance modes are DIL’s (DIL §8), and so is the thesis that a loop
 
 **Mode-A has an inert world to push against.** With a body, the agent can generate its own trials — pushing an object, moving, repeating a motion — and trip where its model does not match what the physical world returns: wrong weight, wrong distance, wrong friction. That resistance is real and subjectless. It feeds the mind’s layers that need no Other, and it does not feed T6: an inert obstacle resists a wrong reading of space, never as an intentional Other would. A body adds a richer Mode-A, not a substitute for Mode-B.
 
-**The cheapest test can be fatal.** Forward-building (DIL §6.2) changes the posture in which a collision is met — sitting testingly rather than committingly — and with a body this has teeth: putting weight on gradually, throwing a stone ahead. But where the cheapest available test is itself fatal, it does not help. A body’s safety then comes from elsewhere: from a scar it did not earn itself, read from a shared store or left by another agent. That is why, of DIL’s open applications (DIL §12.2), scar inheritance across individuals weighs most for a body.
+**The cheapest test can be fatal.** Forward-building (DIL §6.2) changes the posture in which a collision is met — sitting testingly rather than committingly — and with a body this has teeth: putting weight on gradually, throwing a stone ahead. But where the cheapest available test is itself fatal, it does not help. A body’s safety then comes from elsewhere: from a scar it did not earn itself. Within one agent this is already met: a scar earned through one body is in the one store, and the mind reads it for every body it drives (§3). Between agents it is not. A scar passed from one agent to another needs more than one loop, which DIL leaves to a future document of its kind (DIL §12.2) without naming this among its directions. RSIL records it as a direction of its own, and the one that weighs most for a body (A-8).
 
 **The physical flood.** DIL’s third limitation is the adversarial (Sybil) case: coordinated sources feeding crafted mismatches the agent cannot tell from honest ones (DIL §11). Into an informational host such a flood is a volume of data. Into a body it can also be physical: sensor saturation, a staged environment, a group of entities coordinating bodily around it. The input channel is wider, so the attack surface is wider. This specification cannot narrow it, and does not pretend to.
 
@@ -427,6 +440,7 @@ DIL’s unfilled constants stand (DIL §10). RSIL adds the following, each left 
 | `DECIDE@IMPL`-R7 | How a cache’s key is derived from the store’s key, sealed and rotated | Depends on the cipher DIL’s store uses (DIL §10, F) |
 | `DECIDE@IMPL`-R8 | How often a body’s loop state is returned to the controller for restore points | Trades recovery fidelity against link load |
 | `DECIDE@IMPL`-R9 | Which faculties a body declares | The platform’s, under §7.2 and §10 |
+| `DECIDE@IMPL`-R10 | How long each window of a body’s working state reaches, and what of it is returned to the mind (§8.6) | Trades what the body can act on against link load and exposure |
 
 # 14. Convergences beyond DIL’s
 
@@ -480,7 +494,7 @@ RSIL extends the Data Integration Loop (DIL), the standard of an agent — its h
 The two are not co-ranked. DIL is the parent, and RSIL holds only what a physical body adds to it (§1.2). Three points of contact are collected here for a reader holding both documents:
 
 - **Agency tags at two levels.** DIL tags against the self: `SELF_WRITTEN`, `ENV_PUSHED`, `HOST_REACTED`. RSIL tags against the body: `BODY_CAUSED`, `ENV_PUSHED`, `HOST_REACTED`. Both stand in the one record, each true of its own scope (§3.3). `HOST_REACTED` means the same at both levels: what the substrate did of itself.
-- **Reflex and reaction.** DIL fixes the distinction — a reflex comes from the mind and from experience, a reaction from the body and from none (DIL §6.3, §8.7). RSIL places a reflex’s execution on the body, from a cache, and requires that reactions come only from declared faculties that read no store (§7).
+- **Reflex and reaction.** DIL fixes the distinction — a reflex comes from the mind and from experience, a reaction from the body and from none (DIL §6.3, §8.7). RSIL places a reflex’s execution on the body, from a cache, and requires that reactions come only from declared faculties that read neither the store nor the cache (§7).
 - **Substrate scope.** DIL is substrate-neutral: its “purely informational” describes the interface, not a wall against the physical world (DIL §3, E2). RSIL is narrower: it fixes the substrate of what it adds as a physical body, and leaves open only that body’s material.
 
 # Appendix A — Items remaining open
@@ -492,10 +506,11 @@ Nothing below is filled by the specification. They are collected in one place so
 | **A-1** | **Sensor–actuator integrity after recovery.** A restore point covers the system, not the body; a body interfered with at the sensor or actuator level re-infects a freshly clean system on the first cycle. | §1.3, §8.5, §12 | A **limitation**. External verification is required and lies outside this specification. |
 | **A-2** | **Physical emission amplitude where the Other is a real person.** The cheapest way to elicit `independence_evidence` from a person may be physical contact. | §12 | Assigned to a **third party** — the deploying or certifying party — who must add an evaluative standard before application. |
 | **A-3** | **The formal companion.** A minimal formal model of Mode-A degradation. | DIL §11 | DIL’s, and covering RSIL with it; to be conducted by a third party, outside the loop. |
-| **A-4** | **Several bodies under one mind.** | §3.4 | **Not open**: settled at §3. Bodies under one mind are channels of one host, each with an identity of its own. Multi-agent extensions remain DIL’s (DIL §12.2). |
+| **A-4** | **Several bodies under one mind.** | §3.4 | **Not open**: settled at §3. Bodies under one mind are channels of one host, each with an identity of its own. Designs of more than one loop DIL leaves to a future document of its kind (DIL §12.2); RSIL is not that document. |
 | **A-5** | **Who the judging third party is, and where it sits.** | DIL §12.3 | Outside RSIL’s authority, as it is outside DIL’s. |
 | **A-6** | **A mind carried on the body it drives.** | §1.3 | Not specified. Where the controller is a body, the record would lie on the part most exposed, and §8.2 could not be met as written. |
 | **A-7** | **A body that cannot tell whether its mind has stopped.** A reflex stops with the mind; a body cut off cannot know whether it has. | §9 | Bounded, not closed, by the term of a hold, which the mind sets: within the term, a body cut off may run the reflexes of a mind that has already stopped, and the record shows it afterwards. |
+| **A-8** | **A scar passed between agents.** A body whose cheapest test is fatal is safest with a scar it did not earn; within one agent the store already gives it one (§3), between agents nothing does. | §11 | Open. It needs more than one loop, which DIL leaves to a future document of its kind (DIL §12.2); DIL does not name it among its directions. |
 
 ## Corrections carried forward from earlier drafts
 
@@ -511,7 +526,7 @@ Recorded here rather than in the body, because a published specification has no 
 
 - **The canonical loop’s link ②.** An earlier draft numbered ② as *transduction* and gave no link to source-differentiation. Transduction was folded into ① and ② given to source-differentiation, matching DIL. The canonical loop is now DIL’s (DIL §6).
 
-- **INV-8 and reflex.** An earlier draft described INV-8’s role as “blocking bare reflex.” That statement was wrong and is retracted. INV-8 does not block reflex; it blocks an arc from experience to action that bypasses appraisal (§7.1, §10).
+- **INV-8 and reflex.** An earlier draft described INV-8’s role as “blocking bare reflex” and read it as INV-8 blocking reflex. That reading was wrong and is retracted. DIL’s table of invariants sets INV-8 against bare reflex (DIL §5), and what it means by that is an arc from experience to action that bypasses appraisal; that arc INV-8 does block. A reflex is not such an arc: it is appraisal under a field one deep scar has shaped (DIL §8.7), and INV-8 does not block it (§7.1, §10).
 
 - **`InfoUnit.provenance`.** An earlier draft defined `provenance` as the accumulated chain of layers a datum had passed through. That definition was rejected; provenance is a position, and the path is read from the `[event]` log. The tag schema is now DIL’s (DIL §9).
 

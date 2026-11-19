@@ -11,7 +11,7 @@ How the operating mechanism of [RSIL](../ref/RSIL.md) is realised by the algorit
 | End | Runs | Here |
 |---|---|---|
 | **The controller** (RSIL §2) | DIL’s loop: the one mind, the one self, the experience store and its black box | The **Main Controller**, on the IPC, off the body ([spec 01](../spec/01-architecture.md)); its loop is `dil-core` |
-| **A body** (RSIL §2) | RSIL’s loop: intake, body differentiation, channels, the body-datum; execution; the cached reflexes; declared faculties; the record buffer | Each **unit** — GEMs01, GEMs02 — on its own processors |
+| **A body** (RSIL §2) | RSIL’s loop: intake, body differentiation, channels, the body-datum; execution; the cached reflexes; declared faculties; the record buffer; the loop’s working state | Each **unit** — GEMs01, GEMs02 — on its own processors |
 
 On a unit, RSIL’s parts fall on the processors of [spec 07.1](../spec/07-firmware-and-software.md#71-the-division):
 
@@ -105,6 +105,16 @@ Each is declared to the Main Controller as a `ReactionFaculty` of the unit (§3)
 
 **Appraisal, memory, the models of Others.** Integration across sources, appraisal, expectation, the identity store and the experience store are DIL’s, on the Main Controller.
 
+**A map of the region.** A unit reconstructs the space around it for as long as its window reaches (§2.10), and returns that reconstruction, whole or in features, as data. A map kept beyond the window — built up across visits, corrected by loop closure, used to recognize a place or to relocalize in it — is what the agent has learned of the region, and it is built on the Main Controller from what the units return (RSIL §8.6). Whether the agent then goes around a thing or reaches for it is the Main Controller’s to decide, and travels with the command.
+
+### 2.10 Three things a unit holds — RSIL §8
+
+| | What it holds | Written by | Read by | Where on a unit | Rule from RSIL |
+|---|---|---|---|---|---|
+| **The cache** (§8.1) | The loaded reflex set, the field copy, the term of a hold | The Main Controller, signed (D-7) | The reflex decision (F-6); the OBC while it holds | Real-time computer, OBC (§2.6) | Never written by the unit; sealed under a key of its own (`DECIDE@IMPL`-R7) |
+| **The record buffer** (§8.3) | Every record, chained and signed, until the Main Controller has appended it and said so | The unit: the log writer (F-10), log assembly (S-4) | The Main Controller, as it appends | Log device `GEM-13240`, written through the real-time computer and the edge AI module (§2.7) | Nothing removed before acknowledgement; when it is full, loaded reflexes stop and declared faculties remain |
+| **The working state** (§8.6) | The sensing windows of each channel (S-9); the state estimator’s state and covariance (F-4); the commands and reactions in flight at the agency gate (F-7); the reconstruction of the space around the unit — depth, point clouds, occupancy over a window (S-1, S-3) | The unit, overwritten as each window moves | Execution (F-3, F-5, F-15), the declared faculties, the reflexes, compression and fusion | Working memory of the real-time computer and the edge AI module; never the log device, except as records | Holds no experience. What in it changes something is tagged at R2 and recorded; nothing passes from it into the cache; no map is kept beyond its window (`DECIDE@IMPL`-R10) |
+
 ---
 
 ## 3. Where a unit meets `dil-core`
@@ -135,3 +145,5 @@ A unit’s cycle-0 — its first command matched against what it then senses —
 | A faculty against external electrical stimulus | spec 06, E-2 |
 | The body-datum (R4): no module is planned for it yet; commissioning calibration (S-8) and the physical fingerprints of attestation tier 2 (F-11) are its nearest neighbours | a plan task |
 | Sealing of the cache and how the term is carried and renewed | D-7; RSIL `DECIDE@IMPL`-R5, R7 |
+| The windows of the working state, and what of it is returned to the Main Controller | RSIL `DECIDE@IMPL`-R10; S-1, S-9 |
+| The local reconstruction of space that execution reads — the ground for balance and stepping (F-5), the workspace for reaching: no module is planned for it, and no path from the edge AI module to the real-time computer carries it yet | a plan task; D-3 |

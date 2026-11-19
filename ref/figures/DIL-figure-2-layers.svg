@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="640" viewBox="0 0 620 640" font-family="Cambria, 'DejaVu Serif', serif">
+<defs><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="9.600000000000001" markerHeight="9.600000000000001" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5f8a"/></marker><marker id="bh" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="12.8" markerHeight="12.8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f5f8a"/></marker><marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerUnits="userSpaceOnUse" markerWidth="9.600000000000001" markerHeight="9.600000000000001" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#a87a12"/></marker></defs>
+<rect x="504.0" y="60" width="96" height="570" rx="14" fill="#fbf4df" stroke="#a87a12" stroke-width="1.6" stroke-dasharray="7 5"/>
+<text x="552" y="160" text-anchor="middle" font-size="14" font-weight="bold" font-style="normal" fill="#a87a12">GLOB-MOD</text>
+<text x="552" y="177" text-anchor="middle" font-size="12" font-weight="normal" font-style="italic" fill="#a87a12">modulatory</text>
+<text x="552" y="194" text-anchor="middle" font-size="12" font-weight="normal" font-style="italic" fill="#a87a12">field</text>
+<text x="552" y="211" text-anchor="middle" font-size="12" font-weight="normal" font-style="italic" fill="#a87a12"></text>
+<text x="552" y="228" text-anchor="middle" font-size="12" font-weight="normal" font-style="italic" fill="#a87a12">global,</text>
+<text x="552" y="245" text-anchor="middle" font-size="12" font-weight="normal" font-style="italic" fill="#a87a12">downward,</text>
+<text x="552" y="262" text-anchor="middle" font-size="12" font-weight="normal" font-style="italic" fill="#a87a12">effect at</text>
+<text x="552" y="279" text-anchor="middle" font-size="12" font-weight="normal" font-style="italic" fill="#a87a12">cycle N+1</text>
+<line x1="504.0" y1="590" x2="438.0" y2="590" stroke="#a87a12" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#g)"/>
+<line x1="504.0" y1="520" x2="438.0" y2="520" stroke="#a87a12" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#g)"/>
+<line x1="504.0" y1="450" x2="438.0" y2="450" stroke="#a87a12" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#g)"/>
+<line x1="504.0" y1="380" x2="438.0" y2="380" stroke="#a87a12" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#g)"/>
+<line x1="504.0" y1="310" x2="438.0" y2="310" stroke="#a87a12" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#g)"/>
+<line x1="504.0" y1="240" x2="438.0" y2="240" stroke="#a87a12" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#g)"/>
+<line x1="504.0" y1="170" x2="438.0" y2="170" stroke="#a87a12" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#g)"/>
+<line x1="504.0" y1="100" x2="438.0" y2="100" stroke="#a87a12" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#g)"/>
+<line x1="270" y1="569.0" x2="270" y2="542.0" stroke="#2f5f8a" stroke-width="1.6" marker-end="url(#b)"/>
+<line x1="270" y1="499.0" x2="270" y2="472.0" stroke="#2f5f8a" stroke-width="1.6" marker-end="url(#b)"/>
+<line x1="270" y1="429.0" x2="270" y2="402.0" stroke="#2f5f8a" stroke-width="1.6" marker-end="url(#b)"/>
+<line x1="270" y1="359.0" x2="270" y2="332.0" stroke="#2f5f8a" stroke-width="1.6" marker-end="url(#b)"/>
+<line x1="270" y1="289.0" x2="270" y2="262.0" stroke="#2f5f8a" stroke-width="1.6" marker-end="url(#b)"/>
+<path d="M388.0,388 C404.0,388 404.0,232 390.0,232" fill="none" stroke="#2f5f8a" stroke-width="1.6" marker-end="url(#b)"/>
+<path d="M388.0,318 C418.0,318 418.0,162 390.0,162" fill="none" stroke="#2f5f8a" stroke-width="1.6" marker-end="url(#b)"/>
+<path d="M388.0,248 C432.0,248 432.0,92 390.0,92" fill="none" stroke="#2f5f8a" stroke-width="1.6" marker-end="url(#b)"/>
+<path d="M152.0,310 C130.0,310 130.0,444 150.0,444" fill="none" stroke="#2f5f8a" stroke-width="3" marker-end="url(#bh)"/>
+<path d="M152.0,170 C112.0,170 112.0,310 150.0,310" fill="none" stroke="#2f5f8a" stroke-width="3" marker-end="url(#bh)"/>
+<path d="M152.0,88 C94.0,88 94.0,240 150.0,240" fill="none" stroke="#2f5f8a" stroke-width="3" marker-end="url(#bh)"/>
+<path d="M152.0,96 C74.0,96 74.0,320 150.0,320" fill="none" stroke="#2f5f8a" stroke-width="3" marker-end="url(#bh)"/>
+<path d="M152.0,104 C54.0,104 54.0,380 150.0,380" fill="none" stroke="#2f5f8a" stroke-width="3" marker-end="url(#bh)"/>
+<rect x="152.0" y="569.0" width="236" height="42" rx="7" fill="#fff" stroke="#2f5f8a" stroke-width="1.4"/>
+<text x="270" y="595" text-anchor="middle" font-size="13.5" fill="#1a1a1a"><tspan font-weight="bold">T1</tspan>  Activity-Environment Confirmation</text>
+<rect x="152.0" y="499.0" width="236" height="42" rx="7" fill="#fff" stroke="#2f5f8a" stroke-width="1.4"/>
+<text x="270" y="525" text-anchor="middle" font-size="13.5" fill="#1a1a1a"><tspan font-weight="bold">T2</tspan>  Agency Differentiation</text>
+<rect x="152.0" y="429.0" width="236" height="42" rx="7" fill="#fff" stroke="#2f5f8a" stroke-width="1.4"/>
+<text x="270" y="455" text-anchor="middle" font-size="13.5" fill="#1a1a1a"><tspan font-weight="bold">T3</tspan>  Channel Ingestion</text>
+<rect x="152.0" y="359.0" width="236" height="42" rx="7" fill="#fff" stroke="#2f5f8a" stroke-width="1.4"/>
+<text x="270" y="385" text-anchor="middle" font-size="13.5" fill="#1a1a1a"><tspan font-weight="bold">T4</tspan>  Context Binding</text>
+<rect x="152.0" y="289.0" width="236" height="42" rx="7" fill="#fff" stroke="#2f5f8a" stroke-width="1.4"/>
+<text x="270" y="315" text-anchor="middle" font-size="13.5" fill="#1a1a1a"><tspan font-weight="bold">T5</tspan>  Temporal Expectation</text>
+<rect x="152.0" y="219.0" width="236" height="42" rx="7" fill="#fff" stroke="#2f5f8a" stroke-width="1.4"/>
+<text x="270" y="245" text-anchor="middle" font-size="13.5" fill="#1a1a1a"><tspan font-weight="bold">T6</tspan>  Other-Model Synthesis</text>
+<rect x="152.0" y="149.0" width="236" height="42" rx="7" fill="#fff" stroke="#2f5f8a" stroke-width="1.4"/>
+<text x="270" y="175" text-anchor="middle" font-size="13.5" fill="#1a1a1a"><tspan font-weight="bold">T7</tspan>  Absence Registration</text>
+<rect x="152.0" y="79.0" width="236" height="42" rx="7" fill="#fff" stroke="#2f5f8a" stroke-width="1.4"/>
+<text x="270" y="105" text-anchor="middle" font-size="13.5" fill="#1a1a1a"><tspan font-weight="bold">T8</tspan>  Multi-Entity Abstraction</text>
+<line x1="20" y1="22" x2="58" y2="22" stroke="#2f5f8a" stroke-width="1.6" marker-end="url(#b)"/><text x="66" y="26" font-size="12" fill="#1a1a1a">meaning-channel, within a cycle (INV-3)</text>
+<line x1="20" y1="44" x2="58" y2="44" stroke="#2f5f8a" stroke-width="3" marker-end="url(#bh)"/><text x="66" y="48" font-size="12" fill="#1a1a1a">cross-cycle update</text>
+<line x1="320" y1="22" x2="358" y2="22" stroke="#a87a12" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#g)"/><text x="366" y="26" font-size="12" fill="#1a1a1a">modulatory field (INV-7)</text>
+</svg>

@@ -28,7 +28,7 @@ The companion specification identifies INV-6, INV-8 and C5 as the three points w
 
 ## 8.2 Traced appraisal, not mute reflex
 
-The contract rejects a scar-to-action shortcut that bypasses appraisal. Reflex is not such a shortcut: it is **appraisal under a scar-dominated field** (RSIL §9.7) — the appraisal step still runs, its verdict all but foreclosed by the scar that dominates the field.
+The contract rejects a scar-to-action shortcut that bypasses appraisal. Reflex is not such a shortcut: it is **appraisal under a scar-dominated field** (RSIL §7.1) — the appraisal step still runs, its verdict all but foreclosed by the scar that dominates the field.
 
 This is not pedantry. An action emitted without appraisal **carries no anchored context**, so a third party cannot re-appraise it, and the audit plane goes blind exactly where it matters.
 

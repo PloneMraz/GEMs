@@ -51,7 +51,7 @@ Two vocabularies meet in this repository, and each has a place.
 | "One intelligence, two seats" | **The controller is off the body**: the Main Controller on the IPC; each unit its sensors and effectors ([spec 01](01-architecture.md)) | The old principle put part of the intelligence on the body, where 07.5 said nothing decides (Plone, 2026-11-05) |
 | Real-time controller | **Real-time Control Layer** for the tier; **real-time computer** for its processor | "Controller" now names only the Main Controller, off the body |
 | Local core | **OBC**, the on-board computer | The kernel is a computer of its own, and holds command only on a trigger |
-| Pre-closed appraisal | **Reflex decision** in engineering text; **appraisal under a scar-dominated field** (RSIL §9.7) in the contract | "Pre-closed" was this repository's paraphrase, not RSIL's wording |
+| Pre-closed appraisal | **Reflex decision** in engineering text; **appraisal under a scar-dominated field** (RSIL §7.1) in the contract | "Pre-closed" was this repository's paraphrase, not RSIL's wording |
 | Appraisal, integration (reflex stages) | Reflex decision, state assembly | |
 | Agency classification | **Agency tagging**, a firmware task | *Agency* itself is the contract's term and stays |
 

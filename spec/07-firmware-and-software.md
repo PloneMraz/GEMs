@@ -13,7 +13,7 @@ Two classifications apply to every piece of code on the body, and they are indep
 | Layer | Runs on | Contents |
 |---|---|---|
 | **Firmware** | The MCU tier: joint drive boards, the battery management board, the secure element, the beacon radio | Current and position loops, battery management, secure boot and attestation, low-power beacon |
-| **Software** | The edge AI module, under Linux — the DAQ's computer | Camera, LiDAR, audio and SDR drivers and capture, feature extraction and compression, sensor fusion, predictive modelling, log assembly and synchronisation, link management |
+| **Software** | The edge AI module, under Linux — the DAQ's computer | Camera, LiDAR, audio and SDR drivers and capture, feature extraction and compression, sensor fusion, log assembly and synchronisation, link management. Prediction of other entities is not here: it is an expectation, and expectations are the Main Controller's (RSIL §6) |
 | **Either, by decision D-3** | The real-time computer, which carries the Real-time Control Layer: a microcontroller under an RTOS, or an embedded computer under Linux with a real-time kernel | State estimation, balance loop, reflex path including agency tagging, safety supervisor, power-state machine, full-tier log writing at loop rate |
 | **Either, by its processor** | The OBC, a small computer of its own | The kernel for a lagging or lost link: the loaded reflexes and field, and the four duties of [7.5](#75-link-loss-and-the-obc) |
 
@@ -64,7 +64,7 @@ These bind the firmware and the Real-time Control Layer together — whichever l
 | 4 | **Measured boot and attestation** | Every sensor and actuator node under the root of trust ([06.2](06-audit-surface.md#62-root-of-trust-and-its-limit)) |
 | 5 | **Beacon transmission at quiescent power** | Survives sleep levels 2 and 4 ([06.5](06-audit-surface.md#65-low-power-beacon)) |
 | 6 | **Full-tier logging at loop rate** | Hash-chained, not signed per record ([06.4](06-audit-surface.md#64-audit-log)) |
-| 7 | **Agency tagging at acquisition** | Every change tagged self-caused or external where the commanded and measured values meet, within the 0.5 ms stage of the reflex budget ([firmware architecture §2](../firmware/ARCHITECTURE.md#2-the-reflex-budget)) |
+| 7 | **Agency tagging at acquisition** | Every change tagged `BODY_CAUSED`, `HOST_REACTED` (a declared faculty acted) or `ENV_PUSHED` where the commanded and measured values meet, within the 0.5 ms stage of the reflex budget ([firmware architecture §2](../firmware/ARCHITECTURE.md#2-the-reflex-budget); RSIL §3.3, R2) |
 
 > Guarantee 2 deserves emphasis because it is easy to specify as an afterthought. A body that loses power or loses its balance solver while standing is a falling mass of 70–160 kg ([02.5](02-structure-and-motion.md#25-mass-envelope)) that may be in contact with a person. The failure state is a design requirement of the same rank as the loops themselves.
 
@@ -88,7 +88,7 @@ The OBC is mandatory ([01](01-architecture.md)). It is the unit's kernel for a l
 
 | Link | Source of setpoints | OBC |
 |---|---|---|
-| IPC online | The Main Controller | Stands by: powered, receiving the reflexes and field the Main Controller loads, with no command authority |
+| IPC online | The Main Controller | Stands by: powered, receiving the reflexes, the field and the term of a hold that the Main Controller loads, with no command authority |
 | Heartbeat missed beyond the threshold | The OBC, on the unit's own trigger | In command |
 | Lagging, and the Main Controller hands over | The OBC, on the Main Controller's trigger | In command |
 | Restored | The OBC, until the Main Controller takes command back after reading the record of the outage | Hands back, then stands by |
@@ -103,6 +103,8 @@ In command, the OBC MUST:
 | **Preserve** | State and log. Nothing acquired during the outage may be discarded to save space before it is synchronised |
 | **Continue** | Logging, at both tiers, so that the outage is itself auditable |
 | **Attempt** | Link re-establishment |
+
+**The term of a hold (Plone, 2026-11-19).** The Main Controller sets, with the reflexes it loads, the term for which the OBC may run them, and each heartbeat renews it, counted from the last (RSIL §9). It chooses the term by its context — short indoors, long in a rescue. When the term has passed with the link still lost, the OBC stops running the loaded reflexes and ends the execution of the last intent, and the safe-state supervisor brings the unit to a supported posture (7.3 guarantee 2); only the declared faculties remain. A unit cut off cannot tell whether the Main Controller still runs, and a reflex stops with the mind that loaded it: the term bounds how long the unit can act for a Main Controller that has stopped, and how long a stop ordered while the link is down can wait to take effect.
 
 **What the OBC does not do: decide.** It runs the reflexes the Main Controller loaded, choosing among them only within the bounds the Main Controller set, and preserves what it holds. Each reflex still runs its appraisal step on the unit, under the field the Main Controller loaded ([firmware §2](../firmware/ARCHITECTURE.md#2-the-reflex-budget); RSIL §7.1); the Main Controller appraised what it loaded, and appraises the record again when command returns. The OBC is not a reduced controller and must not be specified as one, because a body that substitutes its own judgement during an outage produces actions no one can attribute afterwards — the precise failure the audit surface exists to prevent.
 
@@ -126,5 +128,6 @@ In command, the OBC MUST:
 | Thermal envelope for edge compute | Depends on packaging |
 | Split of processing between body and external system | `⟦CTRL⟧` within the two hard ends of [05.6](05-sensing.md#56-the-on-body--off-body-compute-split) |
 | Heartbeat threshold that triggers the OBC | Depends on the link and on how long the Real-time Control Layer can hold without new setpoints ([7.5](#75-link-loss-and-the-obc)) |
+| Term of a hold | The Main Controller's, set with the reflexes it loads (`⟦CTRL⟧`); how it is carried and renewed is RSIL `DECIDE@IMPL`-R5 ([7.5](#75-link-loss-and-the-obc)) |
 
 **Operating point: `⟦CTRL⟧`.**

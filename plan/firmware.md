@@ -70,7 +70,7 @@ The drive board is inside each bought actuator module, and the firmware on it is
 | Task | To | Waits for |
 |---|---|---|
 | Balance at ≥ 500 Hz: centre-of-mass and ZMP regulation, whole-body torque distribution within joint limits | L4 | — |
-| Step recovery | L4 | — |
+| Step recovery — no command asks for the step, so it is declared: a faculty by a fixed law, or a reflex the Main Controller loads (RSIL §7.5; binding §2.4). Which, to be decided here | L4 | — |
 | Motion intent interface from the edge software — intent, not commands (architecture §4) | L4 | — |
 | Priority over the reflex path where they contend (architecture §3) | L4 | — |
 | Verified in simulation — standing, pushed, stepping (V-3) | L5 | V-1 |
@@ -84,6 +84,8 @@ The drive board is inside each bought actuator module, and the firmware on it is
 | Per-stage timing instrumentation, so the split can be measured and moved | L4 | — |
 | Loadable reflex set: format, signing, loading at runtime | L4 | D-7 |
 | Reflex decision: lookup against the loaded reflex set | L4 | — |
+| The term of a hold, loaded with the reflex set and renewed by each heartbeat; reflexes stop when it passes (spec 07.5) | L4 | F-14 |
+| Field version and age recorded in every reflex's anchored context (RSIL §7.1) | L4 | F-10 |
 | Anchored context written for every reflex (spec 07.4 guarantee 3) | L4 | F-10 |
 | **Closes C-14** in simulated form when measured end to end on V-6 | L5 | V-6 |
 
@@ -91,14 +93,15 @@ The drive board is inside each bought actuator module, and the firmware on it is
 
 | Task | To | Waits for |
 |---|---|---|
-| Port the efference-copy gate of [`reference/agency.py`](../reference/agency.py) to firmware, where commanded and measured values meet | L4 | — |
+| Port the efference-copy gate of [`reference/agency.py`](../reference/agency.py) to firmware, where commanded and measured values meet: `BODY_CAUSED`, `HOST_REACTED`, `ENV_PUSHED` | L4 | — |
+| Take in the declared faculties' reports (F-3, F-8, F-9), and keep an undeclared one for the record without letting it explain a change | L4 | F-8 |
 | Cross-check the port against the Python reference on the same recorded data | L5 | — |
 
 ## F-8 — Safe-state supervisor
 
 | Task | To | Waits for |
 |---|---|---|
-| Fault taxonomy and the response to each | L4 | — |
+| Fault taxonomy and the response to each, each response a declared faculty that reads neither the store nor the cache (RSIL §7.2) | L4 | — |
 | Fall detection early enough to act on | L4 | F-4 |
 | Controlled descent to a supported posture — must beat the fall | L4 | F-5 |
 | Power-loss behaviour: what the supercapacitor tier holds up, and for how long | L4 | E-2 |
@@ -121,7 +124,8 @@ The drive board is inside each bought actuator module, and the firmware on it is
 |---|---|---|
 | Port the record format and hash chain of [`reference/audit_log.py`](../reference/audit_log.py) to firmware at loop rate | L4 | — |
 | Batch signing through the secure element; batch period from measured signing throughput | L4 | D-7 |
-| Storage layout on the log device, and behaviour when it fills — never trimmed during a link outage (architecture §5) | L4 | E-5 |
+| Storage layout on the log device, which is a buffer: every record kept until the Main Controller has appended it and acknowledged it, never trimmed while records wait (architecture §5; RSIL §8.3) | L4 | E-5 |
+| Behaviour when the buffer fills: the loaded reflexes stop, the declared faculties remain (RSIL §8.3) | L4 | F-6 |
 | Byte-for-byte verification against the Python verifier | L5 | — |
 
 ## F-11 — Attestation agent
@@ -155,7 +159,7 @@ The drive board is inside each bought actuator module, and the firmware on it is
 |---|---|---|
 | mmWave radio bring-up and beam tracking interface | L4 | E-8 |
 | Fallback link handover | L4 | E-8 |
-| OBC: stand-by while the IPC is online, the two triggers (heartbeat missed, Main Controller hands over), and command given back only when the Main Controller takes it; in command, maintain, preserve, continue, attempt; never decide (spec 07.5) | L4 | — |
+| OBC: stand-by while the IPC is online, the two triggers (heartbeat missed, Main Controller hands over), and command given back only when the Main Controller takes it; in command, maintain, preserve, continue, attempt; never decide; at the end of the term, hand to the safe-state supervisor (spec 07.5) | L4 | F-8 |
 
 ## F-15 — Expressive actuators
 

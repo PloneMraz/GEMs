@@ -75,6 +75,10 @@ RSIL uses DIL’s terms in DIL’s sense — *host*, *mind*, *self*, *agent*, *r
 
 - **Cache.** A body’s store. It holds only reflex data, loaded by the mind, and runs by DIL’s mechanism for the store; the record lives with the controller (§8).
 
+- **Execution.** A body carrying out a command the mind gave — a setpoint, a trajectory, an intent such as *stand* or *walk there* — by a law that reads no experience: a servo loop, a balance controller tracking the intent it was given (§7.5). Execution has no source of its own; the command is its source.
+
+- **Estimation.** A body computing its own state — where its parts are, how they move, what they touch — from its signal under a model of its own body. Estimation predicts, but it is not an expectation in DIL’s sense (§6).
+
 - **Cut off.** The state of a body whose link to the controller is lost. A body cut off **holds**: it runs on what the mind last loaded, under the field it last received, and decides nothing new (§9).
 
 # 3. Two loops, one mind, one self
@@ -146,13 +150,15 @@ Every invariant of DIL binds a body’s loop. None is relaxed, and none is resta
 | **INV-5** — history accrues | The body-datum accrues cycle by cycle and is never loaded. Data a body carries from before its cycle-0 enters the mind’s store as `prior`, through the tagging-gate, like any host data (DIL §9). |
 | **INV-6** — agency-gate | The body classifies every change against the body before it types or interprets it (§3.3, R2). A chain that routes sensor data straight to interpretation is not running RSIL. |
 | **INV-7** — the modulatory field | The body’s loop has no field of its own. It reads a copy of the mind’s field, as current as its last update, and records the version and the age of the copy it read (§7.1). What the body returns reaches the field only as data the mind integrates. |
-| **INV-8** — appraisal | Appraisal is the mind’s. No path on the body maps sensed state to an effector command except two: a reflex, which is the mind’s appraisal run from the cache and recorded (§7.1), and a declared faculty, which is not an emission (§7.2). Any third path is an appraisal-bypass. |
+| **INV-8** — appraisal | Appraisal is the mind’s. A body maps sensed state to an effector command by three paths and no others: executing a command the mind gave, by a law that reads no experience (§7.5); a reflex, which is the mind’s appraisal run from the cache and recorded (§7.1); and a declared faculty, which is not an emission (§7.2). An action no command asked for, taken by any other path, is an appraisal-bypass. |
 
 The closure criteria C1–C5 are DIL’s (DIL §8.1). A body contributes to them and carries one of them: **C5** — “the system emits a trace of ‘the loop is running weakly’” — must reach an outside observer through the body in every power state the body supports, sleep included, unaltered and with its age (§10).
 
 # 6. The body’s loop
 
 A body’s loop has four layers. Their outputs return to the mind, where DIL’s T1 and T3 take them in. What a body’s loop does **not** hold is as much a part of its specification as what it does: it forms no expectation (DIL T5, the mind’s), so it registers no absence (T7, which needs an expectation); it binds nothing to an identity (T4), models no Other (T6), abstracts across no entities (T8), and appraises nothing (step 4).
+
+**Estimation is not expectation.** A body may estimate its own state — a filter that predicts the next state from a model of the body and the command, and corrects the prediction against its sensors. That prediction is of the body’s own state, under a model the body does not learn: the model is fixed, or loaded by the mind, and a model whose parameters are learned from experience is learned by the mind. Its correction term — the innovation — is not a `PredErr` and is never recorded as resistance; a filter whose estimate is degraded says so, as a datum. What the region will return, and what another entity will do, the body does not predict: those are the mind’s expectations (DIL §6.1), and a body that cast them would be holding a mind’s work.
 
 ```
 Signal  := { source_id, body_id, raw_payload, t }                 // raw physical signal, not yet meaning
@@ -224,7 +230,7 @@ Gathers what R2 and R3 have shown of this body into the body-datum, and returns 
 
 # 7. Three sources of fast bodily action
 
-A body acts fast in three ways, and they differ in their source. RSIL keeps them apart because the audit plane depends on it: each leaves a different trace, and a trace mislabelled would credit the wrong source.
+A body acts fast in three ways, and they differ in their source. RSIL keeps them apart because the audit plane depends on it: each leaves a different trace, and a trace mislabelled would credit the wrong source. A fourth way of acting is not a source at all — carrying out what was commanded — and §7.5 places it.
 
 ## 7.1 Reflex: the mind’s, executed on the body
 
@@ -274,6 +280,18 @@ A single shock from a stun gun shows the three apart:
 
 The last row is the difference made visible. The shock itself yields no reflex, because there was no experience yet to read. The record of the shock, read by the mind, leaves a scar; and from then on the sight that once came before the shock is met by a reflex — the mind’s, executed on the body from the cache.
 
+## 7.5 Execution: carrying out what was commanded
+
+Most of what a body’s effectors do, they do because they were told to. A command — a setpoint, a trajectory, an intent such as *stand* or *walk there* — is carried out by closed loops that read the body’s sensors many times a second: a current loop, a position loop, a balance controller that distributes torque to keep the body upright while it walks where it was sent. These loops map sensed state to effector command, and they are not an appraisal-bypass. They choose nothing. The command chose; the loop carries it out.
+
+Three conditions make execution what it is:
+
+- **It carries a command.** Execution serves a command the mind gave, by deliberation or by a reflex, and the record names that command. What it does is tagged `BODY_CAUSED` at the body and `SELF_WRITTEN` at the mind (§3.3).
+- **It reads no experience.** Its law is fixed, or loaded by the mind with its parameters; it does not read the store or the cache, and nothing it does is learned on the body.
+- **It does not outlast its command.** When the command is withdrawn, completed, or held past its term (§9), execution of it ends.
+
+**An action no command asked for is not execution.** A body pushed while standing may step to keep its feet. No command asked for the step; the command asked only to stand. That step is therefore one of the other sources: a reaction, if a declared faculty takes it by a fixed law that reads no experience (§7.2); a reflex, if it reads what the mind has learned (§7.1). A platform MUST declare which, for every action of this kind it can take.
+
 # 8. The body’s store: a cache
 
 ## 8.1 What it holds
@@ -292,7 +310,7 @@ The experience store, its `[data]` and its `[event]` log, lives on the controlle
 
 While its link holds, a body sends each record to the controller as it is made. While the body is cut off, it cannot, and those are the stretches the record matters most. So:
 
-- **Every record a body makes is signed with the body’s identity key and chained to the record before it**, at the moment it is made. Each body has an identity key of its own: its secret half does not leave the body, and its public half is carried by the record of that body’s cycle-0 in the controller’s log. A replaced body has a new key and a new cycle-0 (§3.2).
+- **Every record a body makes is chained to the record before it at the moment it is made, and signed with the body’s identity key** — record by record, or over a batch, and no later than the batch closes. The batch period bounds how long a record goes unsigned. Each body has an identity key of its own: its secret half does not leave the body, and its public half is carried by the record of that body’s cycle-0 in the controller’s log. A replaced body has a new key and a new cycle-0 (§3.2).
 - **A body keeps every record it has not seen acknowledged.** Nothing is removed from the buffer until the controller has appended it and said so. A body that trimmed its unacknowledged records to save space would discard the record of exactly the stretches no one else saw.
 - **When the link returns, the controller verifies the chain and the signatures before it appends.** A buffered record whose chain or signature does not hold is appended as what it is — a record that failed verification — and is not read as the body’s.
 - **A body that can no longer record MUST NOT act on the mind’s behalf.** When its buffer is full, it stops running loaded reflexes; its declared faculties remain. An emission that leaves no trace is what E4 forbids, and it is better that a reflex not run than that it run unrecorded.
@@ -325,7 +343,7 @@ DIL names three parts that may stop while the loop runs — sensing, the mind, t
 - it decides nothing new: it carries out no command it has not been given, and no reflex the mind did not load;
 - everything it does is recorded and buffered (§8.3), each reflex with the version and age of its field.
 
-**A hold has a term.** A body cut off cannot tell whether the mind still runs, and a reflex stops with the mind (§7.1). So a body holds the mind’s reflexes for no longer than a declared term; when it has passed, it stops running them, and only its declared faculties remain. The term is `DECIDE@IMPL`-R5.
+**A hold has a term, and the term is the mind’s.** A body cut off cannot tell whether the mind still runs, and a reflex stops with the mind (§7.1). So the mind sets, with the reflexes it loads, the term for which a body may hold them, and each exchange that shows the mind running renews it; the term is counted from the last. The mind chooses the term by its context — short where a stopped mind is the greater danger, long where losing its reflexes is. When the term has passed, the body stops running the mind’s reflexes and ends the execution of its last command; only its declared faculties remain, among them the one that brings the body to a state it can hold without command. RSIL fixes that there is a term and whose it is; the length is the mind’s. How it is carried and renewed is `DECIDE@IMPL`-R5.
 
 **When the link returns**, the body sends what it buffered; the controller verifies and appends it (§8.3); the mind reads the record of the held interval and re-appraises it before it takes command of the body again. The link’s return is recorded as that body’s sensing and effector starting (DIL §6.3).
 
@@ -341,8 +359,9 @@ What the platform MUST supply, in the register an implementer works in:
 |---|---|
 | **E1–E4, P(a)–(c)** | As §4 states them at the body. |
 | **Body differentiation (INV-6)** | The platform MUST let each command the body carries out be compared with what it then senses, before anything is typed or interpreted. Sensing dense enough to tell what moved from what was moved is a requirement, not a refinement. |
-| **Traced reflex (INV-8)** | A reflex runs only from the cache, runs its appraisal step, and leaves a record with its anchored context and its field’s version and age (§7.1). No path on the body maps sensed state to effector command outside the reflex and the declared faculties. |
+| **Three paths only (INV-8)** | A body maps sensed state to effector command only by executing a command it was given, by a law that reads no experience (§7.5); by a reflex, which runs from the cache, runs its appraisal step, and leaves a record with its anchored context and its field’s version and age (§7.1); or by a declared faculty (§7.2). Every action no command asked for is declared as a reaction or loaded as a reflex. |
 | **Declared faculties** | Every way the substrate acts of itself is declared, with what it reacts to and the channel its action leaves by; it reads neither the store nor the cache; it acts whatever else has stopped (§7.2). |
+| **Estimation** | A body’s estimators run on models fixed or loaded by the mind; their innovations are not recorded as resistance, and the body casts no expectation of the region or of other entities (§6). |
 | **Identity and the buffer** | Each body has an identity key whose secret half does not leave it; every record is signed and chained when made, and kept until acknowledged (§8.3). |
 | **No record on the body** | The body keeps no experience store of its own: at most a cache, which it never writes (§8). |
 | **C5** | The platform MUST be able to carry the loop’s low-power report to an outside observer in every power state it supports, unaltered and with its age. |
@@ -350,11 +369,28 @@ What the platform MUST supply, in the register an implementer works in:
 **Four places a conventional sensorimotor chain skips a step.** These are where RSIL’s requirements are most likely to conflict with an existing platform design, and they are stated as requirements:
 
 - a chain that routes sensor data straight to interpretation, with no body gate (INV-6);
-- a chain that maps sensed state directly to an actuator command, with no appraisal and no record (INV-8);
+- a chain that maps sensed state directly to an actuator command no command asked for, with no appraisal and no record (INV-8);
 - a chain whose protective responses are undeclared, or read stored data to decide (§7.2);
 - a chain that cannot report the loop’s weakness at low power (C5).
 
 > **On INV-8 and speed — a correction worth stating, because the opposite reading would make a physical body unusable.** INV-8 does not forbid fast reaction. Reflexes occur and must occur, and reactions occur faster still. What INV-8 forbids is an arc from experience to action that bypasses appraisal: an action carrying no anchored context, and therefore not re-appraisable from outside. The difference for a platform is between “no fast responses allowed” — which is wrong — and “every fast response is either the mind’s and recorded, or the body’s and declared” — which is right, and achievable.
+
+## 10.1 Binding RSIL to a platform
+
+RSIL specifies a mechanism, not an implementation. A platform that conforms states, in a document of its own, how each construct here is realised by the algorithms it runs — its fieldbus masters and device drivers, its middleware, its estimators and controllers, its protections, its log writer — and where each runs. That binding is not part of RSIL and cannot change it: where the two differ, RSIL governs. What RSIL fixes is where each class of algorithm may fall:
+
+| Class of algorithm | Where it falls in RSIL |
+|---|---|
+| Device drivers and fieldbus masters (sensor buses, motor-drive buses, their time bases) | R1 and R3: intake and transduction. They carry the command and its execution in the same cycle, so that R2 can compare them, and they timestamp at the source on one time base |
+| Middleware that carries a body’s data | Inside a body, transport. Where it reaches the controller, it ends at a channel the host has declared, and the data enters the mind through DIL’s tagging-gate; no subscriber feeds the mind around it. Records travel by the buffered, signed path of §8.3, never by a path that may drop them |
+| State estimators (filters of any kind) | Estimation (§6): the body’s own state, under a model fixed or loaded; never an expectation of the region |
+| Servo loops, balance and whole-body controllers | Execution (§7.5), while they carry a command; a reaction or a reflex for any action no command asked for |
+| Drive protections, fault reactions, torque cut-offs, battery protection, the safe-state supervisor | Declared faculties (§7.2): they read neither the store nor the cache |
+| The reflex path | The mind’s reflex, run from the cache (§7.1) |
+| Log writer, signing, buffer | §8.3 |
+| Predictors of other entities and of the region | Not on a body: the mind’s (DIL §6.1) |
+
+One such binding is the GEMs platform’s, in its repository (github.com/PloneMraz/GEMs), at `software/RSIL-in-GEMs.md`.
 
 # 11. Resistance through a body
 
@@ -386,7 +422,7 @@ DIL’s unfilled constants stand (DIL §10). RSIL adds the following, each left 
 | `DECIDE@IMPL`-R2 | The window within which a command and its execution are matched; the stability threshold of body differentiation | Not yet derived |
 | `DECIDE@IMPL`-R3 | Per-channel transduction; the spatial-data algorithm of R1; the acoustic/semantic separation of voice | Implementation layer, not architecture layer |
 | `DECIDE@IMPL`-R4 | What reflex data a cache holds, and how often the mind loads it | Trades reflex coverage against exposure of the store |
-| `DECIDE@IMPL`-R5 | The term of a hold (§9) | Trades a body’s competence while cut off against the time it may act for a mind that has stopped |
+| `DECIDE@IMPL`-R5 | How the term of a hold is carried with the reflexes and renewed (§9). The term itself is the mind’s, set by its context | Platform- and link-specific |
 | `DECIDE@IMPL`-R6 | A body’s buffer capacity; how acknowledgement is exchanged | Platform-specific |
 | `DECIDE@IMPL`-R7 | How a cache’s key is derived from the store’s key, sealed and rotated | Depends on the cipher DIL’s store uses (DIL §10, F) |
 | `DECIDE@IMPL`-R8 | How often a body’s loop state is returned to the controller for restore points | Trades recovery fidelity against link load |
@@ -459,7 +495,7 @@ Nothing below is filled by the specification. They are collected in one place so
 | **A-4** | **Several bodies under one mind.** | §3.4 | **Not open**: settled at §3. Bodies under one mind are channels of one host, each with an identity of its own. Multi-agent extensions remain DIL’s (DIL §12.2). |
 | **A-5** | **Who the judging third party is, and where it sits.** | DIL §12.3 | Outside RSIL’s authority, as it is outside DIL’s. |
 | **A-6** | **A mind carried on the body it drives.** | §1.3 | Not specified. Where the controller is a body, the record would lie on the part most exposed, and §8.2 could not be met as written. |
-| **A-7** | **A body that cannot tell whether its mind has stopped.** A reflex stops with the mind; a body cut off cannot know whether it has. | §9 | Bounded, not closed, by the term of a hold (`DECIDE@IMPL`-R5): within the term, a body cut off may run the reflexes of a mind that has already stopped, and the record shows it afterwards. |
+| **A-7** | **A body that cannot tell whether its mind has stopped.** A reflex stops with the mind; a body cut off cannot know whether it has. | §9 | Bounded, not closed, by the term of a hold, which the mind sets: within the term, a body cut off may run the reflexes of a mind that has already stopped, and the record shows it afterwards. |
 
 ## Corrections carried forward from earlier drafts
 

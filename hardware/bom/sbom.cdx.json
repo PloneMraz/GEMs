@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-05T10:43:20Z",
+    "timestamp": "2026-11-19T09:33:30Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -31,7 +31,7 @@
       "type": "library",
       "bom-ref": "reference/audit_log.py",
       "name": "reference/audit_log.py",
-      "version": "sha256:4fa7c5c88b6c",
+      "version": "sha256:d07eeeb50854",
       "description": "Audit log: format, hash chain, Merkle batches, verifier",
       "supplier": {
         "name": "Plone Mraz"
@@ -46,7 +46,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "4fa7c5c88b6c175476c8d11f90aaec97da5936d13f9bce2250d5afe1350efc75"
+          "content": "d07eeeb50854d19b2eb3ba2a4e7307bd5dd3f1d592028e56e23cbb92f9c6b274"
         }
       ],
       "scope": "optional",
@@ -61,8 +61,8 @@
       "type": "library",
       "bom-ref": "reference/agency.py",
       "name": "reference/agency.py",
-      "version": "sha256:26ff517d699a",
-      "description": "Agency tagging by efference copy; golden model for the firmware port",
+      "version": "sha256:ac533b0112ce",
+      "description": "Body differentiation by efference copy (RSIL R2): BODY_CAUSED, HOST_REACTED, ENV_PUSHED; golden model for the firmware port",
       "supplier": {
         "name": "Plone Mraz"
       },
@@ -76,7 +76,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "26ff517d699ac26d8ebc60ecc3bacd24f0effd73571043b8e26bf060683a0a79"
+          "content": "ac533b0112cea7b8882cf413884d04a818667bfe653a88caffca73e574c64d29"
         }
       ],
       "scope": "optional",
@@ -151,7 +151,7 @@
       "type": "application",
       "bom-ref": "protocol/assess.py",
       "name": "protocol/assess.py",
-      "version": "sha256:1bb9aa6dee34",
+      "version": "sha256:2d76c6fad605",
       "description": "Conformance assessment of the simulated body",
       "supplier": {
         "name": "Plone Mraz"
@@ -166,7 +166,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "1bb9aa6dee34b456fb3c586dc4a16852c88600fdb05e8fb03ddcbd25fdcf229a"
+          "content": "2d76c6fad60534724031b0fb2fc035f64ba7f2707a98b7397ce17b6cf264c711"
         }
       ],
       "scope": "excluded",
@@ -211,7 +211,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:4a365bed2dc8",
+      "version": "sha256:cb431fce59ee",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -226,7 +226,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "4a365bed2dc8a6d34adb5069c0f4118dc64e489a8a72323e16351213067375dd"
+          "content": "cb431fce59ee55bb5f5d6d21740c9a7d950444a5c8a066c27148adcfd016a6d7"
         }
       ],
       "scope": "excluded",

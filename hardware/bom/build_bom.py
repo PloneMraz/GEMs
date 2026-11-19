@@ -532,7 +532,7 @@ REFERENCE, TOOL = "reference-implementation", "design-tool"
 SBOM_SOURCES = [
     # path, CycloneDX type, role, description, depends on
     ("reference/audit_log.py", "library", REFERENCE, "Audit log: format, hash chain, Merkle batches, verifier", []),
-    ("reference/agency.py", "library", REFERENCE, "Agency tagging by efference copy; golden model for the firmware port", ["reference/audit_log.py"]),
+    ("reference/agency.py", "library", REFERENCE, "Body differentiation by efference copy (RSIL R2): BODY_CAUSED, HOST_REACTED, ENV_PUSHED; golden model for the firmware port", ["reference/audit_log.py"]),
     ("hardware/electrical/actuator_sizing.py", "application", TOOL, "Joint torque table and actuator sizing", []),
     ("scripts/gems_budget.py", "application", TOOL, "Mass-energy-power budget model and spec check", ["hardware/electrical/actuator_sizing.py"]),
     ("protocol/assess.py", "application", TOOL, "Conformance assessment of the simulated body", ["reference/audit_log.py", "reference/agency.py", "scripts/gems_budget.py"]),

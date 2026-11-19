@@ -37,14 +37,14 @@ Guarantee 1: **≥ 2:1, realistically 8:1**, on 15.1 Gbps raw at the conservativ
 |---|---|---|
 | Reference implementation — the specification the firmware port F-7 is checked against | ✅ L4 | done — [`agency.py`](../reference/agency.py) |
 | Run on simulated whole-body motion rather than synthetic returns | L5 | V-5 |
-| Carry the firmware's tag through every stage and refuse untagged input (spec 07.4 guarantee 2) — enforced by the pipeline, not by convention | L4 | S-3 |
+| Carry the firmware's tag through every stage and refuse untagged input (spec 07.4 guarantee 2) — enforced by the pipeline, not by convention; ROS 2 messages included (binding §2.1) | L4 | S-3 |
 
 ## S-3 — Sensor fusion
 
 | Task | To | Waits for |
 |---|---|---|
 | Multi-rate fusion on the shared time base of F-2 | L4 | — |
-| Carries the agency tag through: a fused estimate that mixes self-caused and external change says so | L4 | S-2 |
+| Carries the body tag through: a fused estimate that mixes changes of different tags says so | L4 | S-2 |
 | Latency and consistency verified in simulation | L5 | V-7 |
 
 ## S-4 — Log assembly and synchronisation
@@ -53,7 +53,7 @@ Guarantee 1: **≥ 2:1, realistically 8:1**, on 15.1 Gbps raw at the conservativ
 |---|---|---|
 | Audit log: format, hash chain, Merkle batches, verifier | ✅ L4 | done — [`audit_log.py`](../reference/audit_log.py) |
 | Two tiers — full and anchored — assembled from firmware records | L4 | F-10 |
-| Synchronisation to the off-board compute after an outage, oldest first, nothing dropped | L4 | S-5 |
+| Synchronisation to the Main Controller, oldest first, nothing dropped; a record leaves the buffer only once the Main Controller has verified, appended and acknowledged it (RSIL §8.3) | L4 | S-5 |
 | Storage accounting: 1.18 GB/h full tier against the log device | L4 | E-5 |
 
 ## S-5 — Link management
@@ -64,18 +64,17 @@ Guarantee 5: **reduced fidelity before dropped streams.**
 |---|---|---|
 | Degradation ladder: which channel loses resolution first, and the floor below which a channel is kept rather than dropped | L4 | — |
 | Bandwidth estimation and the controller that walks the ladder | L4 | — |
-| The IPC heartbeat, and passing command to the OBC and back (spec 07.5) | L4 | — |
+| The IPC heartbeat, which renews the term of a hold, and passing command to the OBC and back (spec 07.5) | L4 | — |
 | End-to-end encryption and authentication | L4 | D-7 |
 | Verified against simulated bandwidth, latency and outage (V-8) | L5 | V-8 |
 
-## S-6 — Predictive modelling
+## S-6 — Self-motion model
 
-Named in [spec 07.1](../spec/07-firmware-and-software.md#71-the-division) and not yet planned anywhere else.
+Revised 2026-11-19. A unit casts no expectation of the region or of other entities: those are the Main Controller's (RSIL §6, DIL §6.1). Human trajectory prediction at a ~1.5 s horizon (spec 05.3, **TM**) is such an expectation, and leaves this plan: it runs on the Main Controller, which this repository does not specify. What stays is the model of the body's own execution.
 
 | Task | To | Waits for |
 |---|---|---|
-| Human trajectory prediction at a ~1.5 s horizon (spec 05.3, **TM**) | L4 | — |
-| Self-motion prediction — the forward model the agency gate compares against | L4 | S-2 |
+| Self-motion model — what this body's own command produces, the model the agency gate compares against; fixed, or loaded by the Main Controller, never learned on the unit | L4 | S-2 |
 
 ## S-7 — Channel processing beyond vision
 

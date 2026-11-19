@@ -30,14 +30,14 @@ def verify_sig(root: bytes, sig: bytes) -> bool:
 
 def telemetry(seq, t=0):
     return Record(seq=seq, t_ns=t, tier=Tier.FULL, kind="joint_sample",
-                  agency=Agency.SELF_CAUSED,
+                  agency=Agency.BODY_CAUSED,
                   payload={"joint": 3, "cmd": 0.1, "pos": 0.09,
                            "cur": 1.2, "torque": 4.4})
 
 
 def emission(seq, t=0, **kw):
     base = dict(seq=seq, t_ns=t, tier=Tier.ANCHORED, kind="reflex_withdraw",
-                agency=Agency.SELF_CAUSED,
+                agency=Agency.BODY_CAUSED,
                 context={"field": "scar_dominated", "trigger": "thermal",
                          "window_ns": 4_000_000})
     base.update(kw)
@@ -54,11 +54,11 @@ class TestWriteRules(unittest.TestCase):
             log.append(emission(0, context=None))
         self.assertIn("anchored context", str(e.exception))
 
-    def test_unclassified_emission_is_refused(self):
+    def test_undecided_emission_is_refused(self):
         """C-8 — classification precedes interpretation."""
         log = AuditLog(sign)
         with self.assertRaises(ValueError) as e:
-            log.append(emission(0, agency=Agency.UNCLASSIFIED))
+            log.append(emission(0, agency=Agency.UNDECIDED))
         self.assertIn("before interpretation", str(e.exception))
 
     def test_contact_without_amplitude_is_refused(self):
@@ -166,7 +166,7 @@ class TestVerifier(unittest.TestCase):
         write path — a hostile or broken writer. The verifier checks the same
         rules independently."""
         r = Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
-                   agency=Agency.SELF_CAUSED, context=None)
+                   agency=Agency.BODY_CAUSED, context=None)
         codes = {f.code for f in verify([r], [])}
         self.assertIn("NO_CONTEXT", codes)
 

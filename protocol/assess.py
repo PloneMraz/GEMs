@@ -60,7 +60,7 @@ class Result:
 
 def _telemetry(seq, joint=1, t=0):
     return Record(seq=seq, t_ns=t, tier=Tier.FULL, kind="joint_sample",
-                  agency=Agency.SELF_CAUSED,
+                  agency=Agency.BODY_CAUSED,
                   payload={"joint": joint, "pos": 0.0, "torque": 0.0})
 
 
@@ -78,7 +78,7 @@ def check_state_persists():
 def check_readable_emission():
     log = AuditLog()
     log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
-                      agency=Agency.SELF_CAUSED,
+                      agency=Agency.BODY_CAUSED,
                       context={"field": "scar_dominated", "trigger": "thermal"}))
     log.seal_batch()
     findings = verify(log.records, log.batches)
@@ -120,8 +120,8 @@ def check_agency_classification():
             seq += 1
     moving = [r for r in log.records if r.payload["joint"] == 3]
     struck = [r for r in log.records if r.payload["joint"] == 11]
-    distinguished = (all(r.agency is Agency.SELF_CAUSED for r in moving)
-                     and all(r.agency is Agency.EXTERNAL for r in struck))
+    distinguished = (all(r.agency is Agency.BODY_CAUSED for r in moving)
+                     and all(r.agency is Agency.ENV_PUSHED for r in struck))
     pre_fusion = all(r.payload["stage"] == "pre_fusion" for r in log.records)
     residual_kept = all("residual" in r.payload for r in log.records)
     ok = distinguished and pre_fusion and residual_kept
@@ -142,33 +142,33 @@ def check_traced_appraisal():
     log = AuditLog()
     try:
         log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
-                          agency=Agency.SELF_CAUSED, context=None))
+                          agency=Agency.BODY_CAUSED, context=None))
         refused_contextless = False
     except ValueError:
         refused_contextless = True
     try:
         log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
-                          agency=Agency.UNCLASSIFIED, context={"a": 1}))
-        refused_unclassified = False
+                          agency=Agency.UNDECIDED, context={"a": 1}))
+        refused_undecided = False
     except ValueError:
-        refused_unclassified = True
-    ok = refused_contextless and refused_unclassified
+        refused_undecided = True
+    ok = refused_contextless and refused_undecided
     return (MET if ok else NOT_IMPL,
             "an emission without anchored context is refused at write, as is "
-            "one still unclassified; no bypass path exists in the writer")
+            "one still undecided; no bypass path exists in the writer")
 
 
 def check_contact_amplitude():
     log = AuditLog()
     try:
         log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="contact",
-                          agency=Agency.SELF_CAUSED, context={"x": 1},
+                          agency=Agency.BODY_CAUSED, context={"x": 1},
                           contact=True, amplitude=None))
         refused = False
     except ValueError:
         refused = True
     log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="contact",
-                      agency=Agency.SELF_CAUSED, context={"x": 1}, contact=True,
+                      agency=Agency.BODY_CAUSED, context={"x": 1}, contact=True,
                       amplitude={"force_N": 2.4, "duration_ms": 900}))
     return (MET_SIM if refused else NOT_IMPL,
             "the recording requirement is enforced at write; the measurement "

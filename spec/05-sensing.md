@@ -46,7 +46,7 @@ At 1 kHz and 12 bits: **5.5 Gbps** raw — two thirds of the link, from one chan
 | Spatial RF sensing | Wi-Fi / mmWave CSI | modest | Retained at full hardware capability; use is `⟦CTRL⟧` |
 | Olfaction (e-nose) | — | negligible | **5–30 ppb** achieved per compound *(sourced)*; 5–10 s response |
 | Taste (lab-on-chip) | — | negligible | Slow, batch-wise |
-| Trajectory prediction | ~1.5 s horizon | — | Computer vision plus human trajectory prediction. **TM** |
+| Trajectory prediction | ~1.5 s horizon | — | Computer vision plus human trajectory prediction. **TM**. The prediction is an expectation of another entity and runs on the Main Controller; the unit supplies the detections (RSIL §6) |
 | Voice and ultrasound | — | — | Synthesis plus ultrasonic emission. **TM** |
 | Biological response | pupil, expression | — | Micro facial actuators and microfluidics. **TM/LAB** |
 | Cardiac co-regulation | vibration, warmth, rhythm | — | **Optional module, not always-on.** Instrumented per [06.6](06-audit-surface.md#66-contact-amplitude) |
@@ -104,6 +104,6 @@ Link round-trip is ~1 ms at ideal short range, but at kilometre range with beam 
 
 > **Edge compute is not "add as much as you like, it only costs battery." It eats into the convergence condition of the whole body**, and [02.3](02-structure-and-motion.md#23-the-endurance-ceiling) shows `γ` inflating non-linearly near the ceiling.
 >
-> The middle — feature extraction, compression, predictive modelling, tracking of other agents — is `⟦CTRL⟧`, and **should be adjustable per mission** rather than a compile-time constant.
+> The middle — feature extraction, compression, detection — is `⟦CTRL⟧`, and **should be adjustable per mission** rather than a compile-time constant. Predicting and tracking other agents is not in the middle: a tracker predicts where another entity will be, which is an expectation, and expectations are the Main Controller's (RSIL §6; 2026-11-19). The unit estimates only its own state.
 
 **Operating point: `⟦CTRL⟧`.**

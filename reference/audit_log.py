@@ -22,6 +22,12 @@ module defines *what* is signed and *when*, never *how*.
 
 Nor does it decide the batch period. That is the trade between trace granularity
 and signing load, and it is the implementer's.
+
+On the body this log is RSIL's buffer, not the record (RSIL §8.2–8.3). The
+record lives with the Main Controller; the body chains each record when it is
+made, signs it no later than its batch closes, and keeps it until the Main
+Controller has appended it and said so. The verifier below is what the Main
+Controller runs on what arrives, before it appends.
 """
 
 from __future__ import annotations
@@ -36,16 +42,28 @@ GENESIS = b"\x00" * 32
 
 
 class Agency(str, Enum):
-    """Whether a registered change was caused by this body.
+    """The body tag of a registered change (RSIL §2, §3.3, R2).
+
+    BODY_CAUSED   this body carried out what it was commanded — by deliberation,
+                  by a reflex the Main Controller loaded, or by executing a
+                  command it was given (RSIL §7)
+    ENV_PUSHED    neither this body nor any of its declared faculties did it
+    HOST_REACTED  one of the body's declared faculties acted: a protection, a
+                  fault reaction, a cut-off (RSIL §7.2)
+    UNDECIDED     not yet classified
+
+    The tag is the body's, not the self's: the Main Controller adds its own
+    beside it and never overwrites this one (RSIL §3.3).
 
     Classification MUST happen before anything interprets the change
-    (spec 07.3 g7, 07.4 g2; protocol C-8). A record carrying UNCLASSIFIED past the
+    (spec 07.3 g7, 07.4 g2; protocol C-8). A record carrying UNDECIDED past the
     classification stage is a conformance failure, not a default.
     """
 
-    SELF_CAUSED = "SELF_CAUSED"
-    EXTERNAL = "EXTERNAL"
-    UNCLASSIFIED = "UNCLASSIFIED"
+    BODY_CAUSED = "BODY_CAUSED"
+    ENV_PUSHED = "ENV_PUSHED"
+    HOST_REACTED = "HOST_REACTED"
+    UNDECIDED = "UNDECIDED"
 
 
 class Tier(str, Enum):
@@ -87,7 +105,7 @@ class Record:
     t_ns: int
     tier: Tier
     kind: str
-    agency: Agency = Agency.UNCLASSIFIED
+    agency: Agency = Agency.UNDECIDED
     payload: dict = field(default_factory=dict)
     context: dict | None = None
     contact: bool = False
@@ -173,9 +191,9 @@ class AuditLog:
             raise ValueError(
                 "contact event seq %d records no amplitude. Spec 06.6 requires "
                 "measured amplitude with each contact event." % r.seq)
-        if r.tier is Tier.ANCHORED and r.agency is Agency.UNCLASSIFIED:
+        if r.tier is Tier.ANCHORED and r.agency is Agency.UNDECIDED:
             raise ValueError(
-                "emission seq %d is UNCLASSIFIED. Spec 07.3 g7: tagging "
+                "emission seq %d is UNDECIDED. Spec 07.3 g7: tagging "
                 "happens before interpretation, not after." % r.seq)
 
     def seal_batch(self) -> Batch | None:
@@ -253,9 +271,9 @@ def verify(records: Iterable[Record], batches: Sequence[Batch],
         if r.tier is Tier.ANCHORED and not r.context:
             findings.append(Finding(r.seq, "NO_CONTEXT",
                                     "emission carries no anchored context"))
-        if r.tier is Tier.ANCHORED and r.agency is Agency.UNCLASSIFIED:
-            findings.append(Finding(r.seq, "UNCLASSIFIED",
-                                    "emission not classified self/external"))
+        if r.tier is Tier.ANCHORED and r.agency is Agency.UNDECIDED:
+            findings.append(Finding(r.seq, "UNDECIDED",
+                                    "emission carries no body tag"))
         if r.contact and not r.amplitude:
             findings.append(Finding(r.seq, "NO_AMPLITUDE",
                                     "contact event records no amplitude"))

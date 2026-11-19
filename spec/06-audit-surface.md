@@ -53,7 +53,7 @@ Budget:
 
 The beacon is the channel by which this body meets RSIL C5 (spec 08.1). It must survive sleep levels 2 and 4 ([03.4](03-energy.md#34-four-state-levels)). Mechanism: a low-duty-cycle radio periodically emitting a signed summary.
 
-**What "low power" means in C5.** RSIL defines C5 as *"Self-reports low power. The system emits a trace of 'the loop is running weakly' — an observable behavioural or structural signal"*, and limits it: C5 *"is not a criterion for detecting a dead loop"*. Low power there is the strength of the loop, not the charge of the battery. The body does not produce that report — the loop does, and the loop is not specified here ([README](../README.md#scope-boundary)). The body's obligation is to **carry** it, unaltered, including while it sleeps.
+**What "low power" means in C5.** DIL defines C5 (DIL §8.1), and RSIL has the body carry it (RSIL §5): *"Self-reports low power. The system emits a trace of “the loop is running weakly” — an observable behavioral/structural signal"*; and DIL limits it: C5 is *"NOT a criterion for detecting a dead loop"*. Low power there is the strength of the loop, not the charge of the battery. The body does not produce that report — the loop does, and the loop is not specified here ([README](../README.md#scope-boundary)). The body's obligation is to **carry** it, unaltered, including while it sleeps.
 
 | Field | Written by | Content | Serves |
 |---|---|---|---|

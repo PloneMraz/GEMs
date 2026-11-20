@@ -62,7 +62,7 @@ The drive board is inside each bought actuator module, and the firmware on it is
 |---|---|---|
 | Floating-base state estimation from IMU, joint kinematics and contact, at 1 kHz | L4 | — |
 | Contact detection per foot and per hand | L4 | — |
-| Covariance reporting, so that a degraded estimate says it is degraded | L4 | — |
+| Covariance reporting, so that a degraded estimate says it is degraded (spec 07.3 guarantee 9) | L4 | — |
 | Verified against the physics model's ground truth | L5 | V-5 |
 
 ## F-5 — Balance controller
@@ -101,7 +101,7 @@ The drive board is inside each bought actuator module, and the firmware on it is
 
 | Task | To | Waits for |
 |---|---|---|
-| Fault taxonomy and the response to each, each response a declared faculty that reads neither the store nor the cache (RSIL §7.2) | L4 | — |
+| Fault taxonomy and the response to each, each response a declared faculty that reads neither the store nor the cache (spec 07.3 guarantee 8; RSIL §7.2) | L4 | — |
 | Fall detection early enough to act on | L4 | F-4 |
 | Controlled descent to a supported posture — must beat the fall | L4 | F-5 |
 | Power-loss behaviour: what the supercapacitor tier holds up, and for how long | L4 | E-2 |

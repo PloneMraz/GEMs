@@ -47,7 +47,7 @@ On a unit, RSIL’s parts fall on the processors of [spec 07.1](../spec/07-firmw
 
 | Algorithm | Candidates | Runs on | Plan | Rule from RSIL |
 |---|---|---|---|---|
-| **State estimator** — floating-base state from IMU, joint kinematics and contact, at 1 kHz | Kalman filter (KF) where the model is linear; extended (EKF) or unscented (UKF) Kalman filter for the nonlinear floating-base model with orientation. Chosen in simulation (V-5) against the 0.6 ms estimate stage of the balance loop ([`tasks.csv`](../realtime_config/tasks.csv), `balance.estimate`) | Real-time computer | F-4 | Estimation, not expectation. The model and its noise parameters are fixed, or loaded by the Main Controller; nothing tunes them on the unit from experience. The innovation is not a prediction error and is never recorded as resistance. The covariance is reported, so a degraded estimate says it is degraded (F-4) |
+| **State estimator** — floating-base state from IMU, joint kinematics and contact, at 1 kHz | Kalman filter (KF) where the model is linear; extended (EKF) or unscented (UKF) Kalman filter for the nonlinear floating-base model with orientation. Chosen in simulation (V-5) against the 0.6 ms estimate stage of the balance loop ([`tasks.csv`](../realtime_config/tasks.csv), `balance.estimate`) | Real-time computer | F-4 | Estimation, not expectation. The model and its noise parameters are fixed, or loaded by the Main Controller; nothing tunes them on the unit from experience. The innovation is not a prediction error and is never recorded as resistance. The covariance is reported, so a degraded estimate says it is degraded ([07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee) guarantee 9; F-4) |
 | **Self-motion model of the agency gate** | The execution model of [`reference/agency.py`](../reference/agency.py) (`ForwardModel`), replaced by joint dynamics when parts exist | Real-time computer | F-7 | The same rule: it says what this body’s own command produces, never what the region will return |
 | **Visual-inertial odometry** | cuVSLAM (Isaac ROS Visual SLAM), its odometry only, in the same release | Edge AI module | S-3 | Estimation of the unit’s own pose (RSIL §6). The rest of the package is not run on the unit: building a map, closing loops, relocalizing against a stored map (cuVSLAM’s maps, cuVGL) is the agent’s learning of the region, the Main Controller’s (RSIL §8.6) |
 
@@ -69,7 +69,7 @@ On a unit, RSIL’s parts fall on the processors of [spec 07.1](../spec/07-firmw
 
 ### 2.5 Declared faculties — RSIL §7.2
 
-Each is declared to the Main Controller as a `ReactionFaculty` of the unit (§3); each reads neither the store nor the cache, and acts whether the Main Controller runs, the link holds, or the cache is intact.
+Each is declared to the Main Controller as a `ReactionFaculty` of the unit (§3); each reads neither the store nor the cache, and acts whether the Main Controller runs, the link holds, or the cache is intact ([07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee) guarantee 8).
 
 | Faculty | Realised by | Plan |
 |---|---|---|

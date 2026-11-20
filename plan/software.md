@@ -15,6 +15,7 @@ Module by module, from [spec 07.4](../spec/07-firmware-and-software.md#74-what-s
 | Task | To | Waits for |
 |---|---|---|
 | Record types shared with firmware: sensor record, agency tag, telemetry, fault, intent | L4 | — |
+| Intent carries the contact it allows — what may be touched, with what force, what is kept clear; where it gives none, the default the Main Controller loaded applies (binding §2.4) | L4 | — |
 | The interface between the real-time code and the edge software (architecture §4), as a versioned message definition — including the loop's `loop_state` report for the beacon (spec 06.5) | L4 | — |
 | Synthetic data generators per channel, for tests that do not need the full simulator | L4 | — |
 
@@ -25,6 +26,7 @@ Guarantee 1: **≥ 2:1, realistically 8:1**, on 15.1 Gbps raw at the conservativ
 | Task | To | Waits for |
 |---|---|---|
 | Stereo vision: encoding, disparity, features; the retained multispectral and thermal paths | L4 | — |
+| Stereo depth, object detection and 6-DoF pose — candidates ESS, RT-DETR, FoundationPose (binding §2.1); object models loaded by the Main Controller | L4 | — |
 | Tactile: event-based compression — report change, not state — for ~460,000 taxels | L4 | — |
 | SDR: decimation and channel selection | L4 | — |
 | LiDAR, microphone array (beamforming), proprioception passed at full rate — it is the one channel that must not be cut (spec 05.5) | L4 | — |
@@ -45,6 +47,8 @@ Guarantee 1: **≥ 2:1, realistically 8:1**, on 15.1 Gbps raw at the conservativ
 |---|---|---|
 | Multi-rate fusion on the shared time base of F-2 | L4 | — |
 | Carries the body tag through: a fused estimate that mixes changes of different tags says so | L4 | S-2 |
+| Local reconstruction of space over a bounded window, as working state (RSIL §8.6) — candidate nvblox; no map kept beyond the window (binding §2.1) | L4 | — |
+| Visual-inertial odometry of the unit’s own pose — candidate cuVSLAM, odometry only (binding §2.2) | L4 | V-5 |
 | Latency and consistency verified in simulation | L5 | V-7 |
 
 ## S-4 — Log assembly and synchronisation

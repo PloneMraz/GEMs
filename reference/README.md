@@ -7,6 +7,8 @@ Executable specifications, in Python, that on-body code is checked against. They
 | [`audit_log.py`](audit_log.py) | The audit log of [spec 06.4](../spec/06-audit-surface.md#64-audit-log): record schema, hash chain, per-batch Merkle root, and the verifier the Main Controller and an assessor run. Ported by the firmware log writer (plan F-10) and the software log assembly (plan S-4) | ✅ with tests |
 | [`agency.py`](agency.py) | Body differentiation by efference copy ([spec 07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee), guarantee 7; RSIL R2): each change tagged `BODY_CAUSED`, `HOST_REACTED` (a declared faculty acted) or `ENV_PUSHED`. Ported by the firmware agency stage (plan F-7) | ✅ with tests |
 
+The design reasons for [`agency.py`](agency.py) are in its module docstring.
+
 Python 3, standard library only.
 
 ```bash

@@ -44,7 +44,7 @@ The specification admits laboratory technology where the physics exists but the 
 | Envelopes, mass–energy loop | L0–L1 | `spec/`, `scripts/gems_budget.py --check` |
 | Kinematics, 31 core DOF; mechanical range-of-motion targets | L1 | `hardware/kinematics.md` |
 | Actuators, cells, compute, bus, materials | **L2** | `hardware/electrical/`, `hardware/mechanical/` |
-| Audit log, agency tagging | **L4** in reference form | `reference/`, 30 tests |
+| Audit log, agency tagging | **L4** in reference form | `reference/`, 36 tests |
 | Firmware | L1 | `firmware/ARCHITECTURE.md` |
 | Kinematic simulation model | L4 for kinematics only | `hardware/sim-model/` — inertias estimated |
 | Everything else | L0 | — |

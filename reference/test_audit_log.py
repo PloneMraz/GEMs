@@ -6,7 +6,7 @@
 Each test names the conformance requirement it exercises, so a failure points
 at a clause rather than at a function.
 
-    python -m unittest discover -s reference -v
+    python3 -m unittest discover -s reference -v
 """
 
 import hashlib
@@ -76,12 +76,13 @@ class TestWriteRules(unittest.TestCase):
         self.assertEqual(len(log.records), 1)
 
     def test_out_of_order_seq_is_refused(self):
-        """C-3, C-6 — a log that renumbers to hide a gap is worse than one
-        that shows it."""
+        """C-6 — a log that renumbers to hide a gap is worse than one that
+        shows it."""
         log = AuditLog(sign)
         log.append(telemetry(0))
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValueError) as e:
             log.append(telemetry(5))
+        self.assertIn("C-6", str(e.exception))
 
 
 class TestChainAndBatch(unittest.TestCase):

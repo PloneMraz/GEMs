@@ -4,22 +4,24 @@ Executable specifications, in Python, that on-body code is checked against. They
 
 | Module | Reference for | Status |
 |---|---|---|
-| [`audit_log.py`](audit_log.py) | The audit log of [spec 06.4](../spec/06-audit-surface.md#64-audit-log): record schema, hash chain, per-batch Merkle root, and the verifier an assessor runs. Ported by the firmware log writer (plan F-10) and the software log assembly (plan S-4) | ✅ with tests |
+| [`audit_log.py`](audit_log.py) | The audit log of [spec 06.4](../spec/06-audit-surface.md#64-audit-log): record schema, hash chain, per-batch Merkle root, and the verifier the Main Controller and an assessor run. Ported by the firmware log writer (plan F-10) and the software log assembly (plan S-4) | ✅ with tests |
 | [`agency.py`](agency.py) | Body differentiation by efference copy ([spec 07.3](../spec/07-firmware-and-software.md#73-what-the-real-time-code-must-guarantee), guarantee 7; RSIL R2): each change tagged `BODY_CAUSED`, `HOST_REACTED` (a declared faculty acted) or `ENV_PUSHED`. Ported by the firmware agency stage (plan F-7) | ✅ with tests |
 
 Python 3, standard library only.
 
 ```bash
-python -m unittest discover -s reference -v
+python3 -m unittest discover -s reference -v
 ```
 
 ## The audit log
 
 The log's record schema uses the vocabulary of the RSIL contract it carries evidence for — an *emission* is an output event, and the *anchored* tier holds each emission's anchored context (spec 08.2). Those are field names of the contract, not names for components; the component is the audit log.
 
-Protocol requirements **C-4**, **C-6**, **C-9** and **C-12** are verified by evidence class **T** — an assessor reads the log and checks a property. That needs a defined format and a reader, or the class is unusable. This module is both.
+**On the body this log is a buffer, not the record** (RSIL §8.2–8.3). The record lives with the Main Controller. The body chains each record when it is made, signs it no later than its batch closes, and keeps it until the Main Controller has appended it and said so. The verifier is what the Main Controller runs on what arrives, before it appends, and what an assessor runs on the record afterwards.
 
-**The write path refuses what the specification forbids.** An emission without anchored context, an emission still marked `UNDECIDED`, a contact event with no measured amplitude, a sequence number that skips — each raises rather than being written. The error message names the clause.
+Protocol requirements **C-3**, **C-4**, **C-6**, **C-8**, **C-9** and **C-12** carry evidence class **T** — an assessor reads the log and checks a property. That needs a defined format and a reader, or the class is unusable. This module is both; for C-8 it is the trace half, and the classification itself is [`agency.py`](agency.py). [`protocol/assess.py`](../protocol/assess.py) runs these checks for the [conformance record](../protocol/conformance-record.md).
+
+**The write path refuses what the specification forbids.** An emission without anchored context, an emission still marked `UNDECIDED`, a contact event with no measured amplitude, a sequence number out of order — each raises rather than being written. The error message names the clause.
 
 **The verifier checks the same rules independently**, because a record can reach an assessor without having passed this write path — from a different implementation, or a broken one, or a hostile one. It reports findings rather than raising: `GAP`, `NO_CONTEXT`, `UNDECIDED`, `NO_AMPLITUDE`, `ROOT_MISMATCH`, `BATCH_INCOMPLETE`, `BAD_SIGNATURE`.
 

@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-19T09:33:30Z",
+    "timestamp": "2026-11-20T10:20:54Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -31,7 +31,7 @@
       "type": "library",
       "bom-ref": "reference/audit_log.py",
       "name": "reference/audit_log.py",
-      "version": "sha256:d07eeeb50854",
+      "version": "sha256:e3f449ae40c4",
       "description": "Audit log: format, hash chain, Merkle batches, verifier",
       "supplier": {
         "name": "Plone Mraz"
@@ -46,7 +46,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "d07eeeb50854d19b2eb3ba2a4e7307bd5dd3f1d592028e56e23cbb92f9c6b274"
+          "content": "e3f449ae40c46d10ac3b9a99ce38a12a07ad701808b54e0f5e0dd85e7a12160c"
         }
       ],
       "scope": "optional",

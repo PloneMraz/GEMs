@@ -6,7 +6,7 @@
 The centrepiece is `TestProtocolProcedure71`, which runs the procedure
 protocol/conformance.md §7.1 specifies, including its pipeline-position check.
 
-    python -m unittest discover -s reference -v
+    python3 -m unittest discover -s reference -v
 """
 
 import unittest

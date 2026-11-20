@@ -5,7 +5,8 @@
 GEMs audit log — reference implementation.
 
 Specification: spec/06-audit-surface.md §6.4, spec/07-firmware-and-software.md
-§7.3–7.4. Conformance: protocol/conformance.md C-4, C-6, C-9, C-12.
+§7.3–7.4. Conformance: protocol/conformance.md C-3, C-4, C-6, C-8 (the
+trace half), C-9, C-12.
 
 The specification requires two tiers of record, a hash chain at full loop rate,
 and a signature over a Merkle root once per batch — because a secure element
@@ -91,7 +92,7 @@ class Record:
     """One entry in the log.
 
     `seq` is monotonic and gapless: a gap is itself evidence, and the verifier
-    reports it rather than skipping over it (protocol C-3, C-6).
+    reports it rather than skipping over it (protocol C-6).
 
     `context` carries the anchored context an emission needs so a third party
     can re-appraise it (spec 08.2). It is required on ANCHORED records —
@@ -168,7 +169,8 @@ class AuditLog:
         if record.seq != self._next_seq:
             raise ValueError(
                 "seq %d out of order; expected %d. A log that renumbers to hide "
-                "a gap is worse than one that shows it."
+                "a gap is worse than one that shows it. Protocol C-6; spec "
+                "06.5: a gap in the record is itself the evidence."
                 % (record.seq, self._next_seq))
         self._require_wellformed(record)
         prev = self._chain[-1] if self._chain else GENESIS

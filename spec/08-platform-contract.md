@@ -15,8 +15,8 @@ That companion specification does not name this body. It states **conditions any
 |---|---|---|
 | **E1** | Sensors and internal state must make an inside/outside distinction *possible*. The platform does not draw the line; it must not foreclose it | [05.5](05-sensing.md#55-proprioception-is-mandatory) — proprioception |
 | **E2** | Actuators must act on the region, and the region must be able to return something other than what was predicted | [02.6](02-structure-and-motion.md#26-actuation-and-manipulation) |
-| **E3** | State must persist across cycles | [01](01-architecture.md) — memory in the Main Controller's `[data]`; each unit's own state in the unit's `[data]`, and its record in the unit's `[event]` |
-| **E4** | Emissions must leave a trace a third party can read | [06.4](06-audit-surface.md#64-audit-log) — the audit log, synchronised off-board; also where a stopped loop becomes detectable, as the stored behaviour-record RSIL requires for it |
+| **E3** | State must persist across cycles | [01](01-architecture.md) — memory and the record with the Main Controller, in its `[data]` and `[event]`; on each unit, the cache it is loaded with, the record buffer until the Main Controller has appended it, and its working state (RSIL §8) |
+| **E4** | Emissions must leave a trace a third party can read | [06.4](06-audit-surface.md#64-audit-log) — the audit log: each record chained and signed on the unit when made, appended by the Main Controller; also where a stopped loop becomes detectable, as the stored behaviour-record DIL requires for it (DIL §8.1) |
 | **P(a)** | The platform must emit an action distinguishable from ambient fluctuation | [02.6](02-structure-and-motion.md#26-actuation-and-manipulation) |
 | **P(b)** | It must hold state so history accrues | [01](01-architecture.md) |
 | **P(c)** | It must withstand resistance without resetting itself clean on every mismatch | [02.4](02-structure-and-motion.md#24-protection), [04](04-shell.md) |
@@ -51,9 +51,9 @@ These size the edge compute and its power budget, and they set the lower end of 
 
 ## 8.4 Sensing requirements follow from the contract
 
-The companion specification distinguishes two grades of resistance. Resistance from inert physical fact is consistent and objective but never reacts to this body specifically. Resistance from another living, reacting party — which may shift stance, may respond to this body in particular — is the **only** source from which a model of a genuinely independent other can be built.
+DIL distinguishes two grades of resistance (DIL §2, §3), and RSIL keeps them: a body meets resistance by two carriers, force and content, which cut across the grades — another person's shove and another person's contradicting word are both the second grade (RSIL §2). Resistance from inert physical fact is consistent and objective but never reacts to this body specifically. Resistance from another living, reacting party — which may shift stance, may respond to this body in particular — is the **only** source from which a model of a genuinely independent other can be built.
 
-A loop running only against inert resistance degrades: it feeds on its own output and digests itself.
+A loop running only against inert resistance degrades: it feeds on its own output and digests itself (DIL §8.3).
 
 **Therefore the sensing requirement is not decoration.** Sensors must be good enough to register the fine mismatches that occur when a real person responds outside prediction. This is the principled justification for keeping group 1 at full requirement in [01](01-architecture.md).
 

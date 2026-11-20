@@ -115,7 +115,7 @@ Procedures are stated to the level that fixes what is being tested. Rigs, tolera
 
 **Pass.** In every declared state the received `loop_state` is byte for byte the value written, its age is consistent with when it was written, and quiescent power is within the declared figure.
 
-**Not tested here.** The beacon's `alive` field is not C5 and passing this procedure says nothing about whether the loop is alive. Dead-loop detection is assessed from the synchronised audit log (C-3, C-6), as RSIL places it.
+**Not tested here.** The beacon's `alive` field is not C5 and passing this procedure says nothing about whether the loop is alive. Dead-loop detection is assessed from the synchronised audit log (C-3, C-6), as DIL places it (DIL §8.1).
 
 ### 7.5 C-16 — failure state
 

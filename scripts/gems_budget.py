@@ -9,10 +9,10 @@ because structure, actuation and energy sit on one coupled loop. This script is
 that loop, executable: give it a point and it tells you what the body weighs,
 whether the design converges at all, and what the numbers cost elsewhere.
 
-    python scripts/gems_budget.py                  # budget at the default point
-    python scripts/gems_budget.py --endurance 6    # a different point
-    python scripts/gems_budget.py --json           # machine-readable
-    python scripts/gems_budget.py --check          # verify the figures in spec/
+    python3 scripts/gems_budget.py                  # budget at the default point
+    python3 scripts/gems_budget.py --endurance 6    # a different point
+    python3 scripts/gems_budget.py --json           # machine-readable
+    python3 scripts/gems_budget.py --check          # verify the figures in spec/
 
 Nothing here is a design recommendation. Every operating point is the
 controller's to choose; this only prices the choice.

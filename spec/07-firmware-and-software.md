@@ -46,7 +46,7 @@ A Linux task without a real-time kernel and a real-time scheduling policy has no
 | Balance | **≥ 500 Hz** | hard | The body falls |
 | Reflex, end to end | **≤ 10 ms** | hard | The reaction is not a reaction |
 
-Every task's layer, rate, deadline, stage budget and deadline class is held in [`realtime_config/tasks.csv`](../realtime_config/tasks.csv), and its platform and scheduling policy in [`realtime_config/scheduler.csv`](../realtime_config/scheduler.csv); `python realtime_config/check_timing.py` checks both against this section.
+Every task's layer, rate, deadline, stage budget and deadline class is held in [`realtime_config/tasks.csv`](../realtime_config/tasks.csv), and its platform and scheduling policy in [`realtime_config/scheduler.csv`](../realtime_config/scheduler.csv); `python3 realtime_config/check_timing.py` checks both against this section.
 
 **Multi-stream timestamping.** Every sensor channel MUST carry timestamps on a common time base, established at the transport layer rather than inferred later. Channels arrive at rates differing by three orders of magnitude ([05](05-sensing.md)); without a shared clock, fusing them produces confident nonsense. The permitted skew between channels is `⟦IMPL⟧` and is bounded above by the reflex budget: skew that approaches 10 ms has already broken the reflex path.
 

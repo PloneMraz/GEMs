@@ -4,8 +4,8 @@
 """
 Assess this repository's simulated body against the conformance protocol.
 
-    python protocol/assess.py               # print the assessment
-    python protocol/assess.py --record      # write conformance-record.md
+    python3 protocol/assess.py               # print the assessment
+    python3 protocol/assess.py --record      # write conformance-record.md
 
 Protocol §4 permits a simulated body to claim conformance provided the claim
 says so. This tool produces that claim for the body this repository describes,

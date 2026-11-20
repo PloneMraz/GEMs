@@ -43,7 +43,7 @@ Which of these modules are execution, which are declared faculties, and which ru
 >
 > **The reflex decision stage is not optional and not zero.** It still runs, however little it has left to decide; that is what makes the output event re-appraisable from outside, which is what RSIL INV-8 asks. A firmware design that discovers it is over budget and reclaims this millisecond has stopped conforming ([protocol C-9](../protocol/conformance.md)).
 
-The split is `⟦IMPL⟧` and will move once real parts exist. The same figures are held, with every task's layer and deadline class, in [`../realtime_config/tasks.csv`](../realtime_config/tasks.csv), and `python realtime_config/check_timing.py` fails if the two disagree. The margin is not spare capacity to be spent later — it absorbs the jitter that measurement will find.
+The split is `⟦IMPL⟧` and will move once real parts exist. The same figures are held, with every task's layer and deadline class, in [`../realtime_config/tasks.csv`](../realtime_config/tasks.csv), and `python3 realtime_config/check_timing.py` fails if the two disagree. The margin is not spare capacity to be spent later — it absorbs the jitter that measurement will find.
 
 ## 3. The balance loop
 

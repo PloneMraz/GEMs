@@ -8,9 +8,9 @@ A URDF of the GEMs body, generated from the declared kinematic configuration.
 | `gems.urdf` | Generated output — 38 links, 37 joints: 31 actuated, 6 coupled through `<mimic>`. Do not hand-edit |
 
 ```bash
-python hardware/sim-model/generate_urdf.py            # write gems.urdf
-python hardware/sim-model/generate_urdf.py --check    # audit only
-python hardware/sim-model/generate_urdf.py --mass 125 # the old 4 h operating point
+python3 hardware/sim-model/generate_urdf.py            # write gems.urdf
+python3 hardware/sim-model/generate_urdf.py --check    # audit only
+python3 hardware/sim-model/generate_urdf.py --mass 125 # the old 4 h operating point
 ```
 
 Python 3, standard library only.

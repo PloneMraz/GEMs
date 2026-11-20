@@ -4,8 +4,8 @@
 """
 Generate the engineering BOM of the GEMs reference design, and check it.
 
-    python hardware/bom/build_bom.py            # write parts.csv, ebom.csv, EBOM.md
-    python hardware/bom/build_bom.py --check    # verify, write nothing
+    python3 hardware/bom/build_bom.py            # write parts.csv, ebom.csv, EBOM.md
+    python3 hardware/bom/build_bom.py --check    # verify, write nothing
 
 Three files carry the BOM, in the form hardware teams use:
 

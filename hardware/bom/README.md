@@ -19,8 +19,8 @@ The three bills of materials of the GEMs reference design, in the form hardware 
 | [`build_bom.py`](build_bom.py) | Generates all of the above from one definition, and checks them against each other | — |
 
 ```bash
-python hardware/bom/build_bom.py            # regenerate
-python hardware/bom/build_bom.py --check    # verify only; non-zero on any error
+python3 hardware/bom/build_bom.py            # regenerate
+python3 hardware/bom/build_bom.py --check    # verify only; non-zero on any error
 ```
 
 Python 3, standard library only. This is work package B of [`plan/`](../../plan/README.md#b--bill-of-materials-and-cost).

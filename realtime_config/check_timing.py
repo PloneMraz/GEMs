@@ -5,7 +5,7 @@
 Check the real-time configuration against the specification and the
 firmware architecture.
 
-    python realtime_config/check_timing.py
+    python3 realtime_config/check_timing.py
 
 Two files, two tiers. tasks.csv is the requirement: each task's layer, rate,
 deadline, stage budget and deadline class. scheduler.csv is how it is met: the

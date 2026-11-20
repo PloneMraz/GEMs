@@ -8,9 +8,9 @@ Source of truth: hardware/kinematics.md. This script encodes that declaration
 and nothing else — 31 core degrees of freedom, the declared segment lengths,
 and a mass model. Change the declaration, regenerate, do not hand-edit the URDF.
 
-    python hardware/sim-model/generate_urdf.py            # write gems.urdf
-    python hardware/sim-model/generate_urdf.py --mass 95  # a lighter point
-    python hardware/sim-model/generate_urdf.py --check    # validate, write nothing
+    python3 hardware/sim-model/generate_urdf.py            # write gems.urdf
+    python3 hardware/sim-model/generate_urdf.py --mass 95  # a lighter point
+    python3 hardware/sim-model/generate_urdf.py --check    # validate, write nothing
 
 WHAT IS ESTIMATED HERE, AND IT IS MOST OF IT
 --------------------------------------------

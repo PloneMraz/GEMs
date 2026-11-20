@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-20T10:20:54Z",
+    "timestamp": "2026-11-20T10:27:45Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -91,7 +91,7 @@
       "type": "application",
       "bom-ref": "hardware/electrical/actuator_sizing.py",
       "name": "hardware/electrical/actuator_sizing.py",
-      "version": "sha256:e9c5871da39e",
+      "version": "sha256:8fa18e9343c1",
       "description": "Joint torque table and actuator sizing",
       "supplier": {
         "name": "Plone Mraz"
@@ -106,7 +106,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "e9c5871da39e9f7f0dc603ba5e4acfb1503db3929044574d10a03d2336c77cdb"
+          "content": "8fa18e9343c144cc299c4515bd10b6cfb8989fec0e5820ac104c0d5824a17318"
         }
       ],
       "scope": "excluded",
@@ -121,7 +121,7 @@
       "type": "application",
       "bom-ref": "scripts/gems_budget.py",
       "name": "scripts/gems_budget.py",
-      "version": "sha256:7793c5137abe",
+      "version": "sha256:649d3c385aab",
       "description": "Mass-energy-power budget model and spec check",
       "supplier": {
         "name": "Plone Mraz"
@@ -136,7 +136,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "7793c5137abe7fbe78693691fa9679fc5c3f0b3ca76d36a60862da20e98f13c0"
+          "content": "649d3c385aab28c9a0d076a6479d8c00baf9711b009cb42a32354a62c8df00a3"
         }
       ],
       "scope": "excluded",
@@ -151,7 +151,7 @@
       "type": "application",
       "bom-ref": "protocol/assess.py",
       "name": "protocol/assess.py",
-      "version": "sha256:2d76c6fad605",
+      "version": "sha256:f4accbb03fed",
       "description": "Conformance assessment of the simulated body",
       "supplier": {
         "name": "Plone Mraz"
@@ -166,7 +166,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "2d76c6fad60534724031b0fb2fc035f64ba7f2707a98b7397ce17b6cf264c711"
+          "content": "f4accbb03fedaf3216db01e6cda52cc661e384f662176cf1b4f5782f80c51e73"
         }
       ],
       "scope": "excluded",
@@ -181,7 +181,7 @@
       "type": "application",
       "bom-ref": "hardware/sim-model/generate_urdf.py",
       "name": "hardware/sim-model/generate_urdf.py",
-      "version": "sha256:3d50fdef9be4",
+      "version": "sha256:4714370daeac",
       "description": "URDF generator and audit",
       "supplier": {
         "name": "Plone Mraz"
@@ -196,7 +196,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "3d50fdef9be4c22478f87d70c8782168d5bc1174cd4157e00f140a0bea441f3b"
+          "content": "4714370daeac1194feca0951a2f05b36321f896ff1e81ed3fa235205448df43c"
         }
       ],
       "scope": "excluded",
@@ -211,7 +211,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:cb431fce59ee",
+      "version": "sha256:695948076a1a",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -226,7 +226,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "cb431fce59ee55bb5f5d6d21740c9a7d950444a5c8a066c27148adcfd016a6d7"
+          "content": "695948076a1aa7b06d284a87e45679f9f959c3d26c359328236803653bed9c3f"
         }
       ],
       "scope": "excluded",
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "realtime_config/check_timing.py",
       "name": "realtime_config/check_timing.py",
-      "version": "sha256:9755df19b820",
+      "version": "sha256:75ad7d292973",
       "description": "Timing table check against the specification and the firmware architecture",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "9755df19b8205537bf5dfbe815dfd8ea7059fd6807a282627180d1f2778e57ec"
+          "content": "75ad7d292973d40beafa831319f66845fbdd77f85a3dd1ef826478d3df8ffb0e"
         }
       ],
       "scope": "excluded",

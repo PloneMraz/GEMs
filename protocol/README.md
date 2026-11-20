@@ -9,8 +9,8 @@ How a body demonstrates that it satisfies the platform contract.
 | [Conformance record](conformance-record.md) | — | generated; **the body does not conform** |
 
 ```bash
-python protocol/assess.py            # print the assessment
-python protocol/assess.py --record   # regenerate conformance-record.md
+python3 protocol/assess.py            # print the assessment
+python3 protocol/assess.py --record   # regenerate conformance-record.md
 ```
 
 ## What this is for

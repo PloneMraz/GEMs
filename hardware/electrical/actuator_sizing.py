@@ -7,8 +7,8 @@ Actuator sizing for the declared kinematic configuration.
 Sizes every joint from its peak torque requirement, sums the actuator mass, and
 reports the resulting `f_act` against the range spec 02.2 assumes.
 
-    python hardware/electrical/actuator_sizing.py
-    python hardware/electrical/actuator_sizing.py --mass 95
+    python3 hardware/electrical/actuator_sizing.py
+    python3 hardware/electrical/actuator_sizing.py --mass 95
 
 Torque requirements are scaled from published gait and task data; arm joints
 are sized from the declared payload at the grip centre with the arm's own

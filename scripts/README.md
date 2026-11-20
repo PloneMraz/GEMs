@@ -9,10 +9,10 @@ Python 3, standard library only. No installation.
 ## Pricing an operating point
 
 ```bash
-python scripts/gems_budget.py                 # the D-8 point: 2 h with a dock, 65% armour, 1.65 m
-python scripts/gems_budget.py --endurance 6   # ask what six hours costs
-python scripts/gems_budget.py --json          # machine-readable
-python scripts/gems_budget.py --help          # every input
+python3 scripts/gems_budget.py                 # the D-8 point: 2 h with a dock, 65% armour, 1.65 m
+python3 scripts/gems_budget.py --endurance 6   # ask what six hours costs
+python3 scripts/gems_budget.py --json          # machine-readable
+python3 scripts/gems_budget.py --help          # every input
 ```
 
 The specification declares envelopes rather than a configuration, because structure, actuation and energy sit on one coupled loop. This script *is* that loop: give it a point and it returns the body mass, the growth factor, the pack size, and which of the actuators or the source limits peak power.
@@ -31,7 +31,7 @@ Exit status is `0` when the point converges, `2` when it does not.
 ## Checking the specification
 
 ```bash
-python scripts/gems_budget.py --check
+python3 scripts/gems_budget.py --check
 ```
 
 Recomputes every figure the specification quotes — endurance ceilings, growth factors, armour masses, shoulder torques, both operating points with their pack sizes and power bands, self-discharge, sleep durations, log rates — and confirms each one still appears in the chapter that claims it.

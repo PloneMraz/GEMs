@@ -146,7 +146,7 @@ GEMs answers *what the body consists of and what it can do*. It is deliberately 
 | Specification | Scope | Status |
 |---|---|---|
 | **RSIL** — Relational Sensory Integration Loop | The information-processing loop between a body's sensors and its responses | [Read](https://plonemraz.github.io/vault/papers/relational-sensory-integration-loop/) |
-| **DIL** — Data Integration Loop | The same relational structure for an agent with no body at all | [Read](https://plonemraz.github.io/vault/papers/data-integration-loop/) |
+| **DIL** — Data Integration Loop | The standard RSIL extends: an agent — its host, its mind, and the law the data runs by between them. The Main Controller runs by it | [Read](https://plonemraz.github.io/vault/papers/data-integration-loop/) |
 
 Neither document claims the other's territory. The relation is complementary scopes, not upper and lower tiers.
 

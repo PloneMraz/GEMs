@@ -7,7 +7,7 @@ That companion specification does not name this body. It states **conditions any
 | Companion specification | Scope | Status |
 |---|---|---|
 | **RSIL** — Relational Sensory Integration Loop | The processing loop for an agent with a body | [Read](https://plonemraz.github.io/vault/papers/relational-sensory-integration-loop/) |
-| **DIL** — Data Integration Loop | The same relational structure with no body at all | [Read](https://plonemraz.github.io/vault/papers/data-integration-loop/) |
+| **DIL** — Data Integration Loop | The standard RSIL extends: an agent — its host, its mind, and the law the data runs by between them. The Main Controller runs by it ([01](01-architecture.md)) | [Read](https://plonemraz.github.io/vault/papers/data-integration-loop/) |
 
 ## 8.1 Conformance map
 

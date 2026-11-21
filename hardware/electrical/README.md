@@ -236,6 +236,28 @@ So 78 Nm at 2.83 Nm/A is 27.5 A, inside the board's 60 A peak, and the manual's 
 
 **The continuous-torque gap.** Every figure in the sizing table is a peak, and the density band is peak over module mass. The rated figures are 26 of 78 Nm for the market module and 37.5 of 89.9 Nm for the laboratory one — about a third. A joint that must hold its peak for longer than the module's thermal time constant is sized by the rated figure, at roughly three times the mass. Which joints those are — the trunk holding a lift, the shoulder holding the declared 15 kg — is not decided here, and is the third reason the floor stays at 80 rather than falling to 68.
 
+## 6c. Knee torque — D-1, 2026-11-21
+
+**What was assumed.** The sizing table set the knee equal to hip pitch, 1.77 Nm per kilogram of body — 170 Nm at the 96 kg reference point — with no source of its own.
+
+**What the gait data say.** Peak internal knee extension moment in healthy adults, normalised by body mass, as tabulated from the primary studies by Zhang et al. [27]:
+
+| Task | Peak extension moment | Studies | Highest |
+|---|---|---|---|
+| Level walking | 0.13–0.95 Nm/kg, first stance peak | 11 | 0.95 |
+| Stair ascent | 0.45–1.41 Nm/kg | 7 | 1.41 — McFadyen and Winter, 3 subjects, 22 cm riser |
+| Stair descent | 0.37–1.62 Nm/kg, second stance peak | 7 | 1.62 — the same study; 1.35 at a 17 cm riser (Riener et al., 10 subjects) |
+| Rising from a seat | 0.62–2.19 Nm/kg | 9 | 2.19 from one subject (Wu et al.); the other eight 0.62–1.29, and 1.14 is the highest from more than one subject |
+| Running — not a declared task | 1.16–2.57 Nm/kg | 5 | — |
+
+**What it settles.** 1.77 Nm/kg covers every walking, stair and seat figure in the review but the single-subject 2.19: 9% above the highest stair figure, and 56% above the highest sit-to-stand figure measured on more than one subject. Rising from a seat is a declared task — the dock is a seat (DK-2). The figure stands, now with a source; nothing in the mass loop changes.
+
+**What it does not settle.** No figure was obtained for rising from a deep squat or from the floor — which the knee's declared range ([kinematics §1.5](../kinematics.md#15-range-of-motion-mechanism-not-biology): 140° human, 200° mechanical) and recovery from a fall imply — nor for landing from a step or a drop; both are dynamic events. The figures are human, produced by human movement strategies, and a body that moves differently loads its knee differently. Those are why the 80 Nm/kg floor keeps its margin (§6b).
+
+**Against human strength.** Šarabon et al. [28] pooled 411 studies of maximal isometric knee extension: adult men 2.92–3.45 Nm/kg at mid-range knee angle, adult women 2.08–2.74, older men 1.74–2.16 (pooled 95% confidence intervals). At 1.77 the knee has the strength of an older man: enough for the declared tasks, not a young adult's reserve.
+
+**Two misreadings in [12].** Its walking knee moment, "0.46–1.27 Nm/kg", is Zhang et al.'s peak-to-peak range of the moment over the gait cycle, not a peak. Its knee extension moment of "3.0–3.4 Nm/kg … during the lift phase" of floor-to-waist lifting cites Šarabon et al., whose figures are maximal isometric strength, not a moment measured while lifting. Neither figure is used here. The hip row, which cites [12] and [13] together, has not been re-traced to see which of the two carries its 100–150 Nm.
+
 ## 7. References
 
 | # | Source |
@@ -252,7 +274,7 @@ So 78 Nm at 2.83 Nm/A is 27.5 A, inside the board's 60 A peak, and the manual's 
 | 10 | [An EtherCAT-Based Real-Time Control System Architecture for Humanoid Robots](https://mediatum.ub.tum.de/doc/1394924/0185778354196.pdf) |
 | 11 | [CAN vs EtherCAT vs RS-485 vs UART for robot motors and actuators](https://openelab.io/blogs/learn/can-vs-ethercat-vs-rs-485-vs-uart-for-robot-motors-and-actuators) |
 
-Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at push-off and 2.5–3.5 W/kg push-off power from normative gait data; hip 100–150 Nm peak for a 70 kg humanoid during stair climbing and squat rise, scaled by mass [12][13]. Knee is assumed equal to hip pitch — **an assumption, not a source**, and the one figure in the table that most deserves checking against a real gait dataset.
+Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at push-off and 2.5–3.5 W/kg push-off power from normative gait data; hip 100–150 Nm peak for a 70 kg humanoid during stair climbing and squat rise, scaled by mass [12][13]. Knee was assumed equal to hip pitch; on 2026-11-21 that figure was checked against published gait data (D-1) and stands for the declared tasks — walking, stairs, rising from a seat — with what it does not cover stated in [§6c](#6c-knee-torque--d-1-2026-11-21) [27][28].
 
 | # | Source |
 |---|---|
@@ -271,3 +293,5 @@ Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at pus
 | 25 | CubeMars, *AKH70-16 V1.0 KV41 Hollow Shaft Planetary Actuator 2D Drawing*, 2026-05-19 — proprietary, not vendored |
 | 26 | [CubeMars AKH70-48 V1.0 KV41 hollow-shaft planetary actuator](https://www.cubemars.com/product/akh70-48-v-1-0-kv41-hollow-shaft-planetary-actuator.html) — 222 Nm peak, 74 Nm rated, 1396 g, 159 Nm/kg, 48:1 three-stage; from search excerpts of the page and reseller listings, the page not readable from this environment |
 | 22 | [CubeMars AKH70-16 V1.0 KV41 hollow-shaft planetary actuator](https://www.cubemars.com/product/akh70-16-v-1-0-kv41-hollow-shaft-planetary-actuator.html) — Φ90 × 60.5 mm, 879 g, 7 mm bore, 26 Nm rated, **78 Nm peak**, 105 rpm no-load, 16:1, dual 21-bit encoders; from the specification summary of the product page as read by the author on 2026-09-26, the page itself not readable from this environment. Search excerpts and reseller listings quote 85 Nm peak; the 78 Nm figure is the one consistent with 879 g and 88.74 Nm/kg |
+| 27 | Zhang L., Liu G., Han B., Wang Z., Yan Y., Ma J., Wei P., [Knee Joint Biomechanics in Physiological Conditions and How Pathologies Can Affect It: A Systematic Review](https://pmc.ncbi.nlm.nih.gov/articles/PMC7160724/), *Applied Bionics and Biomechanics* 2020:7451683 — knee moment tables for walking, running, stairs and sit-to-stand |
+| 28 | Šarabon N., Kozinc Ž., Perman M., [Establishing Reference Values for Isometric Knee Extension and Flexion Strength](https://doi.org/10.3389/fphys.2021.767941), *Frontiers in Physiology*, 2021 — meta-analysis, 411 studies, 13,893 participants |

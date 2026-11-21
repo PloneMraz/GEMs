@@ -59,7 +59,7 @@ These are ordered: each one is needed before the work packages that depend on it
 
 | # | Decision | Blocks | Status |
 |---|---|---|---|
-| **D-1** | **Knee torque requirement.** The sizing script assumes knee = hip pitch, flagged there as an assumption, not a source | Actuator sizing, `f_act`, the mass loop | open — check against published gait data |
+| **D-1** | **Knee torque requirement.** The sizing script assumes knee = hip pitch, flagged there as an assumption, not a source | Actuator sizing, `f_act`, the mass loop | **checked 2026-11-21 against published gait data: 1.77 Nm/kg stands** — it covers walking, stairs and rising from a seat ([electrical §6c](../hardware/electrical/README.md#6c-knee-torque--d-1-2026-11-21)). Open within it: rising from a deep squat or the floor, and landing — no figure obtained |
 | **D-2** | **Actuators: which procured modules, at which reduction ratio.** In-house design is off the table by rule ([`CLAUDE.md`](../CLAUDE.md) §2, 2026-09-26): every option must be bought. The same CubeMars motor is sold at 16:1 (78 Nm peak, 105 rpm, 88.7 Nm/kg) and 48:1 (222 Nm peak, ~48 rpm, 159 Nm/kg), so torque density is a ratio choice paid in speed, and the open question per joint is *torque × speed*, not torque alone ([electrical §6b](../hardware/electrical/README.md#6b-arm-payload-and-the-two-parts-of-f_act--2026-09-26)). At 48:1 only hip pitch, knee and trunk pitch fall short, by 4–8 Nm; whether ~5 rad/s at the output is enough for gait and fall recovery is unmeasured. Also settles the conflict between the per-class reducers of `hardware/mechanical` and the single module family of `hardware/electrical`, and the CAN-to-EtherCAT question of E-5 | M-3, E-3, F-3 | open — candidates in the AVL |
 | **D-3** | **Real-time computer, which carries the Real-time Control Layer: a microcontroller under an RTOS, or an embedded computer under Linux with a real-time kernel.** The Jetson carries perception and compression; it is not the target for the 500 Hz balance loop and the 10 ms reflex path. The choice decides whether that code is firmware or software (spec 07.1), and how its latency bound is established — by construction or by measurement | All firmware, E-5 | open |
 | **D-4** | **High-voltage bus voltage** | Every power stage, cell count in series, harness gauge | open |
@@ -217,7 +217,7 @@ Prices are recorded with the date they were read and the page they were read fro
 
 Nothing here waits for money. What waits is decisions.
 
-1. **D-1**, the knee torque, first — it is the one open figure that could stop the mass loop from converging, and it is cheap to settle.
+1. **D-1**, the knee torque, first — it is the one open figure that could stop the mass loop from converging, and it is cheap to settle. Checked 2026-11-21: the figure stands for the declared tasks.
 2. **D-2 to D-5**, with **B-2** alongside, because pricing the candidates is part of choosing between them.
 3. **S** work in parallel from now: it needs no hardware. **ID-1** and **ID-5** can start now as well — the brief and the face depend on the kinematics and the specification, not on parts — and so can **M-1**, which needs only `kinematics.md`, and **ID-9**, which waits for nothing.
 4. **E-1**, **ID-2**, and the target-independent parts of **F**, once D-3 and D-4 are settled. Form and packaging iterate against each other from here: neither is fixed first.

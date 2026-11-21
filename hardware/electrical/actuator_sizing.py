@@ -82,7 +82,7 @@ JOINTS = [
     ("hip_pitch",      2, "per_kg", 1.77),   # scaled from 100-150 Nm at 70 kg
     ("hip_roll",       2, "per_kg", 1.23),
     ("hip_yaw",        2, "per_kg", 0.62),
-    ("knee",           2, "per_kg", 1.77),
+    ("knee",           2, "per_kg", 1.77),   # = hip pitch; checked against gait data, D-1 (README §6c)
     ("ankle_pitch",    2, "per_kg", 1.40),   # sourced: 1.4 Nm/kg at push-off
     ("ankle_roll",     2, "per_kg", 0.54),
     # Trunk: human isometric peak, normalised to body weight, male medians

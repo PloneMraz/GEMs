@@ -219,7 +219,7 @@ Nothing here waits for money. What waits is decisions.
 
 1. **D-1**, the knee torque, first — it is the one open figure that could stop the mass loop from converging, and it is cheap to settle.
 2. **D-2 to D-5**, with **B-2** alongside, because pricing the candidates is part of choosing between them.
-3. **S** work in parallel from now: it needs no hardware. **ID-1** and **ID-5** can start now as well — the brief and the face depend on the kinematics and the specification, not on parts — and so can **ID-9**, which waits for nothing.
-4. **M-1**, **E-1**, **ID-2**, and the target-independent parts of **F**, once D-3 and D-4 are settled. Form and packaging iterate against each other from here: neither is fixed first.
+3. **S** work in parallel from now: it needs no hardware. **ID-1** and **ID-5** can start now as well — the brief and the face depend on the kinematics and the specification, not on parts — and so can **M-1**, which needs only `kinematics.md`, and **ID-9**, which waits for nothing.
+4. **E-1**, **ID-2**, and the target-independent parts of **F**, once D-3 and D-4 are settled. Form and packaging iterate against each other from here: neither is fixed first.
 5. Detailed design — M-3 to M-11, E-2 to E-12, F source against the target.
 6. Verification — V-1 to V-9 — as each piece reaches L4, not at the end.

@@ -102,7 +102,7 @@ SOFTWARE = [
     ("GEM-40060", "Firmware image, tactile readout", "GEM-18080", "plan F-1", "MAKE"),
     ("GEM-40070", "Firmware image, shell field driver", "GEM-18090", "plan F-13", "MAKE"),
     ("GEM-40080", "OS image, edge AI module", "GEM-13200", "spec 07.1", "MAKE"),
-    ("GEM-40090", "GEMs software stack, edge AI module", "GEM-13200", "plan S-0 to S-9", "MAKE"),
+    ("GEM-40090", "GEMs software stack, edge AI module", "GEM-13200", "plan S-0 to S-10", "MAKE"),
     ("GEM-40100", "Kernel image, on-board computer", "GEM-13260", "spec 07.5; plan F-14", "MAKE"),
 ]
 

@@ -25,7 +25,7 @@ The Real-time Control Layer's code is firmware or software according to which pr
 |---|---|---|
 | **Hard real-time** | is a failure — it may cause harm | Current loops, balance, reflex path, agency tagging, safety supervisor |
 | **Firm real-time** | has no value and is discarded, without harm | Per-frame capture and encoding |
-| **Soft real-time** | has reduced value | Sensor fusion, link management |
+| **Soft real-time** | has reduced value | Sensor fusion, link management, body-datum |
 | **Non-real-time** | is merely late | Log synchronisation after an outage, commissioning tools |
 
 **The rule that joins them: every hard real-time task runs on a platform whose worst-case latency is bounded.** The two axes stay independent — the rule constrains the platform, not the layer — and the bound is established one of two ways, recorded per task in [`realtime_config/`](../realtime_config/):
@@ -79,6 +79,7 @@ These bind the firmware and the Real-time Control Layer together — whichever l
 | 3 | **A context record for every output event** | Including reflexes — RSIL INV-8: anchored context on every emission. Each reflex's record also carries the version and the age of the field it ran under, so a third party sees how old the field was (RSIL §7.1). A fast action that leaves no context record is what the contract forbids ([08.2](08-platform-contract.md#82-traced-appraisal-not-mute-reflex)) |
 | 4 | **Log assembly and synchronisation** | Two tiers, Merkle-batched signing ([06.4](06-audit-surface.md#64-audit-log)) |
 | 5 | **Graceful link degradation** | Reduced fidelity before dropped streams; the body should lose resolution, not lose senses |
+| 6 | **The body-datum, returned and never loaded** | From what `BODY_CAUSED` reveals across cycles, the unit gathers its body-datum — which channels answer to which effectors, how far each joint moves and the body extends when commanded, how it is configured now — and returns it to the Main Controller on a channel the unit declares, through the tagging-gate. Its first part crystallizes at the unit's cycle-0: the first command carried out, matched against what the unit then senses, recorded in the Main Controller's log with the public half of the unit's identity key. It is revised as it accrues, never frozen. It is never loaded: the declared kinematics, the URDF and factory calibration enter the Main Controller's store as `prior`, and reach the unit only as models the Main Controller loads (7.3 guarantee 9). The unit keeps it only as working state; after a restart the Main Controller already holds it. It carries no stance, no expectation and no value (RSIL §3.2, R4, INV-2, INV-5; [binding §2.11](../software/RSIL-in-GEMs.md#211-the-body-datum--r4)) |
 
 **On guarantee 2.** Agency tagging is done **in firmware, at acquisition** (7.3 guarantee 7), not as a later correction in software. Once a stream has been fused, filtered or compressed without the self-caused/external distinction attached, the distinction cannot be recovered downstream — the information that would have carried it has already been averaged away.
 

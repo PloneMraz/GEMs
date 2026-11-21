@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-21T08:59:41Z",
+    "timestamp": "2026-11-21T13:57:21Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -31,7 +31,7 @@
       "type": "library",
       "bom-ref": "reference/audit_log.py",
       "name": "reference/audit_log.py",
-      "version": "sha256:e3f449ae40c4",
+      "version": "sha256:abd4a5f8fdc7",
       "description": "Audit log: format, hash chain, Merkle batches, verifier",
       "supplier": {
         "name": "Plone Mraz"
@@ -46,7 +46,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "e3f449ae40c46d10ac3b9a99ce38a12a07ad701808b54e0f5e0dd85e7a12160c"
+          "content": "abd4a5f8fdc77e2f76a89045ca5e5b5bd8d939fa3124fa0a93c139e77966c459"
         }
       ],
       "scope": "optional",
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:5e0a4a28da91",
+      "version": "sha256:8cb67647d663",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "5e0a4a28da91082885d869ea244e18d65c3aa83e03b21ceec3641705a4b16fb3"
+          "content": "8cb67647d663a55b172983975f5a9e9a67bf374549a2a7110203c2a3214a6108"
         }
       ],
       "scope": "excluded",

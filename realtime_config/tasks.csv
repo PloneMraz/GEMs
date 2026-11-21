@@ -19,5 +19,6 @@ safe_state,Safe-state supervisor,,IMPL,real-time computer,,,,DEADLINE_HARD,spec 
 capture,Per-frame capture and encoding,,SOFTWARE,edge AI module,,,,DEADLINE_FIRM,spec 07.1
 fusion,Sensor fusion,,SOFTWARE,edge AI module,,,,DEADLINE_SOFT,spec 07.1
 link,Link management,,SOFTWARE,edge AI module,,,,DEADLINE_SOFT,spec 07.1
+body_datum,Body-datum crystallization,,SOFTWARE,edge AI module,,,,DEADLINE_SOFT,spec 07.1
 log_sync,Log synchronisation after an outage,,SOFTWARE,edge AI module,,,,DEADLINE_NONE,spec 07.1
 commissioning,Commissioning tools,,SOFTWARE,edge AI module,,,,DEADLINE_NONE,spec 07.1

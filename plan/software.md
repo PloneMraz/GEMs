@@ -104,3 +104,14 @@ Drivers are software when they run under the general-purpose OS (spec 07.1). Fra
 |---|---|---|
 | Camera, thermal, LiDAR, microphone and SDR capture, delivering buffers timestamped on the shared time base of F-2 | L4 | E-6 |
 | Per-channel health: dropout, saturation, stuck value | L4 | — |
+
+## S-10 — Body-datum (R4)
+
+Added 2026-11-21. The data by which a unit is told apart, gathered on the unit from what it did and returned to the Main Controller, which holds it (spec 07.4 guarantee 6; binding §2.11). It goes up; the models of S-6 and F-4 come down. Kept apart from S-6 so that the unit never learns the model it is loaded with.
+
+| Task | To | Waits for |
+|---|---|---|
+| Gather `BODY_CAUSED` changes, over cycles, into the body-datum: channel-to-effector map, joint travel and body extent under command, current configuration | L4 | S-2 |
+| Return it on a channel of the unit's own, named with the unit (`GEMs01/body-datum`), declared to `dil-core`, through the tagging-gate; nothing of it kept on the unit beyond working state | L4 | S-0 |
+| The unit's cycle-0: the first command carried out, matched against what the unit then senses, recorded with the public half of its identity key (binding §3) | L4 | F-11 |
+| Verified on simulated whole-body motion: the body-datum recovers the simulation model's kinematics without being loaded with them | L5 | V-5 |

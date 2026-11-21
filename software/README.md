@@ -9,6 +9,7 @@ Code that runs under an operating system on the body's embedded computer — the
 | Sensor fusion | Multi-rate, on a shared time base | 🔜 *waiting update* |
 | Log assembly and synchronisation | Two tiers, synchronised off-board after an outage | 🔜 — port of [`../reference/audit_log.py`](../reference/audit_log.py) |
 | Link management | Graceful degradation before dropped streams | 🔜 *waiting update* |
+| Body-datum | What the unit's own actions reveal of it, gathered over cycles and returned to the Main Controller, never loaded (plan S-10; RSIL R4) | 🔜 *waiting update* |
 
 The binding of RSIL to these modules and to the real-time code, algorithm by algorithm — fieldbus masters, drivers, ROS 2, estimators, controllers, faculties — is [`RSIL-in-GEMs.md`](RSIL-in-GEMs.md).
 

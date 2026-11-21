@@ -124,6 +124,12 @@ Each is declared to the Main Controller as a `ReactionFaculty` of the unit (§3)
 | **The record buffer** (§8.3) | Every record, chained and signed, until the Main Controller has appended it and said so | The unit: the log writer (F-10), log assembly (S-4) | The Main Controller, as it appends | Log device `GEM-13240`, written through the real-time computer and the edge AI module (§2.7) | Nothing removed before acknowledgement; when it is full, loaded reflexes stop and declared faculties remain |
 | **The working state** (§8.6) | The sensing windows of each channel (S-9); the state estimator’s state and covariance (F-4); the commands and reactions in flight at the agency gate (F-7); the reconstruction of the space around the unit — depth, point clouds, occupancy over a window (S-1, S-3) | The unit, overwritten as each window moves | Execution (F-3, F-5, F-15), the declared faculties, the reflexes, compression and fusion | Working memory of the real-time computer and the edge AI module; never the log device, except as records | Holds no experience. What in it changes something is tagged at R2 and recorded; nothing passes from it into the cache; no map is kept beyond its window (`DECIDE@IMPL`-R10) |
 
+### 2.11 The body-datum — R4
+
+| Algorithm | Runs on | Plan | Rule from RSIL |
+|---|---|---|---|
+| **Body-datum crystallization** — gathers, over cycles, the stable part of what the agency gate (§2.3) has tagged `BODY_CAUSED` and what channel typing (§2.1) has typed: which channels answer to which effectors, how far each joint moves and the body extends when commanded, how the unit is configured now | Edge AI module, soft real-time | S-10 | Returned, never loaded ([07.4](../spec/07-firmware-and-software.md#74-what-software-must-guarantee) guarantee 6). It begins at the unit's cycle-0 (§3) and is revised as it accrues, never frozen (INV-2). The declared kinematics, the URDF and factory calibration are not its seed: they enter the Main Controller's store as `prior` (INV-5), and reach the unit only as the models of §2.2, loaded by the Main Controller. On the unit it is working state (§2.10); the Main Controller holds it, so a restart takes up the line, not a new cycle-0. It carries no stance, no expectation and no value: the Main Controller may learn from it the self-motion model (S-6) and the estimator's model (F-4) that it loads, but the unit does not (RSIL §3.2, R4) |
+
 ---
 
 ## 3. Where a unit meets `dil-core`
@@ -135,6 +141,7 @@ The Main Controller’s host declaration ([`dil-core`](https://github.com/PloneM
 | `HostDeclaration.channels` — `{ id, canReturn, returnsOfItself? }` | One channel per unit channel, named with the unit (`GEMs01/…`). Proprioception and touch answer the unit’s own emissions; cameras, microphones and the clock return of themselves |
 | `HostDeclaration.reactions` — `ReactionFaculty { id, to, via? }` | Every faculty of §2.5, with what acts on the unit to bring it about |
 | `HostDeclaration.outward` | Every way content can leave the unit: its effectors, its radios, the beacon |
+| `HostDeclaration.channels` — one more per unit, `GEMs01/body-datum` | The unit's body-datum (§2.11), returned as signals on a channel of its own, so it enters through the tagging-gate like any other return; `dil-core` needs no field for it |
 | `HostCycleInput.signals`, `.changes` | What the unit returns each cycle, each change carrying its body tag and its unit |
 | `HostCycleInput.reactions` — `{ faculty, action }` | What the unit’s faculties did since the last cycle, tagged `HOST_REACTED` at T2 |
 | The tagging-gate (`admitArrival`) | Every arrival from a unit, buffered records included, enters through it; there is no other way in |
@@ -152,7 +159,7 @@ A unit’s cycle-0 — its first command matched against what it then senses —
 | KF, EKF or UKF for the state estimator | V-5, against the 0.6 ms stage |
 | Step recovery: a declared faculty or a loaded reflex | F-5 |
 | A faculty against external electrical stimulus | spec 06, E-2 |
-| The body-datum (R4): no module is planned for it yet; commissioning calibration (S-8) and the physical fingerprints of attestation tier 2 (F-11) are its nearest neighbours | a plan task |
+| The body-datum (§2.11): its representation, the stability threshold of the agency gate it rests on, and how often it is returned | RSIL `DECIDE@IMPL`-R1, R2, R8; S-10 |
 | Sealing of the cache and how the term is carried and renewed | D-7; RSIL `DECIDE@IMPL`-R5, R7 |
 | The windows of the working state, and what of it is returned to the Main Controller | RSIL `DECIDE@IMPL`-R10; S-1, S-9 |
 | The local reconstruction of space that execution reads: S-3 plans it on the edge AI module; no path yet carries it to the real-time computer for balance and stepping (F-5) | D-3; firmware §4 |

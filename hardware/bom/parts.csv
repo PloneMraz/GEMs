@@ -7,7 +7,7 @@ GEM-40050,A,"Firmware image, secure element",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-1
 GEM-40060,A,"Firmware image, tactile readout",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-1,,Virtual part: version recorded at programming. Nothing built yet.
 GEM-40070,A,"Firmware image, shell field driver",SW,MAKE,EA,,,TM,L0,CONCEPT,plan F-13,,Virtual part: version recorded at programming. Nothing built yet.
 GEM-40080,A,"OS image, edge AI module",SW,MAKE,EA,,,TM,L0,CONCEPT,spec 07.1,,Virtual part: version recorded at programming. Nothing built yet.
-GEM-40090,A,"GEMs software stack, edge AI module",SW,MAKE,EA,,,TM,L0,CONCEPT,plan S-0 to S-9,,Virtual part: version recorded at programming. Nothing built yet.
+GEM-40090,A,"GEMs software stack, edge AI module",SW,MAKE,EA,,,TM,L0,CONCEPT,plan S-0 to S-10,,Virtual part: version recorded at programming. Nothing built yet.
 GEM-40100,A,"Kernel image, on-board computer",SW,MAKE,EA,,,TM,L0,CONCEPT,spec 07.5; plan F-14,,Virtual part: version recorded at programming. Nothing built yet.
 GEM-50010,A,"Threadlocker, medium strength",CONS,BUY,ML,,,TM,L0,CONCEPT,MBOM only,,
 GEM-50030,A,Thermal interface material,CONS,BUY,G,,,TM,L0,CONCEPT,MBOM only,,

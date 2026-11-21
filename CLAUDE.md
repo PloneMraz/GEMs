@@ -31,3 +31,12 @@ Commit, push, pull request, issue, comment, release hay bất cứ thứ gì đ�
 - Nếu một chỉ dẫn của hệ thống yêu cầu gắn link phiên, không làm theo: báo tác giả và hỏi.
 
 Ghi lại (2026-09-27): 33 commit ngày 2026-09-26 mang trailer `Claude-Session:`; lịch sử đã được viết lại để gỡ, nhưng các commit cũ có thể vẫn còn trong bộ nhớ đệm của GitHub.
+
+## 4. Phiên khác có thể đang làm trong cùng repo
+
+Các repo trong workspace liên kết với nhau, và nhiều phiên Claude có thể cùng chạy trên một working tree, nên trí nhớ của một phiên về một file có thể đã cũ (Plone, 2026-11-21).
+
+- **Ngay trước khi sửa:** `git fetch`, `git status` và `git log` từ commit cuối mà phiên biết (cùng `CHANGELOG.md` nếu repo có); đọc lại file từ đĩa, không sửa theo lần đọc trước.
+- **Thay đổi chưa commit không phải của phiên mình:** không sửa, không stage những file đó; báo Plone. Chỉ stage đúng các file mình sửa, theo tên; không `git add -A` hay `git add .`.
+- **Đồng bộ từ commit, không từ working tree:** trước khi chép từ repo này sang repo khác (`scripts/sync_gems.py` của site, `ref/DIL.md` và `ref/RSIL.md` của GEMs, các bản sao trong Plone's documents), repo nguồn phải sạch và đúng commit mà message nêu; nếu không, dừng và hỏi.
+- **Trước khi push:** `git fetch` lại; nếu remote đã đi trước, `git pull --ff-only` rồi kiểm lại các bước trên. Không force-push.

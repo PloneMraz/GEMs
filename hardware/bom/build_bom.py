@@ -537,6 +537,7 @@ SBOM_SOURCES = [
     ("scripts/gems_budget.py", "application", TOOL, "Mass-energy-power budget model and spec check", ["hardware/electrical/actuator_sizing.py"]),
     ("protocol/assess.py", "application", TOOL, "Conformance assessment of the simulated body", ["reference/audit_log.py", "reference/agency.py", "scripts/gems_budget.py"]),
     ("hardware/sim-model/generate_urdf.py", "application", TOOL, "URDF generator and audit", []),
+    ("hardware/mechanical/skeleton/generate_skeleton.py", "application", TOOL, "CAD skeleton generator (FreeCAD) and audit against the URDF", ["hardware/sim-model/generate_urdf.py"]),
     ("hardware/bom/build_bom.py", "application", TOOL, "EBOM, MBOM and SBOM generator and check", ["hardware/electrical/actuator_sizing.py"]),
     ("realtime_config/check_timing.py", "application", TOOL, "Timing table check against the specification and the firmware architecture", []),
 ]

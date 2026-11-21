@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-21T08:33:00Z",
+    "timestamp": "2026-11-21T08:38:27Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -209,9 +209,39 @@
     },
     {
       "type": "application",
+      "bom-ref": "hardware/mechanical/skeleton/generate_skeleton.py",
+      "name": "hardware/mechanical/skeleton/generate_skeleton.py",
+      "version": "sha256:b8c1a6525475",
+      "description": "CAD skeleton generator (FreeCAD) and audit against the URDF",
+      "supplier": {
+        "name": "Plone Mraz"
+      },
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "b8c1a652547528e339523b31ff86dfb35422f27377ad4dbeba523a0a75d16385"
+        }
+      ],
+      "scope": "excluded",
+      "properties": [
+        {
+          "name": "gems:role",
+          "value": "design-tool"
+        }
+      ]
+    },
+    {
+      "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:695948076a1a",
+      "version": "sha256:5e0a4a28da91",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -226,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "695948076a1aa7b06d284a87e45679f9f959c3d26c359328236803653bed9c3f"
+          "content": "5e0a4a28da91082885d869ea244e18d65c3aa83e03b21ceec3641705a4b16fb3"
         }
       ],
       "scope": "excluded",
@@ -292,6 +322,7 @@
         "scripts/gems_budget.py",
         "protocol/assess.py",
         "hardware/sim-model/generate_urdf.py",
+        "hardware/mechanical/skeleton/generate_skeleton.py",
         "hardware/bom/build_bom.py",
         "realtime_config/check_timing.py"
       ]
@@ -334,6 +365,13 @@
     {
       "ref": "hardware/sim-model/generate_urdf.py",
       "dependsOn": [
+        "cpython"
+      ]
+    },
+    {
+      "ref": "hardware/mechanical/skeleton/generate_skeleton.py",
+      "dependsOn": [
+        "hardware/sim-model/generate_urdf.py",
         "cpython"
       ]
     },

@@ -36,12 +36,23 @@ WHAT IS NOT YET IN IT
     D-2 (which module); the space a segment sweeps through its travel is the
     next step of M-1.
 
+TWO FRAMES, ONE ROTATION
+------------------------
+Every marker and envelope is built in the URDF's frame — x forward, y left,
+z up — inside one container, `GEMs_skeleton`, whose placement turns it -90°
+about z. In the document and the STEP file the body therefore faces -Y, the
+direction FreeCAD's Front view (and Blender's) looks from, with its left side
+toward +X. That rotation is the only difference between the CAD frame and the
+URDF frame; geometry taken back to the URDF is turned +90° about z.
+
 THE AUDIT
 ---------
 After the CAD is built it is measured — each marker's centre and axis, each
-envelope's bounding box — and compared with the URDF's own forward kinematics
-in the zero pose, at 1 µm. A mismatch exits non-zero and writes nothing.
-Units: the URDF is in metres, FreeCAD in millimetres.
+envelope's bounding box, in the container's frame — and compared with the
+URDF's own forward kinematics in the zero pose, at 1 µm; the container's
+rotation is checked by where the toes end up in the document. A mismatch
+exits non-zero and writes nothing. Units: the URDF is in metres, FreeCAD in
+millimetres.
 """
 
 from __future__ import annotations
@@ -65,6 +76,7 @@ STEP_AUTHOR = r"Hu\X2\1EF3\X0\nh Mai Ph\X2\00FA\X0\c (Plone Mraz)"
 
 MM = 1000.0
 TOL_MM = 1e-3
+CAD_TURN_DEG = -90.0      # about z: URDF +x (forward) to CAD -Y (FreeCAD's Front)
 MARKER_LEN, MARKER_R = 60.0, 4.0
 STEP_OUT = HERE / "gems-skeleton.step"
 ENV_MODE, ENV_OUT, ENV_FCSTD = "GEMS_SKELETON_MODE", "GEMS_SKELETON_OUT", "GEMS_SKELETON_FCSTD"
@@ -149,8 +161,12 @@ def build_and_audit(mode, out, fcstd):
     origins, axes, ext, actuated = expected(robot)
 
     doc = App.newDocument("gems_skeleton")
+    root = doc.addObject("App::Part", "GEMs_skeleton")
+    root.Placement = App.Placement(V(0, 0, 0), App.Rotation(V(0, 0, 1), CAD_TURN_DEG))
     g_frames = doc.addObject("App::DocumentObjectGroup", "JointFrames")
     g_env = doc.addObject("App::DocumentObjectGroup", "SegmentEnvelopes")
+    root.addObject(g_frames)
+    root.addObject(g_env)
 
     markers = []
     for j in joints:
@@ -201,6 +217,14 @@ def build_and_audit(mode, out, fcstd):
         if any(abs(g - w) > TOL_MM for gp, wp in zip(got, ext[link]) for g, w in zip(gp, wp)):
             bad_env += 1
     n_act = sum(1 for _, o in markers if not o.Mimic)
+    # the container's turn, read from where the body ends up in the document
+    env = dict(bodies)
+    world = lambda p: root.Placement.multVec(p)
+    lf, rf = env["l_foot"].Shape.BoundBox, env["r_foot"].Shape.BoundBox
+    toe = world(V(lf.XMax, lf.Center.y, lf.Center.z))
+    heel = world(V(lf.XMin, lf.Center.y, lf.Center.z))
+    faces_front = toe.y < heel.y - 1.0 and abs(toe.x - heel.x) < TOL_MM
+    left_to_x = world(lf.Center).x > world(rf.Center).x
     z_lo = min(o.Shape.BoundBox.ZMin for _, o in bodies)
     z_hi = max(o.Shape.BoundBox.ZMax for _, o in bodies)
     drawn = (z_hi - z_lo) / MM
@@ -215,6 +239,8 @@ def build_and_audit(mode, out, fcstd):
          abs(drawn - gu.DECLARED_HEIGHT) < 0.02),
         ("solids valid", all(o.Shape.isValid() for _, o in markers + bodies), True,
          all(o.Shape.isValid() for _, o in markers + bodies)),
+        ("faces FreeCAD Front -Y", faces_front, True, faces_front),
+        ("left side toward +X", left_to_x, True, left_to_x),
     ]
     ok = True
     print("gems-skeleton — CAD skeleton, generated from hardware/kinematics.md via generate_urdf.py")
@@ -223,13 +249,65 @@ def build_and_audit(mode, out, fcstd):
         print("  %-24s %-10s expected %-10s %s" % (name, got, want, "ok" if passed else "MISMATCH"))
         ok = ok and passed
     if ok and mode == "write":
-        Import.export([o for _, o in markers] + [o for _, o in bodies], out)
-        set_step_header(out)
-        print("Wrote %s — %d joint frames, %d segment envelopes." % (out, len(markers), len(bodies)))
-        if fcstd:
-            doc.saveAs(fcstd)
-            print("Saved %s" % fcstd)
+        export_step(markers + bodies, root.Placement, out)
+        # read the written file back: its geometry, not the document's, is what leaves
+        step_front = step_faces_front(out)
+        print("  %-24s %-10s expected %-10s %s" % ("STEP faces Front -Y", step_front, True,
+                                                   "ok" if step_front else "MISMATCH"))
+        ok = ok and step_front
+        if ok:
+            set_step_header(out)
+            print("Wrote %s — %d joint frames, %d segment envelopes." % (out, len(markers), len(bodies)))
+            if fcstd:
+                doc.saveAs(fcstd)
+                print("Saved %s" % fcstd)
+        else:
+            pathlib.Path(out).unlink()
     print("SKELETON_AUDIT %s" % ("PASS" if ok else "FAIL"))
+
+
+def export_step(objects, placement, out):
+    """Write the STEP with the container's turn applied to the geometry itself.
+    Exported as an App::Part, FreeCAD 1.1 drops the container's placement, so
+    the shapes are turned and written flat, from a document of their own so
+    that each keeps its name."""
+    import FreeCAD as App
+    import Import
+    m = placement.toMatrix()
+    tmp = App.newDocument("gems_skeleton_export")
+    try:
+        flat = []
+        for name, obj in objects:
+            o = tmp.addObject("Part::Feature", obj.Name)
+            o.Shape = obj.Shape.transformGeometry(m)
+            o.Label = obj.Name
+            flat.append(o)
+        tmp.recompute()
+        Import.export(flat, str(out))
+    finally:
+        App.closeDocument(tmp.Name)
+
+
+def step_faces_front(path):
+    """Does the written STEP put the toes of the left foot toward -Y and the
+    left foot on the +X side?"""
+    import FreeCAD as App
+    import Import
+    d = App.newDocument("gems_skeleton_readback")
+    try:
+        Import.insert(str(path), d.Name)
+        bb = {}
+        for o in d.Objects:
+            if o.Label in ("env_l_foot", "env_r_foot") and hasattr(o, "Shape"):
+                s = o.Shape.copy()
+                s.Placement = o.getGlobalPlacement()
+                bb[o.Label] = s.BoundBox
+        if len(bb) != 2:
+            return False
+        lf, rf = bb["env_l_foot"], bb["env_r_foot"]
+        return lf.YLength > lf.XLength and lf.Center.x > rf.Center.x
+    finally:
+        App.closeDocument(d.Name)
 
 
 # -- the python3 side --------------------------------------------------------

@@ -30,9 +30,20 @@ The audit measures the CAD after FreeCAD has built it and compares it with the U
   envelopes = URDF         True       expected True       ok
   drawn height m           1.656      expected 1.65       ok
   solids valid             True       expected True       ok
+  faces FreeCAD Front -Y   True       expected True       ok
+  left side toward +X      True       expected True       ok
+  STEP faces Front -Y      True       expected True       ok
 ```
 
-A mismatch exits non-zero and writes nothing. The audit was itself checked by breaking the generator on purpose — an envelope shifted by 10 µm, a joint axis turned — and each was reported.
+The last line reads the written STEP file back, because what leaves the generator is the file, not the document. A mismatch exits non-zero and leaves no file behind. The audit was itself checked by breaking the generator on purpose — an envelope shifted by 10 µm, a joint axis turned, the turn of the next section left out of the document and then out of the file — and each was reported.
+
+## Two frames, one rotation
+
+The URDF follows the robotics convention: x forward, y left, z up. CAD and modelling tools look at a body from the other side: FreeCAD's *Front* view, like Blender's, looks from −Y, so a body built in URDF axes shows its left side there.
+
+Every marker and envelope is therefore built in URDF axes inside one container, `GEMs_skeleton`, turned −90° about z. In the document and in the STEP file the body faces −Y, its left side toward +X, and FreeCAD's *Front* view shows its front. **That turn is the only difference between the CAD frame and the URDF frame:** geometry taken from the CAD back to the URDF — the visual meshes of plan ID-7 — is turned +90° about z. The audit measures inside the container against the URDF, and checks the turn separately.
+
+FreeCAD 1.1 drops an `App::Part`'s placement when it writes STEP, so the generator writes the STEP from the shapes with the turn already applied, flat, each under its own name.
 
 ## What is in it
 
@@ -46,6 +57,6 @@ A mismatch exits non-zero and writes nothing. The audit was itself checked by br
 
 ## Reading it
 
-- **Axes are the URDF's:** x forward, y left, z up, origin at the pelvis frame. The body faces +x, so FreeCAD's *Right* view shows its front and FreeCAD's *Front* view shows its left side.
+- **Views:** *Front* shows the body's front, *Right* its left side, *Top* looks down on the head. The origin is the pelvis frame of the URDF.
 - **A saved `.FCStd` opens with every object hidden.** It is written without a GUI, and FreeCAD keeps visibility in the part of the file only a GUI writes. Select all and press Space. The STEP file has no such state and opens shown.
 - The STEP header names the author; joint and envelope names carry through as product names (`joint_l_knee`, `env_l_thigh`).

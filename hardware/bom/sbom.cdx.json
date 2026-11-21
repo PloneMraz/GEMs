@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-21T08:38:27Z",
+    "timestamp": "2026-11-21T08:59:41Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -211,7 +211,7 @@
       "type": "application",
       "bom-ref": "hardware/mechanical/skeleton/generate_skeleton.py",
       "name": "hardware/mechanical/skeleton/generate_skeleton.py",
-      "version": "sha256:b8c1a6525475",
+      "version": "sha256:d16da31cfa64",
       "description": "CAD skeleton generator (FreeCAD) and audit against the URDF",
       "supplier": {
         "name": "Plone Mraz"
@@ -226,7 +226,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "b8c1a652547528e339523b31ff86dfb35422f27377ad4dbeba523a0a75d16385"
+          "content": "d16da31cfa648ed24e83f85c1dfe1c9f20b3bccc0b6d1bc3e4b489bf9be87622"
         }
       ],
       "scope": "excluded",

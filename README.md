@@ -88,7 +88,7 @@ One directory per group, and the body's three design disciplines nest under `har
 | Path | Contents | Status |
 |---|---|---|
 | [`spec/`](spec/) | Platform specification — the capability envelopes and their derivations | ✅ ten chapters |
-| [`plan/`](plan/) | What remains between the specification and a complete design: definition of done, open decisions, work packages, and the firmware and software work down to the task | ✅ v1 |
+| [`plan/`](plan/PLAN.md) | What remains between the specification and a complete design: definition of done, open decisions, work packages, and the firmware and software work down to the task | ✅ v1 |
 | [`protocol/`](protocol/) | Platform conformance protocol, and an assessment of this repository's simulated body against it | ✅ v0.1 draft + record |
 | [`hardware/`](hardware/) | The body itself | ◐ kinematics declared |
 | [`hardware/mechanical/`](hardware/mechanical/) | Material and mechanism selection, sourced; CAD to follow | ◐ selection done |
@@ -132,7 +132,7 @@ Directories marked 🔜 do not exist yet. They are named in advance so that the 
 | 🔜 | Feature extraction, fusion, link management |
 | ✅ | Component selection, sourced — actuators, power, compute, bus, materials, reducers |
 | ✅ | Actuator torque density reconciled with `f_act` — 80–90 Nm/kg peak over module mass, the basis declared, the trunk sized from measured human strength, the arms from a declared 15 kg payload; `f_act` split into its scaling and fixed parts |
-| ✅ | Work plan to a complete design — decisions, packages, firmware and software task lists ([`plan/`](plan/)) |
+| ✅ | Work plan to a complete design — decisions, packages, firmware and software task lists ([`plan/`](plan/PLAN.md)) |
 | ◐ | EBOM, MBOM and SBOM — 206 part numbers, 60 routings, CycloneDX SBOM; sources and prices filled only where verified ([`hardware/bom/`](hardware/bom/)) |
 | 🔜 | Mechanical CAD |
 | 🔜 | Electrical schematics |

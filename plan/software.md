@@ -1,6 +1,6 @@
 # Software work
 
-Module by module, from [spec 07.4](../spec/07-firmware-and-software.md#74-what-software-must-guarantee) and [`../software/README.md`](../software/README.md) down to the task. Levels L0–L5 are defined in [`README.md`](README.md#levels-of-detail).
+Module by module, from [spec 07.4](../spec/07-firmware-and-software.md#74-what-software-must-guarantee) and [`../software/README.md`](../software/README.md) down to the task. Levels L0–L5 are defined in [`README.md`](PLAN.md#levels-of-detail).
 
 **Scope.** Software as [spec 07.1](../spec/07-firmware-and-software.md#71-the-division) defines it: code on the edge AI module under Linux. Its tasks here are firm, soft or non-real-time; their classes are set in [`../realtime_config/`](../realtime_config/). The Real-time Control Layer's modules are planned in [`firmware.md`](firmware.md), whichever layer D-3 puts them in.
 

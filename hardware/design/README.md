@@ -1,6 +1,6 @@
 # Design
 
-How the body looks, and how it can show things — work package ID of [`plan/`](../../plan/README.md#id--industrial-and-expressive-design).
+How the body looks, and how it can show things — work package ID of [`plan/`](../../plan/PLAN.md#id--industrial-and-expressive-design).
 
 | Path | Contents | Plan | Status |
 |---|---|---|---|

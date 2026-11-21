@@ -23,7 +23,7 @@ python3 hardware/bom/build_bom.py            # regenerate
 python3 hardware/bom/build_bom.py --check    # verify only; non-zero on any error
 ```
 
-Python 3, standard library only. This is work package B of [`plan/`](../../plan/README.md#b--bill-of-materials-and-cost).
+Python 3, standard library only. This is work package B of [`plan/`](../../plan/PLAN.md#b--bill-of-materials-and-cost).
 
 ---
 
@@ -49,7 +49,7 @@ A flat list of what the specification names is a requirements list, not a BOM. I
 
 ## Columns
 
-**`parts.csv`** — `part_number`, `rev`, `description`, `category`, `make_buy` (MAKE, BUY, or OPEN: nothing on sale meets the requirement, and the gap is left open rather than filled with an in-house design, [`CLAUDE.md`](../../CLAUDE.md) §2), `uom` (EA, SET, M2), `unit_mass_kg` and `mass_basis`, `maturity` (TM or LAB, as in [spec 00](../../spec/00-scope-and-criteria.md)), `design_level` (L0–L5, as in [`plan/`](../../plan/README.md#levels-of-detail)), `lifecycle` (all `CONCEPT` until a design is released), `spec_ref`, `requirement`, `notes`.
+**`parts.csv`** — `part_number`, `rev`, `description`, `category`, `make_buy` (MAKE, BUY, or OPEN: nothing on sale meets the requirement, and the gap is left open rather than filled with an in-house design, [`CLAUDE.md`](../../CLAUDE.md) §2), `uom` (EA, SET, M2), `unit_mass_kg` and `mass_basis`, `maturity` (TM or LAB, as in [spec 00](../../spec/00-scope-and-criteria.md)), `design_level` (L0–L5, as in [`plan/`](../../plan/PLAN.md#levels-of-detail)), `lifecycle` (all `CONCEPT` until a design is released), `spec_ref`, `requirement`, `notes`.
 
 **`ebom.csv`** — `parent`, `find_no` (10, 20, 30… per parent), `child`, `qty`, `qty_basis` (required when `qty` is empty), `ref_des` (for PCBA lines, once they exist), `notes`.
 

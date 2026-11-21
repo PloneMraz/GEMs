@@ -1,6 +1,6 @@
 # Firmware work
 
-Module by module, from [`../firmware/ARCHITECTURE.md`](../firmware/ARCHITECTURE.md) down to the task. Levels L0–L5 are defined in [`README.md`](README.md#levels-of-detail).
+Module by module, from [`../firmware/ARCHITECTURE.md`](../firmware/ARCHITECTURE.md) down to the task. Levels L0–L5 are defined in [`README.md`](PLAN.md#levels-of-detail).
 
 **What can start now.** Algorithms, state machines, protocol logic and their tests do not depend on a processor. They are written against a thin hardware abstraction and run on the host in software-in-the-loop (V-5). Only drivers, board support and timing measurements wait for D-3.
 

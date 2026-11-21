@@ -17,7 +17,7 @@ Two classifications apply to every piece of code on the body, and they are indep
 | **Either, by decision D-3** | The real-time computer, which carries the Real-time Control Layer: a microcontroller under an RTOS, or an embedded computer under Linux with a real-time kernel | State estimation, balance loop, reflex path including agency tagging, safety supervisor, power-state machine, full-tier log writing at loop rate |
 | **Either, by its processor** | The OBC, a small computer of its own | The kernel for a lagging or lost link: the loaded reflexes and field, and the four duties of [7.5](#75-link-loss-and-the-obc) |
 
-The Real-time Control Layer's code is firmware or software according to which processor D-3 selects ([plan](../plan/README.md#3-decisions-that-block-everything-else)). Its deadlines do not change with the choice; only the evidence that they are met does.
+The Real-time Control Layer's code is firmware or software according to which processor D-3 selects ([plan](../plan/PLAN.md#3-decisions-that-block-everything-else)). Its deadlines do not change with the choice; only the evidence that they are met does.
 
 **How late it may be — the real-time class.** A task's class is set by the consequence of missing its deadline, as the real-time systems literature defines it:
 

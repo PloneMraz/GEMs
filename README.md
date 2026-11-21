@@ -121,11 +121,11 @@ Directories marked 🔜 do not exist yet. They are named in advance so that the 
 | ✅ | Licensing settled |
 | ✅ | Budget model, and a check that holds `spec/` to its own arithmetic |
 | ✅ | Platform specification published in this repository |
-| ✅ | Conformance protocol (v0.1 draft) |
+| ✅ | Conformance protocol (v0.2 draft) |
 | ✅ | Firmware architecture and the reflex budget split across stages |
 | ✅ | Audit log: format, hash chain, batch signing, verifier |
 | ✅ | Agency tagging by efference copy — reference model for the firmware port, with protocol §7.1 run against it |
-| ✅ | Conformance assessment of the simulated body — **9 of 16 unmet, and named** |
+| ✅ | Conformance assessment of the simulated body — **16 of 21 unmet, and named** |
 | ✅ | Kinematic configuration — DOF, arrangement, reach |
 | ✅ | Simulation model — 31 DOF URDF with a coupled three-segment spine and two-tier joint limits, generated from the kinematics and audited against it |
 | 🔜 | Firmware source (awaits a target board) |

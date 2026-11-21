@@ -39,7 +39,8 @@ def emission(seq, t=0, **kw):
     base = dict(seq=seq, t_ns=t, tier=Tier.ANCHORED, kind="reflex_withdraw",
                 agency=Agency.BODY_CAUSED,
                 context={"field": "scar_dominated", "trigger": "thermal",
-                         "window_ns": 4_000_000})
+                         "window_ns": 4_000_000,
+                         "field_version": 7, "field_age_ns": 1_200_000_000})
     base.update(kw)
     return Record(**base)
 
@@ -53,6 +54,18 @@ class TestWriteRules(unittest.TestCase):
         with self.assertRaises(ValueError) as e:
             log.append(emission(0, context=None))
         self.assertIn("anchored context", str(e.exception))
+
+    def test_reflex_without_its_field_version_and_age_is_refused(self):
+        """C-9 — a reflex records the version and age of the field it ran
+        under (spec 07.4 g3; RSIL §7.1)."""
+        log = AuditLog(sign)
+        for drop in ("field_version", "field_age_ns"):
+            ctx = {k: v for k, v in emission(0).context.items() if k != drop}
+            with self.assertRaises(ValueError) as e:
+                log.append(emission(0, context=ctx))
+            self.assertIn(drop, str(e.exception))
+        log.append(emission(0, kind="contact", contact=True,
+                            context={"x": 1}, amplitude={"force_N": 1.0}))
 
     def test_undecided_emission_is_refused(self):
         """C-8 — classification precedes interpretation."""
@@ -76,13 +89,13 @@ class TestWriteRules(unittest.TestCase):
         self.assertEqual(len(log.records), 1)
 
     def test_out_of_order_seq_is_refused(self):
-        """C-6 — a log that renumbers to hide a gap is worse than one that
+        """C-19 — a log that renumbers to hide a gap is worse than one that
         shows it."""
         log = AuditLog(sign)
         log.append(telemetry(0))
         with self.assertRaises(ValueError) as e:
             log.append(telemetry(5))
-        self.assertIn("C-6", str(e.exception))
+        self.assertIn("C-19", str(e.exception))
 
 
 class TestChainAndBatch(unittest.TestCase):
@@ -170,6 +183,13 @@ class TestVerifier(unittest.TestCase):
                    agency=Agency.BODY_CAUSED, context=None)
         codes = {f.code for f in verify([r], [])}
         self.assertIn("NO_CONTEXT", codes)
+
+    def test_verifier_reports_a_reflex_without_its_field(self):
+        """The same rule, read back by the assessor (C-9)."""
+        r = Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
+                   agency=Agency.BODY_CAUSED, context={"trigger": "thermal"})
+        codes = {f.code for f in verify([r], [])}
+        self.assertIn("NO_FIELD", codes)
 
     def test_verification_is_not_a_judgement_of_conduct(self):
         """An internally consistent log says nothing about whether the body

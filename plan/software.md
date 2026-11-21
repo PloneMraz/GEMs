@@ -93,7 +93,7 @@ Revised 2026-11-19. A unit casts no expectation of the region or of other entiti
 
 | Task | To | Waits for |
 |---|---|---|
-| Fingerprint baselining for attestation tier 2 | L4 | F-11 |
+| Fingerprint baselining for attestation tier 2, the baseline held in the Main Controller's log and by the assessor, never on the unit; the drift comparison against it (spec 06.3) | L4 | F-11 |
 | Assessor tooling: extend `protocol/assess.py` as simulated evidence arrives | L5 | V-9 |
 
 ## S-9 — Capture on the application processor

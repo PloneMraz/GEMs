@@ -5,8 +5,8 @@
 GEMs audit log — reference implementation.
 
 Specification: spec/06-audit-surface.md §6.4, spec/07-firmware-and-software.md
-§7.3–7.4. Conformance: protocol/conformance.md C-3, C-4, C-6, C-8 (the
-trace half), C-9, C-12.
+§7.3–7.4. Conformance: protocol/conformance.md C-4, C-8 (the trace half),
+C-9, C-12, and the chain and batch signing of C-19.
 
 The specification requires two tiers of record, a hash chain at full loop rate,
 and a signature over a Merkle root once per batch — because a secure element
@@ -87,16 +87,35 @@ def h(*parts: bytes) -> bytes:
     return d.digest()
 
 
+FIELD_KEYS = ("field_version", "field_age_ns")
+
+
+def is_reflex(kind: str) -> bool:
+    return kind == "reflex" or kind.startswith("reflex_")
+
+
+def missing_field(r: "Record") -> list[str]:
+    """The field keys a reflex record lacks; empty for any other record."""
+    if not is_reflex(r.kind):
+        return []
+    ctx = r.context or {}
+    return [k for k in FIELD_KEYS if k not in ctx]
+
+
 @dataclass(frozen=True)
 class Record:
     """One entry in the log.
 
     `seq` is monotonic and gapless: a gap is itself evidence, and the verifier
-    reports it rather than skipping over it (protocol C-6).
+    reports it rather than skipping over it (protocol C-4, C-19).
 
     `context` carries the anchored context an emission needs so a third party
     can re-appraise it (spec 08.2). It is required on ANCHORED records —
-    including reflexes. Speed is not an exemption.
+    including reflexes. Speed is not an exemption. A reflex — a record whose
+    `kind` is `reflex` or begins `reflex_` — also carries, in its context, the
+    version and the age of the field it ran under (`field_version`,
+    `field_age_ns`), so a third party sees how old the field was (spec 07.4
+    g3; RSIL §7.1; protocol C-9).
 
     `amplitude` records measured physical amplitude at a human-contact surface
     (spec 06.6, protocol C-12). Required when `contact` is true.
@@ -169,8 +188,8 @@ class AuditLog:
         if record.seq != self._next_seq:
             raise ValueError(
                 "seq %d out of order; expected %d. A log that renumbers to hide "
-                "a gap is worse than one that shows it. Protocol C-6; spec "
-                "06.5: a gap in the record is itself the evidence."
+                "a gap is worse than one that shows it. Protocol C-4, C-19: a "
+                "gap in the record is itself the evidence."
                 % (record.seq, self._next_seq))
         self._require_wellformed(record)
         prev = self._chain[-1] if self._chain else GENESIS
@@ -189,6 +208,11 @@ class AuditLog:
                 "emission seq %d carries no anchored context. Spec 08.2: an "
                 "action emitted without context cannot be re-appraised from "
                 "outside, and reflexes are not exempt." % r.seq)
+        if r.tier is Tier.ANCHORED and r.context and missing_field(r):
+            raise ValueError(
+                "reflex seq %d does not record %s of the field it ran under. "
+                "Spec 07.4 g3, RSIL §7.1: a third party re-appraising it must "
+                "see how old the field was." % (r.seq, " and ".join(missing_field(r))))
         if r.contact and not r.amplitude:
             raise ValueError(
                 "contact event seq %d records no amplitude. Spec 06.6 requires "
@@ -273,6 +297,10 @@ def verify(records: Iterable[Record], batches: Sequence[Batch],
         if r.tier is Tier.ANCHORED and not r.context:
             findings.append(Finding(r.seq, "NO_CONTEXT",
                                     "emission carries no anchored context"))
+        if r.tier is Tier.ANCHORED and r.context and missing_field(r):
+            findings.append(Finding(r.seq, "NO_FIELD",
+                                    "reflex does not record %s of its field"
+                                    % " and ".join(missing_field(r))))
         if r.tier is Tier.ANCHORED and r.agency is Agency.UNDECIDED:
             findings.append(Finding(r.seq, "UNDECIDED",
                                     "emission carries no body tag"))

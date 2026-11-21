@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-21T13:57:21Z",
+    "timestamp": "2026-11-21T14:52:20Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -31,7 +31,7 @@
       "type": "library",
       "bom-ref": "reference/audit_log.py",
       "name": "reference/audit_log.py",
-      "version": "sha256:abd4a5f8fdc7",
+      "version": "sha256:b548bfdb3254",
       "description": "Audit log: format, hash chain, Merkle batches, verifier",
       "supplier": {
         "name": "Plone Mraz"
@@ -46,7 +46,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "abd4a5f8fdc77e2f76a89045ca5e5b5bd8d939fa3124fa0a93c139e77966c459"
+          "content": "b548bfdb325499d586e156674bddb90dbe1fe54bba51753cb5ecc082eee84bf6"
         }
       ],
       "scope": "optional",
@@ -151,7 +151,7 @@
       "type": "application",
       "bom-ref": "protocol/assess.py",
       "name": "protocol/assess.py",
-      "version": "sha256:f4accbb03fed",
+      "version": "sha256:9534294798a9",
       "description": "Conformance assessment of the simulated body",
       "supplier": {
         "name": "Plone Mraz"
@@ -166,7 +166,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "f4accbb03fedaf3216db01e6cda52cc661e384f662176cf1b4f5782f80c51e73"
+          "content": "9534294798a9ac09568a3dca66f8c0774d8e6182514e0411cb7051f6ab935aaa"
         }
       ],
       "scope": "excluded",

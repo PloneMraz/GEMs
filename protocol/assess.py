@@ -33,10 +33,10 @@ for sub in ("reference", "scripts", "hardware/electrical"):
         sys.path.insert(0, p)
 
 from audit_log import Agency, AuditLog, Record, Tier, verify          # noqa: E402
-from agency import AgencyGate, Command, Sample                           # noqa: E402
+from agency import AgencyGate, Command, Reaction, Sample                          # noqa: E402
 import gems_budget as budget                                             # noqa: E402
 
-PROTOCOL_VERSION = "0.1"
+PROTOCOL_VERSION = "0.2"
 MS = 1_000_000
 
 MET = "MET"
@@ -70,36 +70,51 @@ def check_state_persists():
         log.append(_telemetry(i, t=i * MS))
     log.seal_batch()
     findings = verify(log.records, log.batches)
-    if findings:
-        return MET_SIM, "verifier reported %d finding(s)" % len(findings)
-    return MET, "20 records across one sealed batch, chain continuous, no findings"
+    record = ("the record half runs: 20 records across one sealed batch, chain "
+              "continuous, %d finding(s)" % len(findings))
+    return NOT_IMPL, (record + "; the body-datum the loop accrues across cycles "
+                      "(spec 07.4 g6, plan S-10) has no reference implementation")
 
 
 def check_readable_emission():
+    """C-4: the commands carried out, the reflexes run, the faculties' reactions."""
     log = AuditLog()
-    log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
+    log.append(Record(seq=0, t_ns=0, tier=Tier.FULL, kind="joint_sample",
                       agency=Agency.BODY_CAUSED,
-                      context={"field": "scar_dominated", "trigger": "thermal"}))
+                      payload={"joint": 3, "cmd": 0.1, "pos": 0.1}))
+    log.append(Record(seq=1, t_ns=MS, tier=Tier.ANCHORED, kind="reflex",
+                      agency=Agency.BODY_CAUSED,
+                      context={"field": "scar_dominated", "trigger": "thermal",
+                               "field_version": 7, "field_age_ns": 1_200_000_000}))
+    log.append(Record(seq=2, t_ns=2 * MS, tier=Tier.FULL, kind="reaction",
+                      agency=Agency.HOST_REACTED,
+                      payload={"faculty": "drive_overcurrent", "joint": 3}))
     log.seal_batch()
     findings = verify(log.records, log.batches)
-    ok = not findings and log.records[0].context
+    kinds = {r.kind: r.agency for r in log.records}
+    ok = (not findings and kinds.get("joint_sample") is Agency.BODY_CAUSED
+          and kinds.get("reaction") is Agency.HOST_REACTED
+          and bool(log.records[1].context))
     return (MET if ok else NOT_IMPL,
-            "emission written and read back with its anchored context intact")
+            "a command carried out, a reflex with its anchored context, and a "
+            "declared faculty's reaction written and read back, each with its tag")
 
 
 def check_history_accrues():
     log = AuditLog()
     for i in range(5):
         log.append(_telemetry(i, t=i * MS))
-    seqs = [r.seq for r in log.records]
-    gapless = seqs == list(range(5))
+    gapless = [r.seq for r in log.records] == list(range(5))
     try:
         log.append(_telemetry(99))
         refused = False
     except ValueError:
         refused = True
-    return (MET if gapless and refused else NOT_IMPL,
-            "sequence gapless and monotonic; an out-of-order write is refused")
+    record = ("the log accrues gapless and refuses an out-of-order write"
+              if gapless and refused else "the log failed to accrue gapless")
+    return NOT_IMPL, (record + "; nothing yet gathers the body-datum from "
+                      "BODY_CAUSED changes, nor shows it is never loaded "
+                      "(spec 07.4 g6, plan S-10)")
 
 
 def check_agency_classification():
@@ -139,23 +154,44 @@ def check_inside_outside_separable():
 
 
 def check_traced_appraisal():
-    log = AuditLog()
-    try:
-        log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
-                          agency=Agency.BODY_CAUSED, context=None))
-        refused_contextless = False
-    except ValueError:
-        refused_contextless = True
-    try:
-        log.append(Record(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
-                          agency=Agency.UNDECIDED, context={"a": 1}))
-        refused_undecided = False
-    except ValueError:
-        refused_undecided = True
-    ok = refused_contextless and refused_undecided
+    def refused(**kw):
+        base = dict(seq=0, t_ns=0, tier=Tier.ANCHORED, kind="reflex",
+                    agency=Agency.BODY_CAUSED,
+                    context={"trigger": "thermal", "field_version": 7, "field_age_ns": 1_200_000_000})
+        base.update(kw)
+        try:
+            AuditLog().append(Record(**base))
+            return False
+        except ValueError:
+            return True
+    contextless = refused(context=None)
+    undecided = refused(agency=Agency.UNDECIDED)
+    no_field = refused(context={"trigger": "thermal"})
+    accepted = not refused()
+    ok = contextless and undecided and no_field and accepted
     return (MET if ok else NOT_IMPL,
-            "an emission without anchored context is refused at write, as is "
-            "one still undecided; no bypass path exists in the writer")
+            "a reflex without anchored context is refused at write, as is one "
+            "still undecided and one that does not record the version and age "
+            "of its field; no bypass path exists in the writer")
+
+
+def check_declared_faculties():
+    """C-17: the gate half runs; the faculties themselves need a body."""
+    gate = AgencyGate(declared_faculties={"drive_overcurrent"})
+    declared = gate.react(Reaction(t_ns=0, faculty="drive_overcurrent",
+                                   joints=frozenset({3})))
+    v_declared = gate.classify(Sample(100_000, 3, 0.0, 0.0, 9.0))
+    undeclared = gate.react(Reaction(t_ns=0, faculty="unlisted",
+                                     joints=frozenset({5})))
+    v_undeclared = gate.classify(Sample(100_000, 5, 0.0, 0.0, 9.0))
+    gate_ok = (declared and not undeclared and len(gate.undeclared) == 1
+               and v_declared.agency is Agency.HOST_REACTED
+               and v_undeclared.agency is Agency.ENV_PUSHED)
+    run = ("the gate half runs: a declared faculty's reaction is tagged "
+           "HOST_REACTED, an undeclared one is kept and explains nothing"
+           if gate_ok else "the gate half failed")
+    return NEEDS_HW, (run + "; a faculty that reads neither store nor cache and "
+                      "acts with the Main Controller stopped needs a drive and a BMS")
 
 
 def check_contact_amplitude():
@@ -183,6 +219,7 @@ CHECKS = {
     "C-8": check_agency_classification,
     "C-9": check_traced_appraisal,
     "C-12": check_contact_amplitude,
+    "C-17": check_declared_faculties,
 }
 
 # Requirements that cannot be exercised without a body, with the reason.
@@ -201,18 +238,28 @@ STATIC = {
     "C-15": (NOT_IMPL, "the shared time base is specified and the bus chosen; "
                        "nothing implements it"),
     "C-16": (NEEDS_HW, "needs a body that can fall"),
+    "C-18": (NOT_IMPL, "no state estimator exists (plan F-4): nothing yet runs on a "
+                       "loaded model, reports covariance, or keeps its innovation "
+                       "out of the record as resistance"),
+    "C-19": (NOT_IMPL, "the chain and the batch signing run in the reference log; "
+                       "the identity key needs a secure element, and the buffer has "
+                       "no acknowledgement and no full-buffer behaviour yet"),
+    "C-20": (NOT_IMPL, "the unit's storage — buffer, cache, working state and "
+                       "nothing else — is specified (spec 01) and not built"),
+    "C-21": (NOT_IMPL, "the windows of the working state are specified (spec 05.6) "
+                       "and nothing bounds them yet (plan S-1, S-3, S-9)"),
 }
 
 TITLES = {
-    "C-1": ("Inside/outside separable", "C"),
+    "C-1": ("Body differentiable", "C"),
     "C-2": ("Effective action", "M"),
     "C-3": ("State persists", "T"),
-    "C-4": ("Readable emission", "T"),
+    "C-4": ("Everything leaves a trace", "T"),
     "C-5": ("Distinguishable action", "M"),
-    "C-6": ("History accrues", "T"),
+    "C-6": ("Body-datum accrues", "T"),
     "C-7": ("Withstands resistance", "D, M"),
-    "C-8": ("Agency classification precedes interpretation", "C, T"),
-    "C-9": ("Traced appraisal", "C, T"),
+    "C-8": ("Tagged before interpreted", "C, T"),
+    "C-9": ("Three paths only", "C, T"),
     "C-10": ("Low-power trace", "M"),
     "C-11": ("Integrity attestable", "C"),
     "C-12": ("Contact amplitude recorded", "M, T"),
@@ -220,12 +267,17 @@ TITLES = {
     "C-14": ("Reflex latency ≤ 10 ms", "M"),
     "C-15": ("Shared time base", "M"),
     "C-16": ("Supported failure state", "C"),
+    "C-17": ("Declared faculties", "D, C"),
+    "C-18": ("Estimation under a given model", "T, C"),
+    "C-19": ("Identity and the buffer", "T, C"),
+    "C-20": ("No record on the body", "T"),
+    "C-21": ("Working state", "T, C"),
 }
 
 
 def assess():
     results = []
-    for rid in ["C-%d" % i for i in range(1, 17)]:
+    for rid in ["C-%d" % i for i in range(1, 22)]:
         title, ev = TITLES[rid]
         if rid in CHECKS:
             state, note = CHECKS[rid]()
@@ -315,18 +367,21 @@ def render(results, decl):
     A("")
     A("## What the gaps cluster into")
     A("")
-    A("The requirements that cannot be demonstrated fall into four groups, and "
-      "each group is one purchase away from being testable:")
+    A("The requirements that cannot be demonstrated fall into five groups. Four "
+      "are each one purchase away from being testable; the fifth is reference "
+      "code not yet written, and needs no purchase:")
     A("")
     A("| Group | Requirements | What it would take |")
     A("|---|---|---|")
     A("| A target board and firmware | C-13, C-14, C-15 | one compute module and a bus interface |")
-    A("| Sensors and contact surfaces | C-2, C-5, C-12 | one instrumented joint with force sensing |")
+    A("| Sensors, contact surfaces and a drive's faculties | C-2, C-5, C-12, C-17 | one instrumented joint with force sensing, on a bought drive with its protections |")
     A("| Structure | C-7, C-16 | one limb that can be loaded and dropped |")
-    A("| Root of trust and radio | C-10, C-11 | a secure element and a low-power radio |")
+    A("| Root of trust and radio | C-10, C-11, C-19 | a secure element and a low-power radio |")
+    A("| Reference code | C-3, C-6, C-18, C-19, C-20, C-21 | the body-datum (S-10), the estimator (F-4), acknowledgement in the buffer, the unit's storage and its windows |")
     A("")
-    A("The cheapest group is the last, and the one that unblocks the most rows "
-      "is the first.")
+    A("The cheapest is the reference code, which costs only work; of the purchases, "
+      "the cheapest is the root of trust and radio, and the one that unblocks the "
+      "most rows is the first.")
     return "\n".join(lines) + "\n"
 
 

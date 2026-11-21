@@ -6,7 +6,7 @@ This chapter does not come from reducing an earlier ambition. It comes from the 
 
 | Source | Demand | Why it binds |
 |---|---|---|
-| **Readable emission** | Every emission must leave a trace a third party can read | Without it, success measured from outside cannot be measured at all |
+| **Readable trace** | Everything the body does must leave a trace a third party can read — the commands it carried out, the reflexes it ran, the reactions of its faculties | Without it, success measured from outside cannot be measured at all |
 | **Low-power trace** (RSIL C5) | The loop's own report that it is running weakly must be emittable, at quiescent power included | A closure condition, not a convenience |
 | **Body integrity** | Sensor and actuator integrity must be verifiable | A recovery snapshot covers the system, not the body. A body compromised at sensor or actuator level re-infects a freshly clean system on the first cycle |
 | **Contact amplitude** | Physical amplitude at human contact must be recorded | The cheapest way to provoke a strong response from a person can be to touch them |
@@ -24,8 +24,10 @@ A hardware root of trust: a secure element holding a non-exportable private key,
 | Tier | Mechanism | Catches | Maturity |
 |---|---|---|---|
 | **1. Signature** | Measured boot, per-node firmware signing | Modified firmware, foreign nodes | **TM** |
-| **2. Physical fingerprint** | Every real sensor carries its own noise and offset signature — photosite noise floor, IMU zero bias, joint friction curve. Baselined at commissioning; deviation beyond tolerance raises a flag | Hardware swapped for hardware running valid firmware | **LAB/TM** — the same family as physically unclonable functions and sensor noise identification |
+| **2. Physical fingerprint** | Every real sensor carries its own noise and offset signature — photosite noise floor, IMU zero bias, joint friction curve. Baselined at commissioning and held off the unit; deviation beyond tolerance raises a flag | Hardware swapped for hardware running valid firmware | **LAB/TM** — the same family as physically unclonable functions and sensor noise identification |
 | **3. Active challenge and redundant cross-check** | Emit a known stimulus and check the response: an actuator turns a known angle and the encoder must report that angle; IMU, joint encoders and vision must agree within tolerance | A channel that is lying, even one that passes tiers 1 and 2 | **TM** |
+
+**Where the tier 2 baseline is held (Plone, 2026-11-21).** The baseline is taken at commissioning by the commissioning tools (plan S-8) and held off the unit — in the Main Controller's log, and by the assessor; never on the unit. The unit measures its current signatures and returns them as records; the comparison is made off the unit. Should the unit check drift itself, the baseline may be loaded into its cache, signed by the Main Controller and never written by the unit (RSIL §8.1). A unit that wrote and kept its own baseline would hold a store of its own, which the contract forbids ([08.1](08-platform-contract.md#81-conformance-map), no record on the body), and a unit that judged its own drift is the party attestation exists not to trust. The baseline is the assessor's reference, not the body-datum: the body-datum is the Main Controller's, revised as the body changes ([07.4](07-firmware-and-software.md#74-what-software-must-guarantee) guarantee 6); a drift from the baseline is a flag.
 
 > **Tier 3 is not new hardware.** [05.5](05-sensing.md#55-proprioception-is-mandatory) already requires proprioception dense enough to separate "I moved" from "something moved me." That machinery **is** the machinery that detects a lying channel: both are redundant comparison between command issued and quantity measured.
 >

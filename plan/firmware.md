@@ -133,7 +133,7 @@ The drive board is inside each bought actuator module, and the firmware on it is
 | Task | To | Waits for |
 |---|---|---|
 | Tier 1: measured boot and per-node signatures | L4 | D-7 |
-| Tier 2: physical fingerprint baselines at commissioning, and drift checks | L4 | F-1 |
+| Tier 2: physical fingerprint measurement on the unit, returned as records; the baseline and the comparison are off the unit (S-8; spec 06.3) | L4 | F-1 |
 | Tier 3: active challenge — commanded motion checked against encoder, IMU and vision agreement | L4 | F-3, F-4 |
 | **Closes C-11** in simulated form for tiers 2 and 3 | L5 | V-5 |
 

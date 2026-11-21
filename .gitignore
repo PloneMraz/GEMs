@@ -1,2 +1,5 @@
 # Python bytecode.
 __pycache__/
+
+# Claude Code project settings and skills: local tooling, not part of GEMs.
+.claude/

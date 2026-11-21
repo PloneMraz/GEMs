@@ -76,7 +76,7 @@ These bind the firmware and the Real-time Control Layer together — whichever l
 |---|---|---|
 | 1 | **Compression of at least 2:1, realistically 8:1** | [05.4](05-sensing.md#54-aggregate-rate-against-the-link) — below this the link cannot carry the body's own senses |
 | 2 | **Agency tag carried to interpretation** | Nothing interprets an untagged change, and no stage strips the tag that firmware attached (7.3 guarantee 7; [08.1](08-platform-contract.md#81-conformance-map)) |
-| 3 | **A context record for every output event** | Including reflexes — RSIL INV-8: anchored context on every emission. A fast action that leaves no context record is what the contract forbids ([08.2](08-platform-contract.md#82-traced-appraisal-not-mute-reflex)) |
+| 3 | **A context record for every output event** | Including reflexes — RSIL INV-8: anchored context on every emission. Each reflex's record also carries the version and the age of the field it ran under, so a third party sees how old the field was (RSIL §7.1). A fast action that leaves no context record is what the contract forbids ([08.2](08-platform-contract.md#82-traced-appraisal-not-mute-reflex)) |
 | 4 | **Log assembly and synchronisation** | Two tiers, Merkle-batched signing ([06.4](06-audit-surface.md#64-audit-log)) |
 | 5 | **Graceful link degradation** | Reduced fidelity before dropped streams; the body should lose resolution, not lose senses |
 

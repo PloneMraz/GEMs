@@ -85,7 +85,7 @@ The drive board is inside each bought actuator module, and the firmware on it is
 | Loadable reflex set: format, signing, loading at runtime | L4 | D-7 |
 | Reflex decision: lookup against the loaded reflex set | L4 | — |
 | The term of a hold, loaded with the reflex set and renewed by each heartbeat; reflexes stop when it passes (spec 07.5) | L4 | F-14 |
-| Field version and age recorded in every reflex's anchored context (RSIL §7.1) | L4 | F-10 |
+| Field version and age recorded in every reflex's anchored context (spec 07.4 guarantee 3; RSIL §7.1) | L4 | F-10 |
 | Anchored context written for every reflex (spec 07.4 guarantee 3) | L4 | F-10 |
 | **Closes C-14** in simulated form when measured end to end on V-6 | L5 | V-6 |
 

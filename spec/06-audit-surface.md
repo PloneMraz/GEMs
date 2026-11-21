@@ -39,7 +39,7 @@ Two tiers, matching the on-board / off-board split of [01](01-architecture.md). 
 
 | Tier | Content | Location | Rate |
 |---|---|---|---|
-| **Full** | Per joint: command, position, current, torque | Ring buffer on the body, for forensics | Control-loop rate (≥500 Hz) |
+| **Full** | Per joint: command, position, current, torque | The record buffer on the body, for forensics: every record kept until the Main Controller has appended it and said so, never overwritten while it waits ([01](01-architecture.md); RSIL §8.3) | Control-loop rate (≥500 Hz) |
 | **Anchored** | Per emission: the anchored context, enough for a third party to re-appraise it | Synchronised off-body | Per event |
 
 Budget:

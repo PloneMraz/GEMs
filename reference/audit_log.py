@@ -70,7 +70,7 @@ class Agency(str, Enum):
 class Tier(str, Enum):
     """The two tiers of spec 06.4."""
 
-    FULL = "FULL"            # per-joint telemetry, ring buffer on the body
+    FULL = "FULL"            # per-joint telemetry, buffered on the body until acknowledged
     ANCHORED = "ANCHORED"    # an output event (RSIL: emission) with its anchored context
 
 

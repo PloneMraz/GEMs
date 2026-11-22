@@ -54,12 +54,18 @@ CATEGORIES = {"ASSY", "MFG", "OTS", "PCBA", "CABLE", "MATL", "SW", "CONS"}
 MAKE_BUY = {"MAKE", "BUY", "OPEN"}
 MATURITY = {"TM", "LAB"}
 STATUS = {"SELECTED", "CANDIDATE"}
+# UPG: on the upgrade path of spec 04.7, not in the baseline. Kept in the item
+# master so the record survives, never placed in the structure: the baseline
+# reserves no place for it (spec 04.7, 2026-11-22).
+LIFECYCLE = {"CONCEPT", "UPG"}
 
 # Declared density at the reference operating point: f_act = 0.30 needs the
 # top of the 80-90 Nm/kg band (spec 02.6). Used only for mass estimates.
 MODULE_NM_PER_KG = 88.7
 PACK_KWH, CELLS_KG = 3.85, 8.5            # gems_budget at the D-8 point: 2 h, 65%, 1.65 m
-ARMOUR_M2, ARMOUR_KG_M2 = 1.04, 7.5       # 65% of 1.6 m2, mid-band areal density
+ARMOUR_M2, ARMOUR_KG_M2 = 1.04, 7.5       # 65% of 1.6 m2; held at 7.5 (2026-11-22), see GEM-18010
+SKIN_M2, FINE_CM2 = 1.60, 500             # skin area at 1.65 m and the fine region of spec 05.2
+ORDINARY_CM2 = round(SKIN_M2 * 1e4 - FINE_CM2)
 BODY_MASS_BUDGET = 96.2    # scripts/gems_budget.py at the D-8 point
 
 # -- joint table: stable index -> part-number block. Never renumber. -------
@@ -99,8 +105,8 @@ SOFTWARE = [
     ("GEM-40030", "Firmware image, battery management (the manufacturer's)", "GEM-13120", "plan F-9", "BUY"),
     ("GEM-40040", "Firmware image, beacon radio", "GEM-13330", "plan F-12", "MAKE"),
     ("GEM-40050", "Firmware image, secure element", "GEM-13350", "plan F-11", "MAKE"),
-    ("GEM-40060", "Firmware image, tactile readout", "GEM-18080", "plan F-1", "MAKE"),
-    ("GEM-40070", "Firmware image, shell field driver", "GEM-18090", "plan F-13", "MAKE"),
+    ("GEM-40060", "Firmware image, tactile readout", "GEM-18080", "plan F-1; UPG", "MAKE"),
+    ("GEM-40070", "Firmware image, shell field driver", "GEM-18090", "plan F-13; UPG", "MAKE"),
     ("GEM-40080", "OS image, edge AI module", "GEM-13200", "spec 07.1", "MAKE"),
     ("GEM-40090", "GEMs software stack, edge AI module", "GEM-13200", "plan S-0 to S-10", "MAKE"),
     ("GEM-40100", "Kernel image, on-board computer", "GEM-13260", "spec 07.5; plan F-14", "MAKE"),
@@ -117,6 +123,9 @@ CONSUMABLES = [
 ]
 
 
+UPG_PARENTS = {"GEM-18080", "GEM-18090"}
+
+
 def module_pn(idx):
     return "GEM-2%02d00" % idx
 
@@ -128,12 +137,12 @@ class Bom:
         self._find = defaultdict(int)
 
     def part(self, pn, desc, cat, mb, uom="EA", mass="", basis="", mat="TM",
-             level="L0", ref="", req="", notes=""):
+             level="L0", ref="", req="", notes="", life="CONCEPT"):
         assert pn not in self.parts, pn
         self.parts[pn] = dict(part_number=pn, rev="A", description=desc,
                               category=cat, make_buy=mb, uom=uom,
                               unit_mass_kg=mass, mass_basis=basis, maturity=mat,
-                              design_level=level, lifecycle="CONCEPT",
+                              design_level=level, lifecycle=life,
                               spec_ref=ref, requirement=req, notes=notes)
         return pn
 
@@ -147,9 +156,12 @@ class Bom:
 def build():
     b = Bom()
     torque = {name: t for name, _, t, _ in torque_table(REF_MASS)}
-    for pn, d, _, ref, mb in SOFTWARE:
+    for pn, d, parent, ref, mb in SOFTWARE:
+        upg = parent in UPG_PARENTS
         b.part(pn, d, "SW", mb, uom="EA", level="L0", ref=ref,
-               notes="Virtual part: version recorded at programming. Nothing built yet.")
+               notes=("Upgrade path: the board it runs on is UPG (spec 04.7)" if upg else
+                      "Virtual part: version recorded at programming. Nothing built yet."),
+               life="UPG" if upg else "CONCEPT")
     for pn, d, uom in CONSUMABLES:
         b.part(pn, d, "CONS", "BUY", uom=uom, level="L0", ref="MBOM only")
 
@@ -313,6 +325,10 @@ def build():
         b.use(hand, b.part("GEM-%d" % (14920 + o), "Finger actuator, %s" % side, "OTS", "BUY",
                            level="L0", ref="hardware/kinematics.md 1.2",
                            notes="torque not derived"), "5")
+        b.use(hand, b.part("GEM-%d" % (14930 + o), "Hand tactile sensor set, %s" % side, "OTS",
+                           "BUY", uom="SET", level="L1", ref="spec 04.6; spec 05.2",
+                           req="~300/cm2 at 1 kHz (spec 05.2): OPEN against it",
+                           notes="bought 3-axis taxel modules, ~2-4.5/cm2 at 71-133 Hz; count with D-6"))
 
         leg = b.part(leg_pn, "Leg assembly, %s" % side, "ASSY", "MAKE", level="L1",
                      ref="hardware/kinematics.md 1")
@@ -329,35 +345,53 @@ def build():
                           level="L0", ref="spec 06.6; plan F-4"))
 
     shell = b.part("GEM-18000", "Shell and protection assembly", "ASSY", "MAKE", level="L1",
-                   ref="spec 04.5; spec 02.4")
+                   ref="spec 04; spec 02.4")
     b.use(top, shell)
-    b.use(shell, b.part("GEM-18010", "Armour panel, integrated multi-threat", "MATL", "BUY",
-                        uom="M2", mass="%.1f" % ARMOUR_KG_M2,
-                        basis="per m2, mid-band of 6-9 kg/m2", level="L2",
-                        ref="spec 02.4; hardware/mechanical 3",
-                        req="NIJ IIIA + NIJ 0115 level 1"),
+    # Baseline, inside out (spec 04, 2026-11-22): padding, armour shell,
+    # tactile skin, outer textile. Every layer is bought or GEMs-designed
+    # integration (CLAUDE.md §2); what is LAB waits on the upgrade path.
+    b.use(shell, b.part("GEM-18110", "Impact padding, foam or polymer lattice", "MATL", "BUY",
+                        uom="M2", level="L2", ref="spec 04.1",
+                        req="pinch points and falls (spec 02.6 row 8)",
+                        notes="areal density IMPL: thickness not set; candidates in avl.csv"),
+          "", "coverage IMPL (plan M-8)")
+    b.use(shell, b.part("GEM-18010", "Armour shell, moulded UHMWPE composite, multi-threat",
+                        "MFG", "BUY", uom="M2", mass="%.1f" % ARMOUR_KG_M2,
+                        basis="per m2, held at 7.5 (2026-11-22); bought hard PE plates 7.2-9.1",
+                        level="L2", ref="spec 02.4; spec 04.2; hardware/mechanical 3",
+                        req="NIJ HG2 (formerly IIIA) + NIJ 0115 spike level 1, tested to, not certified; "
+                            "fire OPEN (spec 04.4)",
+                        notes="moulded per segment by an armour manufacturer to the GEMs drawing (plan M-7)"),
           "%.2f" % ARMOUR_M2, "65% of 1.6 m2")
-    for pn, d, q, basis, mat, ref, req in [
-        ("GEM-18020", "Sense-and-heal layer, e-skin and self-healing polymer", "1.60", "skin area", "LAB", "spec 04.5", "600% stretch"),
-        ("GEM-18030", "Variable-stiffness layer, MR / ER / jamming", "", "coverage IMPL", "LAB", "spec 04.1", "2-30x modulus, ms"),
-        ("GEM-18040", "Fire layer, sacrificial", "", "coverage IMPL", "TM", "spec 04.4", "standard to be anchored"),
-        ("GEM-18050", "Electrochromic colour layer", "", "coverage IMPL", "LAB", "spec 04.3", "~1-5 s"),
+    b.use(shell, b.part("GEM-18140", "Tactile skin, large-area modules, body", "OTS", "BUY",
+                        uom="M2", level="L1", ref="spec 04.3; spec 06.6",
+                        req="contact force per point over the body (spec 06.6); "
+                            "spec 05.2 density, ~20/cm2 at 1 kHz, is UPG",
+                        notes="mass not stated by the vendor; candidates in avl.csv"),
+          "%.2f" % (ORDINARY_CM2 / 1e4), "ordinary region of spec 05.2")
+    b.use(shell, b.part("GEM-18130", "Outer textile cover set, flame-resistant fabric", "MFG", "MAKE",
+                        uom="SET", level="L2", ref="spec 04.3; spec 04.4",
+                        req="fabric to NFPA 1970 (2025) outer-shell flame resistance; removable; "
+                            "joints in textile; colour fixed",
+                        notes="patterned by GEMs on the surfaces of ID-2, sewn to drawing from bought "
+                              "fabric (plan M-8); no fabric datasheet read yet (2026-11-22)"))
+
+    # Upgrade path (spec 04.7): in the item master, not in the structure.
+    for pn, d, cat, ref, req in [
+        ("GEM-18020", "Sense-and-heal layer, e-skin and self-healing polymer", "MATL", "spec 04.7", "600% stretch"),
+        ("GEM-18030", "Variable-stiffness layer, MR / ER / jamming", "MATL", "spec 04.7", "2-30x modulus, ms"),
+        ("GEM-18050", "Electrochromic colour layer", "MATL", "spec 04.7", "~1-5 s"),
+        ("GEM-18060", "Tactile taxel, fine region (hands, face)", "OTS", "spec 05.2; spec 04.7",
+         "~%d at ~300/cm2 over ~%d cm2" % (FINE_CM2 * 300, FINE_CM2)),
+        ("GEM-18070", "Tactile taxel, ordinary region", "OTS", "spec 05.2; spec 04.7",
+         "~%d at ~20/cm2 over ~%d cm2" % (ORDINARY_CM2 * 20, ORDINARY_CM2)),
+        ("GEM-18080", "Tactile readout electronics", "OTS", "plan E-7; spec 04.7",
+         "~%d taxels" % (FINE_CM2 * 300 + ORDINARY_CM2 * 20)),
+        ("GEM-18090", "Shell field driver (MR coils / ER HV / electrochromic)", "OTS", "plan E-10; spec 04.7", ""),
     ]:
-        b.use(shell, b.part(pn, d, "MATL", "OPEN" if mat == "LAB" else "BUY", uom="M2", mat=mat,
-                            level="L2", ref=ref, req=req), q, basis)
-    b.use(shell, b.part("GEM-18060", "Tactile taxel, fine region (hands, face)", "OTS", "OPEN",
-                        mat="LAB", level="L1", ref="spec 05.2", req="~300/cm2"),
-          "150000", "~500 cm2 at ~300/cm2")
-    b.use(shell, b.part("GEM-18070", "Tactile taxel, ordinary region", "OTS", "OPEN",
-                        mat="LAB", level="L1", ref="spec 05.2", req="~20/cm2"),
-          "350000", "~17,500 cm2 at ~20/cm2")
-    b.use(shell, b.part("GEM-18080", "Tactile readout electronics", "OTS", "OPEN", mat="LAB",
-                        level="L0", ref="plan E-7", req="~460,000 taxels",
-                        notes="none found on sale (2026-11-05); research systems reach ~8,000 taxels"),
-          "", "count IMPL")
-    b.use(shell, b.part("GEM-18090", "Shell field driver (MR coils / ER HV / electrochromic)",
-                        "OTS", "OPEN", mat="LAB", level="L0", ref="plan E-10",
-                        notes="the shell layers it drives are LAB"), "", "count IMPL")
+        b.part(pn, d, cat, "OPEN", uom="M2" if cat == "MATL" else "EA", mat="LAB",
+               level="L0", ref=ref, req=req, life="UPG",
+               notes="Upgrade path: not in the baseline structure, no place reserved")
 
     harness = b.part("GEM-19000", "Harness assembly", "ASSY", "MAKE", level="L0", ref="plan E-12")
     b.use(top, harness)
@@ -377,7 +411,7 @@ def build():
                        ref="plan E-2", notes="bought; charges under the BMS's control"))
 
     for pn, _, parents, _, _ in SOFTWARE:
-        if parents.startswith("GEM-"):
+        if parents.startswith("GEM-") and parents not in UPG_PARENTS:
             b.use(parents, pn)
 
     # structural fasteners per assembly, drawn from the CAD once it exists
@@ -477,7 +511,7 @@ def build_mbom(b, roots):
             if c["category"] == "SW":
                 program(asm, l)
             elif c["uom"] == "M2":
-                op(asm, wc, "Apply %s" % c["description"].lower(), l["child"], l["qty"],
+                op(asm, wc, "Apply %s" % (c["description"][0].lower() + c["description"][1:]), l["child"], l["qty"],
                    l["qty_basis"])
             elif c["description"].startswith("Fastener set"):
                 op(asm, wc, "Fasten and torque to drawing", l["child"], l["qty"], l["qty_basis"])
@@ -622,7 +656,14 @@ def check_structure(b, roots, consumed=()):
         if l["qty"] == "" and not l["qty_basis"]:
             errs.append("ebom: %s under %s has no qty and no basis" % (l["child"], l["parent"]))
     used = {l["child"] for l in b.lines} | set(roots) | set(consumed)
+    placed = used | {l["parent"] for l in b.lines}
     for pn, p in b.parts.items():
+        if p["lifecycle"] not in LIFECYCLE:
+            errs.append("parts: %s has an unknown lifecycle" % pn)
+        if p["lifecycle"] == "UPG":
+            if pn in placed:
+                errs.append("parts: %s is UPG and placed in the structure: the baseline reserves no place (spec 04.7)" % pn)
+            continue
         if pn not in used:
             errs.append("parts: %s is not used by any assembly" % pn)
         if p["category"] not in CATEGORIES or p["maturity"] not in MATURITY:
@@ -716,7 +757,8 @@ def summary(b, children, avl, top):
     for p in b.parts.values():
         cats[p["category"]] += 1
     lab = sum(p["maturity"] == "LAB" for p in b.parts.values())
-    opened = sum(p["make_buy"] == "OPEN" for p in b.parts.values())
+    opened = sum(p["make_buy"] == "OPEN" and p["lifecycle"] != "UPG" for p in b.parts.values())
+    upg = sum(p["lifecycle"] == "UPG" for p in b.parts.values())
     massed = sum(bool(p["unit_mass_kg"]) for p in b.parts.values())
     sel = {a["part_number"] for a in avl if a["status"] == "SELECTED"}
     cand = {a["part_number"] for a in avl if a["status"] == "CANDIDATE"} - sel
@@ -726,6 +768,7 @@ def summary(b, children, avl, top):
         "| Part numbers | %d (%s) |" % (n, ", ".join("%s %d" % kv for kv in sorted(cats.items()))),
         "| LAB parts — no part number exists to give | %d |" % lab,
         "| Open parts — nothing on sale meets them, left open (CLAUDE.md §2) | %d |" % opened,
+        "| Upgrade-path parts (`UPG`) — kept in the item master, not in the structure | %d |" % upg,
         "| Parts with a selected manufacturer part | %d |" % len(sel),
         "| Parts with candidates only | %d |" % len(cand),
         "| Parts with a verified price | %d |" % len(priced),
@@ -767,7 +810,16 @@ def render(b, top, dock, avl, ops=()):
           "`avl.csv`. Do not hand-edit; see [`README.md`](README.md).", "",
           "## Summary", ""] + summary(b, children, avl, top) + [
           "", "## Body", ""] + indented(b, children, by_pn, top) + [
-          "", "## Ground equipment", ""] + indented(b, children, by_pn, dock)
+          "", "## Ground equipment", ""] + indented(b, children, by_pn, dock) + [
+          "", "## Upgrade path — not in the structure", "",
+          "Parts with lifecycle `UPG` ([spec 04.7](../../spec/04-shell.md#47-upgrade-path)): "
+          "recorded so the requirement survives, placed in no assembly, so they carry no "
+          "quantity and no mass.", "",
+          "| Part number | Description | Cat | Maturity | Spec | Requirement |",
+          "|---|---|---|---|---|---|"] + [
+          "| `%s` | %s | %s | %s | %s | %s |" % (pn, p["description"], p["category"],
+                                                p["maturity"], p["spec_ref"], p["requirement"])
+          for pn, p in sorted(b.parts.items()) if p["lifecycle"] == "UPG"]
     return errs, "\n".join(md) + "\n"
 
 

@@ -29,6 +29,7 @@ Technical terms in this repository follow standard usage in robotics, embedded s
 | **EBOM**, **MBOM**, **SBOM** | Engineering, manufacturing and software bills of materials | see [`hardware/bom/`](../hardware/bom/README.md) |
 | **TM**, **LAB** | Commercially available; demonstrated in the laboratory but not scaled | [00](00-scope-and-criteria.md) |
 | **`⟦IMPL⟧`**, **`⟦CTRL⟧`** | Left open until parts are chosen; left to the operator | [09](09-open-constants.md) |
+| **`UPG`** | On the upgrade path: not in the baseline, no place reserved for it; it enters only as a revision that runs the mass loop again | [04.7](04-shell.md#47-upgrade-path) |
 
 ## Where each vocabulary belongs
 

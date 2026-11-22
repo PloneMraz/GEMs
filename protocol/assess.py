@@ -297,7 +297,7 @@ def declaration():
         ("Free-running endurance", "2 h at the declared operating point, with a dock"),
         ("Endurance ceiling", "%.1f h" % b["endurance_ceiling_h"]),
         ("Sleep states supported", "none implemented"),
-        ("Protection level and coverage", "NIJ IIIA + stab, 65% coverage — selected, not built"),
+        ("Protection level and coverage", "NIJ HG2 (formerly IIIA) + spike level 1, 65% coverage, moulded UHMWPE armour shell — selected, not built"),
         ("Actuator specific torque", "80–90 Nm/kg peak over module mass — selected, not procured"),
         ("Summed joint torque", "%.0f Nm across 31 joints" % total_nm),
         ("Peak power at the source", "%.1f kW at 5C" % b["source_peak_kW"]),

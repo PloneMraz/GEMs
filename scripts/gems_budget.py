@@ -223,7 +223,7 @@ def print_report(b):
     print("         battery        %6.1f kg   (%.2f kWh)"
           % (b["battery_kg"], b["pack_kWh"]))
     print("         armour         %6.1f kg" % b["armour_kg"])
-    print("         fixed          %6.1f kg   (compute, sensors, hands, skin, harness)" % i["m_fixed_kg"])
+    print("         fixed          %6.1f kg   (compute, sensors, hands, shell, harness)" % i["m_fixed_kg"])
     print()
     print("carry    legs, %s, against the AKH70-48 (222 Nm peak, 74 Nm rated):" % b["carry_limited_by"])
     for k, label in (("carry_kg_at_peak", "one stand-up or step"), ("carry_kg_at_rated", "a sustained climb")):

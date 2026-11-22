@@ -16,7 +16,6 @@ Two kinds of blank, and they are not the same:
 | Supercapacitor fitted or not | [03.1](03-energy.md#31-source) | Determines whether peak power is actuator-limited or source-limited |
 | Sleep depth and schedule | [03.3](03-energy.md#33-tiered-sleep) | Depth against wake latency |
 | Charging method and timing | [03.5](03-energy.md#35-dock) | — |
-| Area allocated to each shell layer | [04.5](04-shell.md#45-the-three-layer-division) | The same `m_ext` budget as armour |
 | Compute split, body against external | [05.6](05-sensing.md#56-the-on-body--off-body-compute-split) | Two hard ends; the middle is adjustable |
 | Use made of spatial RF sensing | [01](01-architecture.md), [05.3](05-sensing.md#53-channels) | Capability retained in full at the hardware level |
 | Log signing period, synchronisation frequency, flag tolerances | [06.7](06-audit-surface.md#67-hard-constraints) | — |
@@ -27,9 +26,9 @@ Two kinds of blank, and they are not the same:
 | Value | Where | Why not filled |
 |---|---|---|
 | `f_str`, `f_act` — structural and actuator mass fractions | [02.2](02-structure-and-motion.md#22-the-four-coefficients) | Depend on material and gearing choices not yet made. Ranges are narrow enough that no conclusion changes sign |
-| Fixed non-scaling mass (compute, sensors, hands, skin, harness) | [02.5](02-structure-and-motion.md#25-mass-envelope) | Depends on component selection |
-| Areal density of the sense-and-heal and variable-stiffness layers | [04.5](04-shell.md#45-the-three-layer-division) | No reliable published figure found. The constraint is firm even though the number is not |
-| Fire layer temperature and duration | [04.4](04-shell.md#44-fire-resistance) | Must anchor to an existing firefighting-garment standard, not be derived here |
+| Fixed non-scaling mass (compute, sensors, hands, shell, harness) | [02.5](02-structure-and-motion.md#25-mass-envelope) | Depends on component selection |
+| Areal density of the impact padding, the tactile skin and the textile | [04.5](04-shell.md#45-the-three-layer-division) | The padding's thickness waits for plan M-8; the skin's vendor states no mass; no fabric data sheet has been read. The armour shell's figure is held at 7.5 kg/m² |
+| Fire: temperatures and durations beyond the textile's NFPA 1970 anchor; the standard for the armour shell (**OPEN**) | [04.4](04-shell.md#44-fire-resistance) | Anchored to existing standards, not derived here; the shell's standard is to be discussed |
 | RAM retention and root-of-trust clock power | [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) | Depends on the parts chosen. Immaterial against self-discharge |
 | Full-CSI spatial sensing power | [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) | The one floor term that matters; depends on implementation |
 | Merkle batch period for log signing | [06.4](06-audit-surface.md#64-audit-log) | Trades trace granularity against signing load |

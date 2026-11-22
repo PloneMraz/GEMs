@@ -12,7 +12,7 @@ This is the primary axis: the body exists to acquire physical experience. Quanti
 | **Sensitivity threshold** | — | **Yes**, substantially |
 | **Temporal bandwidth** | Pacinian corpuscles to ~500 Hz | **Yes** — piezoelectric sensors reach tens of kHz ⇒ **20–100×** |
 | **Dynamic range** | finite, saturates early | **Yes** |
-| **Simultaneous modalities** | pressure, vibration, temperature, pain | **Yes** — the self-healing layer of [04.2](04-shell.md#42-self-healing) also senses pH and humidity |
+| **Simultaneous modalities** | pressure, vibration, temperature, pain | **Yes** — the self-healing skin on the upgrade path ([04.7](04-shell.md#47-upgrade-path)) also senses pH |
 
 **Density is blocked twice, independently:**
 
@@ -20,6 +20,8 @@ This is the primary axis: the body exists to acquire physical experience. Quanti
 2. **Bandwidth.** Even if it could be built: 24,100/cm² over 1.6 m² is **386 million points**. At 1 kHz and 12 bits that is **~4,600 Gbps of tactile data alone** — **580×** the 8 Gbps link of [01](01-architecture.md). No compression ratio rescues that.
 
 **Declared tactile capability:** density **level with human skin** in the fine regions (hands, face), thinning across the torso; **20–100× human in temporal bandwidth**; above human in sensitivity threshold, dynamic range, and number of simultaneously measured quantities.
+
+**What the baseline meets of it** ([04.3](04-shell.md#43-outer-layer-tactile-skin-and-textile), [04.6](04-shell.md#46-touch-at-the-hands-and-face), 2026-11-22): contact force over the body, from a bought large-area skin at ~2.8 points/cm² and 60 Hz; three-axis force at the hands, from bought modules at ~2–4.5 points/cm². The declaration stays the requirement. The density and rate below are not met by anything on sale: the hands are **OPEN** against them, and the rest of the body and the face are `UPG`.
 
 ## 5.2 Tactile layout
 
@@ -31,7 +33,7 @@ Uniform whole-body density is wasteful — human skin is not uniform either.
 | Ordinary — remainder | ~15,500 cm² | ~20/cm² | ~310,000 |
 | **Total** | 1.6 m² | — | **~460,000** |
 
-At 1 kHz and 12 bits: **5.5 Gbps** raw — two thirds of the link, from one channel. (1.8 m², ~500,000 points and 6.0 Gbps until the height came to 1.65 m on 2026-09-26.)
+At 1 kHz and 12 bits: **5.5 Gbps** raw — two thirds of the link, from one channel. This is the requirement; the baseline's skin, ~43,000 points at 60 Hz, sends a small fraction of it. (1.8 m², ~500,000 points and 6.0 Gbps until the height came to 1.65 m on 2026-09-26.)
 
 ## 5.3 Channels
 

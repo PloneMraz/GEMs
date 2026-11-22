@@ -30,7 +30,7 @@ Module by module, from [`../firmware/ARCHITECTURE.md`](../firmware/ARCHITECTURE.
 | IMU driver, per IMU fitted | L4 | E-6 |
 | Joint encoder readout, absolute and incremental | L4 | E-3 |
 | Joint torque sensing | L4 | E-3 |
-| Tactile readout control — scan scheduling, event thresholds | L4 | E-7 — **LAB** |
+| Tactile: configure and read the bought skin and hand modules over their buses; scan scheduling and event thresholds for a readout of the spec 05.2 density are `UPG` | L4 | E-7 |
 | Per-channel health: dropout, saturation, stuck value | L4 | — |
 
 ## F-2 — Time base
@@ -148,10 +148,12 @@ The drive board is inside each bought actuator module, and the firmware on it is
 
 ## F-13 — Shell controllers
 
+`UPG` (2026-11-22): the baseline shell has no actuated layer ([spec 04.7](../spec/04-shell.md#47-upgrade-path)). The tasks stay recorded for the revision that brings one.
+
 | Task | To | Waits for |
 |---|---|---|
-| Variable-stiffness field control, millisecond class | L4 | E-10 — **LAB** |
-| Electrochromic colour control, second class | L4 | E-10 — **LAB** |
+| Variable-stiffness field control, millisecond class | — | E-10 — `UPG` |
+| Electrochromic colour control, second class | — | E-10 — `UPG` |
 
 ## F-14 — Link firmware
 

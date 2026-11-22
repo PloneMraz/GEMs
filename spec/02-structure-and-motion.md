@@ -9,7 +9,7 @@ Structure, actuation and energy are one coupled loop. They cannot be specified s
 Body mass divides into two kinds:
 
 - **Scaling mass** — structure, actuators, battery. The heavier the body, the more of each it needs, because they exist to carry and move that very mass.
-- **Non-scaling mass** — armour, compute, sensors, hands, skin, harness. These are placed on the body from outside; their size is set by the mission, not by the body's mass.
+- **Non-scaling mass** — armour, compute, sensors, hands, shell, harness. These are placed on the body from outside; their size is set by the mission, not by the body's mass.
 
 With `m` the total mass and `m_ext` the non-scaling part:
 
@@ -84,9 +84,11 @@ The group 5 standard is one material level covering handgun rounds, knives and e
 
 | Layer | Areal density | Note |
 |---|---|---|
-| Ballistic, NIJ IIIA (soft UHMWPE/aramid) | **3.8–5.6 kg/m²** | lightest ~3.76; typical ~4.9; aramid hybrid ~5.6 |
-| Stab, NIJ 0115 level 1 (spike) | **~3.2 kg/m²** standalone | |
+| Ballistic, NIJ HG2, formerly IIIA (soft UHMWPE/aramid) | **3.8–5.6 kg/m²** | lightest ~3.76; typical ~4.9; aramid hybrid ~5.6 |
+| Stab, NIJ 0115.00 spike level 1 | **1.42 kg/m²** standalone | a bought soft aramid panel; ~3.2 kg/m² until 2026-11-22, from no traceable source ([mechanical §3](../hardware/mechanical/README.md#3-protection)) |
 | **Integrated multi-threat package** | **~6–9 kg/m²** | cheaper than adding two layers, dearer than one |
+
+The reference design moulds the armour as the shell itself, in UHMWPE composite ([04.2](04-shell.md#42-armour-shell)); bought hard polyethylene plates of the handgun level come to 7.2–9.1 kg/m², so the 7.5 kg/m² the loop holds is at the optimistic end.
 
 *Sourced.* Against a skin area of ~1.6 m² for a 1.65 m body (1.8 m² at the 1.75 m declared until 2026-09-26, scaled by the square of height):
 
@@ -98,11 +100,11 @@ The group 5 standard is one material level covering handgun rounds, knives and e
 
 > Armour is non-scaling mass, so it enters `m_ext` and is multiplied by `γ`. At γ=2.6, the reference point, choosing 80% coverage over 50% adds ~3 kg of armour — and **~7 kg of body**. Coverage and level are under discussion (D-8): the reference design keeps 65% until that is settled. This is where the trade bites hardest, and it is `⟦CTRL⟧`.
 >
-> Rifle-rated protection (NIJ III/IV) is achievable but adds substantially more mass. The anchor level proposed here is handgun plus blade plus everyday impact; anything above is `⟦CTRL⟧`.
+> Rifle-rated protection (NIJ III/IV, rifle levels RF in NIJ 0123.00) is achievable but adds substantially more mass. The anchor level proposed here is handgun plus blade plus everyday impact; anything above is `⟦CTRL⟧`.
 
 ## 2.5 Mass envelope
 
-`m = γ · m_ext`, with `m_ext` = armour (5–13 kg) plus fixed mass — compute, sensors, hands, skin, harness: **15–25 kg**, `⟦IMPL⟧` — plus the arm, wrist and neck actuators of 2.2, 9.2 kg at 80 Nm/kg, which do not scale with the body.
+`m = γ · m_ext`, with `m_ext` = armour (5–13 kg) plus fixed mass — compute, sensors, hands, shell (padding, tactile skin, textile; [04.5](04-shell.md#45-the-three-layer-division)), harness: **15–25 kg**, `⟦IMPL⟧` — plus the arm, wrist and neck actuators of 2.2, 9.2 kg at 80 Nm/kg, which do not scale with the body.
 
 | Operating point | γ | Body mass |
 |---|---|---|
@@ -198,7 +200,7 @@ Two things the table says. The arm cases are cheap: the horizontal arm sets the 
 | 5a | Running faster than 2.5 m/s | commanded | yes | open space only | `OPEN` | — | the knee at 3.5 m/s: 3.1 Nm/kg, about 300 Nm, and 12.7 rad/s mean ([electrical §6e](../hardware/electrical/README.md#6e-running-and-balance-recovery--d-2-2026-11-22)) — no bought module found meets both ([`CLAUDE.md`](../CLAUDE.md) §2) | `OPEN` |
 | 6 | Jumping | commanded | yes | open space only | height, distance: open | momentary | peak power, which the battery limits without a supercapacitor ([2.7](#27-peak-power-is-limited-by-the-source-not-the-actuators)); landing impact | listed, figures open |
 | 7 | Balance recovery — after a push or a stumble, by a recovery step | reflex | possible | wherever the body is | **a sudden change of the body's velocity of 1.0 m/s forward or backward, or 0.5 m/s sideways, standing or during rows 1 and 2**; stronger goes to row 8; on stairs open. The figure is a robot's training range ([electrical §6e](../hardware/electrical/README.md#6e-running-and-balance-recovery--d-2-2026-11-22)), not drawn from a study of the disturbances people cause | momentary | the swing speed and torque of a recovery step: in a simulated robot, the backward push from standing asked the knee for 9.4 rad/s, more than walking at 1.0 m/s did, and ran its torque into the limit — 2.5 Nm/kg, 243 Nm at the reference point | decided 2026-11-22, its source a robot's; on stairs open |
-| 8 | Controlled fall, when recovery fails | reflex | — | wherever the body is | fall height, what must be protected: open | momentary | protection and shell ([2.4](#24-protection), [04](04-shell.md)), shock at the joints, and the rise from the floor that follows (row 4) | listed, figures open |
+| 8 | Controlled fall, when recovery fails | reflex | — | wherever the body is | fall height, what must be protected: open | momentary | the impact padding and the armour shell ([04.1](04-shell.md#41-impact-padding), [2.4](#24-protection)), shock at the joints, and the rise from the floor that follows (row 4) | listed, figures open |
 | — | Other demanding motions | — | — | — | — | — | — | open: not yet listed |
 
 **Commanded and reflex are different kinds.** Rows 1–6 are motions the Main Controller chooses: each can be capped, confined to a space and refused. Rows 7 and 8 are not chosen. The body must be able to do them during any commanded row, whenever a disturbance arrives, so they lie over the rest of the table rather than beside it.

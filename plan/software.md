@@ -27,7 +27,7 @@ Guarantee 1: **≥ 2:1, realistically 8:1**, on 15.1 Gbps raw at the conservativ
 |---|---|---|
 | Stereo vision: encoding, disparity, features; the retained multispectral and thermal paths | L4 | — |
 | Stereo depth, object detection and 6-DoF pose — candidates ESS, RT-DETR, FoundationPose (binding §2.1); object models loaded by the Main Controller | L4 | — |
-| Tactile: event-based compression — report change, not state — for ~460,000 taxels | L4 | — |
+| Tactile: event-based compression — report change, not state — for the baseline's ~43,000 points of skin and the hands, and for the ~460,000 taxels of spec 05.2 when the upgrade comes | L4 | — |
 | SDR: decimation and channel selection | L4 | — |
 | LiDAR, microphone array (beamforming), proprioception passed at full rate — it is the one channel that must not be cut (spec 05.5) | L4 | — |
 | Compression ratio measured per channel and in aggregate on simulated data | L5 | V-7 |

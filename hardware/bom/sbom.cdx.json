@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-22T07:19:46Z",
+    "timestamp": "2026-11-22T14:41:33Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -121,7 +121,7 @@
       "type": "application",
       "bom-ref": "scripts/gems_budget.py",
       "name": "scripts/gems_budget.py",
-      "version": "sha256:649d3c385aab",
+      "version": "sha256:afe4dba6eace",
       "description": "Mass-energy-power budget model and spec check",
       "supplier": {
         "name": "Plone Mraz"
@@ -136,7 +136,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "649d3c385aab28c9a0d076a6479d8c00baf9711b009cb42a32354a62c8df00a3"
+          "content": "afe4dba6eacedf6eec914b73c668fd0456454c8304b6fcb6d549a57b59742f82"
         }
       ],
       "scope": "excluded",
@@ -151,7 +151,7 @@
       "type": "application",
       "bom-ref": "protocol/assess.py",
       "name": "protocol/assess.py",
-      "version": "sha256:9534294798a9",
+      "version": "sha256:776078422810",
       "description": "Conformance assessment of the simulated body",
       "supplier": {
         "name": "Plone Mraz"
@@ -166,7 +166,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "9534294798a9ac09568a3dca66f8c0774d8e6182514e0411cb7051f6ab935aaa"
+          "content": "7760784228102f49e7b6fa8983c41d74a4be9f28da85616600fdd279c40d8a76"
         }
       ],
       "scope": "excluded",
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:6e346a031461",
+      "version": "sha256:7fa063211116",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "6e346a0314615c464215aaf011a15c700832d5614dd5dc28cf096a08f31b1c04"
+          "content": "7fa06321111616f9c09e627b0e13deac53da93693a8f0158e46756ec7f0eed72"
         }
       ],
       "scope": "excluded",

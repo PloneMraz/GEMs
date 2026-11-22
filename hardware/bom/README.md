@@ -49,7 +49,7 @@ A flat list of what the specification names is a requirements list, not a BOM. I
 
 ## Columns
 
-**`parts.csv`** — `part_number`, `rev`, `description`, `category`, `make_buy` (MAKE, BUY, or OPEN: nothing on sale meets the requirement, and the gap is left open rather than filled with an in-house design, [`CLAUDE.md`](../../CLAUDE.md) §2), `uom` (EA, SET, M2), `unit_mass_kg` and `mass_basis`, `maturity` (TM or LAB, as in [spec 00](../../spec/00-scope-and-criteria.md)), `design_level` (L0–L5, as in [`plan/`](../../plan/PLAN.md#levels-of-detail)), `lifecycle` (all `CONCEPT` until a design is released), `spec_ref`, `requirement`, `notes`.
+**`parts.csv`** — `part_number`, `rev`, `description`, `category`, `make_buy` (MAKE, BUY, or OPEN: nothing on sale meets the requirement, and the gap is left open rather than filled with an in-house design, [`CLAUDE.md`](../../CLAUDE.md) §2), `uom` (EA, SET, M2), `unit_mass_kg` and `mass_basis`, `maturity` (TM or LAB, as in [spec 00](../../spec/00-scope-and-criteria.md)), `design_level` (L0–L5, as in [`plan/`](../../plan/PLAN.md#levels-of-detail)), `lifecycle` (`CONCEPT` until a design is released; `UPG` for a part on the upgrade path of [spec 04.7](../../spec/04-shell.md#47-upgrade-path), kept in the item master and placed in no assembly), `spec_ref`, `requirement`, `notes`.
 
 **`ebom.csv`** — `parent`, `find_no` (10, 20, 30… per parent), `child`, `qty`, `qty_basis` (required when `qty` is empty), `ref_des` (for PCBA lines, once they exist), `notes`.
 
@@ -57,7 +57,7 @@ A flat list of what the specification names is a requirements list, not a BOM. I
 
 ## Rules the check enforces
 
-- Every part is used by an assembly, every line points at a part, and the structure has no cycles.
+- Every part is used by an assembly, every line points at a part, and the structure has no cycles. A `UPG` part is the exception, and the reverse: it is used by none, since the baseline reserves no place for it; [`EBOM.md`](EBOM.md) lists those parts apart.
 - An empty quantity carries a basis saying why it is empty.
 - A price carries all of its currency, order quantity, date and page. A price that cannot be re-checked is refused.
 - A `SELECTED` AVL entry carries a manufacturer, a manufacturer part number and a source.
@@ -93,7 +93,7 @@ The firmware images and the edge module's OS image are in the EBOM as virtual pa
 
 ## Where it stands
 
-The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 206 part numbers, including 10 software images and 5 consumables; 9 parts left open; 368 operations across 60 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 23 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 44.2 kg out of the 96.2 kg budget — the rest is blank rather than guessed.
+The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 210 part numbers, including 10 software images and 5 consumables; 2 parts left open and 9 on the upgrade path; 361 operations across 58 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 27 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 44.2 kg out of the 96.2 kg budget — the rest is blank rather than guessed.
 
 Prices were looked for on 2026-09-26. Most supplier pages were unreachable from the environment this was written in, so the AVL rests on search results and on the pages that could be read, and each entry's notes say which. The candidates for the boards bought instead of designed were looked for on 2026-11-05, from search excerpts; no price among them is recorded as verified.
 
@@ -104,6 +104,8 @@ Prices were looked for on 2026-09-26. Most supplier pages were unreachable from 
 **The actuator density has one motor behind it, at two ratios.** At 16:1 the module peaks at 78 Nm and 10 of the 18 joint types — 17 of the 31 joints — need more. At 48:1 the same motor peaks at 222 Nm and only hip pitch, knee and trunk pitch fall short, by 4–8 Nm, at about a third of the output speed; both are in the AVL, and whether the slower one is fast enough is D-2's question.
 
 **The reducer classes and the actuator family disagree at the wrists and neck.** `hardware/mechanical` §2 assigns harmonic drives to wrists and neck; `hardware/electrical` §2 selects a hollow-shaft planetary module for every joint. The actuator module rows carry the conflict in their notes until D-2 decides. At hips and knees it is gone since 2026-11-22, when §2 allowed cycloidal or planetary there.
+
+**The shell went from five layers to three** (2026-11-22, [spec 04](../../spec/04-shell.md)). The structure carried an armour panel and four layers that could not be bought — sense-and-heal skin, variable stiffness, a fire layer and electrochromic colour — with 350,000 ordinary-region taxels counted on the 1.8 m² skin area of the 1.75 m body, against the 310,000 of spec 05.2 at 1.6 m². It now carries the baseline, inside out: impact padding, the armour shell moulded in UHMWPE, a bought tactile skin and a textile cover; the hands carry bought tactile modules. The LAB layers, the whole-body taxels at the density of spec 05.2, their readout, the shell driver and the two firmware images for them are `UPG`: kept, with their requirements, out of the structure. The separate fire layer is withdrawn; its requirement is now the textile's.
 
 **Ankle and waist have no reducer class.** The mechanical table stops at hip, knee, shoulder, elbow, wrist and neck.
 

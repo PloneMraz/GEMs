@@ -65,8 +65,8 @@ BODY_MASS_BUDGET = 96.2    # scripts/gems_budget.py at the D-8 point
 # -- joint table: stable index -> part-number block. Never renumber. -------
 #    idx, joint, reducer class, placement
 JOINTS = [
-    (1, "hip_pitch", "cycloidal", "leg"), (2, "hip_roll", "cycloidal", "leg"),
-    (3, "hip_yaw", "cycloidal", "leg"), (4, "knee", "cycloidal", "leg"),
+    (1, "hip_pitch", "cycloidal or planetary", "leg"), (2, "hip_roll", "cycloidal or planetary", "leg"),
+    (3, "hip_yaw", "cycloidal or planetary", "leg"), (4, "knee", "cycloidal or planetary", "leg"),
     (5, "ankle_pitch", "unassigned", "leg"), (6, "ankle_roll", "unassigned", "leg"),
     (7, "trunk_pitch", "unassigned", "torso"), (8, "trunk_yaw", "unassigned", "torso"),
     (9, "shoulder_pitch", "planetary", "arm"), (10, "shoulder_roll", "planetary", "arm"),
@@ -165,7 +165,7 @@ def build():
             if off == 10:
                 n = ("reducer class per hardware/mechanical 2: %s" % red if red != "unassigned" else
                      "no reducer class assigned in hardware/mechanical 2")
-                if red != "planetary":
+                if "planetary" not in red:
                     n += "; conflicts with the planetary module family of hardware/electrical 2"
                 if nm is None:            # declared, not yet sized
                     kw = dict(level="L1", req="torque not yet sized (D-9); >=80 Nm/kg over module mass",

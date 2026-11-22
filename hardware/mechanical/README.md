@@ -30,7 +30,7 @@ What is fixed here is what the CAD will be made of and what the joints will be m
 
 | Class | Mechanism | Why |
 |---|---|---|
-| **Hip, knee** | Cycloidal / RV | ~85% efficiency, and many pins share the load so it absorbs the shock that footfall delivers and that strain-wave gears are damaged by [5][6] |
+| **Hip, knee** | Cycloidal / RV or planetary — not strain-wave | Footfall delivers shock, and strain-wave gears are damaged by it [5][6]. Cycloidal shares the load across many pins at ~85% efficiency [5]; planetary is not ruled out by that reason, and most bought modules at the legs' torque and speed are planetary ([electrical §6d](../electrical/README.md#6d-actuator-candidates--d-2-2026-11-22)) |
 | **Shoulder, elbow** | QDD planetary, 6:1–15:1 | Backdrivable — see below |
 | **Wrist, neck** | Harmonic | Smallest and lightest at high ratio, best precision, and these joints see no shock [5][6] |
 
@@ -39,6 +39,8 @@ What is fixed here is what the CAD will be made of and what the joints will be m
 [Spec 01](../../spec/01-architecture.md#application-frame) puts safe human contact in the core group. QDD at 6:1–15:1 keeps the arm backdrivable, which makes compliance a property of the mechanism rather than a promise made by software that can fail. The cost is torque density, and §1 of the electrical selection shows there is very little of that to spare — so this is a real trade made deliberately, not a free choice.
 
 Cycloidal reducers are heavier and bulkier with more parts [5], which is acceptable in the legs and not in the wrists.
+
+**Hip and knee revised 2026-11-22 (Plone).** The row read *Cycloidal / RV* alone, but its reason rules out strain-wave gears, not planetary ones. Between cycloidal and planetary the choice is made per module under D-2, on torque, speed, mass and what the datasheet says about shock, not on the reducer type.
 
 ## 3. Protection
 

@@ -103,7 +103,7 @@ Prices were looked for on 2026-09-26. Most supplier pages were unreachable from 
 
 **The actuator density has one motor behind it, at two ratios.** At 16:1 the module peaks at 78 Nm and 10 of the 18 joint types — 17 of the 31 joints — need more. At 48:1 the same motor peaks at 222 Nm and only hip pitch, knee and trunk pitch fall short, by 4–8 Nm, at about a third of the output speed; both are in the AVL, and whether the slower one is fast enough is D-2's question.
 
-**The reducer classes and the actuator family disagree.** `hardware/mechanical` §2 assigns cycloidal reducers to hips and knees and harmonic drives to wrists and neck; `hardware/electrical` §2 selects a hollow-shaft planetary module for every joint. The actuator module rows carry the conflict in their notes until D-2 decides.
+**The reducer classes and the actuator family disagree at the wrists and neck.** `hardware/mechanical` §2 assigns harmonic drives to wrists and neck; `hardware/electrical` §2 selects a hollow-shaft planetary module for every joint. The actuator module rows carry the conflict in their notes until D-2 decides. At hips and knees it is gone since 2026-11-22, when §2 allowed cycloidal or planetary there.
 
 **Ankle and waist have no reducer class.** The mechanical table stops at hip, knee, shoulder, elbow, wrist and neck.
 

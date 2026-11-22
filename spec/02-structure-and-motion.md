@@ -121,7 +121,7 @@ The group 5 standard is one material level covering handgun rounds, knives and e
 | Specific torque | **80–90 Nm/kg peak** — see below | **TM**, at a 16:1 reduction; the same motor at 48:1 is sold at 159 Nm/kg — see below |
 | Efficiency | 75–82% | **TM** |
 | Response | milliseconds | **TM** |
-| Joints | precision bearings with harmonic or cycloidal reducers | **TM** |
+| Joints | precision bearings with harmonic, cycloidal or planetary reducers ([mechanical §2](../hardware/mechanical/README.md#2-reducers-by-joint-class)) | **TM** |
 | Balance | IMU with ZMP control and reaction wheels | **TM** |
 | Adhesion | gecko-type dry adhesive, moderate load | **LAB** |
 

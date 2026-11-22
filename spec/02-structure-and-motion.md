@@ -184,6 +184,26 @@ Two things the table says. The arm cases are cheap: the horizontal arm sets the 
 
 **A single joint is not the binding constraint, but the arms are the lever on `f_act`.** The legs and trunk carry 1737 Nm of the 2475 and scale with the body, so they set the absolute torque each module must deliver and the peak power of 2.7, not the fraction. The arms, wrists and neck are the fixed 738 Nm, and the fixed part is what moves `f_act` when the body gets lighter — halving the payload from the 30 kg this table once declared took `f_act` at 80 Nm/kg from 0.34 to 0.30 at the old 130 kg point, and the move to the 96 kg reference point took it to 0.32: a lighter body, and a larger share of it in the arms.
 
+### Motion envelope
+
+**Listed 2026-11-22 (Plone); every figure open.** What the body must be able to do, motion by motion. The hardware is sized for the heaviest row, so each motion has a row of its own — declared, open or excluded — and none is out merely because no one wrote it down. Running had no row until this date: the knee's 1.77 Nm/kg was checked against the tasks then declared, and running was outside them by omission, not by decision ([electrical §6c](../hardware/electrical/README.md#6c-knee-torque--d-1-2026-11-21)). How a motion is carried out — which cadence and step length, which recovery strategy — is the controller's choice; a row states what the hardware must let the controller choose.
+
+| # | Motion | Kind | Flight phase | Where | To declare | What it sizes | Status |
+|---|---|---|---|---|---|---|---|
+| 1 | Walking, over a region of cadence and step length | commanded | no | everywhere, under the cap of the space | cadence range, step-length range, top speed (speed = cadence × step length) | Its four corners, each something different: fast cadence with long steps the peak joint speed — the knee's, and with it D-2; slow cadence with long steps torque at deep flexion and balance at the ankle; fast cadence with short steps joint acceleration and loop latency; slow cadence with short steps none of the peaks | listed, figures open |
+| 2 | Walking backward and sideways, turning in place | commanded | no | everywhere | speed in each direction, turning rate | hip roll and yaw, ankle roll | listed, figures open |
+| 3 | Stairs and slopes | commanded | no | stairs, ramps | riser height, slope, speed | knee and hip torque in flexion, covered for stairs by the 1.77 Nm/kg the legs are sized to ([electrical §6c](../hardware/electrical/README.md#6c-knee-torque--d-1-2026-11-21)); with a load, the load case above | torque covered; geometry and speed open |
+| 4 | Squatting, kneeling, rising from a seat and from the floor | commanded | no | everywhere | squat depth, kneeling posture | knee torque at deep flexion, range of motion | rising from a seat covered ([electrical §6c](../hardware/electrical/README.md#6c-knee-torque--d-1-2026-11-21)); deep squat, kneeling and the floor open |
+| 5 | Running | commanded | yes | open space only | speed, cadence, step length | knee and hip speed and torque — the human knee moment in running reaches 1.16–2.57 Nm/kg, above the 1.77 the legs are sized to ([electrical §6c](../hardware/electrical/README.md#6c-knee-torque--d-1-2026-11-21)); landing impact on joints and reducers; peak power ([2.7](#27-peak-power-is-limited-by-the-source-not-the-actuators)) | listed, figures open |
+| 6 | Jumping | commanded | yes | open space only | height, distance | peak power, which the battery limits without a supercapacitor ([2.7](#27-peak-power-is-limited-by-the-source-not-the-actuators)); landing impact | listed, figures open |
+| 7 | Balance recovery — after a push or a stumble, by a recovery step | reflex | possible | wherever the body is | the disturbance it must withstand, and during which of rows 1–6 | the swing speed and torque of a recovery step, which may be what sizes the leg modules | listed, figures open |
+| 8 | Controlled fall, when recovery fails | reflex | — | wherever the body is | fall height, what must be protected | protection and shell ([2.4](#24-protection), [04](04-shell.md)), shock at the joints, and the rise from the floor that follows (row 4) | listed, figures open |
+| — | Other demanding motions | — | — | — | — | — | open: not yet listed |
+
+**Commanded and reflex are different kinds.** Rows 1–6 are motions the Main Controller chooses: each can be capped, confined to a space and refused. Rows 7 and 8 are not chosen. The body must be able to do them during any commanded row, whenever a disturbance arrives, so they lie over the rest of the table rather than beside it.
+
+**A space sets a cap, not a size.** Near people, on stairs and in open space the controller holds the body below the envelope; the hardware is sized for the whole envelope and the reflex rows.
+
 ## 2.7 Peak power is limited by the source, not the actuators
 
 Actuators and pack both scale with the body, so both operating points of 2.5 have to be priced separately:

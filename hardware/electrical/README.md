@@ -248,7 +248,7 @@ So 78 Nm at 2.83 Nm/A is 27.5 A, inside the board's 60 A peak, and the manual's 
 | Stair ascent | 0.45–1.41 Nm/kg | 7 | 1.41 — McFadyen and Winter, 3 subjects, 22 cm riser |
 | Stair descent | 0.37–1.62 Nm/kg, second stance peak | 7 | 1.62 — the same study; 1.35 at a 17 cm riser (Riener et al., 10 subjects) |
 | Rising from a seat | 0.62–2.19 Nm/kg | 9 | 2.19 from one subject (Wu et al.); the other eight 0.62–1.29, and 1.14 is the highest from more than one subject |
-| Running — not a declared task | 1.16–2.57 Nm/kg | 5 | — |
+| Running — not declared when this was checked; listed in the [motion envelope](../../spec/02-structure-and-motion.md#motion-envelope) on 2026-11-22, figures open | 1.16–2.57 Nm/kg | 5 | — |
 
 **What it settles.** 1.77 Nm/kg covers every walking, stair and seat figure in the review but the single-subject 2.19: 9% above the highest stair figure, and 56% above the highest sit-to-stand figure measured on more than one subject. Rising from a seat is a declared task — the dock is a seat (DK-2). The figure stands, now with a source; nothing in the mass loop changes.
 
@@ -264,7 +264,7 @@ So 78 Nm at 2.83 Nm/A is 27.5 A, inside the board's 60 A peak, and the manual's 
 
 **What speed the knee needs.** Normative data from 36 healthy adults (Mentiplay et al. 2018, tabulated by Banky et al. [29]): mean peak knee angular velocity in swing is 219 °/s (3.8 rad/s) at 0.40–0.59 m/s and 384 °/s (6.7 rad/s) at 1.40–1.60 m/s, with ±1.96 SD at the faster speed spanning 294–474 °/s (5.1–8.3 rad/s); ankle dorsiflexion in swing reaches 214 °/s (3.7 rad/s) at that speed. The hip is slower: 2.3 rad/s, with a 97 Nm (1.3 Nm/kg) peak, for a 75 kg human walking at 1.6 m/s (Yu et al. [30], citing their own source). The knee sets the speed. Its two demands do not coincide — peak torque in stance at low speed, peak speed in swing at low torque — so a module must reach both corners of its torque–speed curve, not both at once. A simulated Unitree G1 reaches 16.6 rad/s at knee and hip pitch in fast walking [31]; the G1 is a 1.3 m robot, whose shorter leg turns faster at the same walking speed, so the figure bounds nothing for GEMs and is kept as a robot's reference only.
 
-**GEMs declares no walking speed.** Neither spec 02 nor the kinematics states one, so the knee's speed requirement is part of D-2: 6.7 rad/s mean and 8.3 rad/s at the upper bound for ordinary walking at 1.4–1.6 m/s, 3.8 rad/s for a slow 0.5 m/s.
+**GEMs declares no walking speed yet.** The [motion envelope](../../spec/02-structure-and-motion.md#motion-envelope) of spec 02.6 lists walking as a region of cadence and step length, with running beside it, and leaves every figure open (2026-11-22), so the knee's speed requirement is part of D-2: 6.7 rad/s mean and 8.3 rad/s at the upper bound for ordinary walking at 1.4–1.6 m/s, 3.8 rad/s for a slow 0.5 m/s.
 
 **The AVL's module does not reach it.** AKH70-48 at ±5 rad/s is below the mean knee swing speed of ordinary walking, in the lower tail of its spread. AKH70-16 has the speed, ±13 rad/s, and 78 of the 170 Nm.
 

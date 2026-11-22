@@ -30,7 +30,7 @@ What is fixed here is what the CAD will be made of and what the joints will be m
 
 | Class | Mechanism | Why |
 |---|---|---|
-| **Hip, knee** | Cycloidal / RV or planetary — not strain-wave | Footfall delivers shock, and strain-wave gears are damaged by it [5][6]. Cycloidal shares the load across many pins at ~85% efficiency [5]; planetary is not ruled out by that reason, and most bought modules at the legs' torque and speed are planetary ([electrical §6d](../electrical/README.md#6d-actuator-candidates--d-2-2026-11-22)) |
+| **Hip, knee** | Cycloidal / RV or planetary — not strain-wave | Footfall delivers shock, and strain-wave gears are damaged by it [5][6]. Cycloidal shares the load across many pins at ~85% efficiency [5]; planetary is not ruled out by that reason, and three of the four bought candidates found at the legs' torque and speed are planetary ([electrical §6d](../electrical/README.md#6d-actuator-candidates--d-2-2026-11-22)) |
 | **Shoulder, elbow** | QDD planetary, 6:1–15:1 | Backdrivable — see below |
 | **Wrist, neck** | Harmonic | Smallest and lightest at high ratio, best precision, and these joints see no shock [5][6] |
 

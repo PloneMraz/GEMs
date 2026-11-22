@@ -323,6 +323,21 @@ The two studies agree at the knee — 3.08 and 3.12 Nm/kg at 3.5 m/s, different 
 
 The figures are human, and a human runner flexes the knee 84–106° in swing, which is what sets its speed. A robot can run with a straighter leg; Oli, walking at 0.5–1.25 m/s in the simulation below, used 13–42° of knee range. No figure for a running robot's knee speed was obtained.
 
+**How long running can last.** A peak says what a joint does once; for how long it can keep doing it depends on its RMS torque over the stride against its continuous rating, since a motor heats with the square of its current. From the same dataset [41], participants 1–35, one leg, sagittal plane:
+
+| Speed | Knee RMS moment (peak) | Hip RMS (peak) | Ankle RMS (peak) | Mean positive power, both legs | Mean absolute power, both legs |
+|---|---|---|---|---|---|
+| 2.5 m/s | 0.96 Nm/kg (2.81) | 0.56 (1.11) | 0.77 (2.07) | 3.9 W/kg | 8.2 W/kg |
+| 3.5 m/s | 1.04 (3.12) | 0.78 (1.48) | 0.80 (2.28) | 5.6 | 11.8 |
+| 4.5 m/s | 1.09 (3.31) | 0.99 (1.75) | 0.79 (2.35) | 7.9 | 16.4 |
+
+At the 96.2 kg reference point and 2.5 m/s:
+- **Heat sets the ceiling.** The knee's RMS is 92 Nm, against the continuous rating of ENCOS EC-A10020-P2-24, 100 Nm, and of RMD-X12-P20-320, 85 Nm [35][34] — at or over it, and the ratings are the datasheets' conditions, not a sealed body's (plan M-11). How long either module can hold it is read from a temperature-rise curve; ENCOS publishes those for its P1-12 ([35] §8.5), not yet found for the P2-24.
+- **Energy does not.** The legs' mechanical power is 375 W positive and 790 W in absolute value, of the order of 1 kW drawn. A human stores part of each stride in tendons, which a body without series-elastic elements does not, so the absolute figure is the closer of the two. Against the 3.9 kWh pack, a minute of running is small and an hour about a quarter of it; against the 12 kW the pack delivers at 3C ([spec 02.7](../../spec/02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators)), the draw is small.
+- **The ankle is sized below running.** Its running peak, 2.07 Nm/kg, is 199 Nm, against the 134 Nm it is sized to at push-off in walking; Schache et al. give 2.94 Nm/kg at 3.5 m/s [39].
+
+**Decided 2026-11-22 (Plone):** running is declared to 2.5 m/s, to keep pace with a person or leave a hazard, for 60 s at that speed and then a rest whose length waits for the thermal data; faster running is `OPEN` with its requirement; the disturbance balance recovery must withstand is a sudden change of the body's velocity of 1.0 m/s forward or backward or 0.5 m/s sideways, standing or walking ([spec 02.6](../../spec/02-structure-and-motion.md#motion-envelope)).
+
 **Balance recovery: human.** Pijnappels et al. [40] tripped 12 young adults walking at 1.61 m/s. The recovery step was slower in time, not faster: swing 0.67 s against 0.44 s in normal walking, stride 1.83 m against 1.66 m (Table 1). The paper gives no joint angular velocity. Joint moments attributed to this paper by a search excerpt are not in it and are not used. No human figure for joint speed in a recovery step was found.
 
 **Balance recovery: a robot.** LimX's published Oli policy [38] was run in MuJoCo, 1 ms step, on the serial-joint model of its description at commit 4c0a3c7 (52.55 kg), with its walking controller's observation, history, 100 Hz policy and 1 kHz PD reproduced from humanoid-rl-deploy-python at 592e6f0, and its torque limits; the heading was held by a yaw command, as an operator holds it. Its training configuration at humanoid-rl-isaaclab b5e8323 commands 1.0 m/s forward at most and pushes the base by setting its velocity, up to ±1.0 m/s forward and ±0.5 m/s sideways. A push of that kind was applied, and the leg peaks compared over the 2 s before and after it:
@@ -348,7 +363,7 @@ A backward push from standing asked the knee for more speed than walking at 1.0 
 - Balance recovery may set the knee's speed rather than walking does: in the robot, 9–12 rad/s after a backward push from standing, against 7 rad/s walking at 1.0 m/s. The disturbance GEMs must withstand (row 7) decides which.
 - Running roughly doubles the knee's torque over the figure the legs are sized to, 3.1 Nm/kg against 1.77 at 3.5 m/s, and asks 11–13 rad/s of it if it runs as a human does. That changes the mass loop, not only the module.
 - No bought module found meets human-like running at 3.5 m/s at both corners. ENCOS and X12 are at the edge of both at 2.5 m/s. Under [`CLAUDE.md`](../../CLAUDE.md) §2, a running speed no module meets is `OPEN` with its requirement, not a module designed here.
-- The author's to decide: the running speed row 5 declares, and the disturbance row 7 declares.
+- Together, rows 5 and 7 ask the knee module for at least 270 Nm peak, at least 11 rad/s at about 50 Nm (12 with margin) and 92 Nm RMS for 60 s, and the ankle for about 200 Nm. Next: the candidates' torque–speed and temperature-rise curves, and the mass loop with these figures.
 
 ## 7. References
 

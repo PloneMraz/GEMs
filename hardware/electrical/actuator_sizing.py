@@ -79,7 +79,7 @@ MODULE_RATED = 74.0
 # Sources are listed per row in README.md.
 JOINTS = [
     # (name, count, basis, value)
-    ("hip_pitch",      2, "per_kg", 1.77),   # scaled from 100-150 Nm at 70 kg
+    ("hip_pitch",      2, "per_kg", 1.77),   # 100-150 Nm at 70 kg, scaled; unsourced (README §6d), above the 1.3 Nm/kg of a walking human
     ("hip_roll",       2, "per_kg", 1.23),
     ("hip_yaw",        2, "per_kg", 0.62),
     ("knee",           2, "per_kg", 1.77),   # = hip pitch; checked against gait data, D-1 (README §6c)

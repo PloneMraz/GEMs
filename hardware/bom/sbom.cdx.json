@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-21T14:52:20Z",
+    "timestamp": "2026-11-22T01:33:22Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -91,7 +91,7 @@
       "type": "application",
       "bom-ref": "hardware/electrical/actuator_sizing.py",
       "name": "hardware/electrical/actuator_sizing.py",
-      "version": "sha256:0b7f8bccd96f",
+      "version": "sha256:aa0cc1685eff",
       "description": "Joint torque table and actuator sizing",
       "supplier": {
         "name": "Plone Mraz"
@@ -106,7 +106,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "0b7f8bccd96f3b2ae9439185390d2e8c3d511a4ae4bbbd6bd262cb51bae9b4c2"
+          "content": "aa0cc1685effa52e0b574cad5efe4133a224e796c3f7d8317bcb1a49283a563c"
         }
       ],
       "scope": "excluded",

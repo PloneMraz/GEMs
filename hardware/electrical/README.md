@@ -256,7 +256,39 @@ So 78 Nm at 2.83 Nm/A is 27.5 A, inside the board's 60 A peak, and the manual's 
 
 **Against human strength.** Šarabon et al. [28] pooled 411 studies of maximal isometric knee extension: adult men 2.92–3.45 Nm/kg at mid-range knee angle, adult women 2.08–2.74, older men 1.74–2.16 (pooled 95% confidence intervals). At 1.77 the knee has the strength of an older man: enough for the declared tasks, not a young adult's reserve.
 
-**Two misreadings in [12].** Its walking knee moment, "0.46–1.27 Nm/kg", is Zhang et al.'s peak-to-peak range of the moment over the gait cycle, not a peak. Its knee extension moment of "3.0–3.4 Nm/kg … during the lift phase" of floor-to-waist lifting cites Šarabon et al., whose figures are maximal isometric strength, not a moment measured while lifting. Neither figure is used here. The hip row, which cites [12] and [13] together, has not been re-traced to see which of the two carries its 100–150 Nm.
+**Two misreadings in [12].** Its walking knee moment, "0.46–1.27 Nm/kg", is Zhang et al.'s peak-to-peak range of the moment over the gait cycle, not a peak. Its knee extension moment of "3.0–3.4 Nm/kg … during the lift phase" of floor-to-waist lifting cites Šarabon et al., whose figures are maximal isometric strength, not a moment measured while lifting. Neither figure is used here. The hip row, which cites [12] and [13] together, was re-traced on 2026-11-22: neither carries its 100–150 Nm (§6d).
+
+## 6d. Actuator candidates — D-2, 2026-11-22
+
+**What D-2 turns on.** At the 96.2 kg reference point the AVL's module, CubeMars AKH70-48, covers every leg and trunk torque, but its output runs to about 5 rad/s (§6b). Torque does not settle D-2; speed does.
+
+**What speed the knee needs.** Normative data from 36 healthy adults (Mentiplay et al. 2018, tabulated by Banky et al. [29]): mean peak knee angular velocity in swing is 219 °/s (3.8 rad/s) at 0.40–0.59 m/s and 384 °/s (6.7 rad/s) at 1.40–1.60 m/s, with ±1.96 SD at the faster speed spanning 294–474 °/s (5.1–8.3 rad/s); ankle dorsiflexion in swing reaches 214 °/s (3.7 rad/s) at that speed. The hip is slower: 2.3 rad/s, with a 97 Nm (1.3 Nm/kg) peak, for a 75 kg human walking at 1.6 m/s (Yu et al. [30], citing their own source). The knee sets the speed. Its two demands do not coincide — peak torque in stance at low speed, peak speed in swing at low torque — so a module must reach both corners of its torque–speed curve, not both at once. A simulated Unitree G1 reaches 16.6 rad/s at knee and hip pitch in fast walking [31]; the G1 is a 1.3 m robot, whose shorter leg turns faster at the same walking speed, so the figure bounds nothing for GEMs and is kept as a robot's reference only.
+
+**GEMs declares no walking speed.** Neither spec 02 nor the kinematics states one, so the knee's speed requirement is part of D-2: 6.7 rad/s mean and 8.3 rad/s at the upper bound for ordinary walking at 1.4–1.6 m/s, 3.8 rad/s for a slow 0.5 m/s.
+
+**The AVL's module does not reach it.** AKH70-48 at ±5 rad/s is below the mean knee swing speed of ordinary walking, in the lower tail of its spread. AKH70-16 has the speed, ±13 rad/s, and 78 of the 170 Nm.
+
+**Candidates for hip pitch, knee and trunk pitch (170, 170 and 167 Nm).** Found through an open actuator dataset [32] — 565 module variants, a secondary source with one maintainer — and each figure below read from the manufacturer's datasheet as the dataset copies it:
+
+| Module | Reducer | Peak / rated torque | Output speed | Mass | Nm/kg | Bus | Supply | Source |
+|---|---|---|---|---|---|---|---|---|
+| CubeMars AKE90-8 | planetary 8:1, quasi-direct drive | 170 / 55 Nm at 120 rpm | 210 rpm no-load = 22.0 rad/s | 1400 g | 121 | CAN | 48 V | [33] |
+| MyActuator RMD-X12-P20-320 | planetary 20:1 | 320 / 85 Nm at 100 rpm | 125 rpm no-load = 13.1 rad/s | 2.4 kg | 133 | EtherCAT, CAN, RS-485 | 48 V | [34] |
+| ENCOS EC-A10020-P2-24 | planetary 24:1 | 330 / 100 Nm at 115 rpm | 123 rpm peak = 12.9 rad/s | 2172–2211 g | 149–152 | CAN (CAN FD) | 48 V | [35] §7.2 |
+| PHYBOT PhyArc 102 | cycloidal 25:1 | 244 / 60 Nm at 100 rpm | 124.2 rpm no-load = 13.0 rad/s | 1.0 kg | 244 | Ethernet and CAN FD, own protocol | 72 V (24–72 V) | [36] |
+| CubeMars AKH70-48, the AVL's, for contrast | planetary 48:1 | 222 / 74 Nm at 28 rpm | ±5 rad/s command range | 1396 g | 159 | CAN | 48 V | [23][26] |
+
+The speeds are on the basis each datasheet gives — no-load, peak, or command range — and are not one basis.
+
+**What the table says.**
+- Every candidate is above the 80 Nm/kg floor, so none strains the mass loop. At 1.77 Nm per kilogram of body and load, the capacity left for a load is 0 kg for AKE90-8 (170 Nm is the knee's figure exactly), about 42 kg for PhyArc 102, and 85–90 kg for the X12 and the ENCOS module.
+- Rated torque is 25–33% of peak in every row, so the continuous-torque gap of §6b stands. ENCOS is the one manufacturer found that publishes stall temperature-rise curves ([35] §8.5, for its P1-12), the kind of data that gap needs.
+- The reducer conflict D-2 names can be settled by a bought module either way. `hardware/mechanical` §2 asks for cycloidal reducers at hip and knee, and cycloidal modules are on sale — PhyArc here, LeadShine's HRV2 at 120–160 Nm in the dataset with no speed given; MyActuator's own cycloidal line, CEM, stops at 45 Nm [37]. The planetary rows are what the electrical selection assumed. Only the 8:1 row keeps the backdrivability that §2 argues for the arms; the others are 20:1 to 25:1.
+- Only MyActuator offers EtherCAT on the module; the others need the CAN-to-EtherCAT bridge of plan E-5. PhyArc wants 72 V and the rest 48 V, which ties the choice to D-4.
+
+**Not yet done.** No price or availability outside China has been read for any of the four. The other joint classes — hip roll 118, ankle pitch 134, the arm joints at 50–104, the wrists at 20 and the neck at 15 Nm — are not yet matched. Peak duration is known for none but ENCOS's curves, and whether the dataset's copies of the datasheets are current is not checked. No row enters the AVL until the author picks the direction.
+
+**Two open points of D-1, re-checked.** No figure was found for the knee moment of rising from a deep squat or the floor; it stays open. The hip row's 100–150 Nm at 70 kg is not in [12], whose hip figures are 0.5–1.0 Nm/kg in walking, nor in [13], which is qualitative and cites a 53 Nm module as its example: the 1.77 Nm/kg it scales to stands as an assumption, above the 1.3 Nm/kg of [30].
 
 ## 7. References
 
@@ -274,7 +306,7 @@ So 78 Nm at 2.83 Nm/A is 27.5 A, inside the board's 60 A peak, and the manual's 
 | 10 | [An EtherCAT-Based Real-Time Control System Architecture for Humanoid Robots](https://mediatum.ub.tum.de/doc/1394924/0185778354196.pdf) |
 | 11 | [CAN vs EtherCAT vs RS-485 vs UART for robot motors and actuators](https://openelab.io/blogs/learn/can-vs-ethercat-vs-rs-485-vs-uart-for-robot-motors-and-actuators) |
 
-Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at push-off and 2.5–3.5 W/kg push-off power from normative gait data; hip 100–150 Nm peak for a 70 kg humanoid during stair climbing and squat rise, scaled by mass [12][13]. Knee was assumed equal to hip pitch; on 2026-11-21 that figure was checked against published gait data (D-1) and stands for the declared tasks — walking, stairs, rising from a seat — with what it does not cover stated in [§6c](#6c-knee-torque--d-1-2026-11-21) [27][28].
+Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at push-off and 2.5–3.5 W/kg push-off power from normative gait data; hip 100–150 Nm peak for a 70 kg humanoid during stair climbing and squat rise, scaled by mass — a figure attributed here to [12][13], which on re-reading neither gives (§6d): it stands as an assumption, above the 1.3 Nm/kg a walking human's hip reaches [30]. Knee was assumed equal to hip pitch; on 2026-11-21 that figure was checked against published gait data (D-1) and stands for the declared tasks — walking, stairs, rising from a seat — with what it does not cover stated in [§6c](#6c-knee-torque--d-1-2026-11-21) [27][28].
 
 | # | Source |
 |---|---|
@@ -295,3 +327,12 @@ Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at pus
 | 22 | [CubeMars AKH70-16 V1.0 KV41 hollow-shaft planetary actuator](https://www.cubemars.com/product/akh70-16-v-1-0-kv41-hollow-shaft-planetary-actuator.html) — Φ90 × 60.5 mm, 879 g, 7 mm bore, 26 Nm rated, **78 Nm peak**, 105 rpm no-load, 16:1, dual 21-bit encoders; from the specification summary of the product page as read by the author on 2026-09-26, the page itself not readable from this environment. Search excerpts and reseller listings quote 85 Nm peak; the 78 Nm figure is the one consistent with 879 g and 88.74 Nm/kg |
 | 27 | Zhang L., Liu G., Han B., Wang Z., Yan Y., Ma J., Wei P., [Knee Joint Biomechanics in Physiological Conditions and How Pathologies Can Affect It: A Systematic Review](https://pmc.ncbi.nlm.nih.gov/articles/PMC7160724/), *Applied Bionics and Biomechanics* 2020:7451683 — knee moment tables for walking, running, stairs and sit-to-stand |
 | 28 | Šarabon N., Kozinc Ž., Perman M., [Establishing Reference Values for Isometric Knee Extension and Flexion Strength](https://doi.org/10.3389/fphys.2021.767941), *Frontiers in Physiology*, 2021 — meta-analysis, 411 studies, 13,893 participants |
+| 29 | Banky M., Clark R.A., Mentiplay B.F., Olver J.H., Williams G., [Clinical spasticity assessment using the Modified Tardieu Scale does not reflect joint angular velocity or range of motion during walking](https://doi.org/10.2340/16501977-2777), *Journal of Rehabilitation Medicine* 53(1):jrm00137, 2021 — Table II, normative peak joint angular velocities by walking speed from Mentiplay et al., [Lower limb angular velocity during walking at various speeds](https://doi.org/10.1016/j.gaitpost.2018.06.162), *Gait & Posture*, 2018 |
+| 30 | Yu S., Huang T.-H., Yang X., et al., [Quasi-Direct Drive Actuation for a Lightweight Hip Exoskeleton with High Backdrivability and High Bandwidth](https://arxiv.org/abs/2004.00467), 2020 — §I, hip peak torque and speed for a 75 kg human at 1.6 m/s, citing its reference [27] |
+| 31 | Huang X., Dong J., Zhao H., [Task-Oriented Co-Design and Optimization of Geared Actuators for Robotic Applications](https://arxiv.org/abs/2609.22795), 2026 — §II-A, knee and hip-pitch torque–speed points of a simulated Unitree G1; a robot, not a human |
+| 32 | [Dynamic Robot Joint Actuator Comparison](https://zj-motor.github.io/dynamic-robot-joint-actuators/), open dataset, [repository](https://github.com/zj-motor/dynamic-robot-joint-actuators) at commit b568703 (2026-08-04) — 565 variants with copies of manufacturers' datasheets; secondary, used to find candidates, not as their figures' source |
+| 33 | CubeMars product datasheet, AKE90-8 page — the copy in [32], `datasheets/25_酷德Cubemars.pdf` |
+| 34 | MyActuator, XV4 planetary module datasheet, 2026-04-16, RMD-X12-P20-320 table — the copy in [32], `datasheets/12_脉塔_XV4行星模组_260416.pdf` |
+| 35 | ENCOS (Nanjing), motor data manual V3.13, §7 EC-A10020-P2-24 and §8 EC-A10020-P1-12 — the copy in [32], `datasheets/20_因克斯_ENCOS电机数据手册_V3.13.pdf` |
+| 36 | PHYBOT, PhyArc series parameter sheet — the copy in [32], `datasheets/5_动易_PhyArc模组.png` |
+| 37 | MyActuator, CEM cycloidal module datasheet, 2025-09-28 — the copy in [32], `datasheets/12_脉塔_CEM摆线模组_250928.pdf` |

@@ -52,11 +52,13 @@ The group 5 standard requires handgun rounds, blades and everyday impact togethe
 | Stab, NIJ 0115.00 spike level 1, soft aramid | **1.42 kg/m²**, 2.0 mm; spike level 3 2.83 kg/m² | [16] |
 | **Integrated multi-threat package** | **~6–9 kg/m²** | [10] |
 | Soft multi-threat package, IIIA + spike 3 | **7.03 kg/m²**, 10.4 mm | [16] |
-| Hard plate, 100% polyethylene, IIIA stand-alone, multi-curve | **7.2–9.1 kg/m²**, 8.9 mm, computed from listed sizes and weights; a lower bound | [15] |
+| Hard plate, 100% polyethylene, IIIA and special threats stand-alone, multi-curve | **7.2–9.1 kg/m²**, 8.9 mm, computed from listed sizes and weights; a lower bound | [15] |
+| UHMWPE cross-ply for pressed hard plates (SJ100-240H), IIIA, 24 plies | **5.80 kg/m²**; pressed at 125–135 °C, 8–15 MPa; the vendor's own laboratory | [24] |
+| UHMWPE cross-ply for soft armour (SJ400-130S), IIIA, 22–25 plies | **2.90–3.25 kg/m²**; the vendor's own laboratory | [25] |
 
 The handgun levels were renamed when NIJ Standard 0101.07 moved its levels into NIJ Standard 0123.00: Level II is now HG1 and Level IIIA HG2 [17][18]. The spike row read ~3.2 kg/m² until 2026-11-22, citing the standard itself [9], which sets the test and gives no areal density; the figure now comes from a bought panel's specification.
 
-**The armour is the shell** (2026-11-22, [spec 04.2](../../spec/04-shell.md#42-armour-shell)): moulded UHMWPE composite per body segment, carrying the protection and the body's form. The mass loop keeps 7.5 kg/m², which the hard plates above put at the optimistic end.
+**The armour is the shell** (2026-11-22, [spec 04.2](../../spec/04-shell.md#42-armour-shell)): a hybrid laminate moulded per body segment in one part — UHMWPE plies for the handgun level, 5.80 kg/m² [24], with aramid spike plies, 1.42 kg/m² [16] — carrying the protection and the body's form. That is 7.22 kg/m² before finish and curvature; the mass loop keeps 7.5 kg/m². The bought hard plate above is heavier because it also stops special threats.
 
 Against 1.6 m² of skin area at 1.65 m, at the coverage bands of [spec 02.4](../../spec/02-structure-and-motion.md#24-protection): **4.8 kg** at 50% coverage and 6 kg/m², up to **11.5 kg** at 80% and 9 kg/m².
 
@@ -69,9 +71,9 @@ Against 1.6 m² of skin area at 1.65 m, at the coverage bands of [spec 02.4](../
 | Layer | Bought candidate | Areal density |
 |---|---|---|
 | Impact padding | Rogers PORON XRD, foam [14]; Figure 03 and 1X NEO use multi-density foam and a polymer lattice [11][12][13] | 0.14–0.40 kg/m² per mm, typical; thickness `⟦IMPL⟧` |
-| Armour shell | Moulded UHMWPE composite, to the GEMs drawing | 7.5 kg/m² in the loop |
+| Armour shell | Hybrid laminate, UHMWPE (Sinofibra SJ100-240H [24]) with aramid spike plies, moulded to the GEMs drawing | 7.5 kg/m² in the loop; 7.22 from the data sheets |
 | Tactile skin | Ensuring Technology HexSkin [20] | `⟦IMPL⟧` — not stated by the vendor |
-| Textile | Fabric to NFPA 1970 (2025) [19] | `⟦IMPL⟧` — no data sheet read |
+| Textile | Aramid outer-shell fabric, TenCate Nomex Advance Truecolor AV 9400 [27], certified to EN 469; the requirement is NFPA 1970 (2025) [19] | **0.20 kg/m²** |
 
 What the laboratory can do and the market cannot — self-healing skin, variable stiffness, electrochromic colour, whole-body touch at the density of spec 05.2, responsive padding [23] — is on the upgrade path of [spec 04.7](../../spec/04-shell.md#47-upgrade-path), with no place reserved for it.
 
@@ -82,8 +84,9 @@ What the laboratory can do and the market cannot — self-healing skin, variable
 | Section sizing and safety factor | Load cases, which need a gait and a fall model |
 | Joint range of motion, per joint | Mechanism layout |
 | Bearing selection and preload | Joint loads |
-| Areal density of the padding, the tactile skin and the textile | Padding thickness (plan M-8); vendor and fabric data sheets |
-| Armour shell: moulder's areal density and use-temperature limit | A moulder's data sheet; the limit is checked against the module temperatures of [electrical §6e](../electrical/README.md) |
+| Areal density of the padding and the tactile skin | Padding thickness (plan M-8); the skin vendor's data |
+| Armour shell: the hybrid's areal density as moulded, with finish and curvature, and its use-temperature limit | A moulder's data; the limit is checked against the module temperatures of [electrical §6e](../electrical/README.md) |
+| Textile: NFPA 1970 certification | The candidate fabric holds EN 469 [27] |
 | Fire standard for the armour shell | **OPEN** — NFPA 1970 tests garment materials, not a moulded shell ([spec 04.4](../../spec/04-shell.md#44-fire-resistance)) |
 
 ## 6. References
@@ -113,3 +116,7 @@ What the laboratory can do and the market cannot — self-healing skin, variable
 | 21 | [XELA Robotics](https://www.xelarobotics.com/) — uSkin spec sheets uSPa44 (2024-10-23), uSCu (2024-10-23), uSPa46 / XR1946 (2025-07-23) |
 | 22 | [Ensuring Technology — CES 2026 press release](https://finance.yahoo.com/news/fingertips-full-body-coverage-ensuring-090900110.html), 2026-01-09: Tacta, 361 sensels per cm² at 1000 Hz; the vendor's claim |
 | 23 | Wang et al., [*Soft Responsive Materials Enhance Humanoid Safety*](https://arxiv.org/abs/2601.02857), arXiv:2601.02857, 2026-01-06 |
+| 24 | Sinofibra Advanced Materials, LOONG-FLEX SJ100-240H, UHMWPE UD for hard armour, product data sheet v2.1, 2026-01-18 ([sinofibra.com](https://www.sinofibra.com)): 240 g/m² per 4-ply sheet; IIIA at 24 plies, 5.80 kg/m²; press 125–135 °C, 8–15 MPa; typical values, the vendor's laboratory |
+| 25 | Sinofibra Advanced Materials, LOONG-FLEX SJ400-130S, UHMWPE UD for soft armour, product data sheet v2.1, 2026-01-18: IIIA at 22–25 plies, 2.90–3.25 kg/m² |
+| 26 | FIBER-LINE, *Nomex meta-aramid* fibre data sheet (2016): no melting point; 0.4% shrinkage in dry air at 177 °C for 30 min; specific gravity 1.38 |
+| 27 | TenCate Protective Fabrics, *Nomex Advance Truecolor AV 9400*, technical data Q1-2025: 200 g/m², Nomex/Kevlar/anti-static; EN ISO 15025 compliant; ISO 17493 at 180 °C ≤ 2%; certified EN 469 and EN 1149-5; indicative values |

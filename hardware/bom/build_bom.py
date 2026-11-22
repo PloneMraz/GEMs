@@ -355,13 +355,13 @@ def build():
                         req="pinch points and falls (spec 02.6 row 8)",
                         notes="areal density IMPL: thickness not set; candidates in avl.csv"),
           "", "coverage IMPL (plan M-8)")
-    b.use(shell, b.part("GEM-18010", "Armour shell, moulded UHMWPE composite, multi-threat",
+    b.use(shell, b.part("GEM-18010", "Armour shell, moulded hybrid laminate, UHMWPE and aramid spike plies",
                         "MFG", "BUY", uom="M2", mass="%.1f" % ARMOUR_KG_M2,
-                        basis="per m2, held at 7.5 (2026-11-22); bought hard PE plates 7.2-9.1",
+                        basis="per m2, held at 7.5 (2026-11-22); data sheets give 5.80 UHMWPE + 1.42 aramid = 7.22",
                         level="L2", ref="spec 02.4; spec 04.2; hardware/mechanical 3",
                         req="NIJ HG2 (formerly IIIA) + NIJ 0115 spike level 1, tested to, not certified; "
                             "fire OPEN (spec 04.4)",
-                        notes="moulded per segment by an armour manufacturer to the GEMs drawing (plan M-7)"),
+                        notes="moulded per segment in one part by an armour manufacturer to the GEMs drawing (plan M-7); candidates in avl.csv"),
           "%.2f" % ARMOUR_M2, "65% of 1.6 m2")
     b.use(shell, b.part("GEM-18140", "Tactile skin, large-area modules, body", "OTS", "BUY",
                         uom="M2", level="L1", ref="spec 04.3; spec 06.6",
@@ -369,12 +369,14 @@ def build():
                             "spec 05.2 density, ~20/cm2 at 1 kHz, is UPG",
                         notes="mass not stated by the vendor; candidates in avl.csv"),
           "%.2f" % (ORDINARY_CM2 / 1e4), "ordinary region of spec 05.2")
-    b.use(shell, b.part("GEM-18130", "Outer textile cover set, flame-resistant fabric", "MFG", "MAKE",
-                        uom="SET", level="L2", ref="spec 04.3; spec 04.4",
+    b.use(shell, b.part("GEM-18130", "Outer textile cover set, aramid fabric", "MFG", "MAKE",
+                        uom="SET", mass="%.2f" % (0.200 * SKIN_M2),
+                        basis="fabric only: 200 g/m2 over %.1f m2, seams and fastenings not counted" % SKIN_M2,
+                        level="L2", ref="spec 04.3; spec 04.4",
                         req="fabric to NFPA 1970 (2025) outer-shell flame resistance; removable; "
                             "joints in textile; colour fixed",
                         notes="patterned by GEMs on the surfaces of ID-2, sewn to drawing from bought "
-                              "fabric (plan M-8); no fabric datasheet read yet (2026-11-22)"))
+                              "fabric (plan M-8); candidate fabric in avl.csv holds EN 469, not NFPA 1970"))
 
     # Upgrade path (spec 04.7): in the item master, not in the structure.
     for pn, d, cat, ref, req in [

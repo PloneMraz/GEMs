@@ -109,7 +109,7 @@ Two standard references anchor it. The **Facial Action Coding System** (Ekman an
 | M-4 | Hands at the reference configuration | L4 | D-6 |
 | M-5 | Structure per segment — composite tubes, 7075 load-introduction fittings, fastener schedule | L4 | M-2, M-3 |
 | M-6 | Structural FEA per segment against peak joint loads and a fall case | L5 | M-5 |
-| M-7 | Armour shell — moulded UHMWPE composite per segment, NIJ HG2 + spike level 1, tested to and not certified (spec 04.2): panel layout at the declared coverage, the moulds, and the moulder's areal density and use-temperature limit | L4 | D-8 |
+| M-7 | Armour shell — hybrid laminate moulded per segment in one part, UHMWPE plies with co-moulded aramid spike plies, NIJ HG2 + spike level 1, tested to and not certified (spec 04.2): panel layout at the declared coverage, the moulds, and the moulder's areal density and use-temperature limit | L4 | D-8 |
 | M-8 | Shell, three layers (spec 04.5) on the surfaces of ID-2: impact padding and its thickness, kept between the armour shell and hot modules; the armour shell of M-7; the tactile skin laid on it under a removable textile cover; at the joints the shell stops and the textile carries on, and whether the skin crosses them is decided here. The fire standard for the armour shell is **OPEN** (spec 04.4) | L4 | M-7, ID-2 |
 | M-9 | Head and sensor mounting — stereo baseline, thermal, LiDAR, microphone array geometry, inside the face of ID-5 | L4 | E-6, ID-5 |
 | M-10 | Dock, mechanical — moved to package DK below | — | — |

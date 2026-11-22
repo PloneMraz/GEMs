@@ -61,7 +61,7 @@ Figures are derived from the specification and the budget model, never measured.
 | Free-running endurance | 2 h at the declared operating point, with a dock |
 | Endurance ceiling | 10.7 h |
 | Sleep states supported | none implemented |
-| Protection level and coverage | NIJ HG2 (formerly IIIA) + spike level 1, 65% coverage, moulded UHMWPE armour shell — selected, not built |
+| Protection level and coverage | NIJ HG2 (formerly IIIA) + spike level 1, 65% coverage, moulded UHMWPE–aramid armour shell — selected, not built |
 | Actuator specific torque | 80–90 Nm/kg peak over module mass — selected, not procured |
 | Summed joint torque | 2479 Nm across 31 joints |
 | Peak power at the source | 19.2 kW at 5C |

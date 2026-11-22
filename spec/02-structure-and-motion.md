@@ -88,7 +88,7 @@ The group 5 standard is one material level covering handgun rounds, knives and e
 | Stab, NIJ 0115.00 spike level 1 | **1.42 kg/m²** standalone | a bought soft aramid panel; ~3.2 kg/m² until 2026-11-22, from no traceable source ([mechanical §3](../hardware/mechanical/README.md#3-protection)) |
 | **Integrated multi-threat package** | **~6–9 kg/m²** | cheaper than adding two layers, dearer than one |
 
-The reference design moulds the armour as the shell itself, in UHMWPE composite ([04.2](04-shell.md#42-armour-shell)); bought hard polyethylene plates of the handgun level come to 7.2–9.1 kg/m², so the 7.5 kg/m² the loop holds is at the optimistic end.
+The reference design moulds the armour as the shell itself ([04.2](04-shell.md#42-armour-shell)): UHMWPE plies for the handgun level, 5.80 kg/m², with aramid spike plies, 1.42 kg/m², co-moulded — 7.22 kg/m² before finish and curvature, against the 7.5 kg/m² the loop holds.
 
 *Sourced.* Against a skin area of ~1.6 m² for a 1.65 m body (1.8 m² at the 1.75 m declared until 2026-09-26, scaled by the square of height):
 

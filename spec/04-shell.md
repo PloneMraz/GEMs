@@ -10,17 +10,20 @@ The innermost layer: foam or a polymer lattice over the hardware, at pinch point
 
 A bought candidate, Rogers PORON XRD, comes in five densities, specific gravity 0.14–0.40 — **0.14–0.40 kg/m² per millimetre** of thickness [14]. The figures are typical values, and the data sheet says it should not be used to create a specification. Thickness, and therefore areal density, is `⟦IMPL⟧` until plan M-8 sets it.
 
-The padding also stands between the armour shell and anything hot: the shell's use-temperature limit is `⟦IMPL⟧` until read from the moulder's data sheet, and it must be checked against the module temperatures of [electrical §6e](../hardware/electrical/README.md), up to 100 °C in the thermal test read there.
+The padding also stands between the armour shell and anything hot: the shell's laminate is pressed at 125–135 °C [24], its use-temperature limit lies below that and is on no data sheet read, so it is `⟦IMPL⟧` until the moulder states it, and it must be checked against the module temperatures of [electrical §6e](../hardware/electrical/README.md), up to 100 °C in the thermal test read there.
 
 ## 4.2 Armour shell
 
-Armour and shell are **one layer** (2026-11-22): a composite of ultra-high-molecular-weight polyethylene (UHMWPE), moulded per body segment, which carries the group 5 protection of [02.4](02-structure-and-motion.md#24-protection) — NIJ HG2, the level NIJ 0123.00 names in place of IIIA [17], with NIJ 0115.00 spike level 1 — and gives the body its form under the textile. UHMWPE is chosen for mobility and mass. **TM** as a material and a process; the moulding is GEMs' drawing, made by an armour manufacturer (plan M-7).
+Armour and shell are **one layer** (2026-11-22): a hybrid laminate moulded per body segment in one part. Plies of ultra-high-molecular-weight polyethylene (UHMWPE) take the handgun threat; aramid plies, co-moulded with them, take the spike, since no data for pressed UHMWPE against a spike has been found. The layer carries the group 5 protection of [02.4](02-structure-and-motion.md#24-protection) — NIJ HG2, the level NIJ 0123.00 names in place of IIIA [17], with NIJ 0115.00 spike level 1 — and gives the body its form under the textile. UHMWPE is chosen for mobility and mass. **TM** as a material and a process; the moulding is GEMs' drawing, made by an armour manufacturer (plan M-7).
 
 | | Figure | Source |
 |---|---|---|
-| Bought hard plate, 100% polyethylene, NIJ IIIA stand-alone, multi-curve, 8.9 mm | **7.2–9.1 kg/m²**, computed from the listed sizes and weights; a lower bound, since the shooter's-cut plates are smaller than their bounding rectangle | [15] |
-| Bought soft multi-threat package, aramid and laminate, IIIA + spike 3, 10.4 mm | **7.03 kg/m²** | [16] |
-| The mass loop | **7.5 kg/m²**, held (2026-11-22); optimistic against the hard plates above until a moulder's figure is in hand | [02.4](02-structure-and-motion.md#24-protection) |
+| UHMWPE cross-ply for hard plates, Sinofibra SJ100-240H: NIJ 0101.06 IIIA, 9 mm and .44 Magnum, 24 plies; hot press or mould at 125–135 °C, 8–15 MPa | **5.80 kg/m²** — typical values from the vendor's own laboratory | [24] |
+| Spike plies, aramid: NIJ 0115.00 spike level 1, as a bought soft panel | **1.42 kg/m²**, 2.0 mm | [16] |
+| **The hybrid shell**, the two co-moulded | **7.22 kg/m²**, before surface finish and the cost of curvature | — |
+| The mass loop | **7.5 kg/m²**, held (2026-11-22); 4% over the hybrid | [02.4](02-structure-and-motion.md#24-protection) |
+| *For comparison:* bought hard plate, 100% polyethylene, IIIA and special threats (5.7×28 mm, 7.62×25 mm among them) stand-alone, 8.9 mm | 7.2–9.1 kg/m², a lower bound — computed from listed sizes and weights | [15] |
+| *For comparison:* soft UHMWPE cross-ply, Sinofibra SJ400-130S, IIIA; soft multi-threat package, IIIA + spike 3 | 2.90–3.25 kg/m²; 7.03 kg/m² | [25]; [16] |
 
 A moulded shell of GEMs' own form is **tested to** the standard, not certified: NIJ keeps a list of compliant armour models [18], and a body's own panel set will not be one of them.
 
@@ -30,7 +33,7 @@ A moulded shell of GEMs' own form is **tested to** the standard, not certified: 
 
 The skin lies under the textile and on the hard shell because the alternatives each lose something: over a rigid panel it would be the outermost layer and the first thing struck, cut or burned; under one, a rigid panel would spread a touch before it reached the skin, and how finely the touch could still be located has not been checked.
 
-**Textile.** The outermost layer is textile, removable, over the whole body. At the joints the armour shell stops and the textile carries on over the padding, as a Figure patent places "a different textile" between the moving parts of joints so that motion is not restricted [13]; whether the skin, which stretches, crosses the joints too is for plan M-8. The colour is fixed — dyed or printed. The fabric's flame resistance is set by 4.4.
+**Textile.** The outermost layer is an aramid textile, removable, over the whole body. Meta-aramid fibre has no melting point and shrinks 0.4% in dry air at 177 °C over 30 minutes [26]. A bought candidate, TenCate's Nomex Advance Truecolor AV 9400 [27]: an outer-shell fabric of Nomex, Kevlar and an anti-static fibre, **200 g/m²**, herringbone double weave, compliant with EN ISO 15025 flame spread before and after five launderings, ≤ 2% shrinkage at 180 °C (ISO 17493), certified to EN 469 for firefighting; indicative values. At the joints the armour shell stops and the textile carries on over the padding, as a Figure patent places "a different textile" between the moving parts of joints so that motion is not restricted [13]; whether the skin, which stretches, crosses the joints too is for plan M-8. The colour is fixed — dyed or printed. The fabric's flame resistance is set by 4.4.
 
 ## 4.4 Fire resistance
 
@@ -38,7 +41,7 @@ The body takes **limited heat, and does not fight fire directly at this level** 
 
 | Layer | Anchor | Status |
 |---|---|---|
-| Outer textile | **NFPA 1970 (2025)**, the standard for structural firefighting ensembles. Its flame resistance test admits an average char length of no more than 100 mm, an average afterflame of no more than 2.0 s, and no melting or dripping [19] | The requirement. No fabric data sheet has been read yet |
+| Outer textile | **NFPA 1970 (2025)**, the standard for structural firefighting ensembles. Its flame resistance test admits an average char length of no more than 100 mm, an average afterflame of no more than 2.0 s, and no melting or dripping [19] | The requirement, kept. The candidate fabric is certified to **EN 469** [27], the European firefighting standard, not to NFPA 1970: an equivalent certification, recorded as such until an NFPA 1970 one is in hand |
 | Armour shell | A standard for a rigid layer is to be discussed: NFPA 1970 tests garment materials, not a moulded shell | **OPEN** |
 | Tactile skin | Shielded by the textile | — |
 
@@ -49,8 +52,8 @@ Temperatures and durations beyond what the standard sets stay `⟦IMPL⟧`, anch
 | Layer | Function | Maturity | Areal density |
 |---|---|---|---|
 | **Impact padding** | Pinch points, falls; heat break between the shell and the modules | TM | 0.14–0.40 kg/m² per mm [14]; thickness `⟦IMPL⟧` |
-| **Armour shell** | Group 5 protection and the body's form | TM | 7.5 kg/m² in the loop; 7.2–9.1 for bought hard plates [15] |
-| **Outer layer** | Contact force over the body; textile cover and colour; the fire anchor | TM | Skin and textile `⟦IMPL⟧` |
+| **Armour shell** | Group 5 protection and the body's form | TM | 7.5 kg/m² in the loop; 7.22 for the hybrid [24][16] |
+| **Outer layer** | Contact force over the body; textile cover and colour; the fire anchor | TM | Textile 0.20 kg/m² [27], ~0.32 kg over 1.6 m²; skin `⟦IMPL⟧` |
 
 > **This connects straight back to the mass loop.** All three layers are **non-scaling mass**: they enter `m_ext` and are **multiplied by `γ`**. The armour shell is the armour term of [02.5](02-structure-and-motion.md#25-mass-envelope), 7.8 kg at 65% coverage. The padding, the tactile skin and the textile sit in its fixed mass, 15–25 kg, `⟦IMPL⟧`, where "shell" stands. Each of their kilograms costs `γ` kg of body, as the armour's does.
 

@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-22T14:41:33Z",
+    "timestamp": "2026-11-22T15:21:58Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -151,7 +151,7 @@
       "type": "application",
       "bom-ref": "protocol/assess.py",
       "name": "protocol/assess.py",
-      "version": "sha256:776078422810",
+      "version": "sha256:e5235fee89df",
       "description": "Conformance assessment of the simulated body",
       "supplier": {
         "name": "Plone Mraz"
@@ -166,7 +166,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "7760784228102f49e7b6fa8983c41d74a4be9f28da85616600fdd279c40d8a76"
+          "content": "e5235fee89df10ff2777845223bcd27d3cbe034c0d188338a059b1ca7f40f49c"
         }
       ],
       "scope": "excluded",
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:7fa063211116",
+      "version": "sha256:0a4436326dd6",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "7fa06321111616f9c09e627b0e13deac53da93693a8f0158e46756ec7f0eed72"
+          "content": "0a4436326dd6e9e31165b46525457136d31fd4b42ace6455ab926bb6db1553a4"
         }
       ],
       "scope": "excluded",

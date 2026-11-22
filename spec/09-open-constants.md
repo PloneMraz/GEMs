@@ -27,7 +27,7 @@ Two kinds of blank, and they are not the same:
 |---|---|---|
 | `f_str`, `f_act` — structural and actuator mass fractions | [02.2](02-structure-and-motion.md#22-the-four-coefficients) | Depend on material and gearing choices not yet made. Ranges are narrow enough that no conclusion changes sign |
 | Fixed non-scaling mass (compute, sensors, hands, shell, harness) | [02.5](02-structure-and-motion.md#25-mass-envelope) | Depends on component selection |
-| Areal density of the impact padding, the tactile skin and the textile | [04.5](04-shell.md#45-the-three-layer-division) | The padding's thickness waits for plan M-8; the skin's vendor states no mass; no fabric data sheet has been read. The armour shell's figure is held at 7.5 kg/m² |
+| Areal density of the impact padding and the tactile skin | [04.5](04-shell.md#45-the-three-layer-division) | The padding's thickness waits for plan M-8; the skin's vendor states no mass. The textile's is read (0.20 kg/m²); the armour shell's is held at 7.5 kg/m², against 7.22 for the hybrid as data sheets give it |
 | Fire: temperatures and durations beyond the textile's NFPA 1970 anchor; the standard for the armour shell (**OPEN**) | [04.4](04-shell.md#44-fire-resistance) | Anchored to existing standards, not derived here; the shell's standard is to be discussed |
 | RAM retention and root-of-trust clock power | [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) | Depends on the parts chosen. Immaterial against self-discharge |
 | Full-CSI spatial sensing power | [03.6](03-energy.md#36-quiescent-power-and-the-sleep-ceiling) | The one floor term that matters; depends on implementation |

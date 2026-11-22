@@ -30,11 +30,19 @@ WHAT IS IN IT
     (hardware/sim-model/README.md): they mark where a segment's contents go,
     not what size those contents are.
 
+  * Swept keep-out volumes: for each of the 16 segments other than the
+    pelvis, the space it can occupy as the joints between it and its parent
+    segment turn through their mechanical travel (<limit>), with the parent
+    and everything above it held in the zero pose. Built by revolving, joint
+    by joint from the one nearest the segment out to the parent, the
+    rectangle that bounds the shape's projection on a plane through the
+    joint's axis — so each volume contains the true sweep and can exceed it,
+    never fall short of it.
+
 WHAT IS NOT YET IN IT
 ---------------------
-  * Keep-out volumes. The space a joint module occupies waits for decision
-    D-2 (which module); the space a segment sweeps through its travel is the
-    next step of M-1.
+  * Joint-module keep-outs: the space a joint module itself occupies waits for
+    decision D-2 (which module).
 
 TWO FRAMES, ONE ROTATION
 ------------------------
@@ -50,9 +58,11 @@ THE AUDIT
 After the CAD is built it is measured — each marker's centre and axis, each
 envelope's bounding box, in the container's frame — and compared with the
 URDF's own forward kinematics in the zero pose, at 1 µm; the container's
-rotation is checked by where the toes end up in the document. A mismatch
-exits non-zero and writes nothing. Units: the URDF is in metres, FreeCAD in
-millimetres.
+rotation is checked by where the toes end up in the document. Each keep-out is
+checked by posing its segment at every combination of each joint's lower,
+middle and upper travel and testing that the segment's surface points lie
+inside it. A mismatch exits non-zero and writes nothing. Units: the URDF is in
+metres, FreeCAD in millimetres.
 """
 
 from __future__ import annotations
@@ -123,6 +133,29 @@ def skeleton(robot):
     return joints, envelopes
 
 
+def segment_chains(robot, joints):
+    """For each drawn segment, the joints between it and the drawn segment above
+    it, the one nearest the segment first, each with its mechanical travel in degrees."""
+    import math
+    drawn = {l.get("name") for l in robot.findall("link") if l.find("visual") is not None}
+    by_child = {j["child"]: j for j in joints}
+    limits = {j.get("name"): (float(j.find("limit").get("lower")), float(j.find("limit").get("upper")))
+              for j in robot.findall("joint")}
+    chains = {}
+    for seg in sorted(drawn):
+        chain, link = [], seg
+        while link in by_child:
+            j = by_child[link]
+            lo, hi = limits[j["name"]]
+            chain.append(dict(j, lo=math.degrees(lo), hi=math.degrees(hi)))
+            link = j["parent"]
+            if link in drawn:
+                break
+        if chain:
+            chains[seg] = chain
+    return chains
+
+
 def expected(robot):
     """What the audit compares against, computed by the URDF generator's own
     forward kinematics and extents — a second path to the same numbers."""
@@ -136,6 +169,103 @@ def expected(robot):
 
 
 # -- the FreeCAD side --------------------------------------------------------
+
+SWEEP_TESS_MM = 0.5        # tessellation tolerance when reading a shape's points
+SWEEP_MARGIN_MM = 1.0      # added to the bounding rectangle, covering the tessellation chord
+SWEEP_MARGIN_DEG = 0.5     # added at both ends of each angular span
+SWEEP_EDGE_STEP_MM = 2.0   # spacing of the points sampled along every edge
+
+
+def sweep_about(shape, origin, axis, lo_deg, hi_deg):
+    """A solid containing `shape` turned about the line (origin, axis) through
+    every angle in [lo_deg, hi_deg]: the bounding rectangle of the shape's
+    projection on a plane through the axis, revolved over the shape's own
+    angular extent widened by the travel."""
+    import math
+    import FreeCAD as App
+    import Part
+    V = App.Vector
+    o, a = V(*origin), V(*axis).normalize()
+    ref = V(1, 0, 0) if abs(a.x) < 0.9 else V(0, 1, 0)
+    u = a.cross(ref).normalize()
+    v = a.cross(u)
+    # Points of the surface: a tessellation (of a copy — a triangulation left on
+    # the shape itself widens its bounding box) and every edge sampled densely,
+    # straight ones included: a mesh of a planar face holds only its corners, and
+    # angles between two corners would otherwise read as empty.
+    pts = shape.copy().tessellate(SWEEP_TESS_MM)[0] + [x.Point for x in shape.Vertexes]
+    for edge in shape.Edges:
+        pts += edge.discretize(Distance=SWEEP_EDGE_STEP_MM)
+    rs, zs, phis = [], [], []
+    for p in pts:
+        d = p - o
+        z = d.dot(a)
+        w = d - a * z
+        r = w.Length
+        rs.append(r)
+        zs.append(z)
+        if r > 1e-6:
+            phis.append(math.degrees(math.atan2(w.dot(v), w.dot(u))) % 360.0)
+    phis.sort()
+    if phis:
+        gaps = [(phis[(i + 1) % len(phis)] - phis[i]) % 360.0 for i in range(len(phis))]
+        if len(phis) == 1:
+            gaps = [360.0]
+        k = max(range(len(gaps)), key=gaps.__getitem__)
+        start, own = phis[(k + 1) % len(phis)], 360.0 - gaps[k]
+    else:
+        start, own = 0.0, 0.0
+    span = own + (hi_deg - lo_deg) + 2 * SWEEP_MARGIN_DEG
+    first = start + lo_deg - SWEEP_MARGIN_DEG
+    z0, z1 = min(zs) - SWEEP_MARGIN_MM, max(zs) + SWEEP_MARGIN_MM
+    # The farthest point from the axis lies on the surface; the nearest need not
+    # (an axis through the solid's interior), so it is measured on the solid.
+    axis_edge = Part.LineSegment(o + a * (z0 - 1.0), o + a * (z1 + 1.0)).toShape()
+    near = shape.distToShape(axis_edge)[0]
+    r0 = max(0.0, near - SWEEP_MARGIN_MM)
+    r1 = max(rs) + SWEEP_MARGIN_MM
+    if near < 1e-6:
+        # every angle is occupied only if the axis runs through the solid's
+        # interior; an axis lying in one of its faces (a knee axis across the top
+        # of the shank) touches it without surrounding anything
+        inner = [e.valueAt((e.FirstParameter + e.LastParameter) / 2)
+                 for e in axis_edge.common(shape).Edges if e.Length > 1e-6]
+        if any(shape.isInside(p, 1e-7, False) for p in inner):
+            span = 360.0
+    # The revolved rectangle is an annular sector. It is built from cylinder
+    # primitives in a frame where the axis is +Z and the sector starts at +X,
+    # then placed rigidly: exact cylinders keep bounding boxes and inside
+    # tests tight.
+    full = span >= 360.0
+    ang = 360.0 if full else span
+    h = z1 - z0
+    sector = Part.makeCylinder(r1, h, V(0, 0, z0), V(0, 0, 1), ang)
+    if r0 > 0.0:
+        sector = sector.cut(Part.makeCylinder(r0, h, V(0, 0, z0), V(0, 0, 1), ang))
+    m = App.Matrix(u.x, v.x, a.x, o.x,
+                   u.y, v.y, a.y, o.y,
+                   u.z, v.z, a.z, o.z,
+                   0, 0, 0, 1)
+    sector.transformShape(m)          # rigid: transformGeometry would turn it into B-splines
+    if not full:
+        sector.rotate(o, a, first)
+    return sector
+
+
+def pose_points(points, chain, angles):
+    """The points of a segment with the joints of its chain at `angles`
+    (degrees, the joint nearest the segment first): each joint turns about its zero-pose line."""
+    import FreeCAD as App
+    V = App.Vector
+    out = []
+    for p in points:
+        q = V(p)
+        for j, ang in zip(chain, angles):
+            o = V(*j["origin"])
+            q = App.Rotation(V(*j["axis"]), ang).multVec(q - o) + o
+        out.append(q)
+    return out
+
 
 def set_step_header(path):
     """Name the file and its author in the STEP header. FreeCAD writes the
@@ -196,6 +326,24 @@ def build_and_audit(mode, out, fcstd):
         obj.Link = e["link"]
         g_env.addObject(obj)
         bodies.append((e["link"], obj))
+
+    g_keep = doc.addObject("App::DocumentObjectGroup", "KeepOutSwept")
+    root.addObject(g_keep)
+    chains = segment_chains(robot, joints)
+    env_shape = {link: obj.Shape for link, obj in bodies}
+    keepouts = []
+    for seg, chain in chains.items():
+        shape = env_shape[seg]
+        for j in chain:                      # the joint nearest the segment first
+            shape = sweep_about(shape, j["origin"], j["axis"], j["lo"], j["hi"])
+        obj = doc.addObject("Part::Feature", "keepout_" + seg)
+        obj.Shape = shape
+        obj.addProperty("App::PropertyString", "Link", "GEMs")
+        obj.Link = seg
+        obj.addProperty("App::PropertyString", "Joints", "GEMs")
+        obj.Joints = " ".join(j["name"] for j in chain)
+        g_keep.addObject(obj)
+        keepouts.append((seg, obj))
     doc.recompute()
 
     # measure what was built, compare with the URDF
@@ -228,6 +376,21 @@ def build_and_audit(mode, out, fcstd):
     z_lo = min(o.Shape.BoundBox.ZMin for _, o in bodies)
     z_hi = max(o.Shape.BoundBox.ZMax for _, o in bodies)
     drawn = (z_hi - z_lo) / MM
+    # every keep-out holds its segment at each joint's lower, middle and upper travel, in every combination
+    import itertools
+    poses = outside = 0
+    for seg, obj in keepouts:
+        chain = chains[seg]
+        pts = env_shape[seg].copy().tessellate(2.0)[0] + [x.Point for x in env_shape[seg].Vertexes]
+        pts = pts[::max(1, len(pts) // 150)]
+        levels = [(j["lo"], (j["lo"] + j["hi"]) / 2, j["hi"]) for j in chain]
+        for angles in itertools.product(*levels):
+            poses += 1
+            for q in pose_points(pts, chain, angles):
+                if not obj.Shape.isInside(q, 0.01, True):
+                    outside += 1
+    n_poses = sum(3 ** len(chains[seg]) for seg, _ in keepouts)
+    keep_valid = all(o.Shape.isValid() and o.Shape.Volume > 0 for _, o in keepouts)
     checks = [
         ("joint frames", len(markers), len(origins), len(markers) == len(origins) == 37),
         ("actuated joints", n_act, actuated, n_act == actuated == 31),
@@ -241,6 +404,10 @@ def build_and_audit(mode, out, fcstd):
          all(o.Shape.isValid() for _, o in markers + bodies)),
         ("faces FreeCAD Front -Y", faces_front, True, faces_front),
         ("left side toward +X", left_to_x, True, left_to_x),
+        ("swept keep-outs", len(keepouts), 16, len(keepouts) == 16),
+        ("keep-outs valid", keep_valid, True, keep_valid),
+        ("poses checked", poses, n_poses, poses == n_poses > 0),
+        ("points outside keep-out", outside, 0, outside == 0),
     ]
     ok = True
     print("gems-skeleton — CAD skeleton, generated from hardware/kinematics.md via generate_urdf.py")
@@ -249,7 +416,7 @@ def build_and_audit(mode, out, fcstd):
         print("  %-24s %-10s expected %-10s %s" % (name, got, want, "ok" if passed else "MISMATCH"))
         ok = ok and passed
     if ok and mode == "write":
-        export_step(markers + bodies, root.Placement, out)
+        export_step(markers + bodies + keepouts, root.Placement, out)
         # read the written file back: its geometry, not the document's, is what leaves
         step_front = step_faces_front(out)
         print("  %-24s %-10s expected %-10s %s" % ("STEP faces Front -Y", step_front, True,
@@ -257,7 +424,8 @@ def build_and_audit(mode, out, fcstd):
         ok = ok and step_front
         if ok:
             set_step_header(out)
-            print("Wrote %s — %d joint frames, %d segment envelopes." % (out, len(markers), len(bodies)))
+            print("Wrote %s — %d joint frames, %d segment envelopes, %d swept keep-outs."
+                  % (out, len(markers), len(bodies), len(keepouts)))
             if fcstd:
                 doc.saveAs(fcstd)
                 print("Saved %s" % fcstd)

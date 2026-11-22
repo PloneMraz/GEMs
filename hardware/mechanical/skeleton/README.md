@@ -5,7 +5,7 @@ The parametric CAD skeleton of the GEMs body — plan [M-1](../../../plan/PLAN.m
 | File | Contents |
 |---|---|
 | [`generate_skeleton.py`](generate_skeleton.py) | The generator, and the audit that holds the CAD to the URDF |
-| `gems-skeleton.step` | Generated output — 37 joint frames and 17 segment envelopes, in millimetres. Do not hand-edit |
+| `gems-skeleton.step` | Generated output — 37 joint frames, 17 segment envelopes and 16 swept keep-out volumes, in millimetres. Do not hand-edit |
 
 ```bash
 python3 hardware/mechanical/skeleton/generate_skeleton.py                       # build, audit, write gems-skeleton.step
@@ -32,10 +32,16 @@ The audit measures the CAD after FreeCAD has built it and compares it with the U
   solids valid             True       expected True       ok
   faces FreeCAD Front -Y   True       expected True       ok
   left side toward +X      True       expected True       ok
+  swept keep-outs          16         expected 16         ok
+  keep-outs valid          True       expected True       ok
+  poses checked            282        expected 282        ok
+  points outside keep-out  0          expected 0          ok
   STEP faces Front -Y      True       expected True       ok
 ```
 
 The last line reads the written STEP file back, because what leaves the generator is the file, not the document. A mismatch exits non-zero and leaves no file behind. The audit was itself checked by breaking the generator on purpose — an envelope shifted by 10 µm, a joint axis turned, the turn of the next section left out of the document and then out of the file — and each was reported.
+
+The keep-outs are checked by posing each segment at every combination of each joint's lower, middle and upper travel — 3 poses for a one-joint segment, 27 for a three-joint one, 282 in all — and testing that up to 150 points of its surface lie inside its keep-out. That is a sample, not a proof: the containment rests on how the volume is built (below), and the sample catches a build that went wrong. Breaking the generator by leaving the travel out of the sweep was reported, 1536 points outside.
 
 ## Two frames, one rotation
 
@@ -51,12 +57,17 @@ FreeCAD 1.1 drops an `App::Part`'s placement when it writes STEP, so the generat
 
 **Segment envelopes.** The 17 drawn segments of the URDF: the same boxes and cylinders at the same places. They follow proportion, not structure ([sim-model](../../sim-model/README.md#what-is-estimated--which-is-most-of-it)): they mark where each segment's contents go, not what size those contents are. Section sizing waits for load cases and the joint modules for D-2.
 
+**Swept keep-out volumes,** one for each segment but the pelvis (`keepout_l_thigh` and so on, in the group `KeepOutSwept`): the space the segment's envelope can occupy as the joints between it and its parent segment turn through their mechanical travel, the `<limit>` of the URDF. The parent and everything above it stay in the zero pose, so a keep-out is the reach of one segment relative to the one it hangs from — the thigh's is the hip's three axes, the foot's the ankle's two — not of a whole limb.
+
+Each is built joint by joint, from the joint nearest the segment out to its parent — the order in which the joints' turns compose: the envelope's points are taken about the joint's axis, the rectangle that bounds them in radius and height is revolved through the angle the shape already spans plus the joint's travel, and the next joint revolves the result. The volume therefore contains the true sweep and is larger than it — 1 mm and 0.5° of margin on top — never smaller. How much larger shows in the numbers: the thigh's is 434 L, the upper arm's 185 L, because three axes revolving a bounding sector each time compound. It is the space no other part may enter, not the space the segment fills.
+
 ## What is not in it yet
 
-**Keep-out volumes,** the third item of M-1. Two kinds are needed: the space a joint module occupies, which waits for D-2 to say which module; and the space a segment sweeps through its travel, which can be computed from the envelopes and is the next step here.
+**Joint-module keep-outs,** the other half of the third item of M-1: the space a joint module itself occupies, which waits for D-2 to say which module.
 
 ## Reading it
 
 - **Views:** *Front* shows the body's front, *Right* its left side, *Top* looks down on the head. The origin is the pelvis frame of the URDF.
 - **A saved `.FCStd` opens with every object hidden.** It is written without a GUI, and FreeCAD keeps visibility in the part of the file only a GUI writes. Select all and press Space. The STEP file has no such state and opens shown.
-- The STEP header names the author; joint and envelope names carry through as product names (`joint_l_knee`, `env_l_thigh`).
+- The STEP header names the author; joint, envelope and keep-out names carry through as product names (`joint_l_knee`, `env_l_thigh`, `keepout_l_thigh`).
+- The keep-outs enclose the envelopes, so hide them, or make them transparent, to see the body.

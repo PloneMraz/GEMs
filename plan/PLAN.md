@@ -103,7 +103,7 @@ Two standard references anchor it. The **Facial Action Coding System** (Ekman an
 
 | ID | Task | To | Waits for |
 |---|---|---|---|
-| M-1 | Parametric CAD skeleton generated from `kinematics.md`, the same way the URDF is — joint frames, segment envelopes, keep-out volumes. In FreeCAD (1.1), by a generator script beside `generate_urdf.py` with an audit that holds the CAD and the URDF to the same declaration — ◐ [`hardware/mechanical/skeleton/`](../hardware/mechanical/skeleton/), 2026-11-21: joint frames and segment envelopes generated and audited; keep-out volumes next | L4 | — |
+| M-1 | Parametric CAD skeleton generated from `kinematics.md`, the same way the URDF is — joint frames, segment envelopes, keep-out volumes. In FreeCAD (1.1), by a generator script beside `generate_urdf.py` with an audit that holds the CAD and the URDF to the same declaration — ◐ [`hardware/mechanical/skeleton/`](../hardware/mechanical/skeleton/), 2026-11-21: joint frames and segment envelopes generated and audited; 2026-11-22: swept keep-out volumes, 16, audited at 282 poses; joint-module keep-outs wait for D-2 | L4 | — |
 | M-2 | Packaging study: where the pack, compute, drives, radios and sensors sit, checked against segment envelopes, the outer form and the centre of mass. **Pack location decided: the scapular region of the upper back, on the torso frame** — see [pack location](#pack-location-decided) below | L1 | D-4, D-5, ID-2 |
 | M-3 | Joint modules per class — hip/knee (cycloidal), shoulder/elbow (QDD planetary), wrist/neck (harmonic): bearings, seals, encoder mounts, joint locks (spec 03.2 measure 4), series-elastic elements (measure 5) | L4 | D-1, D-2 |
 | M-4 | Hands at the reference configuration | L4 | D-6 |

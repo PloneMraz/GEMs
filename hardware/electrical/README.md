@@ -290,6 +290,66 @@ The speeds are on the basis each datasheet gives — no-load, peak, or command r
 
 **Two open points of D-1, re-checked.** No figure was found for the knee moment of rising from a deep squat or the floor; it stays open. The hip row's 100–150 Nm at 70 kg is not in [12], whose hip figures are 0.5–1.0 Nm/kg in walking, nor in [13], which is qualitative and cites a 53 Nm module as its example: the 1.77 Nm/kg it scales to stands as an assumption, above the 1.3 Nm/kg of [30].
 
+## 6e. Running and balance recovery — D-2, 2026-11-22
+
+**Why these two.** The [motion envelope](../../spec/02-structure-and-motion.md#motion-envelope) of spec 02.6 lists running (row 5) and balance recovery (row 7) beside walking, and names them as the rows most likely to size the leg modules. This section gathers the figures for both; it declares none of them.
+
+**Running: what the human knee and hip do.** Computed here from the public dataset of Fukuchi et al. [41] — treadmill running at 2.5, 3.5 and 4.5 m/s, 39 participants, 70.5 ± 8.9 kg, 175.8 ± 7.1 cm. Its processed curves are each participant's average over more than 30 cycles, at 101 points of the gait cycle; flexion is the angle about Z, moments are internal and per kilogram. The cycle time, which the processed curves do not carry, was taken from the treadmill's vertical force two independent ways: foot strikes at 20 N, the paper's threshold, after a 10 Hz low-pass and with 50 ms below threshold required; and the force's autocorrelation. A trial was kept only when the two agreed within 5%; 19 of 101 were not. The cadence of the trials kept, 80.5, 87.0 and 94.1 strides per minute for participants 1–28, is within 3% of the paper's own (80.8, 85.7, 91.7, as read through a summary of its Table 4). The moments of participants 36–39 are in a unit that is neither Nm/kg nor Nm and were left out.
+
+| Speed | Trials | Cycle | Knee peak angular velocity | Hip peak angular velocity | Knee peak extension moment | Hip peak moment | Knee range |
+|---|---|---|---|---|---|---|---|
+| 2.5 m/s | 28 | 0.75 s | 10.9 ± 0.9 rad/s, highest 12.6 | 5.3 ± 0.7, highest 7.4 | 2.79 Nm/kg, highest 3.50 | 1.12, highest 1.46 | 84° |
+| 3.5 m/s | 32 | 0.70 s | 12.7 ± 1.1, highest 15.8 | 7.3 ± 0.9, highest 10.1 | 3.08, highest 4.06 | 1.52, highest 2.03 | 97° |
+| 4.5 m/s | 22 | 0.65 s | 14.1 ± 1.2, highest 16.6 | 9.4 ± 1.0, highest 11.6 | 3.28, highest 4.17 | 1.84, highest 2.38 | 106° |
+
+Peaks taken from cycle-averaged curves are lower than the peaks of single cycles, so these are, if anything, low.
+
+Schache et al. [39], overground at four speeds, 8 participants, 73.0 ± 8.6 kg, Table 1:
+
+| Speed | Knee extension, midstance | Hip extension, initial stance | Hip flexion, initial swing | Ankle plantarflexion, midstance |
+|---|---|---|---|---|
+| 3.50 m/s | 3.12 Nm/kg | 2.02 | 1.09 | 2.94 |
+| 5.02 m/s | 3.52 | 2.95 | 1.69 | 3.55 |
+| 6.97 m/s | 3.59 | 3.18 | 2.59 | 3.77 |
+| 8.95 m/s | 3.55 | 4.09 | 4.30 | 4.00 |
+
+The two studies agree at the knee — 3.08 and 3.12 Nm/kg at 3.5 m/s, different people, different laboratories — and not at the hip, 1.52 against 2.02. The cycle averaging above, and treadmill against track, are two differences between them; which accounts for the gap was not checked. Above 5 m/s the knee's stance moment levels off while the hip's swing moments keep rising [39].
+
+**What running asks of a GEMs module, at the 96.2 kg reference point.** The knee's stance moment is 268 Nm at 2.5 m/s and 296–300 Nm at 3.5 m/s, against 170 Nm at 1.77 Nm/kg — the figure the legs are sized to, set for walking, stairs and rising from a seat (§6c). Against the candidates of §6d:
+
+- ENCOS EC-A10020-P2-24 (330 Nm, 12.9 rad/s peak) and RMD-X12-P20-320 (320 Nm, 13.1 rad/s no-load) carry the torque of running to about 3.5 m/s. Their speed covers the human knee's mean at 2.5 m/s, 10.9 rad/s, at 84% of the figure each datasheet gives, and does not cover 3.5 m/s. Those figures are peak or no-load, not speed under the load of a stride.
+- AKE90-8 has the speed, 22.0 rad/s, and 170 Nm, which is walking's figure, not running's. PhyArc 102, at 244 Nm and 13.0 rad/s no-load at 72 V, falls short of running's torque.
+- No candidate found covers both the torque and the speed of the human knee at 3.5 m/s.
+
+The figures are human, and a human runner flexes the knee 84–106° in swing, which is what sets its speed. A robot can run with a straighter leg; Oli, walking at 0.5–1.25 m/s in the simulation below, used 13–42° of knee range. No figure for a running robot's knee speed was obtained.
+
+**Balance recovery: human.** Pijnappels et al. [40] tripped 12 young adults walking at 1.61 m/s. The recovery step was slower in time, not faster: swing 0.67 s against 0.44 s in normal walking, stride 1.83 m against 1.66 m (Table 1). The paper gives no joint angular velocity. Joint moments attributed to this paper by a search excerpt are not in it and are not used. No human figure for joint speed in a recovery step was found.
+
+**Balance recovery: a robot.** LimX's published Oli policy [38] was run in MuJoCo, 1 ms step, on the serial-joint model of its description at commit 4c0a3c7 (52.55 kg), with its walking controller's observation, history, 100 Hz policy and 1 kHz PD reproduced from humanoid-rl-deploy-python at 592e6f0, and its torque limits; the heading was held by a yaw command, as an operator holds it. Its training configuration at humanoid-rl-isaaclab b5e8323 commands 1.0 m/s forward at most and pushes the base by setting its velocity, up to ±1.0 m/s forward and ±0.5 m/s sideways. A push of that kind was applied, and the leg peaks compared over the 2 s before and after it:
+
+| Condition | Push | Knee | Hip pitch | Ankle pitch | Knee torque | Recovered |
+|---|---|---|---|---|---|---|
+| Walking 0.5 m/s, no push | — | 3.8 rad/s | — | — | 60 Nm | — |
+| Walking 1.0 m/s, no push | — | 6.7–6.9 | 2.4–2.6 | 3.4–3.6 | 87–90 | — |
+| Walking, command 1.39 m/s (reached 1.25) | — | 9.4–9.5 | 3.9 | 4.0 | 106 | — |
+| Standing | 1.0 m/s forward | 4.8 | 3.6 | 4.8 | 73 | yes |
+| Standing | 1.5 m/s forward | 6.0 | 4.6 | 7.0 | 85 | yes |
+| Standing | 1.0 m/s backward | 9.4 | 4.0 | 9.1 | 133, the limit | yes |
+| Standing | 1.5 m/s backward | 12.4 | 5.3 | 11.1 | 133, the limit | yes |
+| Standing | 0.5 m/s to the left | 4.3 | 1.5 | 2.9 | 93 | yes |
+| Standing | 0.5 m/s to the right | 0.3 | 0.2 | 0.4 | 35 | yes |
+| Walking 1.0 m/s | 1.0 or 1.5 m/s forward or back, 0.5 m/s to either side | 7.2–8.2 | 2.8–4.3 | 3.3–7.2 | 94–133 | yes, all six |
+
+A backward push from standing asked the knee for more speed than walking at 1.0 m/s did — 9.4 rad/s at the training range's edge, 12.4 rad/s beyond it — and ran its torque into the limit, so what the policy would have used without the limit is not known: 133 Nm on 52.55 kg is 2.5 Nm/kg, which at 96.2 kg is 243 Nm. Pushes while walking raised the knee's peak by 7–22% over walking alone. The hip roll joint also reached its limit.
+
+**What this measurement is not.** It is a simulation without a motor model — no speed limit, no torque–speed curve — with ideal serial ankles in place of Oli's push-rod linkage; the full model with the linkage could not be run correctly here. LimX's own files disagree on the knee's speed limit: 5 rad/s in the URDF, 12 rad/s in the training configuration. The gait it produced is asymmetric — the two knees differ, and a push to one side drew far less response than a push to the other — for a reason not found. Oli is 52.55 kg against GEMs' 96.2 kg at the same height, so angular speeds carry over and torques do not. The figures are a robot's in simulation, not a measurement on hardware. The analysis scripts are not in this repository yet.
+
+**What it says for D-2.**
+- Balance recovery may set the knee's speed rather than walking does: in the robot, 9–12 rad/s after a backward push from standing, against 7 rad/s walking at 1.0 m/s. The disturbance GEMs must withstand (row 7) decides which.
+- Running roughly doubles the knee's torque over the figure the legs are sized to, 3.1 Nm/kg against 1.77 at 3.5 m/s, and asks 11–13 rad/s of it if it runs as a human does. That changes the mass loop, not only the module.
+- No bought module found meets human-like running at 3.5 m/s at both corners. ENCOS and X12 are at the edge of both at 2.5 m/s. Under [`CLAUDE.md`](../../CLAUDE.md) §2, a running speed no module meets is `OPEN` with its requirement, not a module designed here.
+- The author's to decide: the running speed row 5 declares, and the disturbance row 7 declares.
+
 ## 7. References
 
 | # | Source |
@@ -336,3 +396,7 @@ Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at pus
 | 35 | ENCOS (Nanjing), motor data manual V3.13, §7 EC-A10020-P2-24 and §8 EC-A10020-P1-12 — the copy in [32], `datasheets/20_因克斯_ENCOS电机数据手册_V3.13.pdf` |
 | 36 | PHYBOT, PhyArc series parameter sheet — the copy in [32], `datasheets/5_动易_PhyArc模组.png` |
 | 37 | MyActuator, CEM cycloidal module datasheet, 2025-09-28 — the copy in [32], `datasheets/12_脉塔_CEM摆线模组_250928.pdf` |
+| 38 | LimX Dynamics, Oli (HU_D04): [humanoid-description](https://github.com/limxdynamics/humanoid-description) at 4c0a3c7, [humanoid-rl-deploy-python](https://github.com/limxdynamics/humanoid-rl-deploy-python) at 592e6f0, [humanoid-rl-isaaclab](https://github.com/limxdynamics/humanoid-rl-isaaclab) at b5e8323 — Apache-2.0; model, published walking policy, training configuration; simulated here, not vendored |
+| 39 | Schache A.G., Blanch P.D., Dorn T.W., Brown N.A.T., Rosemond D., Pandy M.G., [Effect of running speed on lower limb joint kinetics](https://doi.org/10.1249/MSS.0b013e3182084929), *Medicine & Science in Sports & Exercise* 43(7):1260–1271, 2011 — Table 1; copyrighted, not vendored |
+| 40 | Pijnappels M., Bobbert M.F., van Dieën J.H., [Contribution of the support limb in control of angular momentum after tripping](https://doi.org/10.1016/j.jbiomech.2004.02.038), *Journal of Biomechanics* 37:1811–1818, 2004 — Table 1; not vendored |
+| 41 | Fukuchi R.K., Fukuchi C.A., Duarte M., [A public dataset of running biomechanics and the effects of running speed on lower extremity kinematics and kinetics](https://doi.org/10.7717/peerj.3298), *PeerJ* 5:e3298, 2017; data [10.6084/m9.figshare.4543435](https://doi.org/10.6084/m9.figshare.4543435), version 5, CC BY 4.0 — processed and force files, checked against their MD5; not vendored |

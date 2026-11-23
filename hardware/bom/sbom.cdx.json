@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-23T10:59:29Z",
+    "timestamp": "2026-11-23T12:29:14Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:75484e523cbb",
+      "version": "sha256:fd69b97dad66",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "75484e523cbb7c130f539f1005a28f1dea9341b939eaac1e5b0d7c6ea4236a76"
+          "content": "fd69b97dad66712868fb5e8451aa564159e52c24faa56ffc4972f0a4138fa5bf"
         }
       ],
       "scope": "excluded",

@@ -93,7 +93,7 @@ The firmware images and the edge module's OS image are in the EBOM as virtual pa
 
 ## Where it stands
 
-The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 210 part numbers, including 10 software images and 5 consumables; 2 parts left open and 9 on the upgrade path; 361 operations across 58 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 31 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 50.5 kg out of the 98.2 kg budget — the rest is blank rather than guessed.
+The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 211 part numbers, including 10 software images and 5 consumables; 2 parts left open and 9 on the upgrade path; 362 operations across 58 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 32 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 51.6 kg out of the 98.2 kg budget — the rest is blank rather than guessed.
 
 Prices were looked for on 2026-09-26. Most supplier pages were unreachable from the environment this was written in, so the AVL rests on search results and on the pages that could be read, and each entry's notes say which. The candidates for the boards bought instead of designed were looked for on 2026-11-05, from search excerpts; no price among them is recorded as verified.
 
@@ -112,25 +112,26 @@ The mass loop holds **20 kg** of fixed mass — compute, sensors, hands, the she
 | DC-DC converter (`GEM-13160`) | one per rail | 0.111 each | candidate Vicor V48B12M250BN3, 110.6 g (distributor listing, the family's weight table); the rail count is `⟦IMPL⟧` (plan E-4), so one is counted |
 | Joint torque sensor (`GEM-2xx06`) | 31 | 3.4–6.2 | comparable, no candidate: Hangkai HKVN-70, 110 g at 100 Nm and 120 g at 200 Nm (a reseller's listing); TE Connectivity's custom safety sensor under 200 g at 100 Nm. The knee's 274 Nm and the ankle's 203 Nm lie above that range, the wrists' 20 Nm and the neck's 15 below it; neither end was read |
 | Hand assembly (`GEM-14900`, `GEM-15900`) | 2 | 0.94–1.58 | comparable, the hand not chosen (D-6): Inspire RH56 hands, six actuators, 470 g (RH56H1, tactile) to 790 g (RH56E2), retailers' figures |
+| Impact protector set (`GEM-18120`) | 1 | 1.10 | candidate D3O, maker's data sheets: eight Diablo L2 limb protectors and a BP4 L1 back protector, size M (EBOM; spec 04.1). The alternate Ghost L2 makes it 1.26 |
 | Outer textile (`GEM-18130`) | 1 | 0.32 | fabric only, 200 g/m² over 1.6 m² (EBOM) |
-| **Parts with a figure** | | **6.5–10.1** | |
+| **Parts with a figure** | | **7.6–11.2** | |
 
 **Parts with no figure:**
-- Impact padding (`GEM-18110`): Rogers PORON XRD is 0.14–0.40 kg/m² per millimetre; over the whole 1.60 m², 0.22–0.64 kg for each millimetre of thickness. Thickness and the area padded are `⟦IMPL⟧` (plan M-8).
+- Foam padding at pinch points and over hot modules (`GEM-18110`): Rogers PORON XRD is 0.14–0.40 kg/m² per millimetre. Thickness and the area padded are `⟦IMPL⟧` (plan M-8); the protectors above now cover where falls land, so this is no longer the whole 1.60 m².
 - Tactile skin (`GEM-18140`, 1.55 m²): HexSkin's vendor states no mass. For scale only: a 1.75 mm sheet over 1.55 m² weighs 2.7 kg at a density of 1 g/cm³; its density is not stated either.
 - Harness (`GEM-19010`–`19040`): no figure, and no published mass for a humanoid's harness was found.
 - Compute: the carrier board (the AGX301 manual has a weight section that could not be fetched), the real-time computer, the CAN-to-EtherCAT bridge, storage, the SDR and the on-board computer. The edge module's cooling, for up to 130 W, is not in the EBOM at all (plan M-11).
 - Power: the pack enclosure, the supercapacitor bank (optional, spec 03.2), the pre-charge and fuse set, the always-on regulator, the DC-DC converters beyond one.
 - Head: the microphone array (16), electronic nose, taste analyser, speaker, facial actuator set. Torso: the IMU, the five communications parts, the cardiac module. Feet: contact sensing. Twelve fastener sets.
 
-**What it says.** The parts with a figure take 6.5–10.1 kg of the 20 kg allowance, which leaves 9.9–13.5 kg for everything above. That includes the harness, the padding, the skin and the compute's cooling, none of which has a figure. Whether 20 kg is enough is therefore not shown: neither confirmed nor refuted.
+**What it says.** The parts with a figure take 7.6–11.2 kg of the 20 kg allowance, which leaves 8.8–12.4 kg for everything above. That includes the harness, the foam padding, the skin and the compute's cooling, none of which has a figure. Whether 20 kg is enough is therefore not shown: neither confirmed nor refuted.
 
 **What the fixed mass does to the body.** This is the mass loop of spec 02.1, run on the bought modules of spec 02.6, with the modules chosen again at each point by the rule of [electrical §6f](../electrical/README.md#6f-modules-declared-at-the-joint--d-2-2026-11-23). It is 2 h, 65% armour at 7.5 kg/m², f_str 0.30:
 
 | Fixed mass | Body | Actuators | `f_act` | Pack |
 |---|---|---|---|---|
-| 6.5 kg, every blank at zero — a floor, not a design | 68.5 kg | 27.5 kg | 0.40 | 2.74 kWh |
-| 10.1 kg, every blank at zero | 79.1 kg | 30.4 kg | 0.38 | 3.16 kWh |
+| 7.6 kg, every blank at zero — a floor, not a design | 72.5 kg | 28.9 kg | 0.40 | 2.90 kWh |
+| 11.2 kg, every blank at zero | 80.9 kg | 30.4 kg | 0.38 | 3.24 kWh |
 | 15 kg, the bottom of spec 02.5's band | 89.7 kg | 32.0 kg | 0.36 | 3.59 kWh |
 | **20 kg, the reference point** | **98.2 kg** | 32.2 kg | 0.33 | 3.93 kWh |
 | 25 kg, the top of the band | 109.5 kg | 34.1 kg | 0.31 | 4.38 kWh |

@@ -70,7 +70,8 @@ Against 1.6 m² of skin area at 1.65 m, at the coverage bands of [spec 02.4](../
 
 | Layer | Bought candidate | Areal density |
 |---|---|---|
-| Impact padding | Rogers PORON XRD, foam [14]; Figure 03 and 1X NEO use multi-density foam and a polymer lattice [11][12][13] | 0.14–0.40 kg/m² per mm, typical; thickness `⟦IMPL⟧` |
+| Impact padding, where a fall lands | Certified protectors (2026-11-23): D3O Diablo L2 at knees, elbows, shoulders and hips, EN 1621-1 Level 2, 9.5 mm [35]; D3O BP4 L1 at the back, EN 1621-2 Level 1, 16 mm [37]; alternate Ghost L2, 11 mm [36]. Placed where a humanoid's falls do damage [23] | **1.10 kg** as a set, ~0.36 m²; 1.26 kg with the alternate |
+| Impact padding, pinch points and heat break | Rogers PORON XRD, foam [14]; Figure 03 and 1X NEO use multi-density foam and a polymer lattice [11][12][13] | 0.14–0.40 kg/m² per mm, typical; thickness `⟦IMPL⟧` |
 | Armour shell | Hybrid laminate, UHMWPE (Sinofibra SJ100-240H [24]) with aramid spike plies, moulded to the GEMs drawing | 7.5 kg/m² in the loop; 7.22 from the data sheets |
 | Tactile skin | Ensuring Technology HexSkin [20] | `⟦IMPL⟧` — not stated by the vendor |
 | Textile | Aramid outer-shell fabric, TenCate Nomex Advance Truecolor AV 9400 [27], certified to EN 469; the requirement is NFPA 1970 (2025) [19] | **0.20 kg/m²** |
@@ -84,7 +85,9 @@ What the laboratory can do and the market cannot — self-healing skin, variable
 | Section sizing and safety factor | Load cases, which need a gait and a fall model |
 | Joint range of motion, per joint | Mechanism layout |
 | Bearing selection and preload | Joint loads |
-| Areal density of the padding and the tactile skin | Padding thickness (plan M-8); the skin vendor's data |
+| Areal density of the foam padding and the tactile skin | Foam thickness and coverage (plan M-8); the skin vendor's data |
+| Whether EN 1621, a 50 J test on a 5 kg striker [38][39], stands for a fall of the body | A fall model and the fall height of spec 02.6 row 8 (plan M-8) |
+| Whether the limb protectors can lie on modules at up to 100 °C | Their data sheets state no upper service temperature [35][36]; the motors' cooling (plan M-11) |
 | Armour shell: the hybrid's areal density as moulded, with finish and curvature; the use-temperature limit of SJ100-240H itself (≤ 70 °C is Dyneema's [29]); spike level 1 with the aramid plies on the outer face | A moulder's data and test (plan M-7) |
 | Padding thickness that keeps the armour shell below 70 °C over hot modules | The module temperatures of [electrical §6e](../electrical/README.md), up to 100 °C; plan M-8 |
 | Heat reaching the armour shell's face, through the textile in a fire and through the outer aramid plies | No heat-transfer or conductivity figure on the data sheets read [27][28] |
@@ -128,3 +131,8 @@ What the laboratory can do and the market cannot — self-healing skin, variable
 | 32 | Liu et al., [*Effect of stacking sequence of the hybrid composite armor on ballistic performance and damage mechanism*](https://doi.org/10.1515/epoly-2025-0035), e-Polymers 25 (2025) 20250035, open access: carbon/aramid/UHMWPE on TPU, hot-pressed to 120 °C; aramid facing, UHMWPE at the rear (K3C6K12U6) best against a 4 g steel sphere at 615 m/s |
 | 33 | Milliken & Company, [US 7,958,812 B2](https://patents.google.com/patent/US7958812), *Flexible spike and ballistic resistant panel*, granted 2011-06-14: stiff resin-impregnated aramid layers in front of spike-resistant textile; the reverse order "reduces the spike penetration resistant performance significantly" |
 | 34 | Horsfall, Watson, Champion (Cranfield University), *Optimizing the stacking sequence in dual-purpose body armours*, paper for the 27th International Symposium on Ballistics; the copy read is dated 2013-08-29: a metal plate in a 20-layer Kevlar 49 pack resists a knife best in the middle, least at the rear; against handguns it helps only at the front |
+| 35 | [D3O — Diablo L2 limb protectors, product data sheet](https://d3o.com/media/3635/d3o-diablo-l2-limb-protectors-data-sheet.pdf), © 2024 Design Blue Limited: elbow/knee 227 × 144 mm, 106 g; shoulder 195 × 144 mm, 95 g; hip 178 × 130 mm, 75 g; compact elbow/knee 194 × 115 mm, 73 g; 9.5 mm; passes EN 1621-1 Level 2; typical values |
+| 36 | [D3O — Ghost L2 limb protectors, product data sheet](https://d3o.com/media/2549/d3o-ghost-l2-limb-protectors-data-sheet.pdf), © 2024 Design Blue Limited: knee/elbow 240 × 147 mm, 120 g; shoulder/hip 193 × 154 mm, 110 g; 11 mm; exceeds EN 1621-1:2012 Level 2; typical values |
+| 37 | [D3O — BP4 L1 back protection, product data sheet](https://www.d3o.com/media/2789/d3o-bp4-l1-data-sheet.pdf), © 2024 Design Blue Limited: five sizes, 311 × 190 mm, 167 g to 540 × 272 mm, 384 g; size M 496 × 259 mm, 336 g, torso length 44–48 cm; 16 mm; exceeds EN 1621-2:2014 Level 1; typical values |
+| 38 | [SATRA — EN 1621, motorcyclists' protective clothing against mechanical impact](https://www.satra.com/ppe/EN1621.php), as read 2026-11-23: EN 1621-1, mean maximum transmitted force below 35 kN, no single value over 50 kN; EN 1621-2, below 18 kN, none over 24 kN; optional tests at +40 °C and −10 °C |
+| 39 | [Wikipedia — Motorcycle armor](https://en.wikipedia.org/w/index.php?title=Motorcycle_armor&oldid=1371968356), revision 1371968356, as read 2026-11-23: EN 1621-1, 5 kg mass, 40 × 30 mm striking face, 50 mm-radius dome, at most 50 J; Level 1 mean under 35 kN, no single result over 50 kN; Level 2 under 20 kN; EN 1621-2 Level 1 under 18 kN, none over 24 kN, Level 2 under 9 kN, none over 12 kN. A secondary source: the standard's text was not read |

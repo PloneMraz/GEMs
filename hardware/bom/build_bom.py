@@ -365,11 +365,20 @@ def build():
     # Baseline, inside out (spec 04, 2026-11-22): padding, armour shell,
     # tactile skin, outer textile. Every layer is bought or GEMs-designed
     # integration (CLAUDE.md §2); what is LAB waits on the upgrade path.
-    b.use(shell, b.part("GEM-18110", "Impact padding, foam or polymer lattice", "MATL", "BUY",
+    b.use(shell, b.part("GEM-18110", "Impact padding, foam, pinch points and heat break", "MATL", "BUY",
                         uom="M2", level="L2", ref="spec 04.1",
-                        req="pinch points and falls (spec 02.6 row 8)",
+                        req="pinch points; armour shell <= 70 C over hot modules (spec 04.1)",
                         notes="areal density IMPL: thickness not set; candidates in avl.csv"),
           "", "coverage IMPL (plan M-8)")
+    b.use(shell, b.part("GEM-18120", "Impact protector set, knees, elbows, shoulders, hips, back",
+                        "OTS", "BUY", uom="SET", mass="1.10",
+                        basis="maker's data sheets, typical: 4 x 106 g knee/elbow, 2 x 95 g shoulder, "
+                              "2 x 75 g hip (D3O Diablo L2); 336 g back (D3O BP4 L1, size M)",
+                        level="L2", ref="spec 04.1; spec 02.6 row 8",
+                        req="EN 1621-1 Level 2 at the limbs, EN 1621-2 Level 1 at the back, "
+                            "held provisionally (2026-11-23) until a fall model sizes the protection",
+                        notes="upper service temperature not stated by the maker, over modules to 100 C "
+                              "(plan M-11); held on the body by GEMs integration (plan M-8); candidates in avl.csv"))
     b.use(shell, b.part("GEM-18010", "Armour shell, moulded hybrid laminate, UHMWPE and aramid spike plies",
                         "MFG", "BUY", uom="M2", mass="%.1f" % ARMOUR_KG_M2,
                         basis="per m2, held at 7.5 (2026-11-22); data sheets give 5.80 UHMWPE + 1.42 aramid = 7.22",

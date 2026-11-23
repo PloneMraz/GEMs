@@ -6,11 +6,27 @@ Sources are numbered as in [`hardware/mechanical`](../hardware/mechanical/README
 
 ## 4.1 Impact padding
 
-The innermost layer: foam or a polymer lattice over the hardware, at pinch points and where a fall lands — row 8 of the [motion envelope](02-structure-and-motion.md#motion-envelope) sizes it. Shipping humanoids do the same: Figure 03 places multi-density foam at pinch points under a soft textile cover [11]; 1X NEO wraps its hardware in a custom 3D lattice polymer [12]; a Figure patent describes a multi-layered covering with energy-absorbing material — polyethylene, EVA and polyurethane foams among others — under a textile [13]. **TM.**
+The innermost layer: protectors, foam or a polymer lattice over the hardware, at pinch points and where a fall lands — row 8 of the [motion envelope](02-structure-and-motion.md#motion-envelope) sizes it. Shipping humanoids do the same: Figure 03 places multi-density foam at pinch points under a soft textile cover [11]; 1X NEO wraps its hardware in a custom 3D lattice polymer [12]; a Figure patent describes a multi-layered covering with energy-absorbing material — polyethylene, EVA and polyurethane foams among others — under a textile [13]. **TM.**
 
-A bought candidate, Rogers PORON XRD, comes in five densities, specific gravity 0.14–0.40 — **0.14–0.40 kg/m² per millimetre** of thickness [14]. The figures are typical values, and the data sheet says it should not be used to create a specification. Thickness, and therefore areal density, is `⟦IMPL⟧` until plan M-8 sets it.
+**Where a fall lands: certified protectors, held at EN 1621-1 Level 2** (2026-11-23, provisional). In simulated falls of a 42 kg humanoid, damage "occurs mainly on the sides of the body, where lateral falls produce concentrated impact loads", and high stress appears "near major joints, which tend to protrude and make early contact during a fall"; the authors place protectors there rather than "applying uniform padding" [23]. The baseline does the same, with protectors bought as certified parts: one at each knee, elbow, shoulder and hip, and one over the back.
 
-The padding also stands between the armour shell and anything hot. The shell's limit is set by its UHMWPE, not its aramid (4.2): UHMWPE fibre melts at 144–152 °C, and its recommended continuous use temperature is **70 °C or lower** [29] — a Dyneema figure, read for the same polymer until the vendor of SJ100-240H states its own — while the laminate is pressed at 125–135 °C [24]. The modules of [electrical §6e](../hardware/electrical/README.md) reach 100 °C in the thermal test read there, above that limit, so the padding must keep the shell below 70 °C where it lies over a hot module; the thickness that takes is `⟦IMPL⟧` until plan M-8 sets it.
+| Zone | Bought candidate | Anchor | Thickness | Mass |
+|---|---|---|---|---|
+| Knees, elbows (4) | D3O Diablo L2 elbow/knee, 227 × 144 mm [35] | EN 1621-1 Level 2 | 9.5 mm | 106 g each |
+| Shoulders (2) | D3O Diablo L2 shoulder, 195 × 144 mm [35] | EN 1621-1 Level 2 | 9.5 mm | 95 g each |
+| Hips (2) | D3O Diablo L2 hip, 178 × 130 mm [35] | EN 1621-1 Level 2 | 9.5 mm | 75 g each |
+| Back (1) | D3O BP4 L1, size M, 496 × 259 mm [37] | EN 1621-2 Level 1 | 16 mm | 336 g; 167–384 g across its five sizes |
+| **The set** | | | | **1.10 kg**, ~0.36 m² by the pieces' outlines |
+
+The alternate is D3O Ghost L2 at the limbs, 11 mm, 120 g at knee and elbow and 110 g at shoulder and hip [36]: 1.26 kg with the same back protector. The figures are the maker's typical values [35][36][37]. The back protector's size waits for the trunk of ID-2.
+
+EN 1621-1 drops a 5 kg mass with a 40 × 30 mm striking face onto the protector over a 50 mm-radius dome, at no more than 50 J; Level 1 passes at a mean transmitted force under 35 kN with no single result over 50 kN, Level 2 at a mean under 20 kN. EN 1621-2, for the back, passes Level 1 at a mean under 18 kN with no single result over 24 kN [38][39]. These are read from a test house's summary and an encyclopaedia, not from the standard's text. **Whether a 50 J test stands for a fall of this body is not shown**: the energy a falling body of 98.2 kg puts into its first contact has not been computed, and the fall height of row 8 is open. The standard is held as the anchor until a fall model sizes the protection (plan M-8). For scale only, at 5 kg dropped from 1 m, 6 mm of a responsive material cut the peak force by 70.0% (86.8 to 25.8 kN) and 12 mm by 87.1%, while conventional materials "require roughly twice the thickness" [23].
+
+The protectors are made to be worn by people; holding them on this body — in pockets of the textile, as garments hold them, or on GEMs' own fixings — is integration, for plan M-8. At the joints, where the armour shell stops (4.3), the limb protectors lie under the textile; the back protector lies under the armour shell's back panel.
+
+**At pinch points, and between the shell and hot modules: foam.** A bought candidate, Rogers PORON XRD, comes in five densities, specific gravity 0.14–0.40 — **0.14–0.40 kg/m² per millimetre** of thickness [14]. The figures are typical values, and the data sheet says it should not be used to create a specification. Its thickness and the area it covers, and therefore its mass, are `⟦IMPL⟧` until plan M-8 sets them.
+
+The padding also stands between the armour shell and anything hot. The shell's limit is set by its UHMWPE, not its aramid (4.2): UHMWPE fibre melts at 144–152 °C, and its recommended continuous use temperature is **70 °C or lower** [29] — a Dyneema figure, read for the same polymer until the vendor of SJ100-240H states its own — while the laminate is pressed at 125–135 °C [24]. The modules of [electrical §6e](../hardware/electrical/README.md) reach 100 °C in the thermal test read there, above that limit, so the padding must keep the shell below 70 °C where it lies over a hot module; the thickness that takes is `⟦IMPL⟧` until plan M-8 sets it. The limb protectors sit over the knee, elbow, shoulder and hip modules, and their data sheets state no upper service temperature and no conductivity, only "consistent performance across a wide range of temperatures" [35]: whether they can lie on a module at 100 °C, or need a gap or a layer under them, is `⟦IMPL⟧`, with the motors' cooling (plan M-11), since what keeps heat from the shell also keeps it in the motor.
 
 ## 4.2 Armour shell
 
@@ -55,7 +71,7 @@ Temperatures and durations beyond what the standard sets stay `⟦IMPL⟧`, anch
 
 | Layer | Function | Maturity | Areal density |
 |---|---|---|---|
-| **Impact padding** | Pinch points, falls; heat break between the shell and the modules | TM | 0.14–0.40 kg/m² per mm [14]; thickness `⟦IMPL⟧` |
+| **Impact padding** | Falls, by certified protectors at knees, elbows, shoulders, hips and back; pinch points and the heat break between the shell and the modules, by foam | TM | Protectors 1.10 kg as a set [35][37]; foam 0.14–0.40 kg/m² per mm [14], thickness `⟦IMPL⟧` |
 | **Armour shell** | Group 5 protection and the body's form | TM | 7.5 kg/m² in the loop; 7.22 for the hybrid [24][16] |
 | **Outer layer** | Contact force over the body; textile cover and colour; the fire anchor | TM | Textile 0.20 kg/m² [27], ~0.32 kg over 1.6 m²; skin `⟦IMPL⟧` |
 

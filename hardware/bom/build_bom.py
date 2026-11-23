@@ -37,7 +37,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "electrical"))
-from actuator_sizing import REF_MASS, torque_table  # noqa: E402
+from actuator_sizing import REF_MASS, LEG_DENSITY, FLOOR_DENSITY, JOINTS as SIZING_JOINTS, torque_table  # noqa: E402
 
 PART_FIELDS = ["part_number", "rev", "description", "category", "make_buy",
                "uom", "unit_mass_kg", "mass_basis", "maturity", "design_level",
@@ -59,14 +59,17 @@ STATUS = {"SELECTED", "CANDIDATE"}
 # reserves no place for it (spec 04.7, 2026-11-22).
 LIFECYCLE = {"CONCEPT", "UPG"}
 
-# Declared density at the reference operating point: f_act = 0.30 needs the
-# top of the 80-90 Nm/kg band (spec 02.6). Used only for mass estimates.
-MODULE_NM_PER_KG = 88.7
-PACK_KWH, CELLS_KG = 3.85, 8.5            # gems_budget at the D-8 point: 2 h, 65%, 1.65 m
+# Declared densities (spec 02.6, 2026-11-23), held in actuator_sizing.py:
+# legs and trunk at LEG_DENSITY, arms, wrists and neck at FLOOR_DENSITY. Used
+# only for mass estimates and the requirement each module is bought against.
+SCALING = {n for n, _, basis, _ in SIZING_JOINTS if basis == "per_kg"}
+def module_density(name):
+    return LEG_DENSITY if name in SCALING else FLOOR_DENSITY
+PACK_KWH, CELLS_KG = 3.29, 7.3            # gems_budget at the D-8 point: 2 h, 65%, 1.65 m
 ARMOUR_M2, ARMOUR_KG_M2 = 1.04, 7.5       # 65% of 1.6 m2; held at 7.5 (2026-11-22), see GEM-18010
 SKIN_M2, FINE_CM2 = 1.60, 500             # skin area at 1.65 m and the fine region of spec 05.2
 ORDINARY_CM2 = round(SKIN_M2 * 1e4 - FINE_CM2)
-BODY_MASS_BUDGET = 96.2    # scripts/gems_budget.py at the D-8 point
+BODY_MASS_BUDGET = 82.3    # scripts/gems_budget.py at the D-8 point
 
 # -- joint table: stable index -> part-number block. Never renumber. -------
 #    idx, joint, reducer class, placement
@@ -180,12 +183,13 @@ def build():
                 if "planetary" not in red:
                     n += "; conflicts with the planetary module family of hardware/electrical 2"
                 if nm is None:            # declared, not yet sized
-                    kw = dict(level="L1", req="torque not yet sized (D-9); >=80 Nm/kg over module mass",
+                    kw = dict(level="L1", req="torque not yet sized (D-9); >=%.0f Nm/kg over module mass" % LEG_DENSITY,
                               notes="Trunk lateral bend, added by D-9. No torque source yet; " + n)
                 else:
-                    kw = dict(mass="%.3f" % (nm / MODULE_NM_PER_KG),
-                              basis="estimate: %.0f Nm peak / %.1f Nm/kg" % (nm, MODULE_NM_PER_KG),
-                              level="L2", req="%.0f Nm peak; >=80 Nm/kg over module mass" % nm,
+                    dens = module_density(name)
+                    kw = dict(mass="%.3f" % (nm / dens),
+                              basis="estimate: %.0f Nm peak / %.0f Nm/kg" % (nm, dens),
+                              level="L2", req="%.0f Nm peak; >=%.0f Nm/kg over module mass" % (nm, dens),
                               notes="D-2 open: which bought module, at which ratio; candidates in avl.csv; " + n)
             b.part(cpn, "%s, %s" % (desc, name.replace("_", " ")), cat, mb,
                    uom="SET" if off == 9 else "EA", ref=ref, **kw)
@@ -197,7 +201,7 @@ def build():
     S = lambda pn, d: b.part(pn, d, "MFG", "MAKE", level="L2",
                              ref="hardware/mechanical 1",
                              req="CFRP long members, 7075-T6 at joints",
-                             notes="Section sizing IMPL; structure allowance 38.8 kg in total")
+                             notes="Section sizing IMPL; structure allowance 24.7 kg in total (gems_budget, f_str 0.30)")
 
     top = b.part("GEM-10000", "GEMs body, reference design A (2 h with dock, 65% armour, 1.65 m)",
                  "ASSY", "MAKE", level="L1", ref="spec 02.5; protocol/conformance-record.md",

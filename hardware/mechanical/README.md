@@ -20,7 +20,7 @@ What is fixed here is what the CAD will be made of and what the joints will be m
 
 **Selection: carbon fibre composite for long members, 7075-T6 at joints and load-introduction points.**
 
-> **This is not a preference, it is what the mass loop leaves room for.** The actuator finding in [`../electrical/`](../electrical/) shows `f_act` is under severe pressure — nothing below 80 Nm/kg keeps it inside the assumed range. If actuators are going to sit at the top of their band, structure has to sit at the top of its own, and a 40% saving against 7075 is the difference between a loop that closes and one that does not.
+> **This is not a preference, it is what the mass loop leaves room for.** The actuator finding in [`../electrical/`](../electrical/) shows `f_act` is under severe pressure — with the knee sized to running, 80 Nm/kg for every joint puts it outside the assumed range, and only the denser leg modules declared since 2026-11-23 bring it back ([spec 02.6](../../spec/02-structure-and-motion.md#what-the-two-figures-give)). If actuators are going to sit at the top of their band, structure has to sit at the top of its own, and a 40% saving against 7075 is the difference between a loop that closes and one that does not.
 >
 > Aluminium stays where composite is poor: bolted joints, bearing seats, anywhere load enters a member through a small area. Composite carries length; metal carries concentration.
 
@@ -62,7 +62,7 @@ The handgun levels were renamed when NIJ Standard 0101.07 moved its levels into 
 
 Against 1.6 m² of skin area at 1.65 m, at the coverage bands of [spec 02.4](../../spec/02-structure-and-motion.md#24-protection): **4.8 kg** at 50% coverage and 6 kg/m², up to **11.5 kg** at 80% and 9 kg/m².
 
-> Armour is non-scaling mass. It enters `m_ext` and is multiplied by `γ`, so at γ = 2.6 the difference between 50% and 80% coverage is ~3 kg of armour and **~7 kg of body**. With `f_act` already under pressure, coverage is the cheapest place to buy margin back — and the most visible thing to lose.
+> Armour is non-scaling mass. It enters `m_ext` and is multiplied by `γ`, so at γ = 2.2 the difference between 50% and 80% coverage is ~3 kg of armour and **~6 kg of body**. With `f_act` already under pressure, coverage is the cheapest place to buy margin back — and the most visible thing to lose.
 
 ## 4. Shell layers
 

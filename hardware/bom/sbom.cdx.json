@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-23T00:37:09Z",
+    "timestamp": "2026-11-23T02:24:09Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -91,7 +91,7 @@
       "type": "application",
       "bom-ref": "hardware/electrical/actuator_sizing.py",
       "name": "hardware/electrical/actuator_sizing.py",
-      "version": "sha256:aa0cc1685eff",
+      "version": "sha256:6a922445b375",
       "description": "Joint torque table and actuator sizing",
       "supplier": {
         "name": "Plone Mraz"
@@ -106,7 +106,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "aa0cc1685effa52e0b574cad5efe4133a224e796c3f7d8317bcb1a49283a563c"
+          "content": "6a922445b375552a1b6dafe1d03d0a59673a835897795ebd14b19d9f0453de04"
         }
       ],
       "scope": "excluded",
@@ -121,7 +121,7 @@
       "type": "application",
       "bom-ref": "scripts/gems_budget.py",
       "name": "scripts/gems_budget.py",
-      "version": "sha256:afe4dba6eace",
+      "version": "sha256:79a978f0bc4d",
       "description": "Mass-energy-power budget model and spec check",
       "supplier": {
         "name": "Plone Mraz"
@@ -136,7 +136,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "afe4dba6eacedf6eec914b73c668fd0456454c8304b6fcb6d549a57b59742f82"
+          "content": "79a978f0bc4d1f4e0896f794d973720d17cc88b4670289ec1c4c1cf278e6b6de"
         }
       ],
       "scope": "excluded",
@@ -151,7 +151,7 @@
       "type": "application",
       "bom-ref": "protocol/assess.py",
       "name": "protocol/assess.py",
-      "version": "sha256:e5235fee89df",
+      "version": "sha256:655e2167ffa0",
       "description": "Conformance assessment of the simulated body",
       "supplier": {
         "name": "Plone Mraz"
@@ -166,7 +166,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "e5235fee89df10ff2777845223bcd27d3cbe034c0d188338a059b1ca7f40f49c"
+          "content": "655e2167ffa089c51834eb8ce01b91e4f0ed22f317f22ec4de1c679afe1a03e5"
         }
       ],
       "scope": "excluded",
@@ -181,7 +181,7 @@
       "type": "application",
       "bom-ref": "hardware/sim-model/generate_urdf.py",
       "name": "hardware/sim-model/generate_urdf.py",
-      "version": "sha256:4714370daeac",
+      "version": "sha256:49f1700cf575",
       "description": "URDF generator and audit",
       "supplier": {
         "name": "Plone Mraz"
@@ -196,7 +196,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "4714370daeac1194feca0951a2f05b36321f896ff1e81ed3fa235205448df43c"
+          "content": "49f1700cf5758929044aafee8881ef6334b6e994938e518ce9c126960771bf0b"
         }
       ],
       "scope": "excluded",
@@ -211,7 +211,7 @@
       "type": "application",
       "bom-ref": "hardware/mechanical/skeleton/generate_skeleton.py",
       "name": "hardware/mechanical/skeleton/generate_skeleton.py",
-      "version": "sha256:cdafc38f9eb6",
+      "version": "sha256:c799e25d8162",
       "description": "CAD skeleton generator (FreeCAD) and audit against the URDF",
       "supplier": {
         "name": "Plone Mraz"
@@ -226,7 +226,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "cdafc38f9eb69d6b196ca2d14bebc276fb0f0e4a1a6e4388e3717c755a46efa6"
+          "content": "c799e25d816285cf86762c3e674a0e9ac5f0590a4cb9f0b85efb1c899388b2ab"
         }
       ],
       "scope": "excluded",
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:342ad956b979",
+      "version": "sha256:04f7bcf845a6",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "342ad956b979edabcdde83dfeccbc3e7adea4170789c305afd599177fadc18b3"
+          "content": "04f7bcf845a6b68cc6cb272ecca6deb39d72b9fe3329ff6b47a44f1796fb8cb1"
         }
       ],
       "scope": "excluded",

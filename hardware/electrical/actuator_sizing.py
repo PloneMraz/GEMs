@@ -24,8 +24,14 @@ import argparse
 import sys
 
 G = 9.81
-REF_MASS = 96.0           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
-FLOOR_DENSITY = 80.0      # floor of the band spec 02.6 declares, Nm/kg
+REF_MASS = 82.0           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
+# Declared torque density, peak over module mass, in two parts (spec 02.6, 2026-11-23).
+# Legs and trunk: the lower of the two bought modules that carry running's knee
+# torque, RMD-X12-P20-320, 320 Nm / 2.4 kg = 133 Nm/kg (README §6d); ENCOS
+# EC-A10020-P2-24 is 149-152. Arms, wrists and neck: the 80 Nm/kg floor kept,
+# below the AVL's AKH70-16 at 88.7, since no arm module at 133 has been found.
+LEG_DENSITY = 133.0       # legs and trunk, Nm/kg
+FLOOR_DENSITY = 80.0      # arms, wrists and neck, Nm/kg
 
 # Arm geometry, hardware/kinematics.md §2. Levers are horizontal distances from
 # the joint axis with the arm held straight out, the posture of maximum
@@ -69,10 +75,13 @@ LOAD_CASES = [
     ("stairs with a load held close, two hands", 20.0, 2, 0.15, 0.10, "proposed"),
 ]
 
-# The module the carry capacity is reported against: CubeMars AKH70-48,
-# README §6b — peak and rated torque, Nm.
-MODULE_PEAK = 222.0
-MODULE_RATED = 74.0
+# The module the carry capacity is reported against: MyActuator
+# RMD-X12-P20-320, the module the leg density is declared from (README §6d) —
+# peak and rated torque, Nm. Carrying is a stand-up or a step, so the demand is
+# the walking and stairs figure of hip pitch and knee, not running's.
+MODULE_PEAK = 320.0
+MODULE_RATED = 85.0
+STAND_PER_KG = 1.77       # hip pitch, and the knee in walking, stairs and rising (README §6c)
 
 # Per-joint peak torque. Leg and trunk figures scale with body mass; arm
 # figures follow from the payload and the arm's own weight; the rest are fixed.
@@ -82,8 +91,8 @@ JOINTS = [
     ("hip_pitch",      2, "per_kg", 1.77),   # 100-150 Nm at 70 kg, scaled; unsourced (README §6d), above the 1.3 Nm/kg of a walking human
     ("hip_roll",       2, "per_kg", 1.23),
     ("hip_yaw",        2, "per_kg", 0.62),
-    ("knee",           2, "per_kg", 1.77),   # = hip pitch; checked against gait data, D-1 (README §6c)
-    ("ankle_pitch",    2, "per_kg", 1.40),   # sourced: 1.4 Nm/kg at push-off
+    ("knee",           2, "per_kg", 2.79),   # running at 2.5 m/s, stance peak (Fukuchi et al., README §6e; spec 02.6 row 5), 2026-11-23; 1.77 before, walking, stairs and rising (README §6c)
+    ("ankle_pitch",    2, "per_kg", 2.07),   # running at 2.5 m/s (Fukuchi et al., README §6e), 2026-11-23; 1.40 before, push-off in walking
     ("ankle_roll",     2, "per_kg", 0.54),
     # Trunk: human isometric peak, normalised to body weight, male medians
     # (Pan et al. 2025, README ref 14): extension 1.74, lateral bending 0.95
@@ -110,8 +119,10 @@ DENSITIES = [
     (36.0,  "top of the superseded range"),
     (52.0,  "commercial QDD module, 8:1 planetary"),
     (75.0,  "floor of the band before 2026-09-26"),
-    (80.0,  "floor of the band spec 02.6 now declares"),
+    (80.0,  "the arm floor; legs and trunk until 2026-11-23"),
     (88.7,  "commercial hollow-shaft planetary module, peak"),
+    (133.0, "RMD-X12-P20-320, the declared leg density"),
+    (150.0, "ENCOS EC-A10020-P2-24"),
 ]
 
 
@@ -168,21 +179,14 @@ def torque_table(body_mass, density=FLOOR_DENSITY, carry_kg=0.0):
     return rows
 
 
-def governing_per_kg():
-    """The largest per-kg figure among the leg and trunk rows: the joint that
-    limits how much mass the legs can lift."""
-    top = max(v for _, _, b, v in JOINTS if b == "per_kg")
-    return top, " and ".join(n for n, _, b, v in JOINTS if b == "per_kg" and v == top)
-
-
 def carry_capacity(body_mass, peak=MODULE_PEAK, rated=MODULE_RATED):
-    """Mass the legs can carry at a module's peak and rated torque: the joint
-    with the largest per-kg demand reaches the module's torque at
-    (body + carry) = torque / per_kg. Negative means the body alone exceeds
-    it. Rated is the figure for a load held through a slow climb; peak for a
-    single stand-up or step."""
-    per_kg, joint = governing_per_kg()
-    return peak / per_kg - body_mass, rated / per_kg - body_mass, joint
+    """Mass the legs can carry at a module's peak and rated torque: a stand-up
+    or a step asks hip pitch and knee for STAND_PER_KG per kg of body and load,
+    so the module's torque is reached at (body + carry) = torque / STAND_PER_KG.
+    Negative means the body alone exceeds it. Rated is the figure for a load
+    held through a slow climb; peak for a single stand-up or step."""
+    return (peak / STAND_PER_KG - body_mass, rated / STAND_PER_KG - body_mass,
+            "hip_pitch and knee")
 
 
 def load_case_table(body_mass, density=FLOOR_DENSITY):
@@ -240,8 +244,8 @@ def main(argv=None):
 
     per_kg, fixed = split(a.mass)
     print()
-    print("Split: %.2f Nm per kg of body (legs, trunk) = %.0f Nm at %.0f kg;"
-          % (per_kg, per_kg * a.mass, a.mass))
+    print("Split: %.2f Nm per kg of body (legs, trunk) = %.0f Nm at %.0f kg -> %.1f kg at %.0f Nm/kg;"
+          % (per_kg, per_kg * a.mass, a.mass, per_kg * a.mass / LEG_DENSITY, LEG_DENSITY))
     print("       %.0f Nm fixed (arms, wrists, neck) -> %.1f kg of actuator at %.0f Nm/kg,"
           % (fixed, fixed / FLOOR_DENSITY, FLOOR_DENSITY))
     print("       non-scaling mass, m_ext in the loop of spec 02.1.")
@@ -262,22 +266,23 @@ def main(argv=None):
         print("  %-42s %5.0f %8.0f %6.0f %5.0f %6.0f  %s" % (name, m, ts, te, th, tt, status))
     cp, cr, joint = carry_capacity(a.mass)
     print()
-    print("Carry capacity of the legs against a %.0f Nm peak / %.0f Nm rated module (AKH70-48),"
+    print("Carry capacity of the legs against a %.0f Nm peak / %.0f Nm rated module (RMD-X12-P20-320),"
           % (MODULE_PEAK, MODULE_RATED))
-    print("  limited by %s:" % joint)
+    print("  limited by %s at %.2f Nm/kg in a stand-up or step:" % (joint, STAND_PER_KG))
     print("  a single stand-up or step, at peak:   %s"
           % ("%.0f kg" % cp if cp >= 0 else "none — the body alone exceeds it by %.0f kg" % -cp))
     print("  a sustained climb, at rated torque:   %s"
           % ("%.0f kg" % cr if cr >= 0 else "none — the body alone exceeds it by %.0f kg" % -cr))
 
     print()
-    print("Actuator mass and f_act at published torque densities")
+    print("Actuator mass and f_act with legs and trunk at published torque densities,")
+    print("arms, wrists and neck at %.0f Nm/kg" % FLOOR_DENSITY)
     print("=" * 66)
     print("  %8s  %9s  %7s  %-28s" % ("Nm/kg", "mass kg", "f_act", "source"))
     band_lo, band_hi = 0.25, 0.35
     ok_any = False
     for d, label in DENSITIES:
-        m = total_nm / d
+        m = per_kg * a.mass / d + fixed / FLOOR_DENSITY
         f = m / a.mass
         inrange = band_lo <= f <= band_hi
         ok_any = ok_any or inrange
@@ -289,10 +294,11 @@ def main(argv=None):
     if not ok_any:
         print("NO published density puts f_act inside that range.")
         return 1
-    need = total_nm / (band_hi * a.mass)
-    print("The arithmetic alone would allow %.0f Nm/kg." % need)
-    print("spec 02.6 declares 80-90 Nm/kg peak over module mass: the floor was kept")
-    print("at 80 when the arm payload came down (README §6b), as margin.")
+    need = per_kg * a.mass / (band_hi * a.mass - fixed / FLOOR_DENSITY)
+    print("The arithmetic alone would allow legs and trunk at %.0f Nm/kg." % need)
+    print("spec 02.6 declares %.0f Nm/kg for legs and trunk and %.0f for arms, wrists and neck"
+          % (LEG_DENSITY, FLOOR_DENSITY))
+    print("(2026-11-23): the lower of the modules that carry running's knee, and the old floor.")
     return 0
 
 

@@ -286,7 +286,7 @@ def build_and_audit(mode, out, fcstd):
     import Import
     V = App.Vector
 
-    robot = gu.build(96.2)
+    robot = gu.build(82.3)
     joints, envelopes = skeleton(robot)
     origins, axes, ext, actuated = expected(robot)
 

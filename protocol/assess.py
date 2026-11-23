@@ -288,7 +288,7 @@ def assess():
 
 
 def declaration():
-    b = budget.budget(0.30, 80.0, 20.0, 2.0, 450.0, 0.65, 7.5, 20.0)
+    b = budget.budget(0.30, budget.LEG_DENSITY, 20.0, 2.0, 450.0, 0.65, 7.5, 20.0)
     total_nm = budget.joint_torque_total(b["body_mass_kg"])
     log_bps = budget.log_bytes_per_s()
     return [
@@ -298,7 +298,7 @@ def declaration():
         ("Endurance ceiling", "%.1f h" % b["endurance_ceiling_h"]),
         ("Sleep states supported", "none implemented"),
         ("Protection level and coverage", "NIJ HG2 (formerly IIIA) + spike level 1, 65% coverage, moulded UHMWPE–aramid armour shell — selected, not built"),
-        ("Actuator specific torque", "80–90 Nm/kg peak over module mass — selected, not procured"),
+        ("Actuator specific torque", "133 Nm/kg legs and trunk, 80 Nm/kg arms, wrists and neck, peak over module mass — declared, not procured"),
         ("Summed joint torque", "%.0f Nm across 31 joints" % total_nm),
         ("Peak power at the source", "%.1f kW at 5C" % b["source_peak_kW"]),
         ("Link bandwidth and latency", "8 Gbps, ~1 ms PHY — specified, no radio"),

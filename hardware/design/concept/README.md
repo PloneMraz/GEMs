@@ -21,12 +21,12 @@ These are inputs to the design brief (ID-1) and to colour, material and finish (
 
 ## Where it meets the specification
 
-Read against the reference design at the declared operating point — 1.65 m, ~96 kg, 2 h with a dock, 65% armour coverage (D-8, 2026-09-26; 1.75 m, 129.5 kg and 4 h when the concept was first compared). None of these is a verdict on the concept; each is a point ID-2 and the packaging study M-2 must resolve, by changing the form or by choosing a different operating point (D-8).
+Read against the reference design at the declared operating point — 1.65 m, ~82 kg, 2 h with a dock, 65% armour coverage (D-8, 2026-09-26; ~82 kg since 2026-11-23, ~96 kg before; 1.75 m, 129.5 kg and 4 h when the concept was first compared). None of these is a verdict on the concept; each is a point ID-2 and the packaging study M-2 must resolve, by changing the form or by choosing a different operating point (D-8).
 
 | Concept | Specification | Tension |
 |---|---|---|
-| Very narrow waist and slender torso | The torso carries ~8.5 kg of cells (3.9 kWh), the compute and the spine actuators, 167 Nm in trunk pitch | The largest volume in the body sits where the concept is narrowest |
-| Slim knees and ankles | Knee and hip pitch need ~170 Nm peak; at 88.7 Nm/kg that is ~1.9 kg of actuator per joint, ankle pitch ~180 Nm | Joint housings of that torque are wider than the concept's joints; see the actuator finding in [`../../bom/`](../../bom/README.md#what-building-it-turned-up) |
+| Very narrow waist and slender torso | The torso carries ~7.3 kg of cells (3.3 kWh), the compute and the spine actuators, 143 Nm in trunk pitch | The largest volume in the body sits where the concept is narrowest |
+| Slim knees and ankles | The knee needs ~229 Nm peak, sized to running, hip pitch ~145 Nm and ankle pitch ~170 Nm; at the declared 133 Nm/kg the knee is ~1.7 kg of actuator, and the module the figure comes from, RMD-X12-P20-320, weighs 2.4 kg | Joint housings of that torque are wider than the concept's joints; see the actuator finding in [`../../bom/`](../../bom/README.md#what-building-it-turned-up) |
 | Glossy hard shell with panel lines | The form is carried by a moulded armour shell per segment, UHMWPE with aramid spike plies; over it lie a tactile skin and a textile cover, and at the joints the shell stops and the textile carries on (spec 04.2, 04.3) | The concept draws hard gloss continuously over knees, elbows, shoulders and hips; the baseline's outer surface is textile everywhere. Whether gloss and panel lines carry through a textile, or the joints read differently from the segments, is for ID-2 and ID-4 |
 | Articulated five-finger hands | The anchor configuration is 5 DOF per hand, and the hand choice is open (D-6) | The drawn hands look closer to the moderate or anthropomorphic tier |
 | Separate toes | The kinematics has no toe joints | Toes would be sculpted, not actuated, unless the kinematics changes |

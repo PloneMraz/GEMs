@@ -53,11 +53,11 @@ GEMs does not publish one configuration. Structure, actuation and energy sit on 
 | Property | Declared envelope |
 |---|---|
 | Height | ~1.65 m — 1.75 m until 2026-09-26 |
-| Mass | **76–160 kg**, depending on endurance and armour coverage; the reference design sits at ~96 kg, 2 h with a dock |
+| Mass | **65–131 kg**, depending on endurance and armour coverage; the reference design sits at ~82 kg, 2 h with a dock |
 | Free-running endurance | Hours, under a **hard ceiling** — past it no convergent design exists at any price |
 | Deep-sleep endurance | **~years**, bounded by battery self-discharge rather than by standby electronics |
 | Protection | Handgun-calibre ballistic + stab + everyday impact, as one multi-layer package |
-| Actuation | 80–90 Nm/kg peak over module mass at ~16:1; 3–5 kW/kg declared, under review. Peak power is limited by **the source, not the actuators** |
+| Actuation | 133 Nm/kg peak over module mass for legs and trunk (a 20:1 module's), 80 Nm/kg for arms, wrists and neck; 3–5 kW/kg declared, under review. Peak power is limited by **the source, not the actuators** |
 | Uplink | mmWave, up to ~8 Gbps, ~1 ms PHY latency at short range |
 | Sensing | **16–67 Gbps** raw aggregate; ≥2:1 on-body compression is mandatory, ~8:1 realistic |
 | Compute | The Main Controller wholly off the body, on an IPC; on each unit, processing only, by four tiers that do not decide — the Real-time Control Layer, MCUs, DAQ and the OBC for link loss. Balance loop ≥500 Hz and reflex ≤10 ms **must** be on the unit |
@@ -131,7 +131,7 @@ Directories marked 🔜 do not exist yet. They are named in advance so that the 
 | 🔜 | Firmware source (awaits a target board) |
 | 🔜 | Feature extraction, fusion, link management |
 | ✅ | Component selection, sourced — actuators, power, compute, bus, materials, reducers |
-| ✅ | Actuator torque density reconciled with `f_act` — 80–90 Nm/kg peak over module mass, the basis declared, the trunk sized from measured human strength, the arms from a declared 15 kg payload; `f_act` split into its scaling and fixed parts |
+| ✅ | Actuator torque density reconciled with `f_act` — peak over module mass, 133 Nm/kg legs and trunk and 80 Nm/kg arms since 2026-11-23, the basis declared, the trunk sized from measured human strength, the arms from a declared 15 kg payload; `f_act` split into its scaling and fixed parts |
 | ✅ | Work plan to a complete design — decisions, packages, firmware and software task lists ([`plan/`](plan/PLAN.md)) |
 | ◐ | EBOM, MBOM and SBOM — 210 part numbers, 58 routings, CycloneDX SBOM; sources and prices filled only where verified ([`hardware/bom/`](hardware/bom/)) |
 | 🔜 | Mechanical CAD |

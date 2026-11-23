@@ -38,11 +38,17 @@ WHAT IS IN IT
     rectangle that bounds the shape's projection on a plane through the
     joint's axis — so each volume contains the true sweep and can exceed it,
     never fall short of it.
+  * Joint-module keep-outs, for the joints whose module D-2 has chosen
+    (2026-11-23: ENCOS EC-A10020-P2-24 at hip pitch, knee and trunk pitch,
+    hardware/electrical/README.md §6d): a cylinder of the datasheet's outer
+    diameter and thickness, on the joint's axis, centred on its origin. Where
+    along the axis the module sits, and how the modules of one multi-axis
+    group clear one another, is layout (plan M-2), not set here.
 
 WHAT IS NOT YET IN IT
 ---------------------
-  * Joint-module keep-outs: the space a joint module itself occupies waits for
-    decision D-2 (which module).
+  * Module keep-outs for the other 26 actuated joints, whose modules are not
+    chosen (D-2).
 
 TWO FRAMES, ONE ROTATION
 ------------------------
@@ -61,8 +67,10 @@ URDF's own forward kinematics in the zero pose, at 1 µm; the container's
 rotation is checked by where the toes end up in the document. Each keep-out is
 checked by posing its segment at every combination of each joint's lower,
 middle and upper travel and testing that the segment's surface points lie
-inside it. A mismatch exits non-zero and writes nothing. Units: the URDF is in
-metres, FreeCAD in millimetres.
+inside it. Each module keep-out is checked for its centre on the joint's
+origin, its axis on the joint's, and its radius and volume against the
+datasheet's figures. A mismatch exits non-zero and writes nothing. Units: the
+URDF is in metres, FreeCAD in millimetres.
 """
 
 from __future__ import annotations
@@ -90,6 +98,17 @@ CAD_TURN_DEG = -90.0      # about z: URDF +x (forward) to CAD -Y (FreeCAD's Fron
 MARKER_LEN, MARKER_R = 60.0, 4.0
 STEP_OUT = HERE / "gems-skeleton.step"
 ENV_MODE, ENV_OUT, ENV_FCSTD = "GEMS_SKELETON_MODE", "GEMS_SKELETON_OUT", "GEMS_SKELETON_FCSTD"
+
+# The joints whose bought module D-2 has chosen, and that module's envelope:
+# (module, outer diameter mm, thickness mm). ENCOS motor data manual V3.13,
+# §7.2, "电机尺寸(外径×厚度)" 124×85 (hardware/electrical/README.md §6d, [35]).
+# The main candidate, not yet procured: rank 1 in hardware/bom/avl.csv.
+ENCOS_P2_24 = ("ENCOS EC-A10020-P2-24", 124.0, 85.0)
+JOINT_MODULES = {
+    "l_hip_pitch": ENCOS_P2_24, "r_hip_pitch": ENCOS_P2_24,
+    "l_knee": ENCOS_P2_24, "r_knee": ENCOS_P2_24,
+    "trunk_pitch": ENCOS_P2_24,
+}
 
 
 # -- what the URDF says, in the zero pose ----------------------------------
@@ -344,6 +363,22 @@ def build_and_audit(mode, out, fcstd):
         obj.Joints = " ".join(j["name"] for j in chain)
         g_keep.addObject(obj)
         keepouts.append((seg, obj))
+
+    g_mod = doc.addObject("App::DocumentObjectGroup", "KeepOutModule")
+    root.addObject(g_mod)
+    by_name = {j["name"]: j for j in joints}
+    modules = []
+    for jn, (model, od, th) in JOINT_MODULES.items():
+        j = by_name[jn]
+        o, a = V(*j["origin"]), V(*j["axis"]).normalize()
+        shape = Part.makeCylinder(od / 2, th, o - a * (th / 2), a)
+        obj = doc.addObject("Part::Feature", "module_" + jn)
+        obj.Shape = shape
+        for prop, val in (("Joint", jn), ("Module", model)):
+            obj.addProperty("App::PropertyString", prop, "GEMs")
+            setattr(obj, prop, val)
+        g_mod.addObject(obj)
+        modules.append((jn, obj))
     doc.recompute()
 
     # measure what was built, compare with the URDF
@@ -391,6 +426,21 @@ def build_and_audit(mode, out, fcstd):
                     outside += 1
     n_poses = sum(3 ** len(chains[seg]) for seg, _ in keepouts)
     keep_valid = all(o.Shape.isValid() and o.Shape.Volume > 0 for _, o in keepouts)
+    # every module keep-out: centre on its joint's origin, axis on its joint's,
+    # radius and volume those of the datasheet's cylinder
+    import math
+    bad_mod = 0
+    for jn, obj in modules:
+        _, od, th = JOINT_MODULES[jn]
+        s = obj.Shape
+        c = s.CenterOfMass
+        cyl = [f for f in s.Faces if isinstance(f.Surface, Part.Cylinder)][0].Surface
+        if (not s.isValid()
+                or max(abs(g - w) for g, w in zip((c.x, c.y, c.z), origins[jn])) > TOL_MM
+                or abs(abs(cyl.Axis.dot(V(*axes[jn]))) - 1.0) > 1e-9
+                or abs(cyl.Radius - od / 2) > TOL_MM
+                or abs(s.Volume - math.pi * (od / 2) ** 2 * th) > 1e-6 * s.Volume):
+            bad_mod += 1
     checks = [
         ("joint frames", len(markers), len(origins), len(markers) == len(origins) == 37),
         ("actuated joints", n_act, actuated, n_act == actuated == 31),
@@ -408,6 +458,8 @@ def build_and_audit(mode, out, fcstd):
         ("keep-outs valid", keep_valid, True, keep_valid),
         ("poses checked", poses, n_poses, poses == n_poses > 0),
         ("points outside keep-out", outside, 0, outside == 0),
+        ("module keep-outs", len(modules), len(JOINT_MODULES), len(modules) == len(JOINT_MODULES) == 5),
+        ("modules on joint axis", bad_mod == 0, True, bad_mod == 0),
     ]
     ok = True
     print("gems-skeleton — CAD skeleton, generated from hardware/kinematics.md via generate_urdf.py")
@@ -416,7 +468,7 @@ def build_and_audit(mode, out, fcstd):
         print("  %-24s %-10s expected %-10s %s" % (name, got, want, "ok" if passed else "MISMATCH"))
         ok = ok and passed
     if ok and mode == "write":
-        export_step(markers + bodies + keepouts, root.Placement, out)
+        export_step(markers + bodies + keepouts + modules, root.Placement, out)
         # read the written file back: its geometry, not the document's, is what leaves
         step_front = step_faces_front(out)
         print("  %-24s %-10s expected %-10s %s" % ("STEP faces Front -Y", step_front, True,
@@ -424,8 +476,8 @@ def build_and_audit(mode, out, fcstd):
         ok = ok and step_front
         if ok:
             set_step_header(out)
-            print("Wrote %s — %d joint frames, %d segment envelopes, %d swept keep-outs."
-                  % (out, len(markers), len(bodies), len(keepouts)))
+            print("Wrote %s — %d joint frames, %d segment envelopes, %d swept keep-outs, %d module keep-outs."
+                  % (out, len(markers), len(bodies), len(keepouts), len(modules)))
             if fcstd:
                 doc.saveAs(fcstd)
                 print("Saved %s" % fcstd)

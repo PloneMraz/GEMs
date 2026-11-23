@@ -65,6 +65,12 @@ LIFECYCLE = {"CONCEPT", "UPG"}
 SCALING = {n for n, _, basis, _ in SIZING_JOINTS if basis == "per_kg"}
 def module_density(name):
     return LEG_DENSITY if name in SCALING else FLOOR_DENSITY
+# Joints whose module D-2 has a direction for (Plone, 2026-11-23): the main
+# candidate, ranked first in avl.csv with its alternates. The mass stays the
+# declared-density estimate; the candidate's own mass is in its note, and the
+# gap between them is hardware/electrical 6d's finding.
+MAIN_CANDIDATE = {n: "ENCOS EC-A10020-P2-24, 2.17-2.21 kg"
+                  for n in ("hip_pitch", "knee", "trunk_pitch")}
 PACK_KWH, CELLS_KG = 3.29, 7.3            # gems_budget at the D-8 point: 2 h, 65%, 1.65 m
 ARMOUR_M2, ARMOUR_KG_M2 = 1.04, 7.5       # 65% of 1.6 m2; held at 7.5 (2026-11-22), see GEM-18010
 SKIN_M2, FINE_CM2 = 1.60, 500             # skin area at 1.65 m and the fine region of spec 05.2
@@ -190,7 +196,9 @@ def build():
                     kw = dict(mass="%.3f" % (nm / dens),
                               basis="estimate: %.0f Nm peak / %.0f Nm/kg" % (nm, dens),
                               level="L2", req="%.0f Nm peak; >=%.0f Nm/kg over module mass" % (nm, dens),
-                              notes="D-2 open: which bought module, at which ratio; candidates in avl.csv; " + n)
+                              notes=("D-2: main candidate %s, alternates in avl.csv; " % MAIN_CANDIDATE[name]
+                                     if name in MAIN_CANDIDATE else
+                                     "D-2 open: which bought module, at which ratio; candidates in avl.csv; ") + n)
             b.part(cpn, "%s, %s" % (desc, name.replace("_", " ")), cat, mb,
                    uom="SET" if off == 9 else "EA", ref=ref, **kw)
             b.use(pn, cpn)

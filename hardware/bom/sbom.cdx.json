@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-23T02:24:09Z",
+    "timestamp": "2026-11-23T06:59:23Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -211,7 +211,7 @@
       "type": "application",
       "bom-ref": "hardware/mechanical/skeleton/generate_skeleton.py",
       "name": "hardware/mechanical/skeleton/generate_skeleton.py",
-      "version": "sha256:c799e25d8162",
+      "version": "sha256:2936cbab3475",
       "description": "CAD skeleton generator (FreeCAD) and audit against the URDF",
       "supplier": {
         "name": "Plone Mraz"
@@ -226,7 +226,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "c799e25d816285cf86762c3e674a0e9ac5f0590a4cb9f0b85efb1c899388b2ab"
+          "content": "2936cbab34753361344412cae8e8aaaf6016f23c5f42fec398620622a2f18f5e"
         }
       ],
       "scope": "excluded",
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:04f7bcf845a6",
+      "version": "sha256:b5b2e2de8c9e",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "04f7bcf845a6b68cc6cb272ecca6deb39d72b9fe3329ff6b47a44f1796fb8cb1"
+          "content": "b5b2e2de8c9e44d12a94ca063f833cc19dbe23e225efaf54ecf5e6b9191e02d7"
         }
       ],
       "scope": "excluded",

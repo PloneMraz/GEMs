@@ -288,7 +288,45 @@ The speeds are on the basis each datasheet gives — no-load, peak, or command r
 
 **Since 2026-11-23** the legs and trunk are declared at 133 Nm/kg, the X12's figure (spec 02.6), and the reference point is 82.3 kg; the torques in this section are at the 96.2 kg point of its date: AKE90-8 at 121 Nm/kg falls below the declaration; ENCOS, PhyArc and the AKH70-48 are above it.
 
-**Not yet done.** No price or availability outside China has been read for any of the four. The other joint classes — hip roll 118, ankle pitch 134, the arm joints at 50–104, the wrists at 20 and the neck at 15 Nm — are not yet matched. Peak duration is known for none but ENCOS's curves, and whether the dataset's copies of the datasheets are current is not checked. No row enters the AVL until the author picks the direction.
+**The direction, picked 2026-11-23 (Plone).** ENCOS EC-A10020-P2-24 is the main candidate for hip pitch, knee and trunk pitch, with the RMD-X12-P20-320 and PhyArc 102 as alternates, ranked in that order in the [AVL](../bom/avl.csv); the AKH70-48 rows at those three joints are dropped, since at ±5 rad/s it does not reach the knee's 6.7–6.9 rad/s in walking at 1.0 m/s. None is procured, and no price or availability outside China has been read. The three modules' keep-outs, Φ124 × 85 mm on each joint's axis, are in the [CAD skeleton](../mechanical/skeleton/) (plan M-1).
+
+**PhyArc 102 at 48 V.** Its sheet [36] gives 72 V as the rated voltage and 24–72 V as the supply range, and every speed at the rated voltage; it has no figure at 48 V. Scaled by voltage, as a motor's no-load speed scales with its back-EMF, 124.2 rpm becomes about 83 rpm, 8.7 rad/s — an estimate, not the manufacturer's: above the knee's speed in walking at 1.0 m/s, below the 11–12 rad/s of running. On a 48 V bus it is not a knee module for running; it stays an alternate for a 72 V bus (D-4).
+
+**The other joint classes, matched (2026-11-23).** Each joint's torque at the 82 kg point of `actuator_sizing.py`, against the reducer class of [mechanical §2](../mechanical/README.md#2-reducers-by-joint-class) — legs and trunk not strain-wave, shoulder and elbow QDD planetary 6:1–15:1, wrist and neck harmonic — at 48 V, with the knee at 11 rad/s or more for running (§6e), hip pitch at 7.4 rad/s or more (the hip's highest in running at 2.5 m/s, §6e) and ankle pitch at 3.7 rad/s or more (walking, above; no figure for running). The lightest module that meets each, among the 565 of the dataset [32], against the mass the declared density allows at that joint. ENCOS's figures were read from its manual [35]; the other makers' are the dataset's, and only SEmotor's were checked against its sheet:
+
+| Joint | Needs | Allowed at 133 or 80 Nm/kg | Lightest ENCOS | Lightest of any maker |
+|---|---|---|---|---|
+| hip pitch ×2 | 145 Nm | 1.09 kg | EC-A10020-P1-12, 150 Nm, 1.37 kg | SEmotor SETZ70CI-1GA, 156 Nm, 0.90 kg |
+| hip roll ×2 | 101 Nm | 0.76 kg | EC-A6416-P2-25, 120 Nm, 0.81 kg | SEmotor SEAF70A16NG02, 104 Nm, 0.80 kg |
+| hip yaw ×2 | 51 Nm | 0.38 kg | EC-A4315-P2-36, 75 Nm, 0.48 kg | the same |
+| knee ×2 | 229 Nm | 1.72 kg | EC-A10020-P2-24, 330 Nm, 2.19 kg | the same |
+| ankle pitch ×2 | 170 Nm | 1.28 kg | EC-A10020-P2-24, 330 Nm, 2.19 kg | SEmotor SETZ70CI-1HA, 227.5 Nm, 1.05 kg |
+| ankle roll ×2 | 44 Nm | 0.33 kg | EC-A4315-P2-36, 75 Nm, 0.48 kg | the same |
+| trunk pitch | 143 Nm | 1.07 kg | EC-A10020-P1-12, 150 Nm, 1.37 kg | SEmotor SETZ70CI-1GA, 156 Nm, 0.90 kg |
+| trunk roll | 78 Nm | 0.59 kg | EC-A6416-P2-25, 120 Nm, 0.81 kg | DAMIAO DM-J6248P-2EC, 97 Nm, 0.63 kg |
+| trunk yaw | 61 Nm | 0.46 kg | EC-A4315-P2-36, 75 Nm, 0.48 kg | the same |
+| shoulder pitch ×2 | 104 Nm | 1.30 kg | EC-A10020-P1-12, 150 Nm, 1.37 kg | Motorevo RR-PA-100-2012, 151 Nm, 1.26 kg |
+| shoulder roll ×2 | 80 Nm | 1.00 kg | EC-A10020-P1-12, 150 Nm, 1.37 kg | HCFA Hu-GRS090N, 90 Nm, 0.93 kg |
+| shoulder yaw ×2 | 60 Nm | 0.75 kg | EC-A10020-P1-12, 150 Nm, 1.37 kg | Motorevo RR-PA-100-1010, 63 Nm, 0.90 kg |
+| elbow ×2 | 50 Nm | 0.62 kg | EC-A10020-P1-12, 150 Nm, 1.37 kg | SEmotor SETZ70CI-1DA, 58.5 Nm, 0.70 kg |
+| wrist ×6 | 20 Nm | 0.25 kg | EC-A3814-H14-107, 60 Nm, 0.43 kg | Xynova HR100-43-20, 20 Nm, 0.24 kg |
+| neck ×2 | 15 Nm | 0.19 kg | EC-A3814-H14-107, 60 Nm, 0.43 kg | Xynova HR100-43-20, 20 Nm, 0.24 kg |
+| **31 joints** | | **22.5 kg** | **32.2 kg** | **23.3 kg** |
+
+**What the match says: the declared density is a module's, not the joints'.** 133 Nm/kg is the X12's own peak over its own mass; the loop turns it into a mass at each joint as torque over density, as if a module came in every size at that density. Bought modules come in steps, and a joint's module carries the torque of the next step up: the knee's 229 Nm is carried by a 330 Nm module, so the knee is 2.19 kg where the loop allows 1.72. No ENCOS module is inside its joint's allowance at any joint. Of any maker, only SEmotor's are, at hip pitch, trunk pitch and ankle pitch — the least checked modules of the table, below — and the five smaller leg and trunk joints, hip roll and yaw, ankle roll, trunk roll and yaw, have none: their lightest modules are 5–46% over. At 80 Nm/kg the arms are inside at shoulder pitch, shoulder roll and the wrists, and over at shoulder yaw, the elbow and the neck. With bought modules in place of the declared density, and the loop run again until the modules and the body agree:
+
+| Modules | Body | Actuators | `f_act` | Pack | Knee RMS in running |
+|---|---|---|---|---|---|
+| Declared densities (spec 02.6) | 82.3 kg | 22.5 kg | 0.27 | 3.29 kWh | 79 Nm |
+| ENCOS at the knee, the lightest of any maker elsewhere | 83.7 kg | 23.3 kg | 0.28 | 3.35 kWh | 80 Nm |
+| ENCOS P2-24 at hip pitch, knee and trunk pitch, as picked; the lightest of any maker elsewhere | 90.0 kg | 27.2 kg | 0.30 | 3.60 kWh | 86 Nm |
+| ENCOS at every joint | 103.2 kg | 35.3 kg | 0.34 | 4.13 kWh | 99 Nm |
+
+Every row converges and stays inside the `f_act` band of spec 02.2. The knee's RMS is 0.96 Nm/kg of body (§6e); ENCOS's bench takes 80 Nm from 30 to 100 °C in 56 s and 85 Nm in 46 s at 6.0 rad/s, so running's 60 s is short again in every row but the declared one: by about 4 s at 83.7 kg, by more at 90 kg, and at 103 kg far beyond the bench's last row.
+
+**The lightest row is the least checked.** Its hip pitch, trunk pitch and ankle modules are SEmotor's SETZ70CI series, whose sheet ([32], `datasheets/24_小象SEmotor.pdf`) gives a continuous stall torque of 24 Nm against the 156 Nm peak of the -1GA and 35 Nm against 227.5 Nm for the -1HA, and limits the peak to 1 s or less (its note 3). That a 1 s peak at 15% continuous serves a hip in gait has not been checked; the dataset carries neither figure. The DAMIAO, Motorevo, HCFA and Xynova figures are the dataset's alone, and the Xynova wrist module meets 20 Nm with no margin. Only ENCOS publishes the temperature-rise curves that a duration needs.
+
+**Not yet done.** The modules of the other joint classes are not picked: the table above is what they could be, not what they are, and the AVL carries no row for them beyond the AKH70 entries of 2026-09-26, whose notes quote the torques of a heavier reference point. Which way the gap between the declaration and the bought modules closes — a heavier reference point, the lighter and less documented makers, or a density declared at the joint rather than the module — is the author's to decide; spec 02.6 keeps 133 Nm/kg until then. Peak duration is known for none but ENCOS's curves, and whether the dataset's copies of the datasheets are current is not checked.
 
 **Two open points of D-1, re-checked.** No figure was found for the knee moment of rising from a deep squat or the floor; it stays open. The hip row's 100–150 Nm at 70 kg is not in [12], whose hip figures are 0.5–1.0 Nm/kg in walking, nor in [13], which is qualitative and cites a 53 Nm module as its example: the 1.77 Nm/kg it scales to stands as an assumption, above the 1.3 Nm/kg of [30].
 

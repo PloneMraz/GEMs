@@ -15,7 +15,7 @@ GEM-50040,A,"Adhesive, shell layer bonding",CONS,BUY,ML,,,TM,L0,CONCEPT,MBOM onl
 GEM-50050,A,Cable ties and heat-shrink,CONS,BUY,SET,,,TM,L0,CONCEPT,MBOM only,,
 GEM-50060,A,Shipping crate and packaging,CONS,BUY,SET,,,TM,L0,CONCEPT,MBOM only,,
 GEM-20100,A,"Joint assembly, hip pitch",ASSY,MAKE,EA,,,TM,L1,CONCEPT,hardware/kinematics.md 1,,
-GEM-20110,A,"Actuator module (motor, reducer, encoders, drive board), hip pitch",OTS,BUY,EA,1.091,estimate: 145 Nm peak / 133 Nm/kg,TM,L2,CONCEPT,plan D-2; hardware/electrical 2,145 Nm peak; >=133 Nm/kg over module mass,"D-2 open: which bought module, at which ratio; candidates in avl.csv; reducer class per hardware/mechanical 2: cycloidal or planetary"
+GEM-20110,A,"Actuator module (motor, reducer, encoders, drive board), hip pitch",OTS,BUY,EA,1.091,estimate: 145 Nm peak / 133 Nm/kg,TM,L2,CONCEPT,plan D-2; hardware/electrical 2,145 Nm peak; >=133 Nm/kg over module mass,"D-2: main candidate ENCOS EC-A10020-P2-24, 2.17-2.21 kg, alternates in avl.csv; reducer class per hardware/mechanical 2: cycloidal or planetary"
 GEM-20106,A,"Joint torque sensor, hip pitch",OTS,BUY,EA,,,TM,L0,CONCEPT,spec 05.3; spec 06.6,,
 GEM-20108,A,"Adapter, module to structure, 7075-T6, hip pitch",MFG,MAKE,EA,,,TM,L0,CONCEPT,hardware/mechanical 1,,
 GEM-20109,A,"Fastener set, hip pitch",OTS,BUY,SET,,,TM,L0,CONCEPT,plan M-3,,
@@ -30,7 +30,7 @@ GEM-20306,A,"Joint torque sensor, hip yaw",OTS,BUY,EA,,,TM,L0,CONCEPT,spec 05.3;
 GEM-20308,A,"Adapter, module to structure, 7075-T6, hip yaw",MFG,MAKE,EA,,,TM,L0,CONCEPT,hardware/mechanical 1,,
 GEM-20309,A,"Fastener set, hip yaw",OTS,BUY,SET,,,TM,L0,CONCEPT,plan M-3,,
 GEM-20400,A,"Joint assembly, knee",ASSY,MAKE,EA,,,TM,L1,CONCEPT,hardware/kinematics.md 1,,
-GEM-20410,A,"Actuator module (motor, reducer, encoders, drive board), knee",OTS,BUY,EA,1.720,estimate: 229 Nm peak / 133 Nm/kg,TM,L2,CONCEPT,plan D-2; hardware/electrical 2,229 Nm peak; >=133 Nm/kg over module mass,"D-2 open: which bought module, at which ratio; candidates in avl.csv; reducer class per hardware/mechanical 2: cycloidal or planetary"
+GEM-20410,A,"Actuator module (motor, reducer, encoders, drive board), knee",OTS,BUY,EA,1.720,estimate: 229 Nm peak / 133 Nm/kg,TM,L2,CONCEPT,plan D-2; hardware/electrical 2,229 Nm peak; >=133 Nm/kg over module mass,"D-2: main candidate ENCOS EC-A10020-P2-24, 2.17-2.21 kg, alternates in avl.csv; reducer class per hardware/mechanical 2: cycloidal or planetary"
 GEM-20406,A,"Joint torque sensor, knee",OTS,BUY,EA,,,TM,L0,CONCEPT,spec 05.3; spec 06.6,,
 GEM-20408,A,"Adapter, module to structure, 7075-T6, knee",MFG,MAKE,EA,,,TM,L0,CONCEPT,hardware/mechanical 1,,
 GEM-20409,A,"Fastener set, knee",OTS,BUY,SET,,,TM,L0,CONCEPT,plan M-3,,
@@ -45,7 +45,7 @@ GEM-20606,A,"Joint torque sensor, ankle roll",OTS,BUY,EA,,,TM,L0,CONCEPT,spec 05
 GEM-20608,A,"Adapter, module to structure, 7075-T6, ankle roll",MFG,MAKE,EA,,,TM,L0,CONCEPT,hardware/mechanical 1,,
 GEM-20609,A,"Fastener set, ankle roll",OTS,BUY,SET,,,TM,L0,CONCEPT,plan M-3,,
 GEM-20700,A,"Joint assembly, trunk pitch",ASSY,MAKE,EA,,,TM,L1,CONCEPT,hardware/kinematics.md 1,,
-GEM-20710,A,"Actuator module (motor, reducer, encoders, drive board), trunk pitch",OTS,BUY,EA,1.073,estimate: 143 Nm peak / 133 Nm/kg,TM,L2,CONCEPT,plan D-2; hardware/electrical 2,143 Nm peak; >=133 Nm/kg over module mass,"D-2 open: which bought module, at which ratio; candidates in avl.csv; no reducer class assigned in hardware/mechanical 2; conflicts with the planetary module family of hardware/electrical 2"
+GEM-20710,A,"Actuator module (motor, reducer, encoders, drive board), trunk pitch",OTS,BUY,EA,1.073,estimate: 143 Nm peak / 133 Nm/kg,TM,L2,CONCEPT,plan D-2; hardware/electrical 2,143 Nm peak; >=133 Nm/kg over module mass,"D-2: main candidate ENCOS EC-A10020-P2-24, 2.17-2.21 kg, alternates in avl.csv; no reducer class assigned in hardware/mechanical 2; conflicts with the planetary module family of hardware/electrical 2"
 GEM-20706,A,"Joint torque sensor, trunk pitch",OTS,BUY,EA,,,TM,L0,CONCEPT,spec 05.3; spec 06.6,,
 GEM-20708,A,"Adapter, module to structure, 7075-T6, trunk pitch",MFG,MAKE,EA,,,TM,L0,CONCEPT,hardware/mechanical 1,,
 GEM-20709,A,"Fastener set, trunk pitch",OTS,BUY,SET,,,TM,L0,CONCEPT,plan M-3,,

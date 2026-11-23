@@ -38,6 +38,7 @@ The audit measures the CAD after FreeCAD has built it and compares it with the U
   points outside keep-out  0          expected 0          ok
   module keep-outs         5          expected 5          ok
   modules on joint axis    True       expected True       ok
+  modules = spec 02.6      True       expected True       ok
   STEP faces Front -Y      True       expected True       ok
 ```
 
@@ -45,7 +46,7 @@ The last line reads the written STEP file back, because what leaves the generato
 
 The keep-outs are checked by posing each segment at every combination of each joint's lower, middle and upper travel — 3 poses for a one-joint segment, 27 for a three-joint one, 282 in all — and testing that up to 150 points of its surface lie inside its keep-out. That is a sample, not a proof: the containment rests on how the volume is built (below), and the sample catches a build that went wrong. Breaking the generator by leaving the travel out of the sweep was reported, 1536 points outside.
 
-The module keep-outs are checked for their centre on the joint's origin and their axis on the joint's, at 1 µm, and for the datasheet's radius and volume. A module moved 10 µm off its joint's origin was reported.
+The module keep-outs are checked for their centre on the joint's origin and their axis on the joint's, at 1 µm, and for the datasheet's radius and volume; and each names the module that `hardware/electrical/actuator_sizing.py` declares at that joint, at its sheet's size, so the skeleton cannot keep an old module when spec 02.6 changes. A module moved 10 µm off its joint's origin was reported; a knee keep-out 1 mm too wide, or naming the knee's former module, fails the last check (its logic tried outside FreeCAD).
 
 ## Two frames, one rotation
 
@@ -65,11 +66,11 @@ FreeCAD 1.1 drops an `App::Part`'s placement when it writes STEP, so the generat
 
 Each is built joint by joint, from the joint nearest the segment out to its parent — the order in which the joints' turns compose: the envelope's points are taken about the joint's axis, the rectangle that bounds them in radius and height is revolved through the angle the shape already spans plus the joint's travel, and the next joint revolves the result. The volume therefore contains the true sweep and is larger than it — 1 mm and 0.5° of margin on top — never smaller. How much larger shows in the numbers: the thigh's is 434 L, the upper arm's 185 L, because three axes revolving a bounding sector each time compound. It is the space no other part may enter, not the space the segment fills.
 
-**Joint-module keep-outs,** for the joints whose bought module D-2 has chosen (`module_l_knee` and so on, in the group `KeepOutModule`): since 2026-11-23, ENCOS EC-A10020-P2-24 at both hip pitch joints, both knees and trunk pitch — the main candidate of [electrical §6d](../../electrical/README.md#6d-actuator-candidates--d-2-2026-11-22), not yet procured. Each is a cylinder of the datasheet's outer diameter and thickness, Φ124 × 85 mm, on the joint's axis and centred on its origin. That is the module's own volume, not its place: where along the axis it sits, whether it turns its joint directly or through a linkage, and how the modules of one multi-axis group clear one another are layout (plan M-2). A module keep-out overlaps the envelopes and the swept keep-outs around it, as the hardware will.
+**Joint-module keep-outs** at both hip pitch joints, both knees and trunk pitch (`module_l_knee` and so on, in the group `KeepOutModule`), for the modules [spec 02.6](../../../spec/02-structure-and-motion.md#the-basis-matters-as-much-as-the-number) declares there since 2026-11-23 ([electrical §6f](../../electrical/README.md#6f-modules-declared-at-the-joint--d-2-2026-11-23)), none yet procured: SEmotor SETZ90CI-1FG at hip pitch, Φ99 × 76.5 mm; ENCOS EC-A13715-P1-12.67 at the knee, Φ170 × 73 mm; SEmotor SETZ70CI-1HA at trunk pitch, Φ78 × 85 mm. Each is a cylinder of the datasheet's outer diameter and thickness, on the joint's axis and centred on its origin. Earlier that day all five were the ENCOS EC-A10020-P2-24, Φ124 × 85 mm. That is the module's own volume, not its place: where along the axis it sits, whether it turns its joint directly or through a linkage, and how the modules of one multi-axis group clear one another are layout (plan M-2). A module keep-out overlaps the envelopes and the swept keep-outs around it, as the hardware will.
 
 ## What is not in it yet
 
-**Module keep-outs for the other 26 actuated joints,** whose modules D-2 has not chosen.
+**Module keep-outs for the other 26 actuated joints.** Their modules are declared (spec 02.6); their keep-outs are not yet built.
 
 ## Reading it
 

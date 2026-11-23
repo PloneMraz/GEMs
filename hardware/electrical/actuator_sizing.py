@@ -4,18 +4,19 @@
 """
 Actuator sizing for the declared kinematic configuration.
 
-Sizes every joint from its peak torque requirement, sums the actuator mass, and
-reports the resulting `f_act` against the range spec 02.2 assumes.
+Sizes every joint from its peak torque requirement, checks the bought module
+declared at each joint against it (spec 02.6, JOINT_MODULE), sums the module
+masses, and reports the resulting `f_act` against the range spec 02.2 assumes.
 
     python3 hardware/electrical/actuator_sizing.py
     python3 hardware/electrical/actuator_sizing.py --mass 95
 
 Torque requirements are scaled from published gait and task data; arm joints
 are sized from the declared payload at the grip centre with the arm's own
-weight added; see hardware/electrical/README.md for each source. Torque densities are published
-figures for real actuator modules, and they differ by a factor of four
-depending on whether the number counts the motor or the whole actuator — which
-is the point of the table this prints.
+weight added; see hardware/electrical/README.md for each source. Module
+figures are the makers' sheets (README §6f). The published torque densities
+the last table prints differ by a factor of four depending on whether the
+number counts the motor or the whole actuator.
 """
 
 from __future__ import annotations
@@ -24,14 +25,60 @@ import argparse
 import sys
 
 G = 9.81
-REF_MASS = 82.0           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
-# Declared torque density, peak over module mass, in two parts (spec 02.6, 2026-11-23).
-# Legs and trunk: the lower of the two bought modules that carry running's knee
-# torque, RMD-X12-P20-320, 320 Nm / 2.4 kg = 133 Nm/kg (README §6d); ENCOS
-# EC-A10020-P2-24 is 149-152. Arms, wrists and neck: the 80 Nm/kg floor kept,
-# below the AVL's AKH70-16 at 88.7, since no arm module at 133 has been found.
-LEG_DENSITY = 133.0       # legs and trunk, Nm/kg
-FLOOR_DENSITY = 80.0      # arms, wrists and neck, Nm/kg
+REF_MASS = 98.2           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
+
+# Bought module per joint (spec 02.6, decided 2026-11-23: the actuator mass is
+# declared at the joint, not as one density). Each is the lightest module that
+# passes the rank-1 rule of README §6f — the maker's sheet gives the peak torque
+# and how long it holds, a continuous torque, the speed at 48 V, the mass and
+# the size — and meets its joint at REF_MASS: peak torque, the reducer class of
+# hardware/mechanical §2, the speed of MIN_RPM and, where a figure exists, the
+# RMS torque of running in RUN_RMS. Figures are the sheets' (README §6f):
+# (maker, model, peak Nm, continuous Nm, speed rpm at 48 V, kg, size mm, reducer, ratio)
+# Continuous is the sheet's rated torque (ENCOS) or continuous stall torque
+# (SEmotor); speed is ENCOS's peak speed or SEmotor's maximum speed.
+MODULE_CATALOGUE = {
+    "EC-A4315-P2-36":   ("ENCOS", "EC-A4315-P2-36", 75.0, 25.0, 117.0, 0.485, "56 x 69.5", "planetary", 36),
+    "EC-A6416-P2-25":   ("ENCOS", "EC-A6416-P2-25", 120.0, 40.0, 120.0, 0.805, "88 x 67.5", "planetary", 25),
+    "EC-A10020-P1-12":  ("ENCOS", "EC-A10020-P1-12", 150.0, 50.0, 140.0, 1.373, "124 x 60", "planetary", 12),
+    "EC-A10020-P2-24":  ("ENCOS", "EC-A10020-P2-24", 330.0, 100.0, 123.0, 2.211, "124 x 85", "planetary", 24),
+    "EC-A13715-P1-12.67": ("ENCOS", "EC-A13715-P1-12.67", 320.0, 110.0, 135.0, 2.695, "170 x 73", "planetary", 12.67),
+    "EC-A3814-H14-107": ("ENCOS", "EC-A3814-H14-107", 60.0, 20.0, 52.0, 0.434, "53 x 78.5", "harmonic", 107),
+    "SETZ70CI-1DA":     ("SEmotor", "SETZ70CI-1DA", 58.5, 9.0, 311.0, 0.70, "78 x 65", "planetary", 9),
+    "SEAF70A16NG02":    ("SEmotor", "SEAF70A16NG02", 104.0, 16.0, 175.0, 0.80, "78 x 65", "planetary", 16),
+    "SETZ70CI-1GA":     ("SEmotor", "SETZ70CI-1GA", 156.0, 24.0, 116.5, 0.90, "78 x 67", "planetary", 24),
+    "SETZ70CI-1HA":     ("SEmotor", "SETZ70CI-1HA", 227.5, 35.0, 80.0, 1.05, "78 x 85", "planetary", 35),
+    "SETZ90CI-1FG":     ("SEmotor", "SETZ90CI-1FG", 240.0, 60.0, 86.5, 1.60, "99 x 76.5", "planetary", 30),
+}
+# Torque held for 60 s, Nm: ENCOS's constant-load test, 30 to 100 °C at 54.5-63.5
+# rpm output, interpolated between its rows (README §6f). Where a module has a
+# figure here, the RUN_RMS check uses it; elsewhere the continuous torque.
+HOLD_60S = {
+    "EC-A4315-P2-36": 28.0, "EC-A6416-P2-25": 31.5, "EC-A10020-P1-12": 54.9,
+    "EC-A10020-P2-24": 79.1, "EC-A13715-P1-12.67": 150.0,
+}
+JOINT_MODULE = {
+    "hip_pitch": "SETZ90CI-1FG", "hip_roll": "SETZ70CI-1GA", "hip_yaw": "EC-A4315-P2-36",
+    "knee": "EC-A13715-P1-12.67", "ankle_pitch": "EC-A10020-P2-24", "ankle_roll": "EC-A4315-P2-36",
+    "trunk_pitch": "SETZ70CI-1HA", "trunk_roll": "SEAF70A16NG02", "trunk_yaw": "EC-A4315-P2-36",
+    "shoulder_pitch": "EC-A10020-P1-12", "shoulder_roll": "EC-A10020-P1-12",
+    "shoulder_yaw": "EC-A10020-P1-12", "elbow": "SETZ70CI-1DA",
+    "wrist_yaw": "EC-A3814-H14-107", "wrist_pitch": "EC-A3814-H14-107", "wrist_roll": "EC-A3814-H14-107",
+    "neck_yaw": "EC-A3814-H14-107", "neck_pitch": "EC-A3814-H14-107",
+}
+# Speed a joint's module must reach, output rpm (README §6e): the knee's 11 rad/s
+# in running, hip pitch's 7.4 rad/s (the hip's highest in running at 2.5 m/s),
+# ankle pitch's 3.7 rad/s (walking; no running figure).
+MIN_RPM = {"knee": 105.0, "hip_pitch": 71.0, "ankle_pitch": 35.0}
+# RMS moment of running at 2.5 m/s, Nm per kg of body (README §6e, Fukuchi et
+# al.), against the module's continuous torque. No figure exists for the other
+# joints, nor for walking.
+RUN_RMS = {"hip_pitch": 0.56, "knee": 0.96, "ankle_pitch": 0.77}
+
+
+def module(name):
+    """The bought module of a joint: the catalogue row."""
+    return MODULE_CATALOGUE[JOINT_MODULE[name]]
 
 # Arm geometry, hardware/kinematics.md §2. Levers are horizontal distances from
 # the joint axis with the arm held straight out, the posture of maximum
@@ -48,9 +95,8 @@ ELBOW_TO_GRIP = FOREARM + WRIST_TO_GRIP                  # 0.31 m
 PAYLOAD_KG = 15.0
 PAYLOAD_ROLL_KG = 11.0
 
-# Arm self-weight. Joint modules are weighed at the floor density from the
-# torque this table gives them; structure and hand are allowances until CAD
-# exists (⟦IMPL⟧). Positions are along the straight arm from the shoulder.
+# Arm self-weight. Joint modules are the bought ones of JOINT_MODULE;
+# structure and hand are allowances until CAD exists (⟦IMPL⟧). Positions are along the straight arm from the shoulder.
 ARM_STRUCTURE = [
     # (name, mass kg, distance from shoulder m)
     ("upper arm structure", 0.8, UPPER_ARM / 2),
@@ -75,12 +121,9 @@ LOAD_CASES = [
     ("stairs with a load held close, two hands", 20.0, 2, 0.15, 0.10, "proposed"),
 ]
 
-# The module the carry capacity is reported against: MyActuator
-# RMD-X12-P20-320, the module the leg density is declared from (README §6d) —
-# peak and rated torque, Nm. Carrying is a stand-up or a step, so the demand is
-# the walking and stairs figure of hip pitch and knee, not running's.
-MODULE_PEAK = 320.0
-MODULE_RATED = 85.0
+# The carry capacity is reported against the bought modules of hip pitch and
+# knee, the lower of the two. Carrying is a stand-up or a step, so the demand
+# is the walking and stairs figure of hip pitch and knee, not running's.
 STAND_PER_KG = 1.77       # hip pitch, and the knee in walking, stairs and rising (README §6c)
 
 # Per-joint peak torque. Leg and trunk figures scale with body mass; arm
@@ -121,7 +164,7 @@ DENSITIES = [
     (75.0,  "floor of the band before 2026-09-26"),
     (80.0,  "the arm floor; legs and trunk until 2026-11-23"),
     (88.7,  "commercial hollow-shaft planetary module, peak"),
-    (133.0, "RMD-X12-P20-320, the declared leg density"),
+    (133.0, "RMD-X12-P20-320, the leg density declared until 2026-11-23"),
     (150.0, "ENCOS EC-A10020-P2-24"),
 ]
 
@@ -130,16 +173,16 @@ def _fixed(name):
     return next(v for n, _, b, v in JOINTS if n == name and b == "fixed")
 
 
-def arm_torques(density=FLOOR_DENSITY):
+def arm_torques():
     """Peak torque at elbow and shoulder, arm horizontal, load at grip centre.
 
     Returns {"elbow": (payload Nm, self-weight Nm), "shoulder": (...),
-    "shoulder_roll": (...)}. Self-weight counts the joint modules distal to
-    the joint, weighed at `density` from their own torque here, plus the
-    structure and hand allowances of ARM_STRUCTURE.
+    "shoulder_roll": (...)}. Self-weight counts the bought joint modules
+    distal to the joint (JOINT_MODULE), plus the structure and hand
+    allowances of ARM_STRUCTURE.
     """
-    wrist_kg = 3 * _fixed("wrist_yaw") / density
-    yaw_kg = _fixed("shoulder_yaw") / density
+    wrist_kg = sum(module(n)[5] for n in ("wrist_yaw", "wrist_pitch", "wrist_roll"))
+    yaw_kg = module("shoulder_yaw")[5]
 
     # elbow: everything beyond it, measured from the elbow
     e_self = wrist_kg * G * (WRIST_POS - UPPER_ARM)
@@ -147,7 +190,7 @@ def arm_torques(density=FLOOR_DENSITY):
         if x > UPPER_ARM:
             e_self += m * G * (x - UPPER_ARM)
     e_pay = PAYLOAD_KG * G * ELBOW_TO_GRIP
-    elbow_kg = (e_pay + e_self) / density
+    elbow_kg = module("elbow")[5]
 
     # shoulder: everything beyond it, measured from the shoulder
     s_self = (yaw_kg * G * SHOULDER_YAW_POS
@@ -161,10 +204,10 @@ def arm_torques(density=FLOOR_DENSITY):
     }
 
 
-def torque_table(body_mass, density=FLOOR_DENSITY, carry_kg=0.0):
+def torque_table(body_mass, carry_kg=0.0):
     """Peak torque per joint. `carry_kg` is a load held close to the body: it
     adds to the mass every leg and trunk row scales with, and nothing else."""
-    arms = arm_torques(density)
+    arms = arm_torques()
     rows = []
     for name, n, basis, val in JOINTS:
         if basis == "per_kg":
@@ -179,20 +222,25 @@ def torque_table(body_mass, density=FLOOR_DENSITY, carry_kg=0.0):
     return rows
 
 
-def carry_capacity(body_mass, peak=MODULE_PEAK, rated=MODULE_RATED):
-    """Mass the legs can carry at a module's peak and rated torque: a stand-up
-    or a step asks hip pitch and knee for STAND_PER_KG per kg of body and load,
-    so the module's torque is reached at (body + carry) = torque / STAND_PER_KG.
-    Negative means the body alone exceeds it. Rated is the figure for a load
-    held through a slow climb; peak for a single stand-up or step."""
-    return (peak / STAND_PER_KG - body_mass, rated / STAND_PER_KG - body_mass,
-            "hip_pitch and knee")
+def carry_capacity(body_mass):
+    """Mass the legs can carry at their modules' peak and continuous torque: a
+    stand-up or a step asks hip pitch and knee for STAND_PER_KG per kg of body
+    and load, so a module's torque is reached at (body + carry) = torque /
+    STAND_PER_KG; the lower of the two joints limits. Negative means the body
+    alone exceeds it. Continuous is the figure for a load held through a slow
+    climb; peak for a single stand-up or step."""
+    hip, knee = module("hip_pitch"), module("knee")
+    lim = hip if hip[2] <= knee[2] else knee
+    peak = min(hip[2], knee[2])
+    cont = min(hip[3], knee[3])
+    return (peak / STAND_PER_KG - body_mass, cont / STAND_PER_KG - body_mass,
+            "hip pitch (%s %s)" % lim[:2] if lim is hip else "knee (%s %s)" % lim[:2])
 
 
-def load_case_table(body_mass, density=FLOOR_DENSITY):
+def load_case_table(body_mass):
     """Per load case: shoulder, elbow, hip and trunk torque, arm self-weight
     included. Hip and trunk take the load on the legs."""
-    arms = arm_torques(density)
+    arms = arm_torques()
     s_self = arms["shoulder"][1]
     e_self = arms["elbow"][1]
     hip = next(v for n, _, b, v in JOINTS if n == "hip_pitch")
@@ -207,7 +255,7 @@ def load_case_table(body_mass, density=FLOOR_DENSITY):
     return rows
 
 
-def split(body_mass=REF_MASS, density=FLOOR_DENSITY):
+def split(body_mass=REF_MASS):
     """The summed torque in two parts: the part that scales with body mass,
     as Nm per kg of body, and the part that does not, in Nm.
 
@@ -217,9 +265,55 @@ def split(body_mass=REF_MASS, density=FLOOR_DENSITY):
     """
     basis = {name: b for name, _, b, _ in JOINTS}
     per_kg = sum(n * v for _, n, b, v in JOINTS if b == "per_kg")
-    fixed = sum(tot for name, _, _, tot in torque_table(body_mass, density)
+    fixed = sum(tot for name, _, _, tot in torque_table(body_mass)
                 if basis[name] != "per_kg")
     return per_kg, fixed
+
+
+def module_masses():
+    """Bought module mass in two parts: legs and trunk (scales with the body
+    through the module steps), arms, wrists and neck (does not)."""
+    basis = {name: b for name, _, b, _ in JOINTS}
+    legs = sum(n * module(name)[5] for name, n, _, _ in JOINTS if basis[name] == "per_kg")
+    fixed = sum(n * module(name)[5] for name, n, _, _ in JOINTS if basis[name] != "per_kg")
+    return legs, fixed
+
+
+def densities(body_mass=REF_MASS):
+    """Peak torque over bought module mass, legs and trunk and the rest, at
+    `body_mass`: no longer declared, derived from JOINT_MODULE (spec 02.6)."""
+    per_kg, fixed_nm = split(body_mass)
+    legs, fixed = module_masses()
+    return per_kg * body_mass / legs, fixed_nm / fixed
+
+
+def module_check(body_mass):
+    """Each joint's module against its joint at `body_mass`: peak, reducer
+    class, speed and running RMS. Returns (failures, body mass up to which
+    every module still meets its joint's peak and RMS)."""
+    rows = {name: t for name, _, t, _ in torque_table(body_mass)}
+    bad, limit = [], float("inf")
+    for name, n, basis, val in JOINTS:
+        mk, model, peak, cont, rpm, kg, size, red, ratio = module(name)
+        t = rows[name]
+        if peak < t:
+            bad.append("%s: %s peak %.0f Nm < %.0f Nm" % (name, model, peak, t))
+        cls = "legs" if basis == "per_kg" else ("wrist" if name.startswith(("wrist", "neck")) else "arm")
+        if cls == "legs" and red == "harmonic" or cls == "wrist" and red != "harmonic" \
+                or cls == "arm" and not (red == "planetary" and 6 <= ratio <= 15):
+            bad.append("%s: %s reducer %s %s:1 outside its class" % (name, model, red, ratio))
+        if name in MIN_RPM and rpm < MIN_RPM[name]:
+            bad.append("%s: %s %.0f rpm < %.0f rpm" % (name, model, rpm, MIN_RPM[name]))
+        held = HOLD_60S.get(model, cont)
+        if name in RUN_RMS and held < RUN_RMS[name] * body_mass:
+            bad.append("%s: %s %s %.0f Nm < running RMS %.0f Nm"
+                       % (name, model, "60 s" if model in HOLD_60S else "continuous",
+                          held, RUN_RMS[name] * body_mass))
+        if basis == "per_kg":
+            limit = min(limit, peak / val)
+            if name in RUN_RMS:
+                limit = min(limit, held / RUN_RMS[name])
+    return bad, limit
 
 
 def main(argv=None):
@@ -234,20 +328,35 @@ def main(argv=None):
     total_nm = sum(r[3] for r in rows)
     n_joints = sum(r[1] for r in rows)
 
-    print("Actuator sizing — %d joints, body mass %.0f kg%s"
+    print("Actuator sizing — %d joints, body mass %.1f kg%s"
           % (n_joints, a.mass, ", carrying %.0f kg" % a.carry if a.carry else ""))
-    print("=" * 66)
-    print("  %-16s %3s %10s %12s" % ("joint", "n", "peak Nm", "total Nm"))
+    print("=" * 96)
+    print("  %-15s %2s %8s  %-8s %-17s %6s %5s %6s %6s %7s" % (
+        "joint", "n", "peak Nm", "maker", "module", "peak", "cont", "rpm", "kg", "Nm/kg"))
     for name, n, t, tot in rows:
-        print("  %-16s %3d %10.0f %12.0f" % (name, n, t, tot))
-    print("  %-16s %3d %10s %12.0f" % ("TOTAL", n_joints, "", total_nm))
+        mk, model, peak, cont, rpm, kg, size, red, ratio = module(name)
+        print("  %-15s %2d %8.0f  %-8s %-17s %6.0f %5.0f %6.0f %6.3f %7.0f"
+              % (name, n, t, mk, model, peak, cont, rpm, kg, t / kg))
+    legs, fixed_kg = module_masses()
+    print("  %-15s %2d %8.0f  modules %.1f kg (legs and trunk %.1f, arms, wrists, neck %.1f)"
+          % ("TOTAL", n_joints, total_nm, legs + fixed_kg, legs, fixed_kg))
+    bad, limit = module_check(a.mass + a.carry)
+    print()
+    if bad:
+        print("MODULES THAT DO NOT MEET THEIR JOINT at %.1f kg:" % (a.mass + a.carry))
+        for b in bad:
+            print("  " + b)
+    else:
+        print("Every module meets its joint's peak, reducer class, speed and running RMS")
+        print("at %.1f kg; the set holds up to %.1f kg of body." % (a.mass + a.carry, limit))
 
     per_kg, fixed = split(a.mass)
+    d_legs, d_fixed = densities(a.mass)
     print()
-    print("Split: %.2f Nm per kg of body (legs, trunk) = %.0f Nm at %.0f kg -> %.1f kg at %.0f Nm/kg;"
-          % (per_kg, per_kg * a.mass, a.mass, per_kg * a.mass / LEG_DENSITY, LEG_DENSITY))
-    print("       %.0f Nm fixed (arms, wrists, neck) -> %.1f kg of actuator at %.0f Nm/kg,"
-          % (fixed, fixed / FLOOR_DENSITY, FLOOR_DENSITY))
+    print("Split: %.2f Nm per kg of body (legs, trunk) = %.0f Nm at %.1f kg, on %.1f kg of modules: %.0f Nm/kg;"
+          % (per_kg, per_kg * a.mass, a.mass, legs, d_legs))
+    print("       %.0f Nm fixed (arms, wrists, neck), on %.1f kg of modules: %.0f Nm/kg,"
+          % (fixed, fixed_kg, d_fixed))
     print("       non-scaling mass, m_ext in the loop of spec 02.1.")
     arms = arm_torques()
     print()
@@ -266,40 +375,29 @@ def main(argv=None):
         print("  %-42s %5.0f %8.0f %6.0f %5.0f %6.0f  %s" % (name, m, ts, te, th, tt, status))
     cp, cr, joint = carry_capacity(a.mass)
     print()
-    print("Carry capacity of the legs against a %.0f Nm peak / %.0f Nm rated module (RMD-X12-P20-320),"
-          % (MODULE_PEAK, MODULE_RATED))
-    print("  limited by %s at %.2f Nm/kg in a stand-up or step:" % (joint, STAND_PER_KG))
-    print("  a single stand-up or step, at peak:   %s"
+    print("Carry capacity of the legs against their modules, limited by %s," % joint)
+    print("  at %.2f Nm/kg in a stand-up or step:" % STAND_PER_KG)
+    print("  a single stand-up or step, at peak:       %s"
           % ("%.0f kg" % cp if cp >= 0 else "none — the body alone exceeds it by %.0f kg" % -cp))
-    print("  a sustained climb, at rated torque:   %s"
+    print("  a sustained climb, at continuous torque:  %s"
           % ("%.0f kg" % cr if cr >= 0 else "none — the body alone exceeds it by %.0f kg" % -cr))
 
     print()
     print("Actuator mass and f_act with legs and trunk at published torque densities,")
-    print("arms, wrists and neck at %.0f Nm/kg" % FLOOR_DENSITY)
+    print("arms, wrists and neck on their bought modules (%.1f kg)" % fixed_kg)
     print("=" * 66)
     print("  %8s  %9s  %7s  %-28s" % ("Nm/kg", "mass kg", "f_act", "source"))
     band_lo, band_hi = 0.25, 0.35
-    ok_any = False
-    for d, label in DENSITIES:
-        m = per_kg * a.mass / d + fixed / FLOOR_DENSITY
+    for d, label in DENSITIES + [(d_legs, "the bought modules of JOINT_MODULE")]:
+        m = per_kg * a.mass / d + fixed_kg
         f = m / a.mass
-        inrange = band_lo <= f <= band_hi
-        ok_any = ok_any or inrange
         print("  %8.1f  %9.1f  %7.2f  %-28s %s"
-              % (d, m, f, label, "in range" if inrange else ""))
-
+              % (d, m, f, label, "in range" if band_lo <= f <= band_hi else ""))
     print()
     print("spec 02.2 assumes f_act in %.2f-%.2f (scaling part + fixed part / body)." % (band_lo, band_hi))
-    if not ok_any:
-        print("NO published density puts f_act inside that range.")
-        return 1
-    need = per_kg * a.mass / (band_hi * a.mass - fixed / FLOOR_DENSITY)
-    print("The arithmetic alone would allow legs and trunk at %.0f Nm/kg." % need)
-    print("spec 02.6 declares %.0f Nm/kg for legs and trunk and %.0f for arms, wrists and neck"
-          % (LEG_DENSITY, FLOOR_DENSITY))
-    print("(2026-11-23): the lower of the modules that carry running's knee, and the old floor.")
-    return 0
+    f_bought = (legs + fixed_kg) / a.mass
+    print("With the bought modules f_act is %.2f%s." % (f_bought, "" if band_lo <= f_bought <= band_hi else ", OUTSIDE that range"))
+    return 1 if bad or not band_lo <= f_bought <= band_hi else 0
 
 
 if __name__ == "__main__":

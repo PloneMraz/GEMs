@@ -37,7 +37,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE.parent / "electrical"))
-from actuator_sizing import REF_MASS, LEG_DENSITY, FLOOR_DENSITY, JOINTS as SIZING_JOINTS, torque_table  # noqa: E402
+from actuator_sizing import REF_MASS, JOINTS as SIZING_JOINTS, torque_table, module, densities  # noqa: E402
 
 PART_FIELDS = ["part_number", "rev", "description", "category", "make_buy",
                "uom", "unit_mass_kg", "mass_basis", "maturity", "design_level",
@@ -59,23 +59,16 @@ STATUS = {"SELECTED", "CANDIDATE"}
 # reserves no place for it (spec 04.7, 2026-11-22).
 LIFECYCLE = {"CONCEPT", "UPG"}
 
-# Declared densities (spec 02.6, 2026-11-23), held in actuator_sizing.py:
-# legs and trunk at LEG_DENSITY, arms, wrists and neck at FLOOR_DENSITY. Used
-# only for mass estimates and the requirement each module is bought against.
-SCALING = {n for n, _, basis, _ in SIZING_JOINTS if basis == "per_kg"}
-def module_density(name):
-    return LEG_DENSITY if name in SCALING else FLOOR_DENSITY
-# Joints whose module D-2 has a direction for (Plone, 2026-11-23): the main
-# candidate, ranked first in avl.csv with its alternates. The mass stays the
-# declared-density estimate; the candidate's own mass is in its note, and the
-# gap between them is hardware/electrical 6d's finding.
-MAIN_CANDIDATE = {n: "ENCOS EC-A10020-P2-24, 2.17-2.21 kg"
-                  for n in ("hip_pitch", "knee", "trunk_pitch")}
-PACK_KWH, CELLS_KG = 3.29, 7.3            # gems_budget at the D-8 point: 2 h, 65%, 1.65 m
+# The module of each joint is declared at the joint (spec 02.6, 2026-11-23),
+# held in actuator_sizing.py JOINT_MODULE: its mass is the maker's sheet's, and
+# it is ranked first in avl.csv with the alternates. Only the leg and trunk
+# density, derived from those modules, is quoted for a joint not yet sized.
+LEG_DENSITY = densities()[0]
+PACK_KWH, CELLS_KG = 3.93, 8.7            # gems_budget at the D-8 point: 2 h, 65%, 1.65 m
 ARMOUR_M2, ARMOUR_KG_M2 = 1.04, 7.5       # 65% of 1.6 m2; held at 7.5 (2026-11-22), see GEM-18010
 SKIN_M2, FINE_CM2 = 1.60, 500             # skin area at 1.65 m and the fine region of spec 05.2
 ORDINARY_CM2 = round(SKIN_M2 * 1e4 - FINE_CM2)
-BODY_MASS_BUDGET = 82.3    # scripts/gems_budget.py at the D-8 point
+BODY_MASS_BUDGET = 98.2    # scripts/gems_budget.py at the D-8 point
 
 # -- joint table: stable index -> part-number block. Never renumber. -------
 #    idx, joint, reducer class, placement
@@ -192,13 +185,12 @@ def build():
                     kw = dict(level="L1", req="torque not yet sized (D-9); >=%.0f Nm/kg over module mass" % LEG_DENSITY,
                               notes="Trunk lateral bend, added by D-9. No torque source yet; " + n)
                 else:
-                    dens = module_density(name)
-                    kw = dict(mass="%.3f" % (nm / dens),
-                              basis="estimate: %.0f Nm peak / %.0f Nm/kg" % (nm, dens),
-                              level="L2", req="%.0f Nm peak; >=%.0f Nm/kg over module mass" % (nm, dens),
-                              notes=("D-2: main candidate %s, alternates in avl.csv; " % MAIN_CANDIDATE[name]
-                                     if name in MAIN_CANDIDATE else
-                                     "D-2 open: which bought module, at which ratio; candidates in avl.csv; ") + n)
+                    mk, model, peak, cont, rpm, kg = module(name)[:6]
+                    kw = dict(mass="%.3f" % kg,
+                              basis="datasheet: %s %s" % (mk, model),
+                              level="L2", req="%.0f Nm peak at %.1f kg of body (spec 02.6)" % (nm, REF_MASS),
+                              notes=("D-2: %s %s declared at this joint (spec 02.6), %g/%g Nm peak/continuous, "
+                                     "%g rpm at 48 V; alternates in avl.csv; not procured; " % (mk, model, peak, cont, rpm)) + n)
             b.part(cpn, "%s, %s" % (desc, name.replace("_", " ")), cat, mb,
                    uom="SET" if off == 9 else "EA", ref=ref, **kw)
             b.use(pn, cpn)
@@ -209,7 +201,7 @@ def build():
     S = lambda pn, d: b.part(pn, d, "MFG", "MAKE", level="L2",
                              ref="hardware/mechanical 1",
                              req="CFRP long members, 7075-T6 at joints",
-                             notes="Section sizing IMPL; structure allowance 24.7 kg in total (gems_budget, f_str 0.30)")
+                             notes="Section sizing IMPL; structure allowance 29.4 kg in total (gems_budget, f_str 0.30)")
 
     top = b.part("GEM-10000", "GEMs body, reference design A (2 h with dock, 65% armour, 1.65 m)",
                  "ASSY", "MAKE", level="L1", ref="spec 02.5; protocol/conformance-record.md",

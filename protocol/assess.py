@@ -298,7 +298,7 @@ def declaration():
         ("Endurance ceiling", "%.1f h" % b["endurance_ceiling_h"]),
         ("Sleep states supported", "none implemented"),
         ("Protection level and coverage", "NIJ HG2 (formerly IIIA) + spike level 1, 65% coverage, moulded UHMWPE–aramid armour shell — selected, not built"),
-        ("Actuator specific torque", "133 Nm/kg legs and trunk, 80 Nm/kg arms, wrists and neck, peak over module mass — declared, not procured"),
+        ("Actuator specific torque", "a bought module declared at each joint (spec 02.6): %.0f Nm/kg legs and trunk, %.0f Nm/kg arms, wrists and neck, peak over module mass — not procured" % (budget.LEG_DENSITY, budget.ARM_DENSITY)),
         ("Summed joint torque", "%.0f Nm across 31 joints" % total_nm),
         ("Peak power at the source", "%.1f kW at 5C" % b["source_peak_kW"]),
         ("Link bandwidth and latency", "8 Gbps, ~1 ms PHY — specified, no radio"),

@@ -97,8 +97,9 @@ def joint_torque_total(body_mass_kg):
 
 
 def carry_capacity(body_mass_kg):
-    """(kg at the module's peak, kg at its rated torque, limiting joints) —
-    hardware/electrical/actuator_sizing.py, against the AKH70-48."""
+    """(kg at the modules' peak, kg at their continuous torque, limiting joint) —
+    hardware/electrical/actuator_sizing.py, against the bought hip pitch and
+    knee modules."""
     import sys
     from pathlib import Path
     d = str(Path(__file__).resolve().parent.parent / "hardware" / "electrical")
@@ -119,19 +120,22 @@ def torque_split():
     return split()
 
 
-def declared_densities():
-    """(legs and trunk, arms wrists and neck), Nm/kg — spec 02.6, held in
-    hardware/electrical/actuator_sizing.py so the figures have one home."""
+def module_densities():
+    """(legs and trunk, arms wrists and neck), Nm/kg — no longer declared
+    (spec 02.6, 2026-11-23): peak torque over the mass of the bought modules
+    of hardware/electrical/actuator_sizing.py, at its reference mass. The loop
+    scales them linearly away from that point, which the modules, coming in
+    steps, do not: away from it the figures are a first approximation."""
     import sys
     from pathlib import Path
     d = str(Path(__file__).resolve().parent.parent / "hardware" / "electrical")
     if d not in sys.path:
         sys.path.insert(0, d)
-    from actuator_sizing import LEG_DENSITY, FLOOR_DENSITY
-    return LEG_DENSITY, FLOOR_DENSITY
+    from actuator_sizing import densities
+    return densities()
 
 
-LEG_DENSITY, ARM_DENSITY = declared_densities()
+LEG_DENSITY, ARM_DENSITY = module_densities()
 
 
 def actuator_split(density, density_fixed=ARM_DENSITY):
@@ -216,7 +220,7 @@ def print_report(b):
     i = b["inputs"]
     print("GEMs budget — one operating point")
     print("=" * 60)
-    print("inputs   f_str %.2f  actuators %g Nm/kg legs and trunk, %g arms  p %g W/kg  t %g h  e %g Wh/kg"
+    print("inputs   f_str %.2f  actuators %.1f Nm/kg legs and trunk, %.1f arms  p %g W/kg  t %g h  e %g Wh/kg"
           % (i["f_str"], i["density_Nm_per_kg"], i["density_fixed_Nm_per_kg"], i["p_W_per_kg"],
              i["endurance_h"], i["e_Wh_per_kg"]))
     print("         armour %d%% coverage at %g kg/m2, fixed mass %g kg"
@@ -242,7 +246,7 @@ def print_report(b):
     print("         armour         %6.1f kg" % b["armour_kg"])
     print("         fixed          %6.1f kg   (compute, sensors, hands, shell, harness)" % i["m_fixed_kg"])
     print()
-    print("carry    legs, %s, against the RMD-X12-P20-320 (320 Nm peak, 85 Nm rated):" % b["carry_limited_by"])
+    print("carry    legs, limited by %s, at its peak and continuous torque:" % b["carry_limited_by"])
     for k, label in (("carry_kg_at_peak", "one stand-up or step"), ("carry_kg_at_rated", "a sustained climb")):
         v = b[k]
         print("         %-22s %s" % (label, "%.0f kg" % v if v >= 0 else "none, body over by %.0f kg" % -v))
@@ -269,12 +273,17 @@ def collect_claims():
     f_act_s, m_act_fixed = actuator_split(DENSITY)
     REF = budget(F_STR, DENSITY, 20, REF_ENDURANCE_H, 450, 0.65, 7.5, 20.0)
     REF_M = REF["body_mass_kg"]
-    from actuator_sizing import REF_MASS, arm_torques, SHOULDER_TO_GRIP, ELBOW_TO_GRIP, load_case_table  # noqa: E402
+    from actuator_sizing import REF_MASS, arm_torques, SHOULDER_TO_GRIP, ELBOW_TO_GRIP, load_case_table, module_check  # noqa: E402
 
     # the sizing script's reference mass must be the loop's output
     c.append(("ref mass", "hardware/electrical/actuator_sizing.py",
-              "REF_MASS = %.1f" % round(REF_M) if abs(REF_MASS - REF_M) < 0.5 else "REF_MASS must be %.1f" % REF_M,
+              "REF_MASS = %.1f" % REF_M if abs(REF_MASS - REF_M) < 0.05 else "REF_MASS must be %.1f" % REF_M,
               "reference mass in the sizing script equals the loop's output at D-8"))
+    # every bought module must still meet its joint at the loop's output
+    bad, limit = module_check(REF_M)
+    c.append(("modules", "hardware/electrical/actuator_sizing.py",
+              "JOINT_MODULE = {" if not bad else "MODULES FAIL: " + "; ".join(bad),
+              "each joint's bought module meets its joint at the reference mass"))
 
     # 00 / 02.4 height and skin area
     c.append(("height", "spec/00-scope-and-criteria.md", "~%.2f m" % HEIGHT_M, "declared height"))
@@ -284,10 +293,10 @@ def collect_claims():
     c.append(("f_act_s", "spec/02-structure-and-motion.md",
               "**%.3f**" % f_act_s, "scaling actuator fraction, legs and trunk at the declared density"))
     c.append(("m_act_fixed", "spec/02-structure-and-motion.md",
-              "**%.1f kg**" % m_act_fixed, "fixed actuator mass, arms, wrists and neck at 80 Nm/kg"))
+              "**%.1f kg**" % m_act_fixed, "fixed actuator mass, the bought arm, wrist and neck modules"))
     c.append(("densities", "spec/02-structure-and-motion.md",
-              "**%d Nm/kg for legs and trunk, %d Nm/kg for arms, wrists and neck**" % (LEG_DENSITY, ARM_DENSITY),
-              "the declared densities, as the sizing script holds them"))
+              "**%d Nm/kg for legs and trunk, %d Nm/kg for arms, wrists and neck**" % (round(LEG_DENSITY), round(ARM_DENSITY)),
+              "the densities the bought modules give, as the sizing script derives them"))
     c.append(("f_act ref", "spec/02-structure-and-motion.md",
               "%.2f at the %d-hour point" % (REF["f_act"], REF_ENDURANCE_H), "f_act at the reference point"))
 
@@ -345,9 +354,9 @@ def collect_claims():
     for load, reach in ((5, 0.40), (15, SHOULDER_TO_GRIP), (30, SHOULDER_TO_GRIP), (50, SHOULDER_TO_GRIP)):
         t = shoulder_torque(load, reach)
         c.append(("torque %dkg %.2fm" % (load, reach), "spec/02-structure-and-motion.md",
-                  "%d Nm (%.2f kg)" % (round(t), actuator_mass_for_torque(t, ARM_DENSITY)),
-                  "shoulder torque and actuator mass, %d kg at %.2f m" % (load, reach)))
-    arms = arm_torques(ARM_DENSITY)
+                  "%d Nm (%.2f kg)" % (round(t), actuator_mass_for_torque(t, 80.0)),
+                  "shoulder torque and actuator mass at 80 Nm/kg, %d kg at %.2f m" % (load, reach)))
+    arms = arm_torques()
     for key, label in (("shoulder", "shoulder pitch"), ("shoulder_roll", "shoulder roll"), ("elbow", "elbow")):
         pay, own = arms[key]
         c.append(("sized %s" % key, "spec/02-structure-and-motion.md",
@@ -365,15 +374,16 @@ def collect_claims():
     total_nm = joint_torque_total(REF_MASS)
     per_kg, fixed_nm = torque_split()
     c.append(("joint torque total", "spec/02-structure-and-motion.md",
-              "**%d Nm** summed across 31 joints at the %d kg" % (round(total_nm), REF_MASS),
+              "**%d Nm** summed across 31 joints at the %.1f kg" % (round(total_nm), REF_MASS),
               "summed joint torque of the declared kinematics at the reference point"))
     c.append(("torque split", "spec/02-structure-and-motion.md",
               "%d Nm of it scales with body mass and %d Nm does not" % (round(per_kg * REF_MASS), round(fixed_nm)),
               "the two parts of the summed torque"))
-    for d in (80, 133, 150):
+    for d in (80, 133, 150, LEG_DENSITY):
         m = per_kg * REF_MASS / d + fixed_nm / ARM_DENSITY
         c.append(("f_act @%d" % d, "spec/02-structure-and-motion.md",
-                  "| %d Nm/kg | %.1f kg | %s |" % (d, m, ("**%.2f**" % (m / REF_MASS)) if d == LEG_DENSITY else "%.2f" % (m / REF_MASS)),
+                  ("| %d Nm/kg | %.1f kg | %.2f |" % (d, m, m / REF_MASS)) if d != LEG_DENSITY else
+                  ("| the bought modules, %d Nm/kg | %.1f kg | **%.2f** |" % (round(d), m, m / REF_MASS)),
                   "actuator mass and f_act, legs and trunk at %d Nm/kg" % d))
     c.append(("f_act floor", "spec/02-structure-and-motion.md",
               "a leg and trunk density near %d Nm/kg" % round(per_kg * REF_MASS / (0.35 * REF_MASS - fixed_nm / ARM_DENSITY)),

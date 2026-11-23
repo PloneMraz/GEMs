@@ -61,7 +61,7 @@ Rejected: one actuator per segment per axis, the approach of musculoskeletal hum
 
 The coupling ratio between segments is `⟦IMPL⟧`. The simulation model spreads each axis equally; the human distribution — most rotation thoracic, little lumbar — is the reference the mechanical design should move toward. The battery pack sits on the top segment, rigid with the shoulders, so the spine turns beneath it.
 
-**Lateral bend is new with this decision.** It is sized, with the other two trunk axes, from measured human trunk strength per kilogram ([`electrical/`](electrical/README.md#6a-trunk-lateral-bend-torque--research-2026-09-26)): 0.95 Nm/kg, 78 Nm at the 82 kg reference point (91 Nm at the 96 kg point of that date).
+**Lateral bend is new with this decision.** It is sized, with the other two trunk axes, from measured human trunk strength per kilogram ([`electrical/`](electrical/README.md#6a-trunk-lateral-bend-torque--research-2026-09-26)): 0.95 Nm/kg, 93 Nm at the 98.2 kg reference point (91 Nm at the 96 kg point of that date).
 
 ### 1.5 Range of motion: mechanism, not biology
 

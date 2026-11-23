@@ -57,14 +57,14 @@ Figures are derived from the specification and the budget model, never measured.
 | Declared | Value |
 |---|---|
 | Simulated or physical | **simulated** — no physical body exists |
-| Mass | 82 kg (derived, not weighed) |
+| Mass | 98 kg (derived, not weighed) |
 | Free-running endurance | 2 h at the declared operating point, with a dock |
-| Endurance ceiling | 12.1 h |
+| Endurance ceiling | 11.4 h |
 | Sleep states supported | none implemented |
 | Protection level and coverage | NIJ HG2 (formerly IIIA) + spike level 1, 65% coverage, moulded UHMWPE–aramid armour shell — selected, not built |
-| Actuator specific torque | 133 Nm/kg legs and trunk, 80 Nm/kg arms, wrists and neck, peak over module mass — declared, not procured |
-| Summed joint torque | 2505 Nm across 31 joints |
-| Peak power at the source | 16.5 kW at 5C |
+| Actuator specific torque | a bought module declared at each joint (spec 02.6): 110 Nm/kg legs and trunk, 58 Nm/kg arms, wrists and neck, peak over module mass — not procured |
+| Summed joint torque | 2866 Nm across 31 joints |
+| Peak power at the source | 19.6 kW at 5C |
 | Link bandwidth and latency | 8 Gbps, ~1 ms PHY — specified, no radio |
 | Sensor configuration | 41 logged joints; no sensor exists |
 | Aggregate raw rate | 15.1 Gbps at the conservative configuration |

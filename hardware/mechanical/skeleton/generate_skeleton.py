@@ -38,17 +38,16 @@ WHAT IS IN IT
     rectangle that bounds the shape's projection on a plane through the
     joint's axis — so each volume contains the true sweep and can exceed it,
     never fall short of it.
-  * Joint-module keep-outs, for the joints whose module D-2 has chosen
-    (2026-11-23: ENCOS EC-A10020-P2-24 at hip pitch, knee and trunk pitch,
-    hardware/electrical/README.md §6d): a cylinder of the datasheet's outer
-    diameter and thickness, on the joint's axis, centred on its origin. Where
+  * Joint-module keep-outs at hip pitch, knee and trunk pitch, for the
+    modules spec 02.6 declares there (2026-11-23, hardware/electrical/README.md
+    §6f): a cylinder of the datasheet's outer diameter and thickness, on the joint's axis, centred on its origin. Where
     along the axis the module sits, and how the modules of one multi-axis
     group clear one another, is layout (plan M-2), not set here.
 
 WHAT IS NOT YET IN IT
 ---------------------
-  * Module keep-outs for the other 26 actuated joints, whose modules are not
-    chosen (D-2).
+  * Module keep-outs for the other 26 actuated joints: their modules are
+    declared (spec 02.6), their keep-outs not yet built.
 
 TWO FRAMES, ONE ROTATION
 ------------------------
@@ -87,6 +86,8 @@ REPO = HERE.parents[2]
 sys.path.insert(0, str(REPO / "hardware" / "sim-model"))
 
 import generate_urdf as gu  # noqa: E402  (the declaration, encoded once)
+sys.path.insert(0, str(REPO / "hardware" / "electrical"))
+import actuator_sizing as asz  # noqa: E402  (the modules spec 02.6 declares)
 
 # Author of the released file (workspace rule, 2026-11-03), in the STEP
 # header's encoding: ISO 10303-21 strings are ASCII, wider characters \X2\.
@@ -99,15 +100,19 @@ MARKER_LEN, MARKER_R = 60.0, 4.0
 STEP_OUT = HERE / "gems-skeleton.step"
 ENV_MODE, ENV_OUT, ENV_FCSTD = "GEMS_SKELETON_MODE", "GEMS_SKELETON_OUT", "GEMS_SKELETON_FCSTD"
 
-# The joints whose bought module D-2 has chosen, and that module's envelope:
-# (module, outer diameter mm, thickness mm). ENCOS motor data manual V3.13,
-# §7.2, "电机尺寸(外径×厚度)" 124×85 (hardware/electrical/README.md §6d, [35]).
-# The main candidate, not yet procured: rank 1 in hardware/bom/avl.csv.
-ENCOS_P2_24 = ("ENCOS EC-A10020-P2-24", 124.0, 85.0)
+# The module spec 02.6 declares at the joint, and its envelope: (module, outer
+# diameter mm, thickness mm), from the maker's sheet (hardware/electrical/
+# README.md §6f): ENCOS motor data manual V3.13, "电机尺寸(外径×厚度)" 170×73;
+# SEmotor SETZ70/90 sheets, "外形尺寸" φ99*76.5 and φ78*85. Not yet procured:
+# rank 1 in hardware/bom/avl.csv. The same rows as JOINT_MODULE of
+# hardware/electrical/actuator_sizing.py; the audit checks they agree.
+HIP_PITCH = ("SEmotor SETZ90CI-1FG", 99.0, 76.5)
+KNEE = ("ENCOS EC-A13715-P1-12.67", 170.0, 73.0)
+TRUNK_PITCH = ("SEmotor SETZ70CI-1HA", 78.0, 85.0)
 JOINT_MODULES = {
-    "l_hip_pitch": ENCOS_P2_24, "r_hip_pitch": ENCOS_P2_24,
-    "l_knee": ENCOS_P2_24, "r_knee": ENCOS_P2_24,
-    "trunk_pitch": ENCOS_P2_24,
+    "l_hip_pitch": HIP_PITCH, "r_hip_pitch": HIP_PITCH,
+    "l_knee": KNEE, "r_knee": KNEE,
+    "trunk_pitch": TRUNK_PITCH,
 }
 
 
@@ -305,7 +310,7 @@ def build_and_audit(mode, out, fcstd):
     import Import
     V = App.Vector
 
-    robot = gu.build(82.3)
+    robot = gu.build(98.2)
     joints, envelopes = skeleton(robot)
     origins, axes, ext, actuated = expected(robot)
 
@@ -441,6 +446,13 @@ def build_and_audit(mode, out, fcstd):
                 or abs(cyl.Radius - od / 2) > TOL_MM
                 or abs(s.Volume - math.pi * (od / 2) ** 2 * th) > 1e-6 * s.Volume):
             bad_mod += 1
+    # every module keep-out names the module actuator_sizing.py declares at
+    # that joint, at its sheet's size
+    bad_decl = 0
+    for jn, (model, od, th) in JOINT_MODULES.items():
+        row = asz.module(jn[2:] if jn[:2] in ("l_", "r_") else jn)
+        if model != "%s %s" % row[:2] or (od, th) != tuple(float(v) for v in row[6].split(" x ")):
+            bad_decl += 1
     checks = [
         ("joint frames", len(markers), len(origins), len(markers) == len(origins) == 37),
         ("actuated joints", n_act, actuated, n_act == actuated == 31),
@@ -460,6 +472,7 @@ def build_and_audit(mode, out, fcstd):
         ("points outside keep-out", outside, 0, outside == 0),
         ("module keep-outs", len(modules), len(JOINT_MODULES), len(modules) == len(JOINT_MODULES) == 5),
         ("modules on joint axis", bad_mod == 0, True, bad_mod == 0),
+        ("modules = spec 02.6", bad_decl == 0, True, bad_decl == 0),
     ]
     ok = True
     print("gems-skeleton — CAD skeleton, generated from hardware/kinematics.md via generate_urdf.py")

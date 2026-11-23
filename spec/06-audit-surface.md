@@ -80,7 +80,7 @@ The division that applies here is the one from [00](00-scope-and-criteria.md): *
 | Measured | Where | Why |
 |---|---|---|
 | Contact force and torque | Hands, forearms, every human-contact surface | The mechanical amplitude actually transmitted to a person |
-| Surface temperature | Contact regions | The shell carries micro-thermal regulation ([04](04-shell.md)) |
+| Surface temperature | Contact regions | The modules beneath run hot — up to 100 °C in the thermal test of [electrical §6e](../hardware/electrical/README.md) — and the shell insulates them without regulating its own temperature ([04.1](04-shell.md#41-impact-padding)); what a person touches is measured, not assumed |
 | Vibration amplitude and frequency | The cardiac co-regulation module ([05.3](05-sensing.md#53-channels)) | This is a **measurable** physiological intervention channel |
 | Contact duration and frequency | Whole body | A brief intervention is not a sustained one |
 

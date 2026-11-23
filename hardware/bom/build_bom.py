@@ -69,6 +69,14 @@ ARMOUR_M2, ARMOUR_KG_M2 = 1.04, 7.5       # 65% of 1.6 m2; held at 7.5 (2026-11-
 SKIN_M2, FINE_CM2 = 1.60, 500             # skin area at 1.65 m and the fine region of spec 05.2
 ORDINARY_CM2 = round(SKIN_M2 * 1e4 - FINE_CM2)
 BODY_MASS_BUDGET = 98.2    # scripts/gems_budget.py at the D-8 point
+# Masses read for the rank-1 candidate of a part (hardware/bom/README.md, "The
+# fixed mass, bottom-up", 2026-11-23): (kg, basis). Only a figure the maker or a
+# seller states for that part; comparables stay in the README, not here.
+SOURCED_MASS = {
+    "GEM-11100": ("0.045", "Connect Tech JCB022 datasheet: 45 g, board only"),
+    "GEM-13120": ("1.13", "Orion BMS 2 specification, 24-72 cells, with heatsink: 2.50 lb"),
+    "GEM-13210": ("0.31", "NVIDIA Jetson T5000: a retailer's listed item weight; NVIDIA's datasheet DS-11945 states none"),
+}
 
 # -- joint table: stable index -> part-number block. Never renumber. -------
 #    idx, joint, reducer class, placement
@@ -224,6 +232,7 @@ def build():
                            uom="SET" if pn == "GEM-11090" else "EA",
                            mat=mat, level="L1", ref=ref, req=req), q)
     b.use(head, b.part("GEM-11100", "Head sensor interface set", "OTS", "BUY", uom="SET",
+                       mass=SOURCED_MASS["GEM-11100"][0], basis=SOURCED_MASS["GEM-11100"][1],
                        level="L0", ref="plan E-6",
                        notes="bought interface boards for the head sensors: which, IMPL (plan E-6)"))
 
@@ -269,9 +278,10 @@ def build():
         ("GEM-13170", "Always-on rail regulator", "OTS", "spec 03.6", "tens of microwatts",
          "no bought part checked against the quiescent budget yet (2026-11-05)"),
     ]:
+        m, mb_ = SOURCED_MASS.get(pn, ("", ""))
         b.use(power, b.part(pn, d, cat, "MAKE" if cat != "OTS" else "BUY",
                             uom="SET" if pn in ("GEM-13150", "GEM-13160") else "EA", level="L1",
-                            ref=ref, req=req, notes=n))
+                            mass=m, basis=mb_, ref=ref, req=req, notes=n))
 
     compute = b.part("GEM-13200", "Compute assembly", "ASSY", "MAKE", level="L1", ref="plan E-5")
     b.use(torso, compute)
@@ -288,8 +298,9 @@ def build():
         ("GEM-13260", "On-board computer (OBC), link-loss kernel", "OTS", "L0", "spec 07.5", "",
          "a small computer of its own, bought; stands by while the IPC is online"),
     ]:
+        m, mb_ = SOURCED_MASS.get(pn, ("", ""))
         b.use(compute, b.part(pn, d, cat, "BUY" if cat == "OTS" else "MAKE", level=lvl,
-                              ref=ref, req=req, notes=n),
+                              mass=m, basis=mb_, ref=ref, req=req, notes=n),
               *(("", "per CAN bus segment, IMPL (bus load at the balance rate)")
                 if pn == "GEM-13270" else ()))
 

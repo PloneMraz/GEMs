@@ -115,7 +115,7 @@ GEM-11060,A,Electronic nose,OTS,BUY,EA,,,TM,L1,CONCEPT,spec 05.3,"5-30 ppb per c
 GEM-11070,A,"Taste analyser, lab-on-chip",OTS,OPEN,EA,,,LAB,L1,CONCEPT,spec 05.3,batch-wise,
 GEM-11080,A,Speaker and ultrasonic emitter,OTS,BUY,EA,,,TM,L1,CONCEPT,spec 05.3,,
 GEM-11090,A,Micro facial and pupil actuator set,OTS,OPEN,SET,,,LAB,L1,CONCEPT,spec 05.3; kinematics 1.6,,
-GEM-11100,A,Head sensor interface set,OTS,BUY,SET,,,TM,L0,CONCEPT,plan E-6,,"bought interface boards for the head sensors: which, IMPL (plan E-6)"
+GEM-11100,A,Head sensor interface set,OTS,BUY,SET,0.045,"Connect Tech JCB022 datasheet: 45 g, board only",TM,L0,CONCEPT,plan E-6,,"bought interface boards for the head sensors: which, IMPL (plan E-6)"
 GEM-12000,A,Neck assembly,ASSY,MAKE,EA,,,TM,L1,CONCEPT,hardware/kinematics.md 1,,
 GEM-13000,A,Torso assembly,ASSY,MAKE,EA,,,TM,L1,CONCEPT,plan M-2,,
 GEM-13010,A,Pelvis structure,MFG,MAKE,EA,,,TM,L2,CONCEPT,hardware/mechanical 1,"CFRP long members, 7075-T6 at joints","Section sizing IMPL; structure allowance 29.4 kg in total (gems_budget, f_str 0.30)"
@@ -127,14 +127,14 @@ GEM-13030,A,"IMU, torso",OTS,BUY,EA,,,TM,L1,CONCEPT,spec 05.3,1 kHz,
 GEM-13100,A,Power assembly,ASSY,MAKE,EA,,,TM,L1,CONCEPT,plan E-2,,
 GEM-13110,A,Cell stack,ASSY,MAKE,EA,8.7,cells only: 3.93 kWh at 450 Wh/kg (gems_budget),TM,L2,CONCEPT,spec 03.1; hardware/electrical 3,400-500 Wh/kg,
 GEM-13111,A,"Cell, durable tier",OTS,BUY,EA,,,TM,L2,CONCEPT,spec 03.1; hardware/electrical 3,400-500 Wh/kg,D-5 open
-GEM-13120,A,Battery management system,OTS,BUY,EA,,,TM,L1,CONCEPT,plan E-2,"monitoring, balancing, protection","bought, configured (plan F-9); cell count follows D-4"
+GEM-13120,A,Battery management system,OTS,BUY,EA,1.13,"Orion BMS 2 specification, 24-72 cells, with heatsink: 2.50 lb",TM,L1,CONCEPT,plan E-2,"monitoring, balancing, protection","bought, configured (plan F-9); cell count follows D-4"
 GEM-13130,A,Pack enclosure,MFG,MAKE,EA,,,TM,L1,CONCEPT,plan M-2,,
 GEM-13140,A,Supercapacitor bank,OTS,BUY,EA,,,TM,L1,CONCEPT,spec 03.2 measure 3,burst power,
 GEM-13150,A,"Pre-charge, contactor and fuse set",OTS,BUY,SET,,,TM,L1,CONCEPT,plan E-2,bus voltage D-4,
 GEM-13160,A,"DC-DC converter set, HV to logic rails",OTS,BUY,SET,,,TM,L1,CONCEPT,plan E-4,HV to logic rails,"bought modules, one per rail: rails and count IMPL (plan E-4)"
 GEM-13170,A,Always-on rail regulator,OTS,BUY,EA,,,TM,L1,CONCEPT,spec 03.6,tens of microwatts,no bought part checked against the quiescent budget yet (2026-11-05)
 GEM-13200,A,Compute assembly,ASSY,MAKE,EA,,,TM,L1,CONCEPT,plan E-5,,
-GEM-13210,A,Edge AI module,OTS,BUY,EA,,,TM,L2,CONCEPT,hardware/electrical 4,"40-130 W, 128 GB",
+GEM-13210,A,Edge AI module,OTS,BUY,EA,0.31,NVIDIA Jetson T5000: a retailer's listed item weight; NVIDIA's datasheet DS-11945 states none,TM,L2,CONCEPT,hardware/electrical 4,"40-130 W, 128 GB",
 GEM-13220,A,Edge module carrier board,OTS,BUY,EA,,,TM,L1,CONCEPT,plan E-5,,"bought; fit in the torso (mass, envelope, cooling) not checked"
 GEM-13230,A,"Real-time computer, EtherCAT master",OTS,BUY,EA,,,TM,L0,CONCEPT,spec 07.2; firmware/README,"balance 500 Hz, reflex 10 ms",D-3 open: which bought board; not the edge module
 GEM-13270,A,CAN to EtherCAT bridge,OTS,BUY,EA,,,TM,L0,CONCEPT,plan E-3; hardware/electrical 5,,only while D-2's module speaks CAN; its latency counts in the 4.0 ms command stage

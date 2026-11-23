@@ -93,9 +93,50 @@ The firmware images and the edge module's OS image are in the EBOM as virtual pa
 
 ## Where it stands
 
-The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 210 part numbers, including 10 software images and 5 consumables; 2 parts left open and 9 on the upgrade path; 361 operations across 58 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 31 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 49.0 kg out of the 98.2 kg budget — the rest is blank rather than guessed.
+The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 210 part numbers, including 10 software images and 5 consumables; 2 parts left open and 9 on the upgrade path; 361 operations across 58 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 31 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 50.5 kg out of the 98.2 kg budget — the rest is blank rather than guessed.
 
 Prices were looked for on 2026-09-26. Most supplier pages were unreachable from the environment this was written in, so the AVL rests on search results and on the pages that could be read, and each entry's notes say which. The candidates for the boards bought instead of designed were looked for on 2026-11-05, from search excerpts; no price among them is recorded as verified.
+
+## The fixed mass, bottom-up (2026-11-23)
+
+The mass loop holds **20 kg** of fixed mass — compute, sensors, hands, the shell's padding, tactile skin and textile, the harness ([spec 02.5](../../spec/02-structure-and-motion.md#25-mass-envelope): 15–25 kg, `⟦IMPL⟧`). It is an allowance, not a sum. Built up here from the EBOM, part by part, each with one of three bases: a figure the maker or a seller states for the part's rank-1 candidate, which the EBOM carries; a figure for a comparable bought part, where the part has no candidate, kept here and not in the EBOM; or none.
+
+| Part | Qty | kg | Basis |
+|---|---|---|---|
+| Camera module, 4K (`GEM-11020`) | 2 | 0.05–0.09 | comparable, no candidate: 4K-class GMSL2 modules, 25 g (e-con Systems STURDeCAM84, with lens and enclosure) to 45 g (TechNexion VLS-GM2-AR0821-SL) each |
+| Thermal IR camera (`GEM-11030`) | 1 | 0.008–0.059 | comparable: Teledyne FLIR Boson 640, from 7.5 g for the core; lensed versions to about 59 g in a reseller's table |
+| LiDAR (`GEM-11040`) | 1 | 0.245–0.265 | comparable: Livox Mid-360, 265 g (maker's page); Mid-360L, 245 g |
+| Head sensor interface set (`GEM-11100`) | 1 | 0.045 | candidate Connect Tech JCB022, 45 g, datasheet |
+| Edge AI module (`GEM-13210`) | 1 | 0.28–0.31 | candidate NVIDIA Jetson T5000: 0.31 kg, a retailer's item weight; 0.28 kg without packaging in an NVIDIA set-up document a reseller hosts; NVIDIA's datasheet DS-11945 states none |
+| Battery management system (`GEM-13120`) | 1 | 1.13 | candidate Orion BMS 2, 24–72 cells, with heatsink: 2.50 lb, maker's specification; the Orion Jr 2's weight not read |
+| DC-DC converter (`GEM-13160`) | one per rail | 0.111 each | candidate Vicor V48B12M250BN3, 110.6 g (distributor listing, the family's weight table); the rail count is `⟦IMPL⟧` (plan E-4), so one is counted |
+| Joint torque sensor (`GEM-2xx06`) | 31 | 3.4–6.2 | comparable, no candidate: Hangkai HKVN-70, 110 g at 100 Nm and 120 g at 200 Nm (a reseller's listing); TE Connectivity's custom safety sensor under 200 g at 100 Nm. The knee's 274 Nm and the ankle's 203 Nm lie above that range, the wrists' 20 Nm and the neck's 15 below it; neither end was read |
+| Hand assembly (`GEM-14900`, `GEM-15900`) | 2 | 0.94–1.58 | comparable, the hand not chosen (D-6): Inspire RH56 hands, six actuators, 470 g (RH56H1, tactile) to 790 g (RH56E2), retailers' figures |
+| Outer textile (`GEM-18130`) | 1 | 0.32 | fabric only, 200 g/m² over 1.6 m² (EBOM) |
+| **Parts with a figure** | | **6.5–10.1** | |
+
+**Parts with no figure:**
+- Impact padding (`GEM-18110`): Rogers PORON XRD is 0.14–0.40 kg/m² per millimetre; over the whole 1.60 m², 0.22–0.64 kg for each millimetre of thickness. Thickness and the area padded are `⟦IMPL⟧` (plan M-8).
+- Tactile skin (`GEM-18140`, 1.55 m²): HexSkin's vendor states no mass. For scale only: a 1.75 mm sheet over 1.55 m² weighs 2.7 kg at a density of 1 g/cm³; its density is not stated either.
+- Harness (`GEM-19010`–`19040`): no figure, and no published mass for a humanoid's harness was found.
+- Compute: the carrier board (the AGX301 manual has a weight section that could not be fetched), the real-time computer, the CAN-to-EtherCAT bridge, storage, the SDR and the on-board computer. The edge module's cooling, for up to 130 W, is not in the EBOM at all (plan M-11).
+- Power: the pack enclosure, the supercapacitor bank (optional, spec 03.2), the pre-charge and fuse set, the always-on regulator, the DC-DC converters beyond one.
+- Head: the microphone array (16), electronic nose, taste analyser, speaker, facial actuator set. Torso: the IMU, the five communications parts, the cardiac module. Feet: contact sensing. Twelve fastener sets.
+
+**What it says.** The parts with a figure take 6.5–10.1 kg of the 20 kg allowance, which leaves 9.9–13.5 kg for everything above. That includes the harness, the padding, the skin and the compute's cooling, none of which has a figure. Whether 20 kg is enough is therefore not shown: neither confirmed nor refuted.
+
+**What the fixed mass does to the body.** This is the mass loop of spec 02.1, run on the bought modules of spec 02.6, with the modules chosen again at each point by the rule of [electrical §6f](../electrical/README.md#6f-modules-declared-at-the-joint--d-2-2026-11-23). It is 2 h, 65% armour at 7.5 kg/m², f_str 0.30:
+
+| Fixed mass | Body | Actuators | `f_act` | Pack |
+|---|---|---|---|---|
+| 6.5 kg, every blank at zero — a floor, not a design | 68.5 kg | 27.5 kg | 0.40 | 2.74 kWh |
+| 10.1 kg, every blank at zero | 79.1 kg | 30.4 kg | 0.38 | 3.16 kWh |
+| 15 kg, the bottom of spec 02.5's band | 89.7 kg | 32.0 kg | 0.36 | 3.59 kWh |
+| **20 kg, the reference point** | **98.2 kg** | 32.2 kg | 0.33 | 3.93 kWh |
+| 25 kg, the top of the band | 109.5 kg | 34.1 kg | 0.31 | 4.38 kWh |
+| 30 kg | 120.2 kg | 35.6 kg | 0.30 | 4.81 kWh |
+
+Each kilogram of fixed mass costs about 2.1 kg of body here, in steps as modules change. Above about 22 kg of fixed mass the body passes 101.4 kg, where the reference set of modules stops holding, and heavier modules come in. Below about 16 kg, `f_act` leaves the 0.25–0.35 band of spec 02.2 upward: the modules do not get lighter in step with the body.
 
 ## What building it turned up
 

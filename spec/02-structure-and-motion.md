@@ -104,7 +104,7 @@ The reference design moulds the armour as the shell itself ([04.2](04-shell.md#4
 
 ## 2.5 Mass envelope
 
-`m = γ · m_ext`, with `m_ext` = armour (5–13 kg) plus fixed mass — compute, sensors, hands, shell (padding, tactile skin, textile; [04.5](04-shell.md#45-the-three-layer-division)), harness: **15–25 kg**, `⟦IMPL⟧` — plus the arm, wrist and neck actuators of 2.2, 13.1 kg of bought modules, which do not scale with the body.
+`m = γ · m_ext`, with `m_ext` = armour (5–13 kg) plus fixed mass — compute, sensors, hands, shell (padding, tactile skin, textile; [04.5](04-shell.md#45-the-three-layer-division)), harness: **15–25 kg**, `⟦IMPL⟧` — plus the arm, wrist and neck actuators of 2.2, 13.1 kg of bought modules, which do not scale with the body. The reference point holds the fixed mass at 20 kg. Built up from the EBOM on 2026-11-23, the parts with a figure come to 6.5–10.1 kg of it, while the harness, the padding, the tactile skin and the compute's cooling have none, so whether 20 kg is enough is not shown. Across the band, the body is 90–110 kg on bought modules ([BOM](../hardware/bom/README.md#the-fixed-mass-bottom-up-2026-11-23)).
 
 | Operating point | γ | Body mass |
 |---|---|---|

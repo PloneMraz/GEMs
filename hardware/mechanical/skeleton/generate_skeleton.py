@@ -102,11 +102,11 @@ ENV_MODE, ENV_OUT, ENV_FCSTD = "GEMS_SKELETON_MODE", "GEMS_SKELETON_OUT", "GEMS_
 
 # The module spec 02.6 declares at the joint, and its envelope: (module, outer
 # diameter mm, thickness mm), from the maker's sheet (hardware/electrical/
-# README.md §6f): ENCOS motor data manual V3.13, "电机尺寸(外径×厚度)" 170×73;
-# SEmotor SETZ70/90 sheets, "外形尺寸" φ99*76.5 and φ78*85. Not yet procured:
+# README.md §6f, §6g): ENCOS motor data manual V3.13, "电机尺寸(外径×厚度)" 170×73
+# and 124×85; SEmotor SETZ70 sheet, "外形尺寸" φ78*85. Not yet procured:
 # rank 1 in hardware/bom/avl.csv. The same rows as JOINT_MODULE of
 # hardware/electrical/actuator_sizing.py; the audit checks they agree.
-HIP_PITCH = ("SEmotor SETZ90CI-1FG", 99.0, 76.5)
+HIP_PITCH = ("ENCOS EC-A10020-P2-24", 124.0, 85.0)
 KNEE = ("ENCOS EC-A13715-P1-12.67", 170.0, 73.0)
 TRUNK_PITCH = ("SEmotor SETZ70CI-1HA", 78.0, 85.0)
 JOINT_MODULES = {
@@ -310,7 +310,7 @@ def build_and_audit(mode, out, fcstd):
     import Import
     V = App.Vector
 
-    robot = gu.build(98.2)
+    robot = gu.build(asz.REF_MASS)
     joints, envelopes = skeleton(robot)
     origins, axes, ext, actuated = expected(robot)
 

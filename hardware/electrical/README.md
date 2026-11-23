@@ -10,7 +10,7 @@ Component selection against the specification. Every figure below is sourced; §
 
 ## 1. The actuator finding — raised, and resolved
 
-> **Resolved by option A on 2026-09-22.** The specification then declared **75–90 Nm/kg peak, on a peak-torque-over-module-mass basis**, and states the basis explicitly. **Revised 2026-09-26 to 80–90 Nm/kg** when the trunk was re-sized from measured human strength and gained a lateral-bend axis (§6a). **The arm payload came down to 15 kg the same day (§6b)**, which took `f_act` at 80 Nm/kg from 0.34 to 0.30; the floor stayed at 80. **Revised again 2026-11-23**, when the knee and ankle were sized to running (§6e): 133 Nm/kg for legs and trunk, the figure of RMD-X12-P20-320, and 80 for arms, wrists and neck ([spec 02.6](../../spec/02-structure-and-motion.md#the-basis-matters-as-much-as-the-number)). **Replaced the same day by a module declared at each joint** (§6f): the densities are now derived from the bought modules, 110 and 58 Nm/kg, and the reference point is 98.2 kg. `spec/` and this document agree again; the record below is kept because the reasoning is what justifies a figure at the top of the commercial band. Note that the §1 tables below were computed with the whole of `f_act` treated as scaling with body mass; §6b explains why only the leg and trunk part does.
+> **Resolved by option A on 2026-09-22.** The specification then declared **75–90 Nm/kg peak, on a peak-torque-over-module-mass basis**, and states the basis explicitly. **Revised 2026-09-26 to 80–90 Nm/kg** when the trunk was re-sized from measured human strength and gained a lateral-bend axis (§6a). **The arm payload came down to 15 kg the same day (§6b)**, which took `f_act` at 80 Nm/kg from 0.34 to 0.30; the floor stayed at 80. **Revised again 2026-11-23**, when the knee and ankle were sized to running (§6e): 133 Nm/kg for legs and trunk, the figure of RMD-X12-P20-320, and 80 for arms, wrists and neck ([spec 02.6](../../spec/02-structure-and-motion.md#the-basis-matters-as-much-as-the-number)). **Replaced the same day by a module declared at each joint** (§6f): the densities are now derived from the bought modules, 110 and 58 Nm/kg at 98.2 kg, and 100 and 58 at 105.6 kg since walking's RMS and the hip's frontal plane entered the check (§6g). `spec/` and this document agree again; the record below is kept because the reasoning is what justifies a figure at the top of the commercial band. Note that the §1 tables below were computed with the whole of `f_act` treated as scaling with body mass; §6b explains why only the leg and trunk part does.
 
 Sizing the declared 30 joints against published torque densities did not reproduce the actuator mass fraction the specification assumed. Tool output as run on 2026-09-22, before the correction:
 
@@ -134,11 +134,11 @@ The finding of §1 had no technical answer — three options, trading against ea
 
 ### What option A committed the design to
 
-**75–90 Nm/kg peak, over module mass — 80–90 since 2026-09-26; on 2026-11-23, 133 for legs and trunk and 80 for arms, wrists and neck; since the same day no density, a bought module at each joint (§6f), which gives 110 and 58.** Only a handful of commercial modules reach it — the hollow-shaft planetary at 88.7 Nm/kg is at the very top of what is claimed, and a mainstream 52 Nm/kg module does not qualify. Supply is thin and will stay thin.
+**75–90 Nm/kg peak, over module mass — 80–90 since 2026-09-26; on 2026-11-23, 133 for legs and trunk and 80 for arms, wrists and neck; since the same day no density, a bought module at each joint (§6f), which gives 110 and 58, then 100 and 58 (§6g).** Only a handful of commercial modules reach it — the hollow-shaft planetary at 88.7 Nm/kg is at the very top of what is claimed, and a mainstream 52 Nm/kg module does not qualify. Supply is thin and will stay thin.
 
 **The specification now states the basis**, which is the part that actually prevents a repeat. The original error was not only a wrong number: 30–36 Nm/kg is a reasonable figure *on the integrated basis*, and it was being used as if it were peak-over-module. A density with no basis attached is a number waiting to be misread.
 
-**The two bands are now one constraint.** 80–90 Nm/kg mapped onto `f_act` 0.30–0.34 then; at the densities declared on 2026-11-23 `f_act` was 0.27 at 82 kg, and with the bought modules of §6f it is 0.33 at 98.2 kg ([spec 02.6](../../spec/02-structure-and-motion.md#what-the-two-figures-give)), each derivable from the other, and `scripts/gems_budget.py --check` holds them together — including the actuator-mass column, which it did not cover before and which is exactly where this drift hid.
+**The two bands are now one constraint.** 80–90 Nm/kg mapped onto `f_act` 0.30–0.34 then; at the densities declared on 2026-11-23 `f_act` was 0.27 at 82 kg, and with the bought modules of §6f it was 0.33 at 98.2 kg, 0.35 at 105.6 kg with §6g's checks ([spec 02.6](../../spec/02-structure-and-motion.md#what-the-two-figures-give)), each derivable from the other, and `scripts/gems_budget.py --check` holds them together — including the actuator-mass column, which it did not cover before and which is exactly where this drift hid.
 
 ## 6a. Trunk lateral-bend torque — research, 2026-09-26
 
@@ -286,7 +286,7 @@ The speeds are on the basis each datasheet gives — no-load, peak, or command r
 - The reducer conflict D-2 names can be settled by a bought module either way. `hardware/mechanical` §2 asked for cycloidal reducers at hip and knee — revised on 2026-11-22 to cycloidal or planetary, not strain-wave, since its reason rules out strain-wave gears only — and cycloidal modules are on sale — PhyArc here, LeadShine's HRV2 at 120–160 Nm in the dataset with no speed given; MyActuator's own cycloidal line, CEM, stops at 45 Nm [37]. The planetary rows are what the electrical selection assumed. Only the 8:1 row keeps the backdrivability that §2 argues for the arms; the others are 20:1 to 25:1.
 - Only MyActuator offers EtherCAT on the module; the others need the CAN-to-EtherCAT bridge of plan E-5. PhyArc wants 72 V and the rest 48 V, which ties the choice to D-4.
 
-**Since 2026-11-23** a bought module is declared at each joint (§6f, spec 02.6) and the reference point is 98.2 kg; earlier that day the legs and trunk were declared at 133 Nm/kg, the X12's figure, at 82.3 kg. The torques in this section are at the 96.2 kg point of its date: AKE90-8 at 121 Nm/kg falls below the declaration; ENCOS, PhyArc and the AKH70-48 are above it.
+**Since 2026-11-23** a bought module is declared at each joint (§6f, spec 02.6) and the reference point is 105.6 kg (§6g), 98.2 kg before walking's RMS entered the check; earlier that day the legs and trunk were declared at 133 Nm/kg, the X12's figure, at 82.3 kg. The torques in this section are at the 96.2 kg point of its date: AKE90-8 at 121 Nm/kg falls below the declaration; ENCOS, PhyArc and the AKH70-48 are above it.
 
 **The direction, picked 2026-11-23 (Plone), and superseded the same day by §6f,** which keeps the P2-24 only at the ankle pitch and as an alternate elsewhere. ENCOS EC-A10020-P2-24 is the main candidate for hip pitch, knee and trunk pitch, with the RMD-X12-P20-320 and PhyArc 102 as alternates, ranked in that order in the [AVL](../bom/avl.csv); the AKH70-48 rows at those three joints are dropped, since at ±5 rad/s it does not reach the knee's 6.7–6.9 rad/s in walking at 1.0 m/s. None is procured, and no price or availability outside China has been read. The three modules' keep-outs, Φ124 × 85 mm on each joint's axis, are in the [CAD skeleton](../mechanical/skeleton/) (plan M-1).
 
@@ -443,7 +443,7 @@ RMD-X12-P20-320 [34] gives a stall table only — 150, 200, 250 and 300 Nm raise
 
 **What the sheets changed.** SEmotor's peak is a 1 s figure, and its continuous torque is 15–25% of it in the modules read here: the -1GA's 156 Nm over 24, the -1DA's 58.5 over 9. ENCOS's rated torque is not what a module holds under load: the EC-A6416-P2-25, rated 40 Nm, holds 30 Nm for 1′11″ and 35 for 34″ at 50 rpm; the EC-A10020-P2-24, rated 100, holds about 79 Nm for 60 s at 57.5 rpm. And one module read for this changes the knee: ENCOS EC-A13715-P1-12.67 — 320 Nm peak, 110 Nm rated, 135 rpm peak, 2695 g, Φ170 × 73 mm, 12.67:1 — holds 90 Nm for 7′21″, 100 for 5′01″ and 150 for 60 s at 59.5 rpm (manual §9.6), so it meets row 5's 60 s at the knee where the P2-24 does not.
 
-**The set, at the 98.2 kg reference point.** The modules of [spec 02.6](../../spec/02-structure-and-motion.md#the-basis-matters-as-much-as-the-number), held in `actuator_sizing.py` as `JOINT_MODULE`:
+**The set, at the 98.2 kg reference point** — superseded the same day by [§6g](#6g-walking-rms-and-the-frontal-plane--d-2-2026-11-23) at hip pitch, hip roll, ankle pitch and trunk yaw, and kept here as the step it was:
 
 | Joint | Needs | Module | Peak / continuous | 60 s under load | Speed at 48 V | Mass |
 |---|---|---|---|---|---|---|
@@ -460,17 +460,58 @@ RMD-X12-P20-320 [34] gives a stall table only — 150, 200, 250 and 300 Nm raise
 | elbow ×2 | 51 Nm | SEmotor SETZ70CI-1DA | 58.5 / 9 Nm | — | 311 rpm | 0.70 kg |
 | wrist ×6, neck ×2 | 20, 15 Nm | ENCOS EC-A3814-H14-107 | 60 / 20 Nm | — | 52 rpm | 0.434 kg |
 
-The loop converges on **98.2 kg** from any start between 82 and 120 kg: modules 32.2 kg — 19.1 for legs and trunk, 13.1 for arms, wrists and neck — `f_act` 0.33, γ 2.40, pack 3.93 kWh, endurance ceiling 11.4 h. Peak over module mass comes out at 110 Nm/kg for legs and trunk and 58 for the rest, against the 133 and 80 declared earlier the same day. The set holds to 101.4 kg of body, where trunk yaw's 75 Nm runs out, and ankle pitch's 60 s at 102.7 kg. Against the rows of §6d: with the continuous torque in place of the 60 s figure, the knee keeps the P2-24 and the body is 96.3 kg, but running's 60 s is short at the knee on its own bench; with the dataset's figures and no rule it was 83.7–90.0 kg.
+The loop converged on **98.2 kg** from any start between 82 and 120 kg: modules 32.2 kg — 19.1 for legs and trunk, 13.1 for arms, wrists and neck — `f_act` 0.33, γ 2.40, pack 3.93 kWh, endurance ceiling 11.4 h. Peak over module mass comes out at 110 Nm/kg for legs and trunk and 58 for the rest, against the 133 and 80 declared earlier the same day. The set held to 101.4 kg of body, where trunk yaw's 75 Nm runs out, and ankle pitch's 60 s at 102.7 kg. Against the rows of §6d: with the continuous torque in place of the 60 s figure, the knee keeps the P2-24 and the body is 96.3 kg, but running's 60 s is short at the knee on its own bench; with the dataset's figures and no rule it was 83.7–90.0 kg.
 
-**At the 4-hour point** the same rules take the P2-24 at hip pitch, the EC-A13715 at ankle pitch and, at the knee, the EC-A13720-P1-11.4 — 400 Nm peak, 120 Nm rated, 139 rpm peak, 3160 g, Φ170 × 84.5 mm, about 170 Nm for 60 s at 63 rpm (manual §10.6): the body is 122.7 kg, `f_act` 0.30, pack 4.91 kWh. `scripts/gems_budget.py` carries the 2-hour set's densities to every point and gives 125 kg there; spec 02.6 and 02.7 say which figure is which.
+**At the 4-hour point** the same rules take the P2-24 at hip pitch, the EC-A13715 at ankle pitch and, at the knee, the EC-A13720-P1-11.4 — 400 Nm peak, 120 Nm rated, 139 rpm peak, 3160 g, Φ170 × 84.5 mm, about 170 Nm for 60 s at 63 rpm (manual §10.6): the body is 122.7 kg, `f_act` 0.30, pack 9.8 kWh — corrected 2026-11-23: 4.91 kWh was written here, the 2-hour pack of that body, not the 4-hour one. `scripts/gems_budget.py` carries the 2-hour set's densities to every point and gives 125 kg there; spec 02.6 and 02.7 say which figure is which.
 
 **What is not checked.**
 - Static holds. The elbow's SEmotor holds 9 Nm continuously against the 51 Nm of the static payload of spec 02.6; trunk pitch's 35 Nm against a 171 Nm sized from human isometric strength; the shoulder's EC-A10020-P1-12 has a stall table that ends at 61.5 Nm for 5′18″, against 108 Nm. How long a static load is held is not declared (the motion envelope's held postures), and those picks stand on it.
-- RMS in walking, and at every joint other than knee, hip pitch and ankle pitch: no figure.
+- RMS in walking, and at every joint other than knee, hip pitch and ankle pitch: no figure. Closed the same day by §6g.
 - The sheets' conditions are a bench's: the ENCOS tests start at 30 °C and state no ambient or mounting; a sealed body is not the bench (plan M-11). SEmotor's figures are with its own drive.
 - The bus: ENCOS is CAN and CAN FD, ZDL EtherCAT; the SEmotor pages read name none. The CAN-to-EtherCAT bridge of plan E-5 stands.
 - Fit: the knee's module is Φ170 mm against the P2-24's 124. The skeleton's keep-outs at hip pitch, knee and trunk pitch carry the new modules ([skeleton](../mechanical/skeleton/)); where they sit along the axis is layout (plan M-2).
 - Whether the dataset's copies are the makers' current sheets, price and availability outside China: not read. None is procured.
+
+## 6g. Walking RMS and the frontal plane — D-2, 2026-11-23
+
+**Decided 2026-11-23 (Plone).** Two checks join the module check of §6f: walking's RMS torque at every leg and trunk joint, against the module's continuous torque, since walking is held, not a 60 s burst; and the hip in the frontal plane in running, which sizes hip roll.
+
+**Why.** The joint heat of plan M-11, run on the set of §6f at 98.2 kg, compared each module's RMS in walking at 1.0 m/s with what its sheet holds continuously. Hip pitch's SEmotor SETZ90CI-1FG walked at 79–81 Nm RMS against its 60 Nm, 1.32–1.35 times; hip roll's SETZ70CI-1GA at 69–78 Nm against 24, 2.9–3.3 times. The walking figures are Oli's [38], a simulated robot with an asymmetric gait, so they were checked against people where people were measured: the running data of Fukuchi et al. [41] carry the hip's moment about all three axes, and the paper's convention puts flexion about Z, abduction and adduction about X, rotation about Y, as net internal moments per kilogram (read in full through Europe PMC, PMC5426356). At 2.5 m/s the hip's abduction moment is 0.65 Nm/kg RMS and 1.73 Nm/kg at its peak, 31 participants — 64 and 170 Nm at 98.2 kg, against the -1GA's 24 Nm continuous and 156 Nm peak. Hip roll had been sized at 1.23 Nm/kg.
+
+**The figures**, Nm per kilogram of body, held in `actuator_sizing.py`:
+
+| Joint | Walking 1.0 m/s, RMS (Oli, the larger side) | Running 2.5 m/s, RMS / peak (Fukuchi, axis) |
+|---|---|---|
+| Hip pitch | 0.824 | 0.56 / 1.11 (Z) |
+| Hip roll | 0.796 | **0.65 / 1.73 (X)** |
+| Hip yaw | 0.183 | 0.11 / 0.35 (Y) |
+| Knee | 0.736 | 0.96 / 2.79 (Z, §6e) |
+| Ankle pitch | 0.683 | 0.77 / 2.07 (Z) |
+| Ankle roll | 0.183 | 0.08 / 0.22 (X) |
+| Trunk pitch, roll, yaw | 0.127, 0.147, 0.224 | — |
+
+Oli's torques are over the last 8 s of its walk at a commanded 1.0 m/s, divided by its 52.55 kg; the larger of left and right is taken, since the gait is not symmetric (the left knee 0.736, the right 0.564). The arms are left out: Oli's arm swing scales with Oli's arm, not with this body's. Running's figures are each participant's cycle-averaged curve, the method of `RUN_RMS` in §6e, which gives 2.07 at the ankle as declared. Hip roll is now sized to running's 1.73 Nm/kg peak; hip yaw's 0.35 and ankle roll's 0.22 lie below their declared 0.62 and 0.54.
+
+**The set, at the 105.6 kg reference point.** The modules of [spec 02.6](../../spec/02-structure-and-motion.md#the-basis-matters-as-much-as-the-number), held in `actuator_sizing.py` as `JOINT_MODULE`. Four joints change from §6f:
+
+| Joint | Needs | Module | Peak / continuous | 60 s under load | Mass |
+|---|---|---|---|---|---|
+| hip pitch ×2 | 187 Nm; RMS 59 running, 87 walking | ENCOS EC-A10020-P2-24 | 330 / 100 Nm | 79 Nm | 2.211 kg |
+| hip roll ×2 | 183 Nm; RMS 69 running, 84 walking | ENCOS EC-A10020-P2-24 | 330 / 100 Nm | 79 Nm | 2.211 kg |
+| ankle pitch ×2 | 219 Nm; RMS 81 running, 72 walking | MyActuator RMD-X12-P20-320 | 320 / 85 Nm | — | 2.40 kg |
+| trunk yaw | 78 Nm; RMS 24 walking | ENCOS EC-A6416-P2-25 | 120 / 40 Nm | 31.5 Nm | 0.805 kg |
+
+The other joints keep their modules of §6f, with their needs at 105.6 kg in spec 02.6. The RMD-X12-P20-320's size is read from its sheet's drawing, Φ124 ± 0.1 × 85 ± 0.5 mm [34]; the same sheet gives a line resistance of 0.12 Ω and a torque constant of 3.3 N·m/A, which the joint heat of plan M-11 can use. It is taken at the ankle because the P2-24's 79 Nm for 60 s falls short of running's 81 Nm RMS at this mass. The X12's sheet gives no time under load, so the check there is against its 85 Nm continuous torque, a weaker check than the P2-24 had: the rule rewards the sheet that says less.
+
+The loop converges on **105.6 kg** from any start between 82 and 120 kg: modules 36.7 kg — 23.6 for legs and trunk, 13.1 for arms, wrists and neck — `f_act` 0.348, at the top of the 0.25–0.35 band of spec 02.2, γ 2.58, pack 4.22 kWh, endurance ceiling 10.7 h. Peak over module mass comes out at 100 Nm/kg for legs and trunk and 58 for the rest. The set holds to 108.8 kg of body, where trunk roll's 16 Nm continuous meets its walking RMS; its 104 Nm peak runs out at 109.5 kg, and ankle pitch's running RMS reaches the X12's 85 Nm at 110.4 kg.
+
+**At the 4-hour point** the same rules give 132.7 kg, `f_act` 0.31, pack 10.6 kWh, with the EC-A13715-P1-12.67 at hip pitch, hip roll and ankle pitch, the EC-A13720-P1-11.4 at the knee, the EC-A6416-P2-25 at hip yaw, SEmotor SETZ90CI-1FG at trunk pitch and SETZ70CI-1GA at trunk roll. `scripts/gems_budget.py` carries the 2-hour set's densities to every point and gives 137 kg there.
+
+**What it does not settle.**
+- Walking's figures come from one simulated robot, not from people walking; no human walking data with the hip's three axes was read.
+- ENCOS's own stall temperature-rise tables put what a module holds continuously below its rated torque: the EC-A4315-P2-36 holds 20 Nm, not its rated 25; the EC-A13715-P1-12.67 heats from 30 to 100 °C in 27′50″ at 80 Nm against its rated 110; the EC-A10020-P2-24 in 22′15″ at 80 against 100 [35]. The check uses the rated figure; at a stall these tables are the stricter.
+- Heat. The joint heat of plan M-11 was computed on the set of §6f and is to be computed again on this one; it is recorded with plan M-11 when the cooling architecture is chosen.
+- The rest of §6f's list stands: static holds, the bench's conditions, the bus, fit, the sheets' currency, price and availability.
 
 ## 7. References
 

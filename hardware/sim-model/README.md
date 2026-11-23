@@ -25,7 +25,7 @@ The audit closes that loop. It recomputes the model's own properties and compare
   core DOF             31         expected 31         ok
   trunk spread 3 segs  True       expected True       ok
   mech covers soft     True       expected True       ok
-  total mass kg        98.2       expected 98.2       ok
+  total mass kg        105.6      expected 105.6      ok
   reach m              0.66       expected 0.66       ok
   standing height m    1.656      expected 1.65       ok
   drawn height m       1.656      expected 1.65       ok

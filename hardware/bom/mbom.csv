@@ -54,7 +54,7 @@ GEM-13100,60,WC-SUB,"Install dC-DC converter set, HV to logic rails",GEM-13160,1
 GEM-13100,70,WC-SUB,Install always-on rail regulator,GEM-13170,1,EA,,
 GEM-13100,80,WC-SUB,Fasten and torque to drawing,GEM-13199,1,SET,,
 GEM-13100,90,WC-SUB,"(consumable) Threadlocker, medium strength",GEM-50010,,ML,as consumed; figure set by the work instruction,
-GEM-13110,10,WC-CELL,Build cell stack,GEM-13111,,EA,3.93 kWh / per-cell energy of the part chosen,
+GEM-13110,10,WC-CELL,Build cell stack,GEM-13111,,EA,4.22 kWh / per-cell energy of the part chosen,
 GEM-13110,20,WC-CAL,Cell matching and stack acceptance test,,,,,
 GEM-13120,10,WC-PROG,"Verify and configure firmware image, battery management (the manufacturer's)",GEM-40030,1,EA,,
 GEM-13120,20,WC-CAL,Functional test,,,,,

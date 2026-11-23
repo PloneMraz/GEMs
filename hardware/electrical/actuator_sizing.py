@@ -25,7 +25,7 @@ import argparse
 import sys
 
 G = 9.81
-REF_MASS = 98.2           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
+REF_MASS = 105.6           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
 
 # Bought module per joint (spec 02.6, decided 2026-11-23: the actuator mass is
 # declared at the joint, not as one density). Each is the lightest module that
@@ -33,7 +33,8 @@ REF_MASS = 98.2           # the reference point of D-8 (2 h, 65% armour, 1.65 m)
 # and how long it holds, a continuous torque, the speed at 48 V, the mass and
 # the size — and meets its joint at REF_MASS: peak torque, the reducer class of
 # hardware/mechanical §2, the speed of MIN_RPM and, where a figure exists, the
-# RMS torque of running in RUN_RMS. Figures are the sheets' (README §6f):
+# RMS torque of running in RUN_RMS and of walking in WALK_RMS. Figures are the
+# sheets' (README §6f):
 # (maker, model, peak Nm, continuous Nm, speed rpm at 48 V, kg, size mm, reducer, ratio)
 # Continuous is the sheet's rated torque (ENCOS) or continuous stall torque
 # (SEmotor); speed is ENCOS's peak speed or SEmotor's maximum speed.
@@ -49,6 +50,7 @@ MODULE_CATALOGUE = {
     "SETZ70CI-1GA":     ("SEmotor", "SETZ70CI-1GA", 156.0, 24.0, 116.5, 0.90, "78 x 67", "planetary", 24),
     "SETZ70CI-1HA":     ("SEmotor", "SETZ70CI-1HA", 227.5, 35.0, 80.0, 1.05, "78 x 85", "planetary", 35),
     "SETZ90CI-1FG":     ("SEmotor", "SETZ90CI-1FG", 240.0, 60.0, 86.5, 1.60, "99 x 76.5", "planetary", 30),
+    "RMD-X12-P20-320":  ("MyActuator", "RMD-X12-P20-320", 320.0, 85.0, 125.0, 2.40, "124 x 85", "planetary", 20),
 }
 # Torque held for 60 s, Nm: ENCOS's constant-load test, 30 to 100 °C at 54.5-63.5
 # rpm output, interpolated between its rows (README §6f). Where a module has a
@@ -58,9 +60,9 @@ HOLD_60S = {
     "EC-A10020-P2-24": 79.1, "EC-A13715-P1-12.67": 150.0,
 }
 JOINT_MODULE = {
-    "hip_pitch": "SETZ90CI-1FG", "hip_roll": "SETZ70CI-1GA", "hip_yaw": "EC-A4315-P2-36",
-    "knee": "EC-A13715-P1-12.67", "ankle_pitch": "EC-A10020-P2-24", "ankle_roll": "EC-A4315-P2-36",
-    "trunk_pitch": "SETZ70CI-1HA", "trunk_roll": "SEAF70A16NG02", "trunk_yaw": "EC-A4315-P2-36",
+    "hip_pitch": "EC-A10020-P2-24", "hip_roll": "EC-A10020-P2-24", "hip_yaw": "EC-A4315-P2-36",
+    "knee": "EC-A13715-P1-12.67", "ankle_pitch": "RMD-X12-P20-320", "ankle_roll": "EC-A4315-P2-36",
+    "trunk_pitch": "SETZ70CI-1HA", "trunk_roll": "SEAF70A16NG02", "trunk_yaw": "EC-A6416-P2-25",
     "shoulder_pitch": "EC-A10020-P1-12", "shoulder_roll": "EC-A10020-P1-12",
     "shoulder_yaw": "EC-A10020-P1-12", "elbow": "SETZ70CI-1DA",
     "wrist_yaw": "EC-A3814-H14-107", "wrist_pitch": "EC-A3814-H14-107", "wrist_roll": "EC-A3814-H14-107",
@@ -71,9 +73,21 @@ JOINT_MODULE = {
 # ankle pitch's 3.7 rad/s (walking; no running figure).
 MIN_RPM = {"knee": 105.0, "hip_pitch": 71.0, "ankle_pitch": 35.0}
 # RMS moment of running at 2.5 m/s, Nm per kg of body (README §6e, Fukuchi et
-# al.), against the module's continuous torque. No figure exists for the other
-# joints, nor for walking.
-RUN_RMS = {"hip_pitch": 0.56, "knee": 0.96, "ankle_pitch": 0.77}
+# al., participants 1-35, each one's cycle-averaged curve), for row 5's 60 s,
+# against HOLD_60S where the module has it and its continuous torque elsewhere.
+# Sagittal (Z) since 2026-11-23; hip roll and ankle roll from the frontal axis
+# (X, abduction/adduction) and hip yaw from the transverse (Y), added
+# 2026-11-23 (README §6g). Trunk, arms, wrists, neck: no figure.
+RUN_RMS = {"hip_pitch": 0.56, "knee": 0.96, "ankle_pitch": 0.77,
+           "hip_roll": 0.65, "hip_yaw": 0.11, "ankle_roll": 0.08}
+# RMS torque of walking at 1.0 m/s, Nm per kg of body: the simulated robot Oli
+# (README §6e), the larger of left and right over the last 8 s, over its
+# 52.55 kg; against the module's continuous torque, since walking is held
+# (README §6g, 2026-11-23). Legs and trunk only: Oli's arm swing scales with
+# Oli's arm, not with this body's.
+WALK_RMS = {"hip_pitch": 0.824, "hip_roll": 0.796, "hip_yaw": 0.183, "knee": 0.736,
+            "ankle_pitch": 0.683, "ankle_roll": 0.183,
+            "trunk_pitch": 0.127, "trunk_roll": 0.147, "trunk_yaw": 0.224}
 
 
 def module(name):
@@ -132,7 +146,7 @@ STAND_PER_KG = 1.77       # hip pitch, and the knee in walking, stairs and risin
 JOINTS = [
     # (name, count, basis, value)
     ("hip_pitch",      2, "per_kg", 1.77),   # 100-150 Nm at 70 kg, scaled; unsourced (README §6d), above the 1.3 Nm/kg of a walking human
-    ("hip_roll",       2, "per_kg", 1.23),
+    ("hip_roll",       2, "per_kg", 1.73),   # running at 2.5 m/s, abduction peak (Fukuchi et al., README §6g), 2026-11-23; 1.23 before
     ("hip_yaw",        2, "per_kg", 0.62),
     ("knee",           2, "per_kg", 2.79),   # running at 2.5 m/s, stance peak (Fukuchi et al., README §6e; spec 02.6 row 5), 2026-11-23; 1.77 before, walking, stairs and rising (README §6c)
     ("ankle_pitch",    2, "per_kg", 2.07),   # running at 2.5 m/s (Fukuchi et al., README §6e), 2026-11-23; 1.40 before, push-off in walking
@@ -289,8 +303,8 @@ def densities(body_mass=REF_MASS):
 
 def module_check(body_mass):
     """Each joint's module against its joint at `body_mass`: peak, reducer
-    class, speed and running RMS. Returns (failures, body mass up to which
-    every module still meets its joint's peak and RMS)."""
+    class, speed, running RMS and walking RMS. Returns (failures, body mass up
+    to which every module still meets its joint's peak and RMS)."""
     rows = {name: t for name, _, t, _ in torque_table(body_mass)}
     bad, limit = [], float("inf")
     for name, n, basis, val in JOINTS:
@@ -309,10 +323,15 @@ def module_check(body_mass):
             bad.append("%s: %s %s %.0f Nm < running RMS %.0f Nm"
                        % (name, model, "60 s" if model in HOLD_60S else "continuous",
                           held, RUN_RMS[name] * body_mass))
+        if name in WALK_RMS and cont < WALK_RMS[name] * body_mass:
+            bad.append("%s: %s continuous %.0f Nm < walking RMS %.0f Nm"
+                       % (name, model, cont, WALK_RMS[name] * body_mass))
         if basis == "per_kg":
             limit = min(limit, peak / val)
             if name in RUN_RMS:
                 limit = min(limit, held / RUN_RMS[name])
+            if name in WALK_RMS:
+                limit = min(limit, cont / WALK_RMS[name])
     return bad, limit
 
 
@@ -347,7 +366,7 @@ def main(argv=None):
         for b in bad:
             print("  " + b)
     else:
-        print("Every module meets its joint's peak, reducer class, speed and running RMS")
+        print("Every module meets its joint's peak, reducer class, speed, running and walking RMS")
         print("at %.1f kg; the set holds up to %.1f kg of body." % (a.mass + a.carry, limit))
 
     per_kg, fixed = split(a.mass)

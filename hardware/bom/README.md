@@ -93,7 +93,7 @@ The firmware images and the edge module's OS image are in the EBOM as virtual pa
 
 ## Where it stands
 
-The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 211 part numbers, including 10 software images and 5 consumables; 2 parts left open and 9 on the upgrade path; 362 operations across 58 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 32 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 51.6 kg out of the 98.2 kg budget — the rest is blank rather than guessed.
+The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 211 part numbers, including 10 software images and 5 consumables; 2 parts left open and 9 on the upgrade path; 362 operations across 58 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 32 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 56.8 kg out of the 105.6 kg budget — the rest is blank rather than guessed.
 
 Prices were looked for on 2026-09-26. Most supplier pages were unreachable from the environment this was written in, so the AVL rests on search results and on the pages that could be read, and each entry's notes say which. The candidates for the boards bought instead of designed were looked for on 2026-11-05, from search excerpts; no price among them is recorded as verified.
 
@@ -126,18 +126,18 @@ The mass loop holds **20 kg** of fixed mass — compute, sensors, hands, the she
 
 **What it says.** The parts with a figure take 7.6–11.2 kg of the 20 kg allowance, which leaves 8.8–12.4 kg for everything above. That includes the harness, the foam padding, the skin and the compute's cooling, none of which has a figure. Whether 20 kg is enough is therefore not shown: neither confirmed nor refuted.
 
-**What the fixed mass does to the body.** This is the mass loop of spec 02.1, run on the bought modules of spec 02.6, with the modules chosen again at each point by the rule of [electrical §6f](../electrical/README.md#6f-modules-declared-at-the-joint--d-2-2026-11-23). It is 2 h, 65% armour at 7.5 kg/m², f_str 0.30:
+**What the fixed mass does to the body.** This is the mass loop of spec 02.1, run on the bought modules of spec 02.6, with the modules chosen again at each point by the rule of [electrical §6f](../electrical/README.md#6f-modules-declared-at-the-joint--d-2-2026-11-23) and the walking and frontal-plane checks of [§6g](../electrical/README.md#6g-walking-rms-and-the-frontal-plane--d-2-2026-11-23). It is 2 h, 65% armour at 7.5 kg/m², f_str 0.30:
 
 | Fixed mass | Body | Actuators | `f_act` | Pack |
 |---|---|---|---|---|
-| 7.6 kg, every blank at zero — a floor, not a design | 72.5 kg | 28.9 kg | 0.40 | 2.90 kWh |
-| 11.2 kg, every blank at zero | 80.9 kg | 30.4 kg | 0.38 | 3.24 kWh |
-| 15 kg, the bottom of spec 02.5's band | 89.7 kg | 32.0 kg | 0.36 | 3.59 kWh |
-| **20 kg, the reference point** | **98.2 kg** | 32.2 kg | 0.33 | 3.93 kWh |
-| 25 kg, the top of the band | 109.5 kg | 34.1 kg | 0.31 | 4.38 kWh |
-| 30 kg | 120.2 kg | 35.6 kg | 0.30 | 4.81 kWh |
+| 7.6 kg, every blank at zero — a floor, not a design | 83.0 kg | 35.3 kg | 0.43 | 3.32 kWh |
+| 11.2 kg, every blank at zero | 90.1 kg | 36.0 kg | 0.40 | 3.60 kWh |
+| 15 kg, the bottom of spec 02.5's band | 96.3 kg | 36.0 kg | 0.37 | 3.85 kWh |
+| **20 kg, the reference point** | **105.6 kg** | 36.7 kg | 0.35 | 4.22 kWh |
+| 25 kg, the top of the band | 116.3 kg | 38.3 kg | 0.33 | 4.65 kWh |
+| 30 kg | 128.8 kg | 40.9 kg | 0.32 | 5.15 kWh |
 
-Each kilogram of fixed mass costs about 2.1 kg of body here, in steps as modules change. Above about 22 kg of fixed mass the body passes 101.4 kg, where the reference set of modules stops holding, and heavier modules come in. Below about 16 kg, `f_act` leaves the 0.25–0.35 band of spec 02.2 upward: the modules do not get lighter in step with the body.
+Each kilogram of fixed mass costs about 2 kg of body here, in steps as modules change. Above about 22 kg of fixed mass the body passes 108.8 kg, where the reference set of modules stops holding, and heavier modules come in. Below about 19.7 kg, `f_act` leaves the 0.25–0.35 band of spec 02.2 upward: the modules do not get lighter in step with the body, and the reference point's 20 kg is 0.3 kg above that edge. Before walking's RMS entered the check (2026-11-23) the reference point was 98.2 kg and the edge was at about 16 kg.
 
 ## What building it turned up
 

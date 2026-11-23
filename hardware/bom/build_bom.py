@@ -360,7 +360,8 @@ def build():
                         basis="per m2, held at 7.5 (2026-11-22); data sheets give 5.80 UHMWPE + 1.42 aramid = 7.22",
                         level="L2", ref="spec 02.4; spec 04.2; hardware/mechanical 3",
                         req="NIJ HG2 (formerly IIIA) + NIJ 0115 spike level 1, tested to, not certified; "
-                            "fire OPEN (spec 04.4)",
+                            "aramid plies outer, UHMWPE inner (spec 04.2); "
+                            "no fire standard of its own, UHMWPE <= 70 C continuous (spec 04.4)",
                         notes="moulded per segment in one part by an armour manufacturer to the GEMs drawing (plan M-7); candidates in avl.csv"),
           "%.2f" % ARMOUR_M2, "65% of 1.6 m2")
     b.use(shell, b.part("GEM-18140", "Tactile skin, large-area modules, body", "OTS", "BUY",

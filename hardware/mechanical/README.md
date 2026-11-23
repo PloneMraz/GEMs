@@ -58,7 +58,7 @@ The group 5 standard requires handgun rounds, blades and everyday impact togethe
 
 The handgun levels were renamed when NIJ Standard 0101.07 moved its levels into NIJ Standard 0123.00: Level II is now HG1 and Level IIIA HG2 [17][18]. The spike row read ~3.2 kg/m² until 2026-11-22, citing the standard itself [9], which sets the test and gives no areal density; the figure now comes from a bought panel's specification.
 
-**The armour is the shell** (2026-11-22, [spec 04.2](../../spec/04-shell.md#42-armour-shell)): a hybrid laminate moulded per body segment in one part — UHMWPE plies for the handgun level, 5.80 kg/m² [24], with aramid spike plies, 1.42 kg/m² [16] — carrying the protection and the body's form. That is 7.22 kg/m² before finish and curvature; the mass loop keeps 7.5 kg/m². The bought hard plate above is heavier because it also stops special threats.
+**The armour is the shell** (2026-11-22, [spec 04.2](../../spec/04-shell.md#42-armour-shell)): a hybrid laminate moulded per body segment in one part — UHMWPE plies for the handgun level, 5.80 kg/m² [24], with aramid spike plies, 1.42 kg/m² [16] — carrying the protection and the body's form. That is 7.22 kg/m² before finish and curvature; the mass loop keeps 7.5 kg/m². The bought hard plate above is heavier because it also stops special threats. The aramid plies lie on the outer face and the UHMWPE behind them, as the hybrid studies read find best against ballistic impact [30][31][32]; whether that order holds spike level 1 is for the moulder to test [33][34]. Para-aramid keeps its strength to 250 °C in short peaks [28]; UHMWPE is recommended for continuous use at 70 °C or lower [29], and is the layer's thermal limit.
 
 Against 1.6 m² of skin area at 1.65 m, at the coverage bands of [spec 02.4](../../spec/02-structure-and-motion.md#24-protection): **4.8 kg** at 50% coverage and 6 kg/m², up to **11.5 kg** at 80% and 9 kg/m².
 
@@ -85,9 +85,10 @@ What the laboratory can do and the market cannot — self-healing skin, variable
 | Joint range of motion, per joint | Mechanism layout |
 | Bearing selection and preload | Joint loads |
 | Areal density of the padding and the tactile skin | Padding thickness (plan M-8); the skin vendor's data |
-| Armour shell: the hybrid's areal density as moulded, with finish and curvature, and its use-temperature limit | A moulder's data; the limit is checked against the module temperatures of [electrical §6e](../electrical/README.md) |
+| Armour shell: the hybrid's areal density as moulded, with finish and curvature; the use-temperature limit of SJ100-240H itself (≤ 70 °C is Dyneema's [29]); spike level 1 with the aramid plies on the outer face | A moulder's data and test (plan M-7) |
+| Padding thickness that keeps the armour shell below 70 °C over hot modules | The module temperatures of [electrical §6e](../electrical/README.md), up to 100 °C; plan M-8 |
+| Heat reaching the armour shell's face, through the textile in a fire and through the outer aramid plies | No heat-transfer or conductivity figure on the data sheets read [27][28] |
 | Textile: NFPA 1970 certification | The candidate fabric holds EN 469 [27] |
-| Fire standard for the armour shell | **OPEN** — NFPA 1970 tests garment materials, not a moulded shell ([spec 04.4](../../spec/04-shell.md#44-fire-resistance)) |
 
 ## 6. References
 
@@ -120,3 +121,10 @@ What the laboratory can do and the market cannot — self-healing skin, variable
 | 25 | Sinofibra Advanced Materials, LOONG-FLEX SJ400-130S, UHMWPE UD for soft armour, product data sheet v2.1, 2026-01-18: IIIA at 22–25 plies, 2.90–3.25 kg/m² |
 | 26 | FIBER-LINE, *Nomex meta-aramid* fibre data sheet (2016): no melting point; 0.4% shrinkage in dry air at 177 °C for 30 min; specific gravity 1.38 |
 | 27 | TenCate Protective Fabrics, *Nomex Advance Truecolor AV 9400*, technical data Q1-2025: 200 g/m², Nomex/Kevlar/anti-static; EN ISO 15025 compliant; ISO 17493 at 180 °C ≤ 2%; certified EN 469 and EN 1149-5; indicative values |
+| 28 | [Teijin Aramid — Twaron, *A unique combination of properties*](https://product.teijinaramid.com/twaron-brochure/a-unique-combination-of-properties), brochure page as read 2026-11-23: no melting point, decomposes above 500 °C; short peaks below 250 °C and long-term exposure below 100 °C to keep strength; low heat conductivity |
+| 29 | [Dyneema SK, crimped staple — technical data sheet](https://www.minifibers.com/files/TD/PI-TDS_Dyneema-SK-Crimped-Staple.pdf), as distributed by MiniFibers, undated; Dyneema a trademark of Avient Protective Materials: melts at 144–152 °C, decomposes above 300 °C; recommended continuous use 70 °C or lower |
+| 30 | Ralph, Baker, Archer, McIlhagger, [*Optimization of soft armor: the response of homogenous and hybrid multi-ply para-aramid and ultra-high molecular weight polyethylene fabrics under ballistic impact*](https://doi.org/10.1177/00405175231194365), Textile Research Journal 93(23–24), 5168–5186, 2023, CC BY: specific energy absorbed higher with UHMWPE at the rear, at 340 m/s; less pronounced or absent at 620 m/s |
+| 31 | Li, Xue, Sun, Gu, [*Ballistic penetration damages of hybrid plain-woven laminates with carbon, Kevlar and UHMWPE fibers in different stacking sequences*](https://doi.org/10.1016/j.dt.2022.07.006), Defence Technology 26 (2023) 23–38, CC BY: epoxy laminates, 1.1 g FSP; Kevlar in front of UHMWPE, EV50 +7.07% and specific energy +13.65% over all-Kevlar; UHMWPE in front, +1.91% and +3.55% |
+| 32 | Liu et al., [*Effect of stacking sequence of the hybrid composite armor on ballistic performance and damage mechanism*](https://doi.org/10.1515/epoly-2025-0035), e-Polymers 25 (2025) 20250035, open access: carbon/aramid/UHMWPE on TPU, hot-pressed to 120 °C; aramid facing, UHMWPE at the rear (K3C6K12U6) best against a 4 g steel sphere at 615 m/s |
+| 33 | Milliken & Company, [US 7,958,812 B2](https://patents.google.com/patent/US7958812), *Flexible spike and ballistic resistant panel*, granted 2011-06-14: stiff resin-impregnated aramid layers in front of spike-resistant textile; the reverse order "reduces the spike penetration resistant performance significantly" |
+| 34 | Horsfall, Watson, Champion (Cranfield University), *Optimizing the stacking sequence in dual-purpose body armours*, paper for the 27th International Symposium on Ballistics; the copy read is dated 2013-08-29: a metal plate in a 20-layer Kevlar 49 pack resists a knife best in the middle, least at the rear; against handguns it helps only at the front |

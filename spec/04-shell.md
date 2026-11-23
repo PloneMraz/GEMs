@@ -10,7 +10,7 @@ The innermost layer: foam or a polymer lattice over the hardware, at pinch point
 
 A bought candidate, Rogers PORON XRD, comes in five densities, specific gravity 0.14–0.40 — **0.14–0.40 kg/m² per millimetre** of thickness [14]. The figures are typical values, and the data sheet says it should not be used to create a specification. Thickness, and therefore areal density, is `⟦IMPL⟧` until plan M-8 sets it.
 
-The padding also stands between the armour shell and anything hot: the shell's laminate is pressed at 125–135 °C [24], its use-temperature limit lies below that and is on no data sheet read, so it is `⟦IMPL⟧` until the moulder states it, and it must be checked against the module temperatures of [electrical §6e](../hardware/electrical/README.md), up to 100 °C in the thermal test read there.
+The padding also stands between the armour shell and anything hot. The shell's limit is set by its UHMWPE, not its aramid (4.2): UHMWPE fibre melts at 144–152 °C, and its recommended continuous use temperature is **70 °C or lower** [29] — a Dyneema figure, read for the same polymer until the vendor of SJ100-240H states its own — while the laminate is pressed at 125–135 °C [24]. The modules of [electrical §6e](../hardware/electrical/README.md) reach 100 °C in the thermal test read there, above that limit, so the padding must keep the shell below 70 °C where it lies over a hot module; the thickness that takes is `⟦IMPL⟧` until plan M-8 sets it.
 
 ## 4.2 Armour shell
 
@@ -24,6 +24,10 @@ Armour and shell are **one layer** (2026-11-22): a hybrid laminate moulded per b
 | The mass loop | **7.5 kg/m²**, held (2026-11-22); 4% over the hybrid | [02.4](02-structure-and-motion.md#24-protection) |
 | *For comparison:* bought hard plate, 100% polyethylene, IIIA and special threats (5.7×28 mm, 7.62×25 mm among them) stand-alone, 8.9 mm | 7.2–9.1 kg/m², a lower bound — computed from listed sizes and weights | [15] |
 | *For comparison:* soft UHMWPE cross-ply, Sinofibra SJ400-130S, IIIA; soft multi-threat package, IIIA + spike 3 | 2.90–3.25 kg/m²; 7.03 kg/m² | [25]; [16] |
+
+**Ply order** (2026-11-23): the aramid plies on the outer face, the UHMWPE behind them. Against ballistic impact the studies read agree that UHMWPE does best at the rear and aramid at the front: woven soft fabrics at 340 m/s [30]; epoxy laminates against a 1.1 g fragment-simulating projectile, where aramid in front raised the ballistic limit by 7.07% and the specific energy absorbed by 13.65% over all-aramid, against 1.91% and 3.55% with UHMWPE in front [31]; TPU laminates faced with aramid and backed with UHMWPE against a 4 g steel sphere at 615 m/s [32]. Only the direction carries over: in those laminates aramid is most of the mass, where here UHMWPE is (5.80 of 7.22 kg/m²); the matrix is epoxy or TPU; the projectiles are not the HG2 rounds; and at 620 m/s the order effect in [30] was less pronounced or absent. Against the spike no study of this laminate was found. A patent puts stiff, resin-impregnated aramid layers in front of spike-resistant textile and reports that the reverse order cuts spike resistance significantly [33]; with a metal plate inside an aramid pack, a knife was resisted best with the plate in the middle and least with it at the rear [34]. Whether this order holds spike level 1 is for the moulder to test to NIJ 0115.00 (plan M-7).
+
+**Heat, by material.** The aramid plies are para-aramid — Twaron Microflex in the spike panel read [16] — with no melting point and decomposition above 500 °C; the maker advises short peaks below 250 °C and long-term exposure below 100 °C to keep its strength [28]. The UHMWPE plies are the layer's limit: ≤ 70 °C continuous, melting at 144–152 °C [29]. Para-aramid conducts heat poorly [28], so plies on the outer face slow the heat reaching the UHMWPE; by how much is `⟦IMPL⟧`, since no conductivity figure was read.
 
 A moulded shell of GEMs' own form is **tested to** the standard, not certified: NIJ keeps a list of compliant armour models [18], and a body's own panel set will not be one of them.
 
@@ -42,10 +46,10 @@ The body takes **limited heat, and does not fight fire directly at this level** 
 | Layer | Anchor | Status |
 |---|---|---|
 | Outer textile | **NFPA 1970 (2025)**, the standard for structural firefighting ensembles. Its flame resistance test admits an average char length of no more than 100 mm, an average afterflame of no more than 2.0 s, and no melting or dripping [19] | The requirement, kept. The candidate fabric is certified to **EN 469** [27], the European firefighting standard, not to NFPA 1970: an equivalent certification, recorded as such until an NFPA 1970 one is in hand |
-| Armour shell | A standard for a rigid layer is to be discussed: NFPA 1970 tests garment materials, not a moulded shell | **OPEN** |
+| Armour shell | No fire standard of its own (2026-11-22): it lies under the textile, and the body leaves a fire rather than staying in it. What bounds it is its UHMWPE, ≤ 70 °C continuous and melting at 144–152 °C [29]; the aramid plies, on its outer face, keep their strength to 250 °C in short peaks [28] (4.2) | — |
 | Tactile skin | Shielded by the textile | — |
 
-Temperatures and durations beyond what the standard sets stay `⟦IMPL⟧`, anchored to the standard rather than derived here.
+Temperatures and durations beyond what the standard sets stay `⟦IMPL⟧`, anchored to the standard rather than derived here. So does the temperature reaching the armour shell's face while the body leaves a fire: the textile's data sheet gives flame spread and shrinkage, not heat transfer [27].
 
 ## 4.5 The three-layer division
 

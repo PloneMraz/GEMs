@@ -12,7 +12,7 @@ The specification declares **envelopes and trade-offs**, never a chosen operatin
 | 01 | [Architecture](01-architecture.md) | overview | The invariant pillar, and the application frame it serves |
 | 02 | [Structure and motion](02-structure-and-motion.md) | hardware | Mass loop, convergence condition, protection, reach and payload, peak power |
 | 03 | [Energy](03-energy.md) | hardware | Sources, the six levers, state levels, docking, quiescent power and sleep ceiling |
-| 04 | [Shell](04-shell.md) | hardware | The three baseline layers — padding, armour shell, tactile skin under textile — fire, touch at the hands, and the upgrade path |
+| 04 | [Shell](04-shell.md) | hardware | The three baseline layers — padding, armour shell, tactile skin under textile — fire, touch at the hands, the upgrade path, and ventilation with the limits on surface temperature |
 | 05 | [Sensing](05-sensing.md) | hardware | Per-channel envelopes, aggregate rate, and the on-body/off-body compute split |
 | 06 | [Audit surface](06-audit-surface.md) | hardware | Attestation, audit log, low-power beacon, contact amplitude |
 | 07 | [Firmware and software](07-firmware-and-software.md) | software | What runs on the body: responsibilities, rates, guarantees, and link-loss behaviour |

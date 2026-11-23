@@ -101,7 +101,7 @@ Link round-trip is ~1 ms at ideal short range, but at kilometre range with beam 
 |---|---|
 | Losing a unit loses its state | Its own state and its unsynchronised record, never memory; the more processing on the unit, the more of that there is ([01](01-architecture.md)) |
 | Power | Edge compute draws on the same `p` (W/kg) that enters the convergence condition `Σf < 1` |
-| Heat | A sealed body in human contact dissipates worse than a rack |
+| Heat | A body in human contact, under an insulating shell, dissipates worse than a rack: it is ventilated by forced air, and its contact surfaces are held to limits ([04.8](04-shell.md#48-ventilation-and-surface-temperature)) |
 | Memory and world model | Off-body by architectural definition, not by capacity |
 
 > **Edge compute is not "add as much as you like, it only costs battery." It eats into the convergence condition of the whole body**, and [02.3](02-structure-and-motion.md#23-the-endurance-ceiling) shows `γ` inflating non-linearly near the ceiling.

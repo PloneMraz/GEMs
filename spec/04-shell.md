@@ -131,3 +131,38 @@ A non-Newtonian, fluid-based material that stays compliant in ordinary interacti
 A shell that takes a fire itself, rather than through an outer garment (4.4).
 
 **Operating point: `⟦CTRL⟧`.** The baseline sets the layers; armour coverage and level, and the operating point an upgrade lands on, are the operator's.
+
+## 4.8 Ventilation and surface temperature
+
+**Decided 2026-11-24 (Plone).** The body is ventilated: forced air enters through slots, passes the hot modules and leaves through slots, as Unitree's G1 does with "a localized forced air-cooling system", fans with an intake and an exhaust [41]. No liquid loop. The thermal design of plan M-11 works to this section.
+
+**Operating environment.** Ambient **20–40 °C**; the thermal design is simulated at **30–35 °C**. The G1 is run at 0–40 °C, is neither waterproof nor dustproof, and is not to be run in rain or dust [41]; this body's protection against water and dust is `⟦IMPL⟧`, not yet declared.
+
+**Why not the surface alone.** The joints give off about 0.6 kW walking at 0.5 m/s and 1.1 kW at 1.0 m/s [electrical §6h](../hardware/electrical/README.md#6h-walking-heat-by-speed-and-the-hip-roll-lever--m-11-2026-11-24). Through the skin of 1.60 m² by radiation, 4.5 W/m²K, and natural convection, 3.4 W/m²K [43], 0.7 kW would need the outer surface some 56 K above ambient standing and about 39 K walking at 0.5 m/s, before the padding adds 4.5–6.6 K per millimetre; the shell is an insulator, and its UHMWPE stops at 70 °C (4.1). So the heat leaves by its own path.
+
+**Surface temperature.**
+
+| Surface | Limit | Source |
+|---|---|---|
+| Every surface a person may touch for more than a minute | **48 °C**, mandatory | IEC 62368-1 TS1, after ISO 13732-1:2006, as UL's brief tabulates it [40] |
+| Other surfaces | By the contact time expected there: 51 °C metal, 60 °C plastic for 10 s to 1 min; 60 and 77 °C for 1 to 10 s; 70 and 94 °C under 1 s | [40] |
+| Palms and the front of the trunk | **≤ 36 °C**, or no more than 2 K above ambient when ambient is above 34 °C — a comfort target, inside the mandatory 48 °C | Plone, 2026-11-24 |
+| Any surface above its limit | Marked with the hot-surface warning sign, ISO 7010 W017 [42]; the standard itself not read | — |
+
+TS1 covers heat by contact, not hot air blown on a person [40]. Air cannot cool a surface below the air that cools it, so the comfort target is met by placement: no heat source and no duct behind the front of the trunk, its inner face insulated from the airflow, the hands' own heat (D-6) away from the palm.
+
+**The airflow.** One main path, with local loops where the main path cannot reach:
+- **Intake** at the flanks of the pelvis, short vertical slots just above the hip joints, so that the air reaches the six hip modules — the largest source, about 460 W at 1.0 m/s [electrical §6h](../hardware/electrical/README.md#6h-walking-heat-by-speed-and-the-hip-roll-lever--m-11-2026-11-24) — without crossing a joint. Fans at the intake pull it in.
+- **Through the trunk** along the spine, in a duct that follows the three coupled segments (D-9), behind the trunk, not under its front.
+- **Exhaust** at the upper back, short horizontal slots either side of the spine near the neck, with fans pushing out. The louvres turn the air rearward and down, not up past the head: the head carries cameras and a thermal IR camera, and the plan's pack location already points the exhaust away from the face and head sensors.
+- **At each hot module**, a shroud around its housing and a fan that drives its heat into the stream. Bought modules are plain housings; bolt-on fins depend on their makers' mounting faces, not yet read.
+- **Knees and ankles**, about 470 W of 1.1 kW at 1.0 m/s, lie below the intake: local loops, fans and slots of their own in the leg.
+- **The pack and the edge computer** are in a cool branch of their own, not downstream of the hips: air that has passed the hips is 10–15 K above ambient, and the cells keep a lower window than the motors.
+
+With the air allowed to rise 15 K, the joints and the edge computer together need about **80 CFM at 0.5 m/s and 140 at 1.0 m/s** (air at 1.2 kg/m³ and 1005 J/kg·K; slightly more at 35 °C). On a plain housing, forced air transfers 25–250 W/m²K [44]; at hip pitch, 115 W on 0.057 m² needs the housing 8–80 K above the air, so the shrouds matter.
+
+**Through the armour.** A slot is a hole in the armour shell (4.2) and in the coverage of 02.4. Slots are louvred and overlapped — a labyrinth, no straight line through — as the pack's openings already are (the plan's pack location). The textile over a slot is an open mesh that still meets 4.4; the tactile skin (4.3) does not cover slots; the padding hugs the hardware where it is cool and leaves channels where the air must pass (4.1).
+
+**Not cooling the intake.** Taking 10 K off 140 CFM is about 800 W of cooling, of the order of the heat itself: by evaporation it needs water carried and brings damp air in; thermoelectrically it costs about as much power again, rejected downstream. The intake air is the coolest air the body has; the hottest modules come first in it. A cold store — a phase-change pack recharged at the dock — is an option for the 10 min at 1.0 m/s and for the front of the trunk, `⟦IMPL⟧` until a sourced material and mass are found (plan M-11).
+
+`⟦IMPL⟧` here: the fans (bought), their power, which adds to `p`, and their noise; the duct areas; the protection against water and dust; the flows per zone, from a thermal network of plan M-11 at 35 °C.

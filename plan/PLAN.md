@@ -113,7 +113,7 @@ Two standard references anchor it. The **Facial Action Coding System** (Ekman an
 | M-8 | Shell, three layers (spec 04.5) on the surfaces of ID-2: impact padding — certified protectors at knees, elbows, shoulders, hips and back, held at EN 1621-1 Level 2 and EN 1621-2 Level 1 (2026-11-23, provisional), how they are held on the body, the back protector's size, and the fall model that confirms or replaces that anchor; foam at pinch points and its thickness, kept between the armour shell and hot modules so that the shell stays below its UHMWPE's ≤ 70 °C, and whether the protectors can lie on modules at up to 100 °C, with M-11 (spec 04.1); the armour shell of M-7; the tactile skin laid on it under a removable textile cover; at the joints the shell stops and the textile carries on, and whether the skin crosses them is decided here. The armour shell has no fire standard of its own (spec 04.4) | L4 | M-7, ID-2 |
 | M-9 | Head and sensor mounting — stereo baseline, thermal, LiDAR, microphone array geometry, inside the face of ID-5 | L4 | E-6, ID-5 |
 | M-10 | Dock, mechanical — moved to package DK below | — | — |
-| M-11 | Thermal design — conduction paths, compute and drive cooling, sealed-body dissipation. Exhaust at the upper back, over the pack — see [pack location](#pack-location-decided) below. Sized for walking at 0.5 m/s sustained and 1.0 m/s for 10 min (spec 02.6 row 1, 2026-11-24), which rest on it: the joints' heat is about 1.1 kW at 1.0 m/s and 0.6 kW at 0.5, of which the six hip modules are about 460 and 280 W, the body's largest source, at the pelvis, away from the exhaust path ([electrical §6h](../hardware/electrical/README.md#6h-walking-heat-by-speed-and-the-hip-roll-lever--m-11-2026-11-24)) | L5 | M-2, E-3, E-5 |
+| M-11 | Thermal design — forced-air ventilation to [spec 04.8](../spec/04-shell.md#48-ventilation-and-surface-temperature) (2026-11-24): one main path from the pelvis flanks along the spine to the upper back, local loops at knees and ankles, a cool branch for pack and compute, shrouds and fans at the hot modules, no liquid; ambient 20–40 °C, simulated at 30–35 °C in a thermal network that sizes the flow of each zone; contact surfaces at 48 °C, the palms and the front of the trunk at 36 °C; the fans bought; a cold store recharged at the dock, an option. Exhaust at the upper back, over the pack — see [pack location](#pack-location-decided) below. Sized for walking at 0.5 m/s sustained and 1.0 m/s for 10 min (spec 02.6 row 1, 2026-11-24), which rest on it: the joints' heat is about 1.1 kW at 1.0 m/s and 0.6 kW at 0.5, of which the six hip modules are about 460 and 280 W, the body's largest source, at the pelvis, away from the exhaust path ([electrical §6h](../hardware/electrical/README.md#6h-walking-heat-by-speed-and-the-hip-roll-lever--m-11-2026-11-24)) | L5 | M-2, E-3, E-5 |
 | M-12 | Mass properties exported from CAD into the simulation model, replacing the estimated inertias | L5 | M-5 |
 
 #### Pack location, decided
@@ -142,10 +142,10 @@ Constraints the decision carries into the design:
 | **Falls** | The upper back is among the first regions to land in a backward fall, at speed. **Verification requirement (V-4):** the pack survives the worst-case backward fall from standing with no cell deformation and cell acceleration within the qualified shock level. The supported failure state (spec 07.3 g2) should still favour falls that spare the back |
 | **Strikes** | The flank and waist are primary targets for kicks and knees; many combat rule sets forbid strikes to the spine and the back of the head. The upper back is the least-struck region of the torso |
 | **Dock** | The default dock is a seat carrying the body through the pelvis (spec 03.5). A pack in the upper back is never loaded by sitting, and the charging contacts can sit in the backrest, next to the pack |
-| **Cooling exhaust** | Up and out at the upper back, where warm air leaves naturally; intake low. Exhaust points away from the face and head sensors |
+| **Cooling exhaust** | Up and out at the upper back, where warm air leaves naturally. Since 2026-11-24 ([spec 04.8](../spec/04-shell.md#48-ventilation-and-surface-temperature)): short horizontal slots either side of the spine near the neck, louvres turning the air rearward and down; intake at the flanks of the pelvis, just above the hips. Exhaust points away from the face and head sensors |
 | **Thermal-runaway venting** | A separate path from cooling, and never toward the head. Runaway gas is directed down and away from the body |
-| **Sealing and armour** | Openings in the torso break the seal and the armour; the torso is in every coverage band (spec 02.4). Baffled or labyrinth openings behind the protection layer |
-| **Compute placement** | The edge module (40–130 W) is not placed upstream of the cells in the airflow — cells keep a lower temperature window than compute |
+| **Sealing and armour** | Openings in the torso break the seal and the armour; the torso is in every coverage band (spec 02.4). Baffled or labyrinth openings behind the protection layer. The body is ventilated, not sealed (2026-11-24, spec 04.8); protection against water and dust is open |
+| **Compute placement** | The edge module (40–130 W) is not placed upstream of the cells in the airflow — cells keep a lower temperature window than compute. Both sit in a cool branch of their own, not downstream of the hips (spec 04.8), and not behind the front of the trunk, which is held to 36 °C |
 
 ### E — Electrical
 
@@ -212,6 +212,14 @@ With the reference point at 2 h free-running (D-8), the dock is part of the desi
 Prices are recorded with the date they were read and the page they were read from. A price that could not be found is left empty and says so.
 
 ---
+
+### R — Open research
+
+Studies the author has asked for that are not in the baseline. No decision rests on them, and nothing in the specification reserves a place for them until one is taken in.
+
+| ID | Study | To | Waits for |
+|---|---|---|---|
+| R-1 | **Wheeled locomotion** (Plone, 2026-11-24): powered wheels, four under each foot, retracted into the foot and let down only for long travel on flat ground. Why: on wheels both feet stay on the ground, so the hips never carry the body in single support; standing, the simulated robot's hip roll gives 7–26 W, against 76–97 W walking at 1.0 m/s ([electrical §6h](../hardware/electrical/README.md#6h-walking-heat-by-speed-and-the-hip-roll-lever--m-11-2026-11-24)). To find: bought in-wheel motors, and a bought actuator for the retraction, inside a foot the URDF draws at 0.095 × 0.25 × 0.066 m; the mass at the foot, which raises the hip and knee torques of swing and is multiplied by `γ`; steering, braking and the stopping distance near people; contact sensing at the sole; how the body changes between rolling and walking. Wheel-legged humanoids built so far not yet read | L1 | D-2, M-2 |
 
 ## 5. Order of work
 

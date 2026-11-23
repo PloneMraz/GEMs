@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-23T15:03:23Z",
+    "timestamp": "2026-11-23T22:53:54Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -181,7 +181,7 @@
       "type": "application",
       "bom-ref": "hardware/sim-model/generate_urdf.py",
       "name": "hardware/sim-model/generate_urdf.py",
-      "version": "sha256:8ad9af925c3c",
+      "version": "sha256:3eb92d74dec2",
       "description": "URDF generator and audit",
       "supplier": {
         "name": "Plone Mraz"
@@ -196,7 +196,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "8ad9af925c3c745cbafdc513f6161565da31d868e570d8d7eb527d5a8d847bdf"
+          "content": "3eb92d74dec2925fdb92a0bfd0e550a7f40e6dac003fa3d564dd588f8b8aac33"
         }
       ],
       "scope": "excluded",

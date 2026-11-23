@@ -108,6 +108,7 @@ For a ~1.65 m body (D-8, 2026-09-26; 1.75 m before), taken from ordinary human p
 | Shoulder to grip centre | **~0.61 m** — the lever a held object acts on |
 | Elbow to grip centre | ~0.31 m |
 | Shoulder width | ~0.38 m |
+| Hip joint spacing | **0.18 m**, centre to centre — held as a constraint since 2026-11-24: hip roll's torque in walking grows with it ([electrical §6h](electrical/README.md#6h-walking-heat-by-speed-and-the-hip-roll-lever--m-11-2026-11-24)) |
 | Hip to knee | ~0.40 m |
 | Knee to ankle | ~0.40 m |
 

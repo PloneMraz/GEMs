@@ -510,8 +510,35 @@ The loop converges on **105.6 kg** from any start between 82 and 120 kg: modules
 **What it does not settle.**
 - Walking's figures come from one simulated robot, not from people walking; no human walking data with the hip's three axes was read.
 - ENCOS's own stall temperature-rise tables put what a module holds continuously below its rated torque: the EC-A4315-P2-36 holds 20 Nm, not its rated 25; the EC-A13715-P1-12.67 heats from 30 to 100 °C in 27′50″ at 80 Nm against its rated 110; the EC-A10020-P2-24 in 22′15″ at 80 against 100 [35]. The check uses the rated figure; at a stall these tables are the stricter.
-- Heat. The joint heat of plan M-11 was computed on the set of §6f and is to be computed again on this one; it is recorded with plan M-11 when the cooling architecture is chosen.
+- Heat: computed again on this set in §6h. The hip roll figure of the table above is scaled from Oli by mass alone; Oli's hips are 26 cm apart and GEMs' 18, so it is likely high (§6h).
 - The rest of §6f's list stands: static holds, the bench's conditions, the bus, fit, the sheets' currency, price and availability.
+
+## 6h. Walking heat by speed and the hip roll lever — M-11, 2026-11-24
+
+**Decided 2026-11-24 (Plone), on these figures:** walking is sustained at 0.5 m/s and held at its 1.0 m/s top for up to 10 min at a time (spec 02.6 row 1), both provisional until the cooling of plan M-11; the hip joints stay 0.18 m apart (kinematics §2); and the balance controller keeps hip roll's holding torque down by where it puts the centre of mass (plan F-5, `⟦CTRL⟧`).
+
+**The joint heat.** For each ENCOS module, heat = L0(|τ|) + k·|τ·ω|, from its own tables in the manual [35]: L0, the bus input at zero speed, from the stall table, all of it heat; k from the slow-ramp table, the loss above L0 per watt of output, median over the rows at half the table's top speed or more (0.17 for the EC-A10020-P1-12, 0.23 for the EC-A6416-P2-25, 0.25 for the P2-24, 0.35 for the EC-A13715-P1-12.67). For the RMD-X12-P20-320 the sheet gives a line resistance of 0.12 Ω, Y-connected, and a torque constant of 3.3 N·m/A [34]: copper loss 1.5·R·(τ/K_t)², a floor, with the rest of the loss at its rated point (85 Nm, 100 rpm, 1000 W, 75%) as k·|τ·ω|, an estimate. SEmotor gives no resistance, efficiency or measured table, so trunk pitch, trunk roll and the elbows are not computed. The torques are Oli's [38], walking straight with the heading held, over the last 8 s, scaled from its 52.55 kg to 105.6 kg; its speeds as simulated.
+
+**What a module holds without overheating, on its maker's bench.** No ENCOS module used here has a row marked sustainable except the EC-A4315-P2-36 (20 Nm at stall) and the EC-A3814-H14-107. A first-order model, ΔT = P·R·(1 − e^(−t/τ)) to 70 K, fitted to the two lowest rows of a table, estimates it: the EC-A4315-P2-36 at 41–43 W, between the 37.3 W its table holds and the 45.9 W it does not, which checks the method; the P2-24 at 65 W from its stall rows and 85 W from its constant-load rows; the EC-A13715-P1-12.67 at about 75 W from its stall rows (its load rows lie too far above to fit); the EC-A10020-P1-12 at about 94 W. These are estimates on a bench whose ambient and mounting the manual does not state, starting at 30 °C, without the shell. At one heat the stall rows reach 100 °C sooner than the load rows, by about 2× for the P2-24 and 10× for the EC-A6416-P2-25, so the figures carry that spread.
+
+**By speed**, watts per joint, left and right:
+
+| Speed | Hip pitch | Hip roll | Hip yaw | Knee | Ankle pitch (X12) | Ankle roll | All joints computed |
+|---|---|---|---|---|---|---|---|
+| 0.25 m/s | 25, 26 | 63, 43 | 29, 21 | 53, 33 | 16, 3 | **44**, 36 | ~0.44 kW |
+| 0.5 m/s | 61, 56 | **65**, 50 | 29, 19 | **76**, 47 | 29, 14 | 31, 32 | ~0.59 kW |
+| 0.75 m/s | **96, 87** | **79, 65** | 30, 24 | **112**, 59 | 53, 53 | 27, 34 | ~0.83 kW |
+| 1.0 m/s | **115, 108** | **97, 76** | 40, 26 | **132, 85** | 85, 95 | 36, 34 | ~1.07 kW |
+
+In bold, a joint at or above the low end of its module's estimated sustained heat: 65 W for the P2-24, 75 for the EC-A13715-P1-12.67, 41 for the EC-A4315-P2-36; the X12 has no such figure. 0.5 m/s is the fastest speed with every computed joint at or under it, and the left hip roll and knee are at it, with no margin; at 0.25 m/s the left ankle roll is over, since each foot stands alone longer. At 1.0 m/s, by the P2-24's constant-load rows, hip pitch reaches 100 °C in about 16 min on the left and 19 on the right, from 30 °C; the left knee in about 19 min by the EC-A13715's stall rows. The six hip modules give about 460 W at 1.0 m/s and 280 W at 0.5. Oli's gait is not symmetric, which is why left and right differ. A straight walk and the earlier one that drifted 13.6 m sideways at 1.0 m/s give the same hip roll, 85 and 84 Nm.
+
+**Why hip roll does not fall with speed.** In single support, the rest of the body — all of it but the stance leg — hangs on the stance hip's roll axis. Logged in the simulation, its centre of mass sits 14.4 cm from that axis on average, 13.4–15.6 cm, at 0.5 and at 1.0 m/s alike: a static moment of about 61 Nm at Oli's scale, against an RMS of 41–52 Nm in the joint over single support, since the body also falls toward the stance leg. Two things set the lever: Oli's hip joints are 26 cm apart, and its whole-body centre of mass moves only about 0.8 cm toward the stance foot. GEMs' hips are 18 cm apart; with Oli's gait its lever would be about 10 cm, and its static moment some 28% smaller than Oli's scaled by mass, as §6g scales it — an estimate, not a simulation. So the walking figure §6g uses at hip roll is likely high, and it stays as the conservative figure: hip roll would still need the P2-24. Each centimetre the centre of mass moves toward the stance hip takes about 8.6 Nm off the static moment at 105.6 kg (87 kg above the stance leg, at Oli's mass fraction); what that costs in lateral motion, and what it does to the rest of the gait, needs a controller trained for this body.
+
+**What it does not settle.**
+- One simulated robot, one trained policy; no human walking data with the hip's three axes was read. Oli's policy takes only a speed command, so a gait with a different stance or weight shift could not be run.
+- The benches' conditions, and the shell: the padding over the hip, knee and shoulder modules, and the protectors there, keep heat in (spec 04.1).
+- The X12 has no usable temperature-rise data, so the ankle pitch's time to 100 °C is not known; SEmotor's trunk pitch, trunk roll and elbows have no heat at all, and the elbows walk at 1.00–1.02 times their 9 Nm continuous from the arm's swing, a load §6g's check leaves out.
+- The cooling itself (plan M-11), which both walking figures now rest on.
 
 ## 7. References
 

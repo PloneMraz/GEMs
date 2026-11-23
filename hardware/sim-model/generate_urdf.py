@@ -65,7 +65,7 @@ UPWARD = {"spine_lumbar", "spine_thoracic", "torso", "head"}
 TRUNK = ("spine_lumbar", "spine_thoracic", "torso")
 TRUNK_HEIGHT = sum(SEG[k]["h"] for k in TRUNK)
 SHOULDER_WIDTH = 0.38       # declared
-HIP_WIDTH = 0.18
+HIP_WIDTH = 0.18           # declared: hip joint spacing, held since 2026-11-24 (kinematics §2)
 DECLARED_REACH = 0.66       # declared: shoulder to fingertip, 1.65 m body
 DECLARED_HEIGHT = 1.65
 

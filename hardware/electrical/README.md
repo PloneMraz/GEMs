@@ -10,7 +10,7 @@ Component selection against the specification. Every figure below is sourced; §
 
 ## 1. The actuator finding — raised, and resolved
 
-> **Resolved by option A on 2026-09-22.** The specification then declared **75–90 Nm/kg peak, on a peak-torque-over-module-mass basis**, and states the basis explicitly. **Revised 2026-09-26 to 80–90 Nm/kg** when the trunk was re-sized from measured human strength and gained a lateral-bend axis (§6a). **The arm payload came down to 15 kg the same day (§6b)**, which took `f_act` at 80 Nm/kg from 0.34 to 0.30; the floor stayed at 80. **Revised again 2026-11-23**, when the knee and ankle were sized to running (§6e): 133 Nm/kg for legs and trunk, the figure of RMD-X12-P20-320, and 80 for arms, wrists and neck ([spec 02.6](../../spec/02-structure-and-motion.md#the-basis-matters-as-much-as-the-number)). **Replaced the same day by a module declared at each joint** (§6f): the densities are now derived from the bought modules, 110 and 58 Nm/kg at 98.2 kg, and 100 and 58 at 105.6 kg since walking's RMS and the hip's frontal plane entered the check (§6g). `spec/` and this document agree again; the record below is kept because the reasoning is what justifies a figure at the top of the commercial band. Note that the §1 tables below were computed with the whole of `f_act` treated as scaling with body mass; §6b explains why only the leg and trunk part does.
+> **Resolved by option A on 2026-09-22.** The specification then declared **75–90 Nm/kg peak, on a peak-torque-over-module-mass basis**, and states the basis explicitly. **Revised 2026-09-26 to 80–90 Nm/kg** when the trunk was re-sized from measured human strength and gained a lateral-bend axis (§6a). **The arm payload came down to 15 kg the same day (§6b)**, which took `f_act` at 80 Nm/kg from 0.34 to 0.30; the floor stayed at 80. **Revised again 2026-11-23**, when the knee and ankle were sized to running (§6e): 133 Nm/kg for legs and trunk, the figure of RMD-X12-P20-320, and 80 for arms, wrists and neck ([spec 02.6](../../spec/02-structure-and-motion.md#the-basis-matters-as-much-as-the-number)). **Replaced the same day by a module declared at each joint** (§6f): the densities are now derived from the bought modules, 110 and 58 Nm/kg at 98.2 kg, 100 and 58 at 105.6 kg when walking's RMS and the hip's frontal plane entered the check (§6g), and 104 and 58 at 103.6 kg since the legs' walking figures became people's (§6j, 2026-11-24). `spec/` and this document agree again; the record below is kept because the reasoning is what justifies a figure at the top of the commercial band. Note that the §1 tables below were computed with the whole of `f_act` treated as scaling with body mass; §6b explains why only the leg and trunk part does.
 
 Sizing the declared 30 joints against published torque densities did not reproduce the actuator mass fraction the specification assumed. Tool output as run on 2026-09-22, before the correction:
 
@@ -134,11 +134,11 @@ The finding of §1 had no technical answer — three options, trading against ea
 
 ### What option A committed the design to
 
-**75–90 Nm/kg peak, over module mass — 80–90 since 2026-09-26; on 2026-11-23, 133 for legs and trunk and 80 for arms, wrists and neck; since the same day no density, a bought module at each joint (§6f), which gives 110 and 58, then 100 and 58 (§6g).** Only a handful of commercial modules reach it — the hollow-shaft planetary at 88.7 Nm/kg is at the very top of what is claimed, and a mainstream 52 Nm/kg module does not qualify. Supply is thin and will stay thin.
+**75–90 Nm/kg peak, over module mass — 80–90 since 2026-09-26; on 2026-11-23, 133 for legs and trunk and 80 for arms, wrists and neck; since the same day no density, a bought module at each joint (§6f), which gives 110 and 58, then 100 and 58 (§6g), then 104 and 58 (§6j).** Only a handful of commercial modules reach it — the hollow-shaft planetary at 88.7 Nm/kg is at the very top of what is claimed, and a mainstream 52 Nm/kg module does not qualify. Supply is thin and will stay thin.
 
 **The specification now states the basis**, which is the part that actually prevents a repeat. The original error was not only a wrong number: 30–36 Nm/kg is a reasonable figure *on the integrated basis*, and it was being used as if it were peak-over-module. A density with no basis attached is a number waiting to be misread.
 
-**The two bands are now one constraint.** 80–90 Nm/kg mapped onto `f_act` 0.30–0.34 then; at the densities declared on 2026-11-23 `f_act` was 0.27 at 82 kg, and with the bought modules of §6f it was 0.33 at 98.2 kg, 0.35 at 105.6 kg with §6g's checks ([spec 02.6](../../spec/02-structure-and-motion.md#what-the-two-figures-give)), each derivable from the other, and `scripts/gems_budget.py --check` holds them together — including the actuator-mass column, which it did not cover before and which is exactly where this drift hid.
+**The two bands are now one constraint.** 80–90 Nm/kg mapped onto `f_act` 0.30–0.34 then; at the densities declared on 2026-11-23 `f_act` was 0.27 at 82 kg, and with the bought modules of §6f it was 0.33 at 98.2 kg, 0.35 at 105.6 kg with §6g's checks, and it is 0.34 at 103.6 kg with §6j's ([spec 02.6](../../spec/02-structure-and-motion.md#what-the-two-figures-give)), each derivable from the other, and `scripts/gems_budget.py --check` holds them together — including the actuator-mass column, which it did not cover before and which is exactly where this drift hid.
 
 ## 6a. Trunk lateral-bend torque — research, 2026-09-26
 
@@ -286,7 +286,7 @@ The speeds are on the basis each datasheet gives — no-load, peak, or command r
 - The reducer conflict D-2 names can be settled by a bought module either way. `hardware/mechanical` §2 asked for cycloidal reducers at hip and knee — revised on 2026-11-22 to cycloidal or planetary, not strain-wave, since its reason rules out strain-wave gears only — and cycloidal modules are on sale — PhyArc here, LeadShine's HRV2 at 120–160 Nm in the dataset with no speed given; MyActuator's own cycloidal line, CEM, stops at 45 Nm [37]. The planetary rows are what the electrical selection assumed. Only the 8:1 row keeps the backdrivability that §2 argues for the arms; the others are 20:1 to 25:1.
 - Only MyActuator offers EtherCAT on the module; the others need the CAN-to-EtherCAT bridge of plan E-5. PhyArc wants 72 V and the rest 48 V, which ties the choice to D-4.
 
-**Since 2026-11-23** a bought module is declared at each joint (§6f, spec 02.6) and the reference point is 105.6 kg (§6g), 98.2 kg before walking's RMS entered the check; earlier that day the legs and trunk were declared at 133 Nm/kg, the X12's figure, at 82.3 kg. The torques in this section are at the 96.2 kg point of its date: AKE90-8 at 121 Nm/kg falls below the declaration; ENCOS, PhyArc and the AKH70-48 are above it.
+**Since 2026-11-23** a bought module is declared at each joint (§6f, spec 02.6) and the reference point is 103.6 kg (§6j), 105.6 kg on the simulated robot's walking (§6g), 98.2 kg before walking's RMS entered the check; earlier that day the legs and trunk were declared at 133 Nm/kg, the X12's figure, at 82.3 kg. The torques in this section are at the 96.2 kg point of its date: AKE90-8 at 121 Nm/kg falls below the declaration; ENCOS, PhyArc and the AKH70-48 are above it.
 
 **The direction, picked 2026-11-23 (Plone), and superseded the same day by §6f,** which keeps the P2-24 only at the ankle pitch and as an alternate elsewhere. ENCOS EC-A10020-P2-24 is the main candidate for hip pitch, knee and trunk pitch, with the RMD-X12-P20-320 and PhyArc 102 as alternates, ranked in that order in the [AVL](../bom/avl.csv); the AKH70-48 rows at those three joints are dropped, since at ±5 rad/s it does not reach the knee's 6.7–6.9 rad/s in walking at 1.0 m/s. None is procured, and no price or availability outside China has been read. The three modules' keep-outs, Φ124 × 85 mm on each joint's axis, are in the [CAD skeleton](../mechanical/skeleton/) (plan M-1).
 
@@ -476,6 +476,8 @@ The loop converged on **98.2 kg** from any start between 82 and 120 kg: modules 
 
 **Decided 2026-11-23 (Plone).** Two checks join the module check of §6f: walking's RMS torque at every leg and trunk joint, against the module's continuous torque, since walking is held, not a 60 s burst; and the hip in the frontal plane in running, which sizes hip roll.
 
+**Superseded for the legs on 2026-11-24** by people's walking ([§6j](#6j-walking-like-a-person--d-2-and-f-5-2026-11-24)); Oli's figures stay as the stress case and for the trunk.
+
 **Why.** The joint heat of plan M-11, run on the set of §6f at 98.2 kg, compared each module's RMS in walking at 1.0 m/s with what its sheet holds continuously. Hip pitch's SEmotor SETZ90CI-1FG walked at 79–81 Nm RMS against its 60 Nm, 1.32–1.35 times; hip roll's SETZ70CI-1GA at 69–78 Nm against 24, 2.9–3.3 times. The walking figures are Oli's [38], a simulated robot with an asymmetric gait, so they were checked against people where people were measured: the running data of Fukuchi et al. [41] carry the hip's moment about all three axes, and the paper's convention puts flexion about Z, abduction and adduction about X, rotation about Y, as net internal moments per kilogram (read in full through Europe PMC, PMC5426356). At 2.5 m/s the hip's abduction moment is 0.65 Nm/kg RMS and 1.73 Nm/kg at its peak, 31 participants — 64 and 170 Nm at 98.2 kg, against the -1GA's 24 Nm continuous and 156 Nm peak. Hip roll had been sized at 1.23 Nm/kg.
 
 **The figures**, Nm per kilogram of body, held in `actuator_sizing.py`:
@@ -492,7 +494,7 @@ The loop converged on **98.2 kg** from any start between 82 and 120 kg: modules 
 
 Oli's torques are over the last 8 s of its walk at a commanded 1.0 m/s, divided by its 52.55 kg; the larger of left and right is taken, since the gait is not symmetric (the left knee 0.736, the right 0.564). The arms are left out: Oli's arm swing scales with Oli's arm, not with this body's. Running's figures are each participant's cycle-averaged curve, the method of `RUN_RMS` in §6e, which gives 2.07 at the ankle as declared. Hip roll is now sized to running's 1.73 Nm/kg peak; hip yaw's 0.35 and ankle roll's 0.22 lie below their declared 0.62 and 0.54.
 
-**The set, at the 105.6 kg reference point.** The modules of [spec 02.6](../../spec/02-structure-and-motion.md#the-basis-matters-as-much-as-the-number), held in `actuator_sizing.py` as `JOINT_MODULE`. Four joints change from §6f:
+**The set, at the 105.6 kg reference point** — changed again at hip pitch on 2026-11-24, when the walking figures became people's ([§6j](#6j-walking-like-a-person--d-2-and-f-5-2026-11-24)). The modules of [spec 02.6](../../spec/02-structure-and-motion.md#the-basis-matters-as-much-as-the-number), held in `actuator_sizing.py` as `JOINT_MODULE`. Four joints change from §6f:
 
 | Joint | Needs | Module | Peak / continuous | 60 s under load | Mass |
 |---|---|---|---|---|---|
@@ -503,7 +505,7 @@ Oli's torques are over the last 8 s of its walk at a commanded 1.0 m/s, divided 
 
 The other joints keep their modules of §6f, with their needs at 105.6 kg in spec 02.6. The RMD-X12-P20-320's size is read from its sheet's drawing, Φ124 ± 0.1 × 85 ± 0.5 mm [34]; the same sheet gives a line resistance of 0.12 Ω and a torque constant of 3.3 N·m/A, which the joint heat of plan M-11 can use. It is taken at the ankle because the P2-24's 79 Nm for 60 s falls short of running's 81 Nm RMS at this mass. The X12's sheet gives no time under load, so the check there is against its 85 Nm continuous torque, a weaker check than the P2-24 had: the rule rewards the sheet that says less.
 
-The loop converges on **105.6 kg** from any start between 82 and 120 kg: modules 36.7 kg — 23.6 for legs and trunk, 13.1 for arms, wrists and neck — `f_act` 0.348, at the top of the 0.25–0.35 band of spec 02.2, γ 2.58, pack 4.22 kWh, endurance ceiling 10.7 h. Peak over module mass comes out at 100 Nm/kg for legs and trunk and 58 for the rest. The set holds to 108.8 kg of body, where trunk roll's 16 Nm continuous meets its walking RMS; its 104 Nm peak runs out at 109.5 kg, and ankle pitch's running RMS reaches the X12's 85 Nm at 110.4 kg.
+The loop converged on **105.6 kg** from any start between 82 and 120 kg: modules 36.7 kg — 23.6 for legs and trunk, 13.1 for arms, wrists and neck — `f_act` 0.348, at the top of the 0.25–0.35 band of spec 02.2, γ 2.58, pack 4.22 kWh, endurance ceiling 10.7 h. Peak over module mass comes out at 100 Nm/kg for legs and trunk and 58 for the rest. The set holds to 108.8 kg of body, where trunk roll's 16 Nm continuous meets its walking RMS; its 104 Nm peak runs out at 109.5 kg, and ankle pitch's running RMS reaches the X12's 85 Nm at 110.4 kg.
 
 **At the 4-hour point** the same rules give 132.7 kg, `f_act` 0.31, pack 10.6 kWh, with the EC-A13715-P1-12.67 at hip pitch, hip roll and ankle pitch, the EC-A13720-P1-11.4 at the knee, the EC-A6416-P2-25 at hip yaw, SEmotor SETZ90CI-1FG at trunk pitch and SETZ70CI-1GA at trunk roll. `scripts/gems_budget.py` carries the 2-hour set's densities to every point and gives 137 kg there.
 
@@ -514,6 +516,8 @@ The loop converges on **105.6 kg** from any start between 82 and 120 kg: modules
 - The rest of §6f's list stands: static holds, the bench's conditions, the bus, fit, the sheets' currency, price and availability.
 
 ## 6h. Walking heat by speed and the hip roll lever — M-11, 2026-11-24
+
+*Computed on Oli's gait at 105.6 kg. On people's gait, the basis since 2026-11-24, see [§6j](#6j-walking-like-a-person--d-2-and-f-5-2026-11-24); this section stands as the stress case: the heat if the controller walks the way the simulated robot does.*
 
 **Decided 2026-11-24 (Plone), on these figures:** walking is sustained at 0.5 m/s and held at its 1.0 m/s top for up to 10 min at a time (spec 02.6 row 1), both provisional until the cooling of plan M-11; the hip joints stay 0.18 m apart (kinematics §2); and the balance controller keeps hip roll's holding torque down by where it puts the centre of mass (plan F-5, `⟦CTRL⟧`).
 
@@ -542,6 +546,8 @@ In bold, a joint at or above the low end of its module's estimated sustained hea
 
 ## 6i. Thermal network of the ventilated body — M-11, 2026-11-24
 
+*Run on Oli's gait at 105.6 kg — the stress case since 2026-11-24. On people's gait see [§6j](#6j-walking-like-a-person--d-2-and-f-5-2026-11-24).*
+
 **What it answers.** The airflow of [spec 04.8](../../spec/04-shell.md#48-ventilation-and-surface-temperature), at 35 °C ambient and at 40, with the joint heat of §6h: how much air each branch needs, and how well the body must cool each module. The makers publish no resistance from winding to housing, so the network cannot predict a winding temperature. It states a requirement instead: R_req = (100 °C − T_air) / P, the resistance from the winding to the air at that module that keeps it at the bench's 100 °C end point, and sets it against the maker's bench, R_bench = 70 K / P_sus with P_sus the sustained heat of §6h, the bench taken at 30 °C.
 
 **The paths.** The main path takes the hips, then trunk yaw, then the shoulders; each lower leg has its own loop (knee, ankle); the edge computer, 130 W, a cool branch. Air rises 15 K in a branch (10 K in the compute branch), and a module sees its zone's inlet plus half the zone's rise. The design case is the lower of two: walking at 0.5 m/s held, and 10 min at 1.0 m/s from the 0.5 m/s steady state, with the bench time constant of §6h's fits (an estimate).
@@ -568,6 +574,48 @@ In bold, a joint at or above the low end of its module's estimated sustained hea
 At 40 °C the largest factors — hip pitch, left hip roll, left knee — rise to 1.6–1.8×; right hip roll to 1.3×. The 10 min at 1.0 m/s sets the hips and knees, not the held 0.5 m/s. The coefficient in the last column is what the housing alone would need if all of R_req lay outside it — a floor, since the winding-to-housing resistance adds to it; it sits at the low end of forced convection in gases, 25–250 W/m²K (mechanical ref 44). **Whether air can meet the hips depends on that unpublished internal resistance**: if it is near 0.6 K/W, no flow of air reaches R_req at hip pitch, and the heat needs a conducted path into the structure as well. It is the first thing to ask of ENCOS, or to measure when a module is in hand.
 
 **What it does not settle.** The bench's sustained heats and time constants are first-order estimates from two rows each; the bench's mounting and ambient are not stated; the pack's own heat is not known; the module fans at the shrouds are not chosen; the fans' operating points need P–Q curves that the candidate's specification does not give; the pressure drop of louvres and ducts is not known.
+
+## 6j. Walking like a person — D-2 and F-5, 2026-11-24
+
+**Decided 2026-11-24 (Plone).** The legs are sized to people walking, not to the simulated robot: walking's RMS at the hips, knee and ankle is the 90th percentile of people at 1.0 m/s, and the balance controller is asked for a gait that keeps within it (plan F-5). Oli's figures stay as the stress case, and for the trunk, where the human data stop at the pelvis.
+
+**The data.** Fukuchi, Fukuchi and Duarte's public dataset of walking [42], version 6: 51 people, 382 treadmill trials at eight speeds, 40–145% of each one's self-selected speed, the belt speed of each trial recorded in `WBDSinfo.csv`. Per trial, the cycle-averaged joint moments in Nm/kg, Cardan Z–X–Y — Z flexion and extension, X abduction and adduction, Y rotation, the hip's resolved in the pelvis — as the authors' Visual3D pipeline and script define them. Holding the rails was allowed and is recorded: 28 trials with the hands on them are left out, as are 45 where it is not recorded and 10 with values missing; 299 remain, 42 of them by 38 people at 0.9–1.1 m/s. With the unrecorded trials in, no 90th percentile at that speed moves by more than 4%. The larger side of each trial is taken, as for Oli.
+
+| Joint | People, 0.4–0.6 m/s: mean (90th percentile) | People, 0.9–1.1 m/s: mean (90th percentile) | Oli, 1.0 m/s | Oli over the mean at 1.0 m/s |
+|---|---|---|---|---|
+| Hip pitch | 0.24 (0.32) | 0.33 (**0.400**) | 0.824 | 2.5× |
+| Hip roll | 0.47 (0.53) | 0.48 (**0.536**) | 0.796 | 1.7× |
+| Hip yaw | 0.10 (0.13) | 0.10 (**0.118**) | 0.183 | 1.9× |
+| Knee | 0.25 (0.35) | 0.24 (**0.334**) | 0.736 | 3.0× |
+| Ankle pitch | 0.63 (0.74) | 0.67 (**0.760**) | 0.683 | 1.0× |
+| Ankle roll | 0.06 (0.10) | 0.09 (**0.124**) | 0.183 | 2.2× |
+
+RMS, Nm/kg; the figures in bold are `WALK_RMS` in `actuator_sizing.py`. The knee's 90th percentile is a little higher at 0.5 m/s than at 1.0, and neither is near its module's 110 Nm. People's hip roll is 0.47–0.48 at every speed from 0.5 to 1.2 m/s, the static moment of the body over the stance leg that §6h found in Oli. The ankle does not fall with speed either: at 0.5 m/s it is nearly what it is at 1.0.
+
+**The set and the loop.** With these figures hip pitch takes SEmotor SETZ90CI-1FG again (240 / 60 Nm, 1.60 kg): walking asks 41 Nm RMS at 103.6 kg, running 58. The other joints keep the modules of §6g — hip roll the P2-24 for running's 179 Nm abduction peak, ankle pitch the X12 for running's 80 Nm RMS. The loop converges on **103.6 kg** from any start: modules 35.5 kg (22.4 legs and trunk, 13.1 the rest), `f_act` 0.343, γ 2.53, pack 4.14 kWh, endurance ceiling 10.9 h, 104 and 58 Nm/kg. The set holds to 107.1 kg, where hip pitch's 60 Nm continuous meets running's RMS, 3% above the reference point. At the 4-hour point, 128.6 kg and 10.3 kWh.
+
+**What the lighter hip pitch costs.** A stand-up or step carries 32 kg at the 2-hour point, limited by its 240 Nm, where the P2-24 gave 75. **It does not hold the stress case**: walking as the simulated robot does asks 85 Nm RMS at hip pitch against 60 continuous, 1.4 times, and no airflow mends that; every other leg module holds it. So the module rests on the gait. The P2-24 at hip pitch instead makes the body 105.6 kg, 2.0 kg more, holds the stress case, carries 75 kg, and has a heat that can be computed; the rule of §6f takes the lighter one.
+
+**Heat on people's gait**, per joint, the 90th percentile over the trials, at 103.6 kg: the ENCOS loss model of §6h, with the joint power of the dataset for the speed term — the hip's whole power cannot be divided among its axes, so hip roll and hip yaw carry their stall part only, a floor — and the X12's copper loss with its rated-point rest:
+
+| Joint | 0.5 m/s | 1.0 m/s | Design R at 35 °C, against the bench |
+|---|---|---|---|
+| Hip pitch (SETZ90CI-1FG) | not computed: 33 Nm RMS | not computed: 41 Nm RMS, against 60 continuous | — |
+| Hip roll (P2-24) | 41 W | 42 W | 1.45 K/W, 0.74× |
+| Hip yaw (EC-A4315) | 17 W | 15 W | 3.53 K/W, 0.48× |
+| Knee (EC-A13715) | 34 W | 38 W | 1.61 K/W, 0.58× |
+| **Ankle pitch (X12)** | **101 W** | **109 W** | 0.53 K/W, no bench figure |
+| Ankle roll (EC-A4315) | 12 W | 16 W | 3.55 K/W, 0.48× |
+
+Below 1×, a module may be cooled less well than on its maker's bench; at 40 °C the factors are 0.53–0.81×. So hip roll, hip yaw, knee and ankle roll ask for nothing better than their benches, where on Oli's gait hip pitch, left hip roll and left knee asked for 1.5–1.8× (§6i). **The ankle pitch is the joint to watch.** It walks at 77–79 Nm RMS, 93% of the X12's 85 Nm rated torque, at 0.5 m/s as at 1.0, and its copper loss alone is 97–102 W against 119 W at the rated torque. The sheet has no time under load, so whether 85 Nm is held is not known, and the one maker that publishes it, ENCOS, holds less than it rates (§6g). It is warmer here than on Oli's gait at 0.5 m/s, 29 W: a human gait relieves the knee and hip, not the ankle.
+
+The network of §6i on these heats, with Oli's trunk and shoulders: about **78 CFM at 0.5 m/s and 89 at 1.0**, plus what hip pitch gives off.
+
+**What it does not settle.**
+- The gait: a controller that walks this way on this body is plan F-5's to make. People's moments hold for a mass carried as theirs is; GEMs' modules sit heavier at the knee and ankle, which loads the swing. The dataset is barefoot, on a treadmill, and each curve is an average over cycles, slightly lower in RMS than a single one.
+- Hip pitch's heat: SEmotor publishes no loss. The flows of §6i were on the P2-24 there.
+- The ankle pitch: the X12's time under load, its loss and its thermal resistance.
+- The trunk and arms, still on Oli's figures or none.
 
 ## 7. References
 
@@ -619,3 +667,4 @@ Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at pus
 | 39 | Schache A.G., Blanch P.D., Dorn T.W., Brown N.A.T., Rosemond D., Pandy M.G., [Effect of running speed on lower limb joint kinetics](https://doi.org/10.1249/MSS.0b013e3182084929), *Medicine & Science in Sports & Exercise* 43(7):1260–1271, 2011 — Table 1; copyrighted, not vendored |
 | 40 | Pijnappels M., Bobbert M.F., van Dieën J.H., [Contribution of the support limb in control of angular momentum after tripping](https://doi.org/10.1016/j.jbiomech.2004.02.038), *Journal of Biomechanics* 37:1811–1818, 2004 — Table 1; not vendored |
 | 41 | Fukuchi R.K., Fukuchi C.A., Duarte M., [A public dataset of running biomechanics and the effects of running speed on lower extremity kinematics and kinetics](https://doi.org/10.7717/peerj.3298), *PeerJ* 5:e3298, 2017; data [10.6084/m9.figshare.4543435](https://doi.org/10.6084/m9.figshare.4543435), version 5, CC BY 4.0 — processed and force files, checked against their MD5; not vendored |
+| 42 | Fukuchi C.A., Fukuchi R.K., Duarte M., [A public dataset of overground and treadmill walking kinematics and kinetics in healthy individuals](https://doi.org/10.7717/peerj.4640), *PeerJ* 6:e4640, 2018 (read in full through Europe PMC, PMC5922232); data [10.6084/m9.figshare.5722711](https://doi.org/10.6084/m9.figshare.5722711) v6, CC BY 4.0: treadmill T01–T08 at 40–145% of self-selected speed; processed knt files, moments in Nm/kg, Cardan Z–X–Y (the authors' Visual3D pipeline `wbdsOvergroundDA.v3s` and script `wbdsExploratoryDA.m`) |

@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-24T00:34:44Z",
+    "timestamp": "2026-11-24T05:32:47Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -91,7 +91,7 @@
       "type": "application",
       "bom-ref": "hardware/electrical/actuator_sizing.py",
       "name": "hardware/electrical/actuator_sizing.py",
-      "version": "sha256:f30fba3283d0",
+      "version": "sha256:8d023d934312",
       "description": "Joint torque table and actuator sizing",
       "supplier": {
         "name": "Plone Mraz"
@@ -106,7 +106,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "f30fba3283d0d5e3e63a93f0f92af2f730caafcffd7f58468f4ee374504fc460"
+          "content": "8d023d9343125f0b935b11081a6238b7770f40eb4ed1a6453e106377997852c2"
         }
       ],
       "scope": "excluded",
@@ -181,7 +181,7 @@
       "type": "application",
       "bom-ref": "hardware/sim-model/generate_urdf.py",
       "name": "hardware/sim-model/generate_urdf.py",
-      "version": "sha256:3eb92d74dec2",
+      "version": "sha256:2cee83c28cc0",
       "description": "URDF generator and audit",
       "supplier": {
         "name": "Plone Mraz"
@@ -196,7 +196,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "3eb92d74dec2925fdb92a0bfd0e550a7f40e6dac003fa3d564dd588f8b8aac33"
+          "content": "2cee83c28cc0286cd7d1978a56086c4be17ffdd5b101a5af62054fcbcbb935dd"
         }
       ],
       "scope": "excluded",
@@ -211,7 +211,7 @@
       "type": "application",
       "bom-ref": "hardware/mechanical/skeleton/generate_skeleton.py",
       "name": "hardware/mechanical/skeleton/generate_skeleton.py",
-      "version": "sha256:8deb35632fbd",
+      "version": "sha256:85b578ba556c",
       "description": "CAD skeleton generator (FreeCAD) and audit against the URDF",
       "supplier": {
         "name": "Plone Mraz"
@@ -226,7 +226,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "8deb35632fbdcc417c501c4b9a4a198f8e47d493107c7aa4114d6a19ccaf1b79"
+          "content": "85b578ba556cae7d3c59c7e65da53de5910f4d6095b195ccd4d67d4a5a2ba2a1"
         }
       ],
       "scope": "excluded",
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:55ebc6a351cd",
+      "version": "sha256:6b6db3bbf82c",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "55ebc6a351cd8549afd4200c327b23152af128b3ec2e26d43046def87d682c14"
+          "content": "6b6db3bbf82cd1eadfaae180f32aa8bb545753524da35a8b616298c454c7a38f"
         }
       ],
       "scope": "excluded",

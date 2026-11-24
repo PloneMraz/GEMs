@@ -25,7 +25,7 @@ import argparse
 import sys
 
 G = 9.81
-REF_MASS = 105.6           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
+REF_MASS = 103.6           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
 
 # Bought module per joint (spec 02.6, decided 2026-11-23: the actuator mass is
 # declared at the joint, not as one density). Each is the lightest module that
@@ -60,7 +60,7 @@ HOLD_60S = {
     "EC-A10020-P2-24": 79.1, "EC-A13715-P1-12.67": 150.0,
 }
 JOINT_MODULE = {
-    "hip_pitch": "EC-A10020-P2-24", "hip_roll": "EC-A10020-P2-24", "hip_yaw": "EC-A4315-P2-36",
+    "hip_pitch": "SETZ90CI-1FG", "hip_roll": "EC-A10020-P2-24", "hip_yaw": "EC-A4315-P2-36",
     "knee": "EC-A13715-P1-12.67", "ankle_pitch": "RMD-X12-P20-320", "ankle_roll": "EC-A4315-P2-36",
     "trunk_pitch": "SETZ70CI-1HA", "trunk_roll": "SEAF70A16NG02", "trunk_yaw": "EC-A6416-P2-25",
     "shoulder_pitch": "EC-A10020-P1-12", "shoulder_roll": "EC-A10020-P1-12",
@@ -80,14 +80,20 @@ MIN_RPM = {"knee": 105.0, "hip_pitch": 71.0, "ankle_pitch": 35.0}
 # 2026-11-23 (README §6g). Trunk, arms, wrists, neck: no figure.
 RUN_RMS = {"hip_pitch": 0.56, "knee": 0.96, "ankle_pitch": 0.77,
            "hip_roll": 0.65, "hip_yaw": 0.11, "ankle_roll": 0.08}
-# RMS torque of walking at 1.0 m/s, Nm per kg of body: the simulated robot Oli
-# (README §6e), the larger of left and right over the last 8 s, over its
-# 52.55 kg; against the module's continuous torque, since walking is held
-# (README §6g, 2026-11-23). Legs and trunk only: Oli's arm swing scales with
-# Oli's arm, not with this body's.
-WALK_RMS = {"hip_pitch": 0.824, "hip_roll": 0.796, "hip_yaw": 0.183, "knee": 0.736,
-            "ankle_pitch": 0.683, "ankle_roll": 0.183,
+# RMS torque of walking at 1.0 m/s, Nm per kg of body, against the module's
+# continuous torque, since walking is held (README §6g). Legs: people walking
+# on a treadmill at 0.9-1.1 m/s without holding the rails, the 90th percentile
+# of the larger side (Fukuchi, Fukuchi & Duarte 2018; README §6j), adopted 2026-11-24
+# with a human-like gait asked of the balance controller (plan F-5). Trunk:
+# the simulated robot Oli (README §6g), since the human data stop at the
+# pelvis. Arms: no figure; Oli's arm swing scales with Oli's arm.
+WALK_RMS = {"hip_pitch": 0.400, "hip_roll": 0.536, "hip_yaw": 0.118, "knee": 0.334,
+            "ankle_pitch": 0.760, "ankle_roll": 0.124,
             "trunk_pitch": 0.127, "trunk_roll": 0.147, "trunk_yaw": 0.224}
+# The simulated robot's walking RMS, the stress case (README §6g, §6j): reported,
+# not required. A module below it cannot hold that gait, whatever the cooling.
+WALK_RMS_OLI = {"hip_pitch": 0.824, "hip_roll": 0.796, "hip_yaw": 0.183, "knee": 0.736,
+                "ankle_pitch": 0.683, "ankle_roll": 0.183}
 
 
 def module(name):
@@ -368,6 +374,11 @@ def main(argv=None):
     else:
         print("Every module meets its joint's peak, reducer class, speed, running and walking RMS")
         print("at %.1f kg; the set holds up to %.1f kg of body." % (a.mass + a.carry, limit))
+
+    short = [(n, module(n)[1], module(n)[3], v * a.mass) for n, v in WALK_RMS_OLI.items() if module(n)[3] < v * a.mass]
+    print()
+    print("Stress case, the simulated robot's gait at 1.0 m/s (not required): "
+          + ("; ".join("%s %s %.0f Nm continuous < %.0f Nm RMS" % x for x in short) if short else "held by every leg module"))
 
     per_kg, fixed = split(a.mass)
     d_legs, d_fixed = densities(a.mass)

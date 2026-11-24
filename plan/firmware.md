@@ -73,6 +73,7 @@ The drive board is inside each bought actuator module, and the firmware on it is
 | Step recovery — no command asks for the step, so it is declared: a faculty by a fixed law, or a reflex the Main Controller loads (RSIL §7.5; binding §2.4). Which, to be decided here | L4 | — |
 | Motion intent interface from the edge software — intent, not commands (architecture §4) | L4 | — |
 | Priority over the reflex path where they contend (architecture §3) | L4 | — |
+| A human-like gait (2026-11-24): walking's RMS at each leg joint within people's 90th percentile at 1.0 m/s, the figures the modules are sized to — hip pitch 0.400, hip roll 0.536, hip yaw 0.118, knee 0.334, ankle pitch 0.760, ankle roll 0.124 Nm/kg ([electrical §6j](../hardware/electrical/README.md#6j-walking-like-a-person--d-2-and-f-5-2026-11-24)); the knee near straight in stance. A gait like the simulated robot's overloads hip pitch's module 1.4 times, whatever the cooling, so the controller must hold the gait or shorten the walk | L4 | — |
 | Hip roll's holding torque in walking: the centre of mass shifted toward the stance hip, so that hip roll's RMS stays below what its module holds without overheating — each centimetre about 8.6 Nm of the static moment at the reference mass ([electrical §6h](../hardware/electrical/README.md#6h-walking-heat-by-speed-and-the-hip-roll-lever--m-11-2026-11-24)); how far, `⟦CTRL⟧` | L4 | — |
 | Verified in simulation — standing, pushed, stepping (V-3) | L5 | V-1 |
 | **Closes C-13** in simulated form when run on the emulated target (V-6) | L5 | V-6 |

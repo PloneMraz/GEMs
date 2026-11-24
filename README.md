@@ -53,7 +53,7 @@ GEMs does not publish one configuration. Structure, actuation and energy sit on 
 | Property | Declared envelope |
 |---|---|
 | Height | ~1.65 m — 1.75 m until 2026-09-26 |
-| Mass | **85–171 kg**, depending on endurance and armour coverage; the reference design sits at ~106 kg, 2 h with a dock |
+| Mass | **84–167 kg**, depending on endurance and armour coverage; the reference design sits at ~104 kg, 2 h with a dock |
 | Free-running endurance | Hours, under a **hard ceiling** — past it no convergent design exists at any price |
 | Deep-sleep endurance | **~years**, bounded by battery self-discharge rather than by standby electronics |
 | Protection | Handgun-calibre ballistic + stab + everyday impact, as one multi-layer package |

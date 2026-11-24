@@ -5,7 +5,7 @@ The body itself. What [spec chapters 02–06](../spec/) specify as envelopes, th
 | Document | Contents | Status |
 |---|---|---|
 | [`kinematics.md`](kinematics.md) | Degrees of freedom, their arrangement, reach and segment lengths | ✅ |
-| [`mechanical/`](mechanical/) | Material and mechanism selection, sourced. CAD begun: the skeleton of plan M-1, generated from the kinematics and audited against the URDF, in [`mechanical/skeleton/`](mechanical/skeleton/) | ◐ selection done, skeleton generated |
+| [`mechanical/`](mechanical/) | Material and mechanism selection, sourced. CAD begun: the skeleton of plan M-1, generated from the kinematics and audited against the URDF, in [`mechanical/skeleton/`](mechanical/skeleton/); the joint modules drawn and laid out in [`mechanical/modules/`](mechanical/modules/) | ◐ selection done, skeleton and module layout generated |
 | [`electrical/`](electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint actuator sizing | ◐ selection done |
 | [`sim-model/`](sim-model/) | URDF generated from the kinematics, with an audit that holds it to the declaration | ✅ |
 | [`design/`](design/) | How the body looks and what it can express: concept art now; industrial design and expression to follow (plan ID) | ◐ concept art |

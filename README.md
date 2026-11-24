@@ -91,7 +91,7 @@ One directory per group, and the body's three design disciplines nest under `har
 | [`plan/`](plan/PLAN.md) | What remains between the specification and a complete design: definition of done, open decisions, work packages, and the firmware and software work down to the task | ✅ v1 |
 | [`protocol/`](protocol/) | Platform conformance protocol, and an assessment of this repository's simulated body against it | ✅ v0.1 draft + record |
 | [`hardware/`](hardware/) | The body itself | ◐ kinematics declared |
-| [`hardware/mechanical/`](hardware/mechanical/) | Material and mechanism selection, sourced; CAD begun with the skeleton of plan M-1, generated from the kinematics and audited against the URDF | ◐ selection done, skeleton generated |
+| [`hardware/mechanical/`](hardware/mechanical/) | Material and mechanism selection, sourced; CAD begun with the skeleton of plan M-1, generated from the kinematics and audited against the URDF, and the joint modules drawn and laid out | ◐ selection done, skeleton and module layout generated |
 | [`hardware/electrical/`](hardware/electrical/) | Actuator, power, compute and bus selection, sourced, with joint-by-joint sizing | ◐ selection done |
 | [`hardware/sim-model/`](hardware/sim-model/) | URDF generated from the kinematics, audited against it | ✅ |
 | [`hardware/design/`](hardware/design/) | Concept art, then industrial design and expressive capability (plan ID) | ◐ concept art |

@@ -1,0 +1,32 @@
+joint,module,x_mm,y_mm,z_mm,output_x,output_y,output_z,housing_link,place,outside_segments_mm,travel_lower_deg,travel_upper_deg,clear_lower_deg,clear_upper_deg,stopped_by
+l_hip_pitch,EC-A10020-P2-24,0.00,90.00,-150.00,0,1,0,l_hip_roll_link,centred on the hip,14.1,-120,90,-120,28,l_hip_yaw / l_hip_roll
+r_hip_pitch,EC-A10020-P2-24,0.00,-90.00,-150.00,0,-1,0,r_hip_roll_link,centred on the hip,14.1,-120,90,-120,28,r_hip_yaw / r_hip_roll
+l_hip_roll,EC-A10020-P2-24,-107.50,90.00,-150.00,1,0,0,pelvis,behind the hip pitch module,89.8,-30,45,-6,45,l_ankle_pitch / r_ankle_pitch
+r_hip_roll,EC-A10020-P2-24,-107.50,-90.00,-150.00,1,0,0,pelvis,behind the hip pitch module,89.8,-45,30,-45,6,r_ankle_pitch / l_ankle_pitch
+l_hip_yaw,EC-A4315-P2-36,0.00,90.00,-249.75,0,0,-1,l_hip_pitch_link,"below it, in the thigh",0.0,-45,45,-45,45,
+r_hip_yaw,EC-A4315-P2-36,0.00,-90.00,-249.75,0,0,-1,r_hip_pitch_link,"below it, in the thigh",0.0,-45,45,-45,45,
+l_knee,EC-A13715-P1-12.67,0.00,90.00,-550.00,0,1,0,l_thigh,centred on the knee,40.8,-60,140,-60,136,l_ankle_roll / l_hip_roll
+r_knee,EC-A13715-P1-12.67,0.00,-90.00,-550.00,0,-1,0,r_thigh,centred on the knee,40.8,-60,140,-60,136,r_ankle_roll / r_hip_roll
+l_ankle_pitch,RMD-X12-P20-320,0.00,90.00,-950.00,0,1,0,l_shank,centred on the ankle,21.5,-30,50,-30,50,
+r_ankle_pitch,RMD-X12-P20-320,0.00,-90.00,-950.00,0,-1,0,r_shank,centred on the ankle,21.5,-30,50,-30,50,
+l_ankle_roll,EC-A4315-P2-36,-99.75,90.00,-950.00,1,0,0,l_ankle_pitch_link,behind the ankle pitch module,29.6,-20,20,-20,20,
+r_ankle_roll,EC-A4315-P2-36,-99.75,-90.00,-950.00,1,0,0,r_ankle_pitch_link,behind the ankle pitch module,29.6,-20,20,-20,20,
+l_shoulder_roll,EC-A10020-P1-12,0.00,190.00,430.00,1,0,0,l_shoulder_pitch_link,centred on the shoulder,62.0,-40,180,0,180,l_wrist_pitch / l_hip_pitch
+r_shoulder_roll,EC-A10020-P1-12,0.00,-190.00,430.00,1,0,0,r_shoulder_pitch_link,centred on the shoulder,62.0,-180,40,-180,0,r_wrist_pitch / r_hip_pitch
+l_shoulder_pitch,EC-A10020-P1-12,0.00,95.00,430.00,0,1,0,torso,"inboard, in the torso",50.0,-180,70,-180,4,l_wrist_pitch / l_hip_roll
+r_shoulder_pitch,EC-A10020-P1-12,0.00,-95.00,430.00,0,-1,0,torso,"inboard, in the torso",50.0,-180,70,-180,4,r_wrist_pitch / r_hip_roll
+l_shoulder_yaw,EC-A8116-P1-18,0.00,190.00,336.50,0,0,-1,l_shoulder_roll_link,"below it, in the upper arm",7.5,-90,90,-26,90,l_wrist_roll / l_hip_pitch
+r_shoulder_yaw,EC-A8116-P1-18,0.00,-190.00,336.50,0,0,-1,r_shoulder_roll_link,"below it, in the upper arm",7.5,-90,90,-90,26,r_wrist_roll / r_hip_pitch
+l_elbow,EC-A8116-P1-18,0.00,190.00,130.00,0,1,0,l_upper_arm,centred on the elbow,19.0,-150,50,-144,50,l_wrist_roll / l_shoulder_yaw
+r_elbow,EC-A8116-P1-18,0.00,-190.00,130.00,0,-1,0,r_upper_arm,centred on the elbow,19.0,-150,50,-144,50,r_wrist_roll / r_shoulder_yaw
+l_wrist_pitch,EC-A3814-H14-107,0.00,190.00,-120.00,0,1,0,l_wrist_yaw_link,centred on the wrist,19.2,-70,70,-6,70,l_wrist_roll / l_wrist_yaw
+r_wrist_pitch,EC-A3814-H14-107,0.00,-190.00,-120.00,0,-1,0,r_wrist_yaw_link,centred on the wrist,19.2,-70,70,-6,70,r_wrist_roll / r_wrist_yaw
+l_wrist_yaw,EC-A3814-H14-107,0.00,190.00,-51.25,0,0,-1,l_forearm,"above it, in the forearm",0.0,-90,90,-26,90,l_wrist_roll / l_hip_pitch
+r_wrist_yaw,EC-A3814-H14-107,0.00,-190.00,-51.25,0,0,-1,r_forearm,"above it, in the forearm",0.0,-90,90,-90,26,r_wrist_roll / r_hip_pitch
+l_wrist_roll,EC-A3814-H14-107,68.75,190.00,-120.00,-1,0,0,l_wrist_pitch_link,in front of the wrist pitch module,68.6,-90,90,-90,90,
+r_wrist_roll,EC-A3814-H14-107,68.75,-190.00,-120.00,-1,0,0,r_wrist_pitch_link,in front of the wrist pitch module,68.6,-90,90,-90,90,
+trunk_pitch,EC-A10020-P2-24,0.00,0.00,0.00,0,1,0,trunk_yaw_link,on the lowest segment's axis,0.0,,,,,not checked: coupled trunk axes
+trunk_yaw,EC-A6416-P2-25,0.00,0.00,220.00,0,0,1,spine_thoracic,on the upper segment's axis,0.0,,,,,not checked: coupled trunk axes
+trunk_roll,SEAF70A16NG02,0.00,0.00,110.00,1,0,0,spine_lumbar,on the middle segment's axis,0.0,,,,,not checked: coupled trunk axes
+neck_pitch,EC-A3814-H14-107,0.00,0.00,430.00,0,1,0,neck_yaw_link,centred on the neck,0.0,-40,40,-40,40,
+neck_yaw,EC-A3814-H14-107,0.00,0.00,361.25,0,0,1,torso,"below it, in the torso",0.0,-75,75,-75,75,

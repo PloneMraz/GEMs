@@ -2,7 +2,7 @@
 
 Material and mechanism selection against the specification. Every figure is sourced; §6 lists the references.
 
-What is fixed here is what the CAD will be made of and what the joints will be made from — the decisions that have to precede geometry. The CAD itself begins with the skeleton of plan M-1 in [`skeleton/`](skeleton/): joint frames and segment envelopes generated from the kinematics, in FreeCAD, audited against the URDF. No part is drawn yet.
+What is fixed here is what the CAD will be made of and what the joints will be made from — the decisions that have to precede geometry. The CAD itself begins with the skeleton of plan M-1 in [`skeleton/`](skeleton/): joint frames and segment envelopes generated from the kinematics, in FreeCAD, audited against the URDF. The bought joint modules are drawn from their makers' drawings and laid out in [`modules/`](modules/), since 2026-11-24. No part of GEMs' own is drawn yet.
 
 ---
 

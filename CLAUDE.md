@@ -40,3 +40,11 @@ Các repo trong workspace liên kết với nhau, và nhiều phiên Claude có 
 - **Thay đổi chưa commit không phải của phiên mình:** không sửa, không stage những file đó; báo Plone. Chỉ stage đúng các file mình sửa, theo tên; không `git add -A` hay `git add .`.
 - **Đồng bộ từ commit, không từ working tree:** trước khi chép từ repo này sang repo khác (`scripts/sync_gems.py` của site, `ref/DIL.md` và `ref/RSIL.md` của GEMs, các bản sao trong Plone's documents), repo nguồn phải sạch và đúng commit mà message nêu; nếu không, dừng và hỏi.
 - **Trước khi push:** `git fetch` lại; nếu remote đã đi trước, `git pull --ff-only` rồi kiểm lại các bước trên. Không force-push.
+
+## 5. Ghi mọi việc đang mở vào bộ nhớ dài hạn (luật cứng)
+
+Mọi vấn đề đang mở đều được ghi vào bộ nhớ dài hạn của Claude (auto-memory của dự án), để không phiên nào làm trôi mất nó (Plone, 2026-11-24). Vấn đề đang mở gồm: việc chờ tác giả quyết, việc đã duyệt mà chưa làm, số liệu chưa có nguồn, linh kiện chưa chọn, và chỗ repo tự ghi là còn mở.
+
+- **Khi một vấn đề xuất hiện:** ghi ngay vào bộ nhớ, mỗi vấn đề một mục, có ngày, chỗ nó nằm trong repo, và việc cần làm để đóng nó.
+- **Ở đầu mỗi phiên và trước mỗi báo cáo:** đọc lại các mục đang mở; vấn đề nào đã xử lý xong thì kiểm lại trên repo rằng nó đã thật sự được ghi vào đó, rồi xóa mục của nó khỏi bộ nhớ.
+- **Bộ nhớ không thay repo:** điều đã quyết vẫn ghi vào spec, plan, BOM như các luật trên. Bộ nhớ nằm trên máy, không được đưa lên GitHub hay Hugging Face (mục 3).

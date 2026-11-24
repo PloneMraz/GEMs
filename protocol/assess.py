@@ -288,7 +288,7 @@ def assess():
 
 
 def declaration():
-    b = budget.budget(0.30, budget.LEG_DENSITY, 20.0, 2.0, 450.0, 0.65, 7.5, 20.0)
+    b = budget.budget(0.30, budget.LEG_DENSITY, budget.P_REF, budget.REF_ENDURANCE_H, budget.E_REF, 0.65, 7.5, 20.0)
     total_nm = budget.joint_torque_total(b["body_mass_kg"])
     log_bps = budget.log_bytes_per_s()
     return [

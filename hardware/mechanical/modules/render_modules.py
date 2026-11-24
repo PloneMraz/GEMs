@@ -54,6 +54,13 @@ for s in L["segments"]:
         rr, h = s["r"] * MM, s["h"] * MM / 2; ring = [(rr * math.cos(2 * math.pi * k / 48), rr * math.sin(2 * math.pi * k / 48)) for k in range(48)]
         P = [([(x, y, z) for x, y in ring], True) for z in (-h, h)] + [([(*ring[k], -h), (*ring[k], h)], False) for k in (0, 12, 24, 36)]
     me = wire(s["link"], P); me.materials.append(M["seg"]); o = bpy.data.objects.new("segment " + s["link"], me); cs.objects.link(o); o.parent = es; o.matrix_world = turn @ Matrix.Translation(Vector(s["centre"]) * MM)
+cp = col("pack"); ep = bpy.data.objects.new("pack", None); sc.collection.objects.link(ep); ep.parent = root
+M["cell"] = mat("cell", (.78, .60, .22), .35, .38); seen = {}
+for i, c in enumerate(L.get("cells", [])):
+    k = tuple(c["size"])
+    if k not in seen:
+        me = bpy.data.meshes.new("SA03 %d" % len(seen)); bm = bmesh.new(); bmesh.ops.create_cube(bm, size=1); bmesh.ops.scale(bm, vec=[(v - .5) * MM for v in k], verts=bm.verts); bmesh.ops.bevel(bm, geom=bm.edges[:], offset=.0008, segments=2, affect="EDGES"); bm.to_mesh(me); bm.free(); me.materials.append(M["cell"]); seen[k] = me
+    o = bpy.data.objects.new("cell %02d %s" % (i, c["box"]), seen[k]); cp.objects.link(o); o.parent = ep; o.matrix_world = turn @ Matrix.Translation(Vector(c["centre"]) * MM)
 bpy.context.view_layer.update()
 print("OBJ", len(bpy.data.objects), "unique tris", sum(len(me.loop_triangles) if me.calc_loop_triangles() is None else 0 for d in meshes.values() for me in d.values()))
 if MODE == "glb":
@@ -70,7 +77,7 @@ def look(az, el, dist, tgt, lens=70):
     cd.lens = lens; t = Vector(tgt); a, e = math.radians(az), math.radians(el); cam.location = t + Vector((math.sin(a) * math.cos(e), -math.cos(a) * math.cos(e), math.sin(e))) * dist; cam.rotation_euler = (t - cam.location).to_track_quat("-Z", "Y").to_euler()
 r = sc.render; r.engine = "BLENDER_EEVEE"; sc.eevee.taa_render_samples = 48 if MODE != "turn" else 24; sc.eevee.use_raytracing = True
 r.film_transparent = True; r.image_settings.color_mode = "RGBA"; sc.view_settings.view_transform = "Khronos PBR Neutral"; r.image_settings.file_format = "PNG"
-V = dict(whole=(28, 6, 3.95, (0, 0, -.175), 70), hip=(38, 12, 1.5, (0, 0, -.14), 70), leg=(52, 6, 2.1, (0, 0, -.62), 70), shoulder=(30, 14, 1.7, (0, 0, .24), 70), wrist=(62, 10, .95, (.02, -.0, -.12), 70))
+V = dict(whole=(28, 6, 3.95, (0, 0, -.175), 70), hip=(38, 12, 1.5, (0, 0, -.14), 70), leg=(52, 6, 2.1, (0, 0, -.62), 70), shoulder=(30, 14, 1.7, (0, 0, .24), 70), wrist=(62, 10, .95, (.02, -.0, -.12), 70), back=(205, 12, 1.9, (0, 0, .22), 70))
 def shot(n, name, res): r.resolution_x, r.resolution_y = res; look(*V[n]); r.filepath = str(OUT / name); bpy.ops.render.render(write_still=True)
 if MODE == "still":
     for n in V: shot(n, "still_%s.png" % n, (1000, 1500) if n == "whole" else (1400, 1050))

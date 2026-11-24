@@ -38,16 +38,19 @@ import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parents[2]
-for p in ("hardware/sim-model", "hardware/electrical", "hardware/mechanical/skeleton"):
+for p in ("hardware/sim-model", "hardware/electrical", "hardware/mechanical/skeleton", "scripts"):
     sys.path.insert(0, str(REPO / p))
 
 import actuator_sizing as asz  # noqa: E402
+import gems_budget as gb  # noqa: E402
 import generate_skeleton as gs  # noqa: E402
 import generate_urdf as gu  # noqa: E402
 
 GAP = 3.0                 # mm between neighbouring modules, a choice
 ENV_MODE, ENV_OUT, ENV_MESH = "GEMS_MODULES_MODE", "GEMS_MODULES_OUT", "GEMS_MODULES_MESH"
 STEP_MODULES, STEP_LAYOUT, CSV_LAYOUT = "gems-modules.step", "gems-module-layout.step", "layout.csv"
+STEP_PACK, CSV_PACK = "gems-pack.step", "pack.csv"
+CELL_WH = 40.26           # Amprius SA03, typical (hardware/electrical ref 4)
 
 # Each module along its axis, z = 0 at the rear face, output at the top.
 # cap, body, boss, output: (diameter, z from, z to); flats: width across the
@@ -348,6 +351,26 @@ def layout_csv(robot, joints, rows, rep, pro):
     return f.getvalue()
 
 
+def pack_cells():
+    """The reference pack's cells, from pack.csv (pack_fit.py --layout): box, centre, size."""
+    with open(HERE / CSV_PACK, encoding="utf-8") as f:
+        return [(r["box"], tuple(float(r[k]) for k in ("x_mm", "y_mm", "z_mm")), tuple(float(r[k]) for k in ("dx_mm", "dy_mm", "dz_mm")))
+                for r in csv.DictReader(f)]
+
+
+def cell_clashes(cells, rows):
+    """(cells that overlap another cell, cells a module's envelope enters)"""
+    a = sum(1 for i, (_, c, d) in enumerate(cells) for _, e, f in cells[i + 1:] if all(abs(c[k] - e[k]) < (d[k] + f[k]) / 2 - 0.6 for k in range(3)))
+    b = set()
+    for i, (_, c, d) in enumerate(cells):
+        n = [max(2, int(v / 4) + 1) for v in d]
+        pts = [tuple(c[k] - d[k] / 2 + d[k] * q[k] / (n[k] - 1) for k in range(3)) for q in
+               ((x, y, z) for x in range(n[0]) for y in range(n[1]) for z in range(n[2]))]
+        if any(_inside(p, *cyl(m), tol=0.0) for m in rows for p in pts):
+            b.add(i)
+    return a, len(b)
+
+
 # -- the FreeCAD side --------------------------------------------------------
 
 def solids(name):
@@ -434,6 +457,7 @@ def build(mode, out, mesh):
     import FreeCAD as App
     import Import
     import MeshPart
+    import Part
     V = App.Vector
     robot, joints, rows = place()
     checks = []
@@ -466,6 +490,17 @@ def build(mode, out, mesh):
     pos = {m["name"]: m for m in rows}
     mir = all(abs(pos[n]["centre"][1] + pos["r" + n[1:]]["centre"][1]) < 1e-9 and abs(pos[n]["centre"][0] - pos["r" + n[1:]]["centre"][0]) < 1e-9 for n in pos if n.startswith("l_"))
     ok("right mirrors left", mir, True, mir)
+
+    # 4. the pack
+    cells = pack_cells()
+    need = asz.REF_MASS * gb.P_REF * gb.REF_ENDURANCE_H / 1000.0
+    kwh = len(cells) * CELL_WH / 1000.0
+    ok("pack energy kWh", "%.2f" % kwh, ">= %.2f" % need, kwh >= need)
+    cc, cm = cell_clashes(cells, rows)
+    ok("cells on cells", cc, 0, cc == 0)
+    ok("cells in modules", cm, 0, cm == 0)
+    sym = sorted((round(c[0], 2), round(abs(c[1]), 2), round(c[2], 2)) for _, c, _ in cells)
+    ok("pack mirrored", all(sym.count(v) % 2 == 0 for v in sym), True, all(sym.count(v) % 2 == 0 for v in sym))
 
     rep = travel_report(robot, joints, rows)
     pro = protrusion(robot, rows)
@@ -520,6 +555,16 @@ def build(mode, out, mesh):
         objs.append(o)
     Import.export(objs, str(out / STEP_LAYOUT))
     set_header(out / STEP_LAYOUT, "gems-module-layout")
+    objs = []
+    for i, (box, c, d) in enumerate(cells):
+        o = doc.addObject("Part::Feature", "cell_%02d" % i)
+        s = Part.makeBox(d[0], d[1], d[2], V(*(c[k] - d[k] / 2 for k in range(3))))
+        s.Placement = turn.multiply(s.Placement)
+        o.Shape = s
+        o.Label = "SA03 %s %02d" % (box, i)
+        objs.append(o)
+    Import.export(objs, str(out / STEP_PACK))
+    set_header(out / STEP_PACK, "gems-pack")
     (out / CSV_LAYOUT).write_text(text, encoding="utf-8", newline="")
     if mesh:
         md = pathlib.Path(mesh)
@@ -529,9 +574,9 @@ def build(mode, out, mesh):
                 MeshPart.meshFromShape(Shape=s, LinearDeflection=0.12, AngularDeflection=0.35).write(str(md / ("%s__%s.stl" % (n, part))))
         segs = [dict(e, centre=list(e["centre"])) for e in gs.skeleton(robot)[1]]
         (md / "layout.json").write_text(json.dumps(dict(
-            modules=[dict(name=m["name"], module=m["module"], centre=m["centre"], out=m["out"], link=m["link"]) for m in rows], segments=segs,
+            modules=[dict(name=m["name"], module=m["module"], centre=m["centre"], out=m["out"], link=m["link"]) for m in rows], segments=segs, cells=[dict(box=b, centre=c, size=d) for b, c, d in cells],
             outside={k: v[0] for k, v in pro.items()})), encoding="utf-8")
-    for f in (STEP_MODULES, STEP_LAYOUT, CSV_LAYOUT):
+    for f in (STEP_MODULES, STEP_LAYOUT, STEP_PACK, CSV_LAYOUT):
         print("Wrote %s (%d bytes)" % (f, (out / f).stat().st_size))
     return 0
 

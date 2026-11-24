@@ -11,8 +11,9 @@ The nine joint modules [spec 02.6](../../../spec/02-structure-and-motion.md#the-
 | `gems-module-layout.step` | Generated — the 31 module envelopes in place, facing FreeCAD's *Front* as the [skeleton](../skeleton/README.md#two-frames-one-rotation) does |
 | [`layout.csv`](layout.csv) | Generated — where each module sits, how far it stands outside the segment envelopes, how far its joint turns before two modules touch |
 | [`render_modules.py`](render_modules.py) | The Blender scene behind the files of `media/` |
-| [`pack_fit.py`](pack_fit.py) | How many pouch cells fit in each part of the trunk around the modules; needs numpy |
-| `media/` | `gems-module-layout.glb`, for a viewer on the web; a turntable in WEBM; five stills in WebP |
+| [`pack_fit.py`](pack_fit.py), [`pack.csv`](pack.csv) | How many pouch cells fit in each part of the trunk around the modules, and the reference pack cell by cell; needs numpy |
+| `gems-pack.step` | Generated — the 62 cells of the reference pack in place |
+| `media/` | `gems-module-layout.glb`, for a viewer on the web; a turntable in WEBM; six stills in WebP |
 
 ```bash
 python3 hardware/mechanical/modules/generate_modules.py          # build, audit, write
@@ -59,20 +60,30 @@ Outside the segment envelopes:
 
 Part of each figure is the URDF's, whose segments are thinner than a person's: a thigh of 116 mm where the file's circumference gives 197 at the top, a shank of 94 against 120. The widths across are circumference over π. What is wide in itself is the shoulder, the knee and the ankle.
 
-The check turns one joint at a time, in steps of 2°, with plain cylinders for the modules and nothing else of the body — no segment, no rod, no pack — so a clear figure is not a promise. The shoulder pitch modules now stand where the battery pack is to lie, in the upper back ([plan](../../../plan/PLAN.md#pack-location-decided)): 38 mm is left behind them within the torso envelope, for M-2 to check.
+The check turns one joint at a time, in steps of 2°, with plain cylinders for the modules and nothing else of the body — no segment, no rod, no pack — so a clear figure is not a promise. The shoulder pitch modules stand where the battery pack lies, in the upper back; how the pack goes round them is [below](#the-reference-pack-2026-11-24).
 
 ## Room for the pack
 
-Where cells fit around the modules, counted by [`pack_fit.py`](pack_fit.py) with the two pouch cells nearest the durable tier in Amprius's Q4 2026 catalogue ([electrical §3](../../electrical/README.md#3-power)). The reference body asks 4.28 kWh.
+Where cells fit around the modules, counted by [`pack_fit.py`](pack_fit.py) with the two pouch cells nearest the durable tier in Amprius's Q4 2026 catalogue ([electrical §3](../../electrical/README.md#3-power)).
 
 | Part of the trunk, back at x | Free | SA147, preliminary | SA03 |
 |---|---|---|---|
-| Upper torso, −100 mm, the envelope | 4.2 L | 102 cells, 1.53 kWh | 34, 1.37 kWh |
-| Upper torso, −125 | 5.4 L | 164, 2.46 | 49, 1.97 |
-| Upper torso, −150 | 6.5 L | 200, 3.00 | 62, 2.50 |
-| Upper torso, −180 | 7.9 L | 263, 3.94 | 85, 3.42 |
+| Upper torso, −100 mm, the envelope | 4.1 L | 99 cells, 1.49 kWh | 33, 1.33 kWh |
+| Upper torso, −125 | 5.3 L | 164, 2.46 | 41, 1.65 |
+| Upper torso, −150 | 6.4 L | 192, 2.88 | 54, 2.17 |
+| Upper torso, −180 | 7.8 L | 261, 3.92 | 78, 3.14 |
 | Lower thoracic, −125 | 4.2 L | 128, 1.92 | 36, 1.45 |
 | Lumbar, −125 | 4.1 L | 107, 1.60 | 26, 1.05 |
 | Pelvis, −125 | 4.9 L | 133, 2.00 | 29, 1.17 |
 
-Cells are boxes at their largest tolerance with 0.5 mm between faces. Nothing is kept for walls, terminals, compression, cooling, the crush zone or the vent path, so a real pack holds less; how much less is not sourced. The fill is a greedy one, so a better lattice holds somewhat more. The compute, the converters and the battery management share the same space and are not placed. The upper back, where the pack was decided on 2026-09-26, does not hold it alone; where it goes is the author's ([plan](../../../plan/PLAN.md#pack-location-decided)).
+Cells are boxes at their largest tolerance with 0.5 mm between faces. Nothing is kept for terminals, compression, cooling, the crush zone or the vent path, so a real pack holds less; how much less is not sourced. The fill is a greedy one, so a better lattice holds somewhat more.
+
+## The reference pack, 2026-11-24
+
+At 12 W/kg the reference asks 2.46 kWh ([electrical §6m](../../electrical/README.md#6m-specific-power-the-cell-and-the-modules-margin--2026-11-24)): 61 SA03 cells, **62 placed**, 2.50 kWh, 6.3 kg of cells, **38 in the upper back and 24 in the lower thoracic segment** (Plone: not in the pelvis), the left half mirrored, 3 mm of wall on every side, cell by cell in [`pack.csv`](pack.csv).
+
+- **The back is at x = −150 mm**, a trunk 250 mm deep before the shell, where women of 1.63–1.67 m have a chest of 249 mm (206–297, 5th to 95th percentile) and a waist of 214 (169–276) in ANSUR II. There the symmetric fill holds 74 cells, so 62 are 84% of it; at −140 mm it holds 68, 91%; at −160, 90, 69%. The earlier estimate of 72% was at −125 mm without walls, symmetry or the neck's sweep.
+- **The audit**: 62 cells, none overlapping, none inside a module, left mirroring right. Turned alone, the trunk's pitch and yaw, the neck, the shoulder and the hip clear the cells through their whole travel with 3 mm kept; trunk bend clears to 36°, past where the modules stop it.
+- **What is not drawn**: the boxes, terminals and busbars; the 15 PSI of compression the maker recommends; cooling; the crush zone and the vent path, down and away from the body; the cable between the two boxes, across the trunk's coupled joint. **Whether the 12 to 16% left is enough for them is not shown.**
+- **The series count is D-4's.** SA03 is 3.4 V nominal, 2.5–4.2: 62 cells are not a rectangle of series and parallel, and the modules' 48 V, the fan's 28–53 V and 4.2 V a cell pull against one another — 12 in series is 40.8 V and 50.4 full, 14 is 47.6 and 58.8.
+- **The compute, the converters and the battery management are not placed.**

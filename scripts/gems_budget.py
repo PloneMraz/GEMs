@@ -26,6 +26,8 @@ from pathlib import Path
 HEIGHT_M = 1.65            # declared height, spec 00 — 1.75 m until 2026-09-26 (D-8)
 BODY_SKIN_AREA_M2 = round(1.8 * (HEIGHT_M / 1.75) ** 2, 2)   # 1.8 m2 at 1.75 m, scaled by the square: 1.60 m2
 REF_ENDURANCE_H = 2.0      # reference operating point, D-8: 2 h free-running with a dock
+P_REF = 12.0               # W/kg in motion, decided 2026-11-24 (spec 02.2; electrical §6m)
+E_REF = 395.0              # Wh/kg, Amprius SA03, 40.26 Wh over 102 g, decided 2026-11-24 (plan D-5)
 G = 9.81
 
 
@@ -271,7 +273,7 @@ def collect_claims():
     F_STR = 0.30
     DENSITY = LEG_DENSITY
     f_act_s, m_act_fixed = actuator_split(DENSITY)
-    REF = budget(F_STR, DENSITY, 20, REF_ENDURANCE_H, 450, 0.65, 7.5, 20.0)
+    REF = budget(F_STR, DENSITY, P_REF, REF_ENDURANCE_H, E_REF, 0.65, 7.5, 20.0)
     REF_M = REF["body_mass_kg"]
     from actuator_sizing import REF_MASS, arm_torques, SHOULDER_TO_GRIP, ELBOW_TO_GRIP, load_case_table, module_check  # noqa: E402
 
@@ -301,18 +303,18 @@ def collect_claims():
               "%.2f at the %d-hour point" % (REF["f_act"], REF_ENDURANCE_H), "f_act at the reference point"))
 
     # 02.3 endurance ceilings, f_str + f_act_s
-    for p in (10, 15, 20, 25):
-        c.append(("t_max e450 p%d" % p, "spec/02-structure-and-motion.md",
-                  _fmt(endurance_ceiling(F_STR, f_act_s, 450, p)) + " h",
-                  "endurance ceiling at e=450, p=%d" % p))
-    for p in (10, 15, 20, 25):
+    for p in (10, 12, 15, 20):
+        c.append(("t_max e395 p%d" % p, "spec/02-structure-and-motion.md",
+                  _fmt(endurance_ceiling(F_STR, f_act_s, E_REF, p)) + " h",
+                  "endurance ceiling at e=395, p=%d" % p))
+    for p in (10, 12, 15, 20):
         c.append(("t_max e900 p%d" % p, "spec/02-structure-and-motion.md",
                   _fmt(endurance_ceiling(F_STR, f_act_s, 900, p)) + " h",
                   "endurance ceiling at e=900, p=%d" % p))
 
-    # 02.3 growth factors at e=450
-    for p, t in ((10, 2), (10, 10), (15, 4), (15, 10), (20, 2), (20, 4), (20, 6), (20, 8), (20, 10), (25, 8)):
-        g = growth_factor(sigma_f(F_STR, f_act_s, p, t, 450))
+    # 02.3 growth factors at e=395
+    for p, t in ((10, 2), (10, 10), (12, 2), (12, 4), (12, 6), (12, 8), (12, 10), (15, 4), (15, 10), (20, 8)):
+        g = growth_factor(sigma_f(F_STR, f_act_s, p, t, E_REF))
         c.append(("gamma p%d t%d" % (p, t), "spec/02-structure-and-motion.md",
                   _fmt(g, 1) if g else "*diverges*", "growth factor at p=%d, t=%dh" % (p, t)))
 
@@ -341,9 +343,9 @@ def collect_claims():
               "**~%d kg** for a %.2f m body" % (round(scaled), HEIGHT_M), "35 kg body scaled to the declared height"))
 
     # 02.5 mass envelope: gamma and body range per operating point
-    for label, t, e in (("2h durable", 2, 450), ("4h durable", 4, 450),
-                        ("8h ceiling", 8, 900), ("6h durable", 6, 450)):
-        g = growth_factor(sigma_f(F_STR, f_act_s, 20, t, e))
+    for label, t, e in (("2h durable", 2, E_REF), ("4h durable", 4, E_REF),
+                        ("8h ceiling", 8, 900), ("6h durable", 6, E_REF)):
+        g = growth_factor(sigma_f(F_STR, f_act_s, P_REF, t, e))
         lo, hi = (20 + m_act_fixed) * g, (38 + m_act_fixed) * g
         c.append(("envelope %s" % label, "spec/02-structure-and-motion.md",
                   "| %.1f | **%d–%d kg** |" % (g, round(lo), round(hi)) if t != 6
@@ -385,13 +387,9 @@ def collect_claims():
                   ("| %d Nm/kg | %.1f kg | %.2f |" % (d, m, m / REF_MASS)) if d != LEG_DENSITY else
                   ("| the bought modules, %d Nm/kg | %.1f kg | **%.2f** |" % (round(d), m, m / REF_MASS)),
                   "actuator mass and f_act, legs and trunk at %d Nm/kg" % d))
-    c.append(("f_act floor", "spec/02-structure-and-motion.md",
-              "a leg and trunk density near %d Nm/kg" % round(per_kg * REF_MASS / (0.36 * REF_MASS - fixed_nm / ARM_DENSITY)),
-              "the leg and trunk density at which f_act touches 0.36"))
-
     # 02.6 carry capacity at both operating points
     for t in (2, 4):
-        b = budget(F_STR, DENSITY, 20, t, 450, 0.65, 7.5, 20.0)
+        b = budget(F_STR, DENSITY, P_REF, t, E_REF, 0.65, 7.5, 20.0)
         v = b["carry_kg_at_peak"]
         c.append(("carry t%dh" % t, "spec/02-structure-and-motion.md",
                   ("%d-hour body at %d kg carries **%d kg**" % (t, round(b["body_mass_kg"]), round(v))) if v >= 0
@@ -400,7 +398,7 @@ def collect_claims():
 
     # 02.7 both operating points, derived here rather than transcribed
     for t in (2, 4):
-        b = budget(F_STR, DENSITY, 20, t, 450, 0.65, 7.5, 20.0)
+        b = budget(F_STR, DENSITY, P_REF, t, E_REF, 0.65, 7.5, 20.0)
         m, kwh, m_act = b["body_mass_kg"], b["pack_kWh"], b["actuator_kg"]
         c.append(("body t%dh" % t, "spec/02-structure-and-motion.md",
                   "~%d kg" % round(m), "body mass at the %d h point" % t))
@@ -497,9 +495,9 @@ def main(argv=None):
                     help="leg and trunk actuator torque density, Nm/kg peak over module mass")
     ap.add_argument("--density-fixed", type=float, default=ARM_DENSITY,
                     help="arm, wrist and neck actuator torque density, Nm/kg")
-    ap.add_argument("--p", type=float, default=20.0, help="specific power, W/kg")
+    ap.add_argument("--p", type=float, default=P_REF, help="specific power, W/kg")
     ap.add_argument("--endurance", type=float, default=REF_ENDURANCE_H, help="free-running hours")
-    ap.add_argument("--e", type=float, default=450.0, help="battery density, Wh/kg")
+    ap.add_argument("--e", type=float, default=E_REF, help="battery density, Wh/kg")
     ap.add_argument("--coverage", type=float, default=0.65, help="armour coverage, 0-1")
     ap.add_argument("--areal", type=float, default=7.5, help="armour areal density, kg/m2")
     ap.add_argument("--m-fixed", type=float, default=20.0, help="fixed non-scaling mass, kg")

@@ -26,13 +26,16 @@ import functools
 import sys
 
 G = 9.81
-REF_MASS = 107.0           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
+REF_MASS = 102.3           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
+
+MARGIN = 0.05              # room the module set keeps over REF_MASS before a joint fails, decided 2026-11-24 (README §6m); a choice, no source
 
 # Bought module per joint (spec 02.6, decided 2026-11-23: the actuator mass is
 # declared at the joint, not as one density). Each is the lightest module that
 # passes the rank-1 rule of README §6f — the maker's sheet gives the peak torque
 # and how long it holds, a continuous torque, the speed at 48 V, the mass and
-# the size — and meets its joint at REF_MASS: peak torque, the reducer class of
+# the size — and meets its joint at REF_MASS, and at REF_MASS plus MARGIN for
+# the joints that scale with the body: peak torque, the reducer class of
 # hardware/mechanical §2, the speed of MIN_RPM and, where a figure exists, the
 # RMS torque of running in RUN_RMS and of walking in WALK_RMS. Figures are the
 # sheets' (README §6f):
@@ -498,6 +501,9 @@ def main(argv=None):
           % ("TOTAL", n_joints, total_nm, legs + fixed_kg, legs, fixed_kg))
     bad, limit = module_check(a.mass + a.carry)
     print()
+    short = a.mass == REF_MASS and not a.carry and limit < REF_MASS * (1 + MARGIN)
+    if short:
+        print("THE SET HOLDS ONLY TO %.1f kg, under %.0f%% over the reference, %.1f kg" % (limit, MARGIN * 100, REF_MASS * (1 + MARGIN)))
     if bad:
         print("MODULES THAT DO NOT MEET THEIR JOINT at %.1f kg:" % (a.mass + a.carry))
         for b in bad:
@@ -551,17 +557,17 @@ def main(argv=None):
     print("arms, wrists and neck on their bought modules (%.1f kg)" % fixed_kg)
     print("=" * 66)
     print("  %8s  %9s  %7s  %-28s" % ("Nm/kg", "mass kg", "f_act", "source"))
-    band_lo, band_hi = 0.25, 0.36   # top raised from 0.35 on 2026-11-24 (Plone); the band has no source (spec 02.2)
+    band_lo, band_hi = 0.25, 0.36   # for reference only since 2026-11-24 (Plone): the band has no source (spec 02.2)
     for d, label in DENSITIES + [(d_legs, "the bought modules of JOINT_MODULE")]:
         m = per_kg * a.mass / d + fixed_kg
         f = m / a.mass
         print("  %8.1f  %9.1f  %7.3f  %-28s %s"
               % (d, m, f, label, "in range" if band_lo <= f <= band_hi else ""))
     print()
-    print("spec 02.2 assumes f_act in %.2f-%.2f (scaling part + fixed part / body)." % (band_lo, band_hi))
+    print("For reference, spec 02.2 once held f_act to %.2f-%.2f (scaling part + fixed part / body)." % (band_lo, band_hi))
     f_bought = (legs + fixed_kg) / a.mass
-    print("With the bought modules f_act is %.3f%s." % (f_bought, "" if band_lo <= f_bought <= band_hi else ", OUTSIDE that range"))
-    return 1 if bad or not band_lo <= f_bought <= band_hi else 0
+    print("With the bought modules f_act is %.3f%s." % (f_bought, "" if band_lo <= f_bought <= band_hi else ", outside that band, which is no longer a check"))
+    return 1 if bad or short else 0
 
 
 if __name__ == "__main__":

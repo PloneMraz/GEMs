@@ -11,6 +11,8 @@ Two configurations, declared by what the cell must deliver rather than by its ch
 | **Durable** | **~400–500 Wh/kg** | Good cycle life; thermal safety from the cell where it is solid-state, from the pack where it is not. **Recommended as the design target** |
 | **Ceiling** | **~700–1100 Wh/kg** (solid-state Li-S) | Maximum endurance. **Cycle-life debt: presently ~100 cycles** — the pack becomes a consumable |
 
+**The reference cell, decided 2026-11-24 (Plone, D-5):** Amprius SA03, a silicon-anode pouch with a liquid electrolyte, 400 Wh/kg at C/5 and 395 by its 40.26 Wh over 102 g, 1C continuous and 3C for 30 s, 300 cycles to 80% at +0.3C/−1C full depth, 700 to 90% at 70% depth, UN 38.3 and IEC 62133 ([electrical §3](../hardware/electrical/README.md#3-power)). It is the floor of the tier and not its preferred chemistry.
+
 **What the durable tier requires.** Density of 400–500 Wh/kg at cell level, which is the `e` of the mass loop ([02.2](02-structure-and-motion.md#22-the-four-coefficients)); a cycle life that keeps the pack from becoming a consumable; the discharge rate that [02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators) prices; and an abuse test the pack must pass. The figures for the last three are `⟦IMPL⟧`: they are set when the cell is chosen (plan D-5), not invented here.
 
 **Solid-state is preferred, not required** (Plone, 2026-11-05). It is preferred for a body in human contact: a solid electrolyte has no liquid to leak or burn. But this is a reading of present technology, not a lock. As of 2026-11, the durable density can be bought only as silicon-anode lithium-ion, with a liquid electrolyte; solid-state cells at that density stand at stack level, not on sale ([hardware/electrical §3](../hardware/electrical/README.md#3-power)). Either fills the tier. Where the cell is not solid-state, the pack carries the safety the cell does not: a crush zone between shell and cells, and a venting path for thermal runaway away from the head ([plan, pack location](../plan/PLAN.md#pack-location-decided)). When solid-state cells at this density can be bought, the preference decides.
@@ -89,13 +91,13 @@ Components of quiescent power:
 | Spatial sensing, passive mode | **~18 µW** | *Sourced* |
 | Spatial sensing, full CSI, duty-cycled | **~50–200 mW** | `⟦IMPL⟧` — the expensive term |
 
-**But the always-on wake-up circuit is not the dominant term.** Cell self-discharge runs **1–3% per month** *(sourced; automotive standards require under 2%/month, and solid-state is expected to be lower but has yet to demonstrate it)*. On the 4.3 kWh pack of the 2-hour reference body ([02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators)):
+**But the always-on wake-up circuit is not the dominant term.** Cell self-discharge runs **1–3% per month** *(sourced; automotive standards require under 2%/month, and solid-state is expected to be lower but has yet to demonstrate it)*. On the 2.5 kWh pack of the 2-hour reference body ([02.7](02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators)):
 
 | Self-discharge | Equivalent power |
 |---|---|
-| 1%/month | **60 mW** |
-| 2%/month | **119 mW** |
-| 3%/month | **179 mW** |
+| 1%/month | **35 mW** |
+| 2%/month | **69 mW** |
+| 3%/month | **104 mW** |
 
 A deep-sleeping always-on wake-up circuit costs **tens of µW** — about **four orders of magnitude below self-discharge**.
 
@@ -103,11 +105,11 @@ Sleep duration at 2%/month, linear approximation:
 
 | Mode | Total floor | Duration |
 |---|---|---|
-| Deep — wake-up receiver and retention only | ~120 mW *(over 99% of it self-discharge)* | **~4.1 years** |
-| Plus passive spatial sensing | ~138 mW | ~3.6 years |
-| Plus full-CSI spatial sensing | ~320 mW | **~1.5 years** |
+| Deep — wake-up receiver and retention only | ~70 mW *(over 99% of it self-discharge)* | **~4.1 years** |
+| Plus passive spatial sensing | ~88 mW | ~3.2 years |
+| Plus full-CSI spatial sensing | ~270 mW | **~1.1 years** |
 
-> **Deep-sleep duration does not depend on pack size.** Energy and drain scale together, so a 4 kWh pack and a 20 kWh pack both reach ~4.1 years at 2%/month. A larger pack buys sleep duration only once there is a **fixed** load beside self-discharge: with full-CSI sensing running, the reference 4.3 kWh pack gives ~1.5 years where a 10 kWh pack would give ~2.4.
+> **Deep-sleep duration does not depend on pack size.** Energy and drain scale together, so a 4 kWh pack and a 20 kWh pack both reach ~4.1 years at 2%/month. A larger pack buys sleep duration only once there is a **fixed** load beside self-discharge: with full-CSI sensing running, the reference 2.5 kWh pack gives ~1.1 years where a 10 kWh pack would give ~2.4.
 
 > **Two design consequences.**
 >

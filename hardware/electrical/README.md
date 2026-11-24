@@ -540,6 +540,35 @@ In bold, a joint at or above the low end of its module's estimated sustained hea
 - The X12 has no usable temperature-rise data, so the ankle pitch's time to 100 °C is not known; SEmotor's trunk pitch, trunk roll and elbows have no heat at all, and the elbows walk at 1.00–1.02 times their 9 Nm continuous from the arm's swing, a load §6g's check leaves out.
 - The cooling itself (plan M-11), which both walking figures now rest on.
 
+## 6i. Thermal network of the ventilated body — M-11, 2026-11-24
+
+**What it answers.** The airflow of [spec 04.8](../../spec/04-shell.md#48-ventilation-and-surface-temperature), at 35 °C ambient and at 40, with the joint heat of §6h: how much air each branch needs, and how well the body must cool each module. The makers publish no resistance from winding to housing, so the network cannot predict a winding temperature. It states a requirement instead: R_req = (100 °C − T_air) / P, the resistance from the winding to the air at that module that keeps it at the bench's 100 °C end point, and sets it against the maker's bench, R_bench = 70 K / P_sus with P_sus the sustained heat of §6h, the bench taken at 30 °C.
+
+**The paths.** The main path takes the hips, then trunk yaw, then the shoulders; each lower leg has its own loop (knee, ankle); the edge computer, 130 W, a cool branch. Air rises 15 K in a branch (10 K in the compute branch), and a module sees its zone's inlet plus half the zone's rise. The design case is the lower of two: walking at 0.5 m/s held, and 10 min at 1.0 m/s from the 0.5 m/s steady state, with the bench time constant of §6h's fits (an estimate).
+
+| Branch | 0.5 m/s | 1.0 m/s |
+|---|---|---|
+| Main path: hips, trunk, shoulders | 336 W, 39 CFM | 586 W, 69 CFM |
+| Left leg / right leg | 135 / 93 W, 16 / 11 CFM | 252 / 214 W, 30 / 25 CFM |
+| Edge computer | 130 W, 23 CFM | 130 W, 23 CFM |
+| **All** | **~89 CFM** | **~147 CFM** |
+
+**Per module, at 35 °C**, the design resistance and how much better than its own bench the body must do:
+
+| Module | Design R, K/W | Better than the bench by | h at the housing, at least |
+|---|---|---|---|
+| Hip pitch, left / right (P2-24) | 0.67 / 0.71 | **1.6× / 1.5×** | 26 / 24 W/m²K |
+| Hip roll, left / right (P2-24) | 0.73 / 0.93 | **1.5× / 1.2×** | 24 / 19 W/m²K |
+| Knee, left / right (EC-A13715) | 0.59 / 0.94 | **1.6×** / 1.0× | 20 / 13 W/m²K |
+| Hip yaw, ankle roll (EC-A4315) | 1.5–2.3 | 0.7–1.1× | 25–39 W/m²K |
+| Trunk yaw (EC-A6416) | 1.65 | 0.9× | 20 W/m²K |
+| Shoulders (EC-A10020-P1-12) | 2.1–4.1 | 0.2–0.4× | 5–10 W/m²K |
+| Ankle pitch (X12) | 0.60–0.68 | no bench figure | 26–29 W/m²K |
+
+At 40 °C the largest factors — hip pitch, left hip roll, left knee — rise to 1.6–1.8×; right hip roll to 1.3×. The 10 min at 1.0 m/s sets the hips and knees, not the held 0.5 m/s. The coefficient in the last column is what the housing alone would need if all of R_req lay outside it — a floor, since the winding-to-housing resistance adds to it; it sits at the low end of forced convection in gases, 25–250 W/m²K (mechanical ref 44). **Whether air can meet the hips depends on that unpublished internal resistance**: if it is near 0.6 K/W, no flow of air reaches R_req at hip pitch, and the heat needs a conducted path into the structure as well. It is the first thing to ask of ENCOS, or to measure when a module is in hand.
+
+**What it does not settle.** The bench's sustained heats and time constants are first-order estimates from two rows each; the bench's mounting and ambient are not stated; the pack's own heat is not known; the module fans at the shrouds are not chosen; the fans' operating points need P–Q curves that the candidate's specification does not give; the pressure drop of louvres and ducts is not known.
+
 ## 7. References
 
 | # | Source |

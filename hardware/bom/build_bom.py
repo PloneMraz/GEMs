@@ -403,6 +403,31 @@ def build():
                         notes="patterned by GEMs on the surfaces of ID-2, sewn to drawing from bought "
                               "fabric (plan M-8); candidate fabric in avl.csv meets EN ISO 15025 and holds EN 469"))
 
+    # Ventilation (spec 04.8, 2026-11-24): forced air, no liquid. Flows from the
+    # thermal network of hardware/electrical 6i at 35 C; fans and filters bought,
+    # ducts and shrouds GEMs-designed integration (CLAUDE.md §2).
+    vent = b.part("GEM-18500", "Ventilation sub-assembly, forced air", "ASSY", "MAKE", level="L1",
+                  ref="spec 04.8; plan M-11")
+    b.use(shell, vent)
+    b.use(vent, b.part("GEM-18510", "Cooling fan, axial, 48 V", "OTS", "BUY", mass="0.128",
+                       basis="candidate Delta FFB0948VH-F00, 128 g, maker's specification",
+                       level="L1", ref="spec 04.8; hardware/electrical 6i",
+                       req="~147 CFM in all at 1.0 m/s, ~89 at 0.5 m/s, against filters, louvres and ducts; "
+                           "-10 to +60 C; noise limit open",
+                       notes="count from the zones of spec 04.8, a first figure; module fans at the shrouds "
+                             "not yet chosen; candidates in avl.csv"),
+          "7", "2 intake, 2 exhaust, 1 per lower leg, 1 for the compute branch")
+    b.use(vent, b.part("GEM-18520", "Air filter media, slot filters", "MATL", "BUY", uom="M2",
+                       level="L1", ref="spec 04.8",
+                       req="on every intake and exhaust slot; flame retardant; ~1 m/s face velocity",
+                       notes="mass per m2 not stated by the candidate's maker; replacement interval IMPL "
+                             "(maintenance, spec 04.8); candidates in avl.csv"),
+          "0.14", "intake and exhaust of each branch at 1 m/s face velocity, 1.0 m/s walking")
+    b.use(vent, b.part("GEM-18530", "Duct and module shroud set", "MFG", "MAKE", uom="SET",
+                       level="L0", ref="spec 04.8; plan M-11",
+                       req="spine duct along the coupled trunk segments; shrouds at the hip, knee and ankle modules",
+                       notes="geometry from plan M-2 and M-11; drawn by GEMs, made by a bought service"))
+
     # Upgrade path (spec 04.7): in the item master, not in the structure.
     for pn, d, cat, ref, req in [
         ("GEM-18020", "Sense-and-heal layer, e-skin and self-healing polymer", "MATL", "spec 04.7", "600% stretch"),

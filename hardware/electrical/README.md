@@ -724,7 +724,31 @@ Each pair is the mechanical work counted net, as if braking came back to the bus
 
 **Heat and air at 102.3 kg**, as §6k: on people's gait, 0.5 / 1.0 m/s, hip pitch 24 / 35 W, hip roll 40 / 41, hip yaw 17 / 15, knee 34 / 38, ankle pitch 99 / 107, ankle roll 12 / 16, the factors against the bench 0.5–0.7× at 35 °C and up to 0.80× at 40; trunk pitch 7 / 9 W and an elbow 2 / 5 on Oli's. About **83 / 98 CFM** on people's gait and **87 / 142** on Oli's, for which the fans are sized.
 
-**What the cell costs.** SA03 gives 1C continuously, 2.5 kW, and 3C for 30 s, 7.4 kW: running's about 1 kW lies within it, a jump's does not (spec 02.7). 300 cycles at full depth, and 15 PSI of compression the pack must give.
+**What the cell costs.** SA03 gives 1C continuously and 3C for 30 s, 2.4 and 7.1 kW on the pack of [§6n](#6n-the-bus-12-in-series--2026-11-24): running's about 1 kW lies within it, a jump's does not (spec 02.7). 300 cycles at full depth, and 15 PSI of compression the pack must give.
+
+## 6n. The bus: 12 in series — 2026-11-24
+
+**Decided 2026-11-24 (Plone), D-4: 12 SA03 cells in series, 5 in parallel**, 60 cells, 2.42 kWh, 6.1 kg. That is 1.6% under the 2.46 kWh the loop asks, 1.97 h at 12 W/kg instead of 2.
+
+| | Empty, 2.5 V a cell | Nominal, 3.4 | Full, 4.2 |
+|---|---|---|---|
+| Bus | **30.0 V** | **40.8 V** | **50.4 V** |
+
+59 Ah; 58 A continuously at 1C, 2.4 kW at nominal, and 174 A for 30 s at 3C, 7.1 kW; charge at C/3, 20 A, at most. Full, it stays under the 53 V the Delta fan takes and 5% over the 48 V the modules are rated at; the modules' own voltage limits are not printed in the sheets read. 14 in series, 47.6 V nominal, would have been 58.8 V full, past the fan.
+
+**What it costs the joints: speed.** The sheets give a module's speed at 48 V. Scaled with the voltage — an estimate, since a motor's speed under load falls further — `actuator_sizing.py` checks each joint at 40.8 V and reports how far down each motion holds:
+
+| Motion | Needs | At 40.8 V | Holds down to |
+|---|---|---|---|
+| Knee, running at 2.5 m/s | 105 rpm | 115 | **37.3 V**, 3.1 V a cell |
+| Knee, balance recovery (§6e) | 90 rpm | 115 | **31.9 V**, 2.7 V a cell |
+| Knee, walking at 1.0 m/s | 66 rpm | 115 | 23.4 V |
+| Hip pitch, running | 71 rpm | 105 | 27.7 V |
+| Ankle pitch, walking | 35 rpm | 106 | 13.4 V |
+
+The knee's 12 rad/s with margin, 115 rpm, is met only at the nominal voltage and above. So **running ends at about 37 V and the pack is to be treated as empty at about 32 V**, where the knee can no longer make a recovery step at the speed §6e asks, and not at the cell's 30; what share of the energy lies under either depends on the discharge curve at the load, which was not read into the model. Walking holds to the end.
+
+**The parts that follow.** Battery management: Orion Jr 2, 1 to 16 cells, 10–60 V supply, 181 × 102 × 38 mm and 0.21 kg, 150 mA of passive balancing, CAN 2.0B as an option [44], in place of the Orion BMS 2, which starts at 24 cells. The DC-DC candidates are for 48 V: Vicor's DCM3717 takes 40–60 V and so does not cover 30–50.4; the half-brick's range was not read. A converter for 30–50.4 V in is open (plan E-4). Pre-charge, contactor and fuse are sized to 58 A continuous and 174 A for 30 s, and the cable between the two boxes carries it across the trunk's coupled joint.
 
 ## 7. References
 
@@ -778,3 +802,4 @@ Joint torque requirements used by the sizing script: ankle peak 1.4 Nm/kg at pus
 | 41 | Fukuchi R.K., Fukuchi C.A., Duarte M., [A public dataset of running biomechanics and the effects of running speed on lower extremity kinematics and kinetics](https://doi.org/10.7717/peerj.3298), *PeerJ* 5:e3298, 2017; data [10.6084/m9.figshare.4543435](https://doi.org/10.6084/m9.figshare.4543435), version 5, CC BY 4.0 — processed and force files, checked against their MD5; not vendored |
 | 42 | Fukuchi C.A., Fukuchi R.K., Duarte M., [A public dataset of overground and treadmill walking kinematics and kinetics in healthy individuals](https://doi.org/10.7717/peerj.4640), *PeerJ* 6:e4640, 2018 (read in full through Europe PMC, PMC5922232); data [10.6084/m9.figshare.5722711](https://doi.org/10.6084/m9.figshare.5722711) v6, CC BY 4.0: treadmill T01–T08 at 40–145% of self-selected speed; processed knt files, moments in Nm/kg, Cardan Z–X–Y (the authors' Visual3D pipeline `wbdsOvergroundDA.v3s` and script `wbdsExploratoryDA.m`) |
 | 43 | Unitree Robotics, product pages: [H2](https://www.unitree.com/H2) — about 70 kg with battery, 15 Ah (0.972 kWh), maximum 75.6 V, battery life "About 3h"; [G1](https://www.unitree.com/g1) — about 35 kg, 13 string lithium battery, 9000 mAh, battery life "About 2h" — read on 2026-11-24; neither states the conditions. The 3.6 V a cell in §6m is an assumption |
+| 44 | Ewert Energy Systems, [Orion Jr 2 specifications](https://www.orionbms.com/downloads/documents/orionjr2_specifications.pdf), read on 2026-11-24 |

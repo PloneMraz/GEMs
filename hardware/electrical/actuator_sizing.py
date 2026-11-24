@@ -111,6 +111,13 @@ PELVIS_FRAC, THIGH_FRAC, SHANK_FRAC = 0.142, 0.100, 0.0465
 # in running, hip pitch's 7.4 rad/s (the hip's highest in running at 2.5 m/s),
 # ankle pitch's 3.7 rad/s (walking; no running figure).
 MIN_RPM = {"knee": 105.0, "hip_pitch": 71.0, "ankle_pitch": 35.0}
+# The bus, decided 2026-11-24 (plan D-4; README §6n): 12 SA03 cells in series. The
+# sheets give a module's speed at 48 V; it is scaled with the bus voltage, an
+# estimate. Checked at the nominal voltage, reported down to the empty one.
+SHEET_V, BUS_V = 48.0, (30.0, 40.8, 50.4)   # empty, nominal, full
+# What else a joint's speed must reach, rpm at the output, not sized to: the
+# knee's 9.4 rad/s in balance recovery and 6.9 walking at 1.0 m/s (README §6e).
+OTHER_RPM = [("knee", "balance recovery", 89.8), ("knee", "walking at 1.0 m/s", 65.9)]
 # RMS moment of running at 2.5 m/s, Nm per kg of body (README §6e, Fukuchi et
 # al., participants 1-35, each one's cycle-averaged curve), for row 5's 60 s,
 # against HOLD_60S where the module has it and its continuous torque elsewhere.
@@ -366,8 +373,8 @@ def module_check(body_mass):
         if cls == "legs" and red == "harmonic" or cls == "wrist" and red != "harmonic" \
                 or cls == "arm" and not (red == "planetary" and 6 <= ratio <= ARM_RATIO_MAX.get(name, 15)):
             bad.append("%s: %s reducer %s %s:1 outside its class" % (name, model, red, ratio))
-        if name in MIN_RPM and rpm < MIN_RPM[name]:
-            bad.append("%s: %s %.0f rpm < %.0f rpm" % (name, model, rpm, MIN_RPM[name]))
+        if name in MIN_RPM and rpm * BUS_V[1] / SHEET_V < MIN_RPM[name]:
+            bad.append("%s: %s %.0f rpm at %.1f V < %.0f rpm" % (name, model, rpm * BUS_V[1] / SHEET_V, BUS_V[1], MIN_RPM[name]))
         held = HOLD_60S.get(model, cont)
         if name in RUN_RMS and held < RUN_RMS[name] * body_mass:
             bad.append("%s: %s %s %.0f Nm < running RMS %.0f Nm"
@@ -512,6 +519,12 @@ def main(argv=None):
         print("Every module meets its joint's peak, reducer class, speed, running and walking RMS (people's and the robot's), static holds")
         print("at %.1f kg; the set holds up to %.1f kg of body." % (a.mass + a.carry, limit))
 
+    print()
+    print("Speed on the bus (the sheet's at 48 V, scaled with the voltage, an estimate): empty %.1f, nominal %.1f, full %.1f V" % BUS_V)
+    for name, what, need in [(n, "running" if n != "ankle_pitch" else "walking", v) for n, v in MIN_RPM.items()] + OTHER_RPM:
+        rpm = module(name)[4]
+        print("  %-12s %-20s needs %5.1f rpm: %5.1f at nominal; down to %.1f V%s"
+              % (name, what, need, rpm * BUS_V[1] / SHEET_V, need / rpm * SHEET_V, "" if need / rpm * SHEET_V <= BUS_V[0] else ", above the empty pack"))
     print()
     print("Static holds (maker's stall table, 30 to 100 °C on the bench; README §6k, §6l):")
     for joint, level, what, t, need, held in static_holds(a.mass):

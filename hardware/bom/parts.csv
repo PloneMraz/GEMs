@@ -125,12 +125,12 @@ GEM-13022,A,"Spine segment structure, lower thoracic",MFG,MAKE,EA,,,TM,L2,CONCEP
 GEM-13023,A,"Spine coupling mechanism, three axes over three segments",MFG,MAKE,SET,,,TM,L1,CONCEPT,hardware/kinematics.md 1.4; plan D-9,,"Gearing, cable or elastic continuum element: IMPL"
 GEM-13030,A,"IMU, torso",OTS,BUY,EA,,,TM,L1,CONCEPT,spec 05.3,1 kHz,
 GEM-13100,A,Power assembly,ASSY,MAKE,EA,,,TM,L1,CONCEPT,plan E-2,,
-GEM-13110,A,Cell stack,ASSY,MAKE,EA,6.2,cells only: 2.46 kWh at 395 Wh/kg (gems_budget),TM,L2,CONCEPT,spec 03.1; hardware/electrical 3,400-500 Wh/kg,
-GEM-13111,A,"Cell, durable tier",OTS,BUY,EA,,,TM,L2,CONCEPT,spec 03.1; hardware/electrical 3,400-500 Wh/kg,D-5 open
-GEM-13120,A,Battery management system,OTS,BUY,EA,1.13,"Orion BMS 2 specification, 24-72 cells, with heatsink: 2.50 lb",TM,L1,CONCEPT,plan E-2,"monitoring, balancing, protection","bought, configured (plan F-9); cell count follows D-4"
+GEM-13110,A,Cell stack,ASSY,MAKE,EA,6.1,"cells only: 60 x 102 g, 2.42 kWh (Amprius SA03)",TM,L2,CONCEPT,spec 03.1; hardware/electrical 3,400-500 Wh/kg,
+GEM-13111,A,"Cell, durable tier",OTS,BUY,EA,,,TM,L2,CONCEPT,spec 03.1; hardware/electrical 3,400-500 Wh/kg,"SA03, 12 in series and 5 in parallel (D-4, D-5, 2026-11-24)"
+GEM-13120,A,Battery management system,OTS,BUY,EA,0.21,"Orion Jr 2 specification: 7.6 oz, BMS only",TM,L1,CONCEPT,plan E-2,"monitoring, balancing, protection","bought, configured (plan F-9); 12 cells in series (D-4)"
 GEM-13130,A,Pack enclosure,MFG,MAKE,EA,,,TM,L1,CONCEPT,plan M-2,,
 GEM-13140,A,Supercapacitor bank,OTS,BUY,EA,,,TM,L1,CONCEPT,spec 03.2 measure 3,burst power,
-GEM-13150,A,"Pre-charge, contactor and fuse set",OTS,BUY,SET,,,TM,L1,CONCEPT,plan E-2,bus voltage D-4,
+GEM-13150,A,"Pre-charge, contactor and fuse set",OTS,BUY,SET,,,TM,L1,CONCEPT,plan E-2,"30.0-50.4 V; 58 A continuous, 174 A for 30 s (D-4)",
 GEM-13160,A,"DC-DC converter set, HV to logic rails",OTS,BUY,SET,,,TM,L1,CONCEPT,plan E-4,HV to logic rails,"bought modules, one per rail: rails and count IMPL (plan E-4)"
 GEM-13170,A,Always-on rail regulator,OTS,BUY,EA,,,TM,L1,CONCEPT,spec 03.6,tens of microwatts,no bought part checked against the quiescent budget yet (2026-11-05)
 GEM-13200,A,Compute assembly,ASSY,MAKE,EA,,,TM,L1,CONCEPT,plan E-5,,

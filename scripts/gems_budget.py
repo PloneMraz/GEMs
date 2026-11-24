@@ -27,6 +27,8 @@ HEIGHT_M = 1.65            # declared height, spec 00 — 1.75 m until 2026-09-2
 BODY_SKIN_AREA_M2 = round(1.8 * (HEIGHT_M / 1.75) ** 2, 2)   # 1.8 m2 at 1.75 m, scaled by the square: 1.60 m2
 REF_ENDURANCE_H = 2.0      # reference operating point, D-8: 2 h free-running with a dock
 P_REF = 12.0               # W/kg in motion, decided 2026-11-24 (spec 02.2; electrical §6m)
+PACK_SERIES, PACK_PARALLEL = 12, 5   # decided 2026-11-24 (plan D-4)
+CELL_WH, CELL_V = 40.26, (2.5, 3.4, 4.2)   # Amprius SA03: typical energy; empty, nominal, full
 E_REF = 395.0              # Wh/kg, Amprius SA03, 40.26 Wh over 102 g, decided 2026-11-24 (plan D-5)
 G = 9.81
 

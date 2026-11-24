@@ -63,7 +63,7 @@ def free(x0, x1, yh, z0, z1, rows):
 # The reference pack (spec 03.1, plan M-2, 2026-11-24): SA03 cells in two boxes, 3 mm of
 # wall on every side, the back at -150 mm, the left half mirrored; how many of
 # each, a choice, so that each box is filled about alike: name, zone, cells
-PACK = [("upper", (-150, -20, 124, 240, 424), 38), ("lower", (-150, 40, 155, 122, 208), 24)]
+PACK = [("upper", (-150, -20, 124, 240, 424), 40), ("lower", (-150, 40, 155, 122, 208), 20)]
 WALL = 3.0
 
 

@@ -12,7 +12,7 @@ The nine joint modules [spec 02.6](../../../spec/02-structure-and-motion.md#the-
 | [`layout.csv`](layout.csv) | Generated — where each module sits, how far it stands outside the segment envelopes, how far its joint turns before two modules touch |
 | [`render_modules.py`](render_modules.py) | The Blender scene behind the files of `media/` |
 | [`pack_fit.py`](pack_fit.py), [`pack.csv`](pack.csv) | How many pouch cells fit in each part of the trunk around the modules, and the reference pack cell by cell; needs numpy |
-| `gems-pack.step` | Generated — the 62 cells of the reference pack in place |
+| `gems-pack.step` | Generated — the 60 cells of the reference pack in place, and 3 mm walls round their blocks, illustration |
 | `media/` | `gems-module-layout.glb`, for a viewer on the web; a turntable in WEBM; six stills in WebP |
 
 ```bash
@@ -80,10 +80,9 @@ Cells are boxes at their largest tolerance with 0.5 mm between faces. Nothing is
 
 ## The reference pack, 2026-11-24
 
-At 12 W/kg the reference asks 2.46 kWh ([electrical §6m](../../electrical/README.md#6m-specific-power-the-cell-and-the-modules-margin--2026-11-24)): 61 SA03 cells, **62 placed**, 2.50 kWh, 6.3 kg of cells, **38 in the upper back and 24 in the lower thoracic segment** (Plone: not in the pelvis), the left half mirrored, 3 mm of wall on every side, cell by cell in [`pack.csv`](pack.csv).
+At 12 W/kg the reference asks 2.46 kWh; **12 SA03 cells in series and 5 in parallel, 60 cells**, give 2.42 kWh, 1.97 h, in 6.1 kg ([electrical §6n](../../electrical/README.md#6n-the-bus-12-in-series--2026-11-24)). **40 are in the upper back, eight of the twelve groups, and 20 in the lower thoracic segment, four** (Plone: not in the pelvis), so each box holds whole groups; the left half is mirrored, with 3 mm of wall on every side, cell by cell in [`pack.csv`](pack.csv).
 
-- **The back is at x = −150 mm**, a trunk 250 mm deep before the shell, where women of 1.63–1.67 m have a chest of 249 mm (206–297, 5th to 95th percentile) and a waist of 214 (169–276) in ANSUR II. There the symmetric fill holds 74 cells, so 62 are 84% of it; at −140 mm it holds 68, 91%; at −160, 90, 69%. The earlier estimate of 72% was at −125 mm without walls, symmetry or the neck's sweep.
-- **The audit**: 62 cells, none overlapping, none inside a module, left mirroring right. Turned alone, the trunk's pitch and yaw, the neck, the shoulder and the hip clear the cells through their whole travel with 3 mm kept; trunk bend clears to 36°, past where the modules stop it.
-- **What is not drawn**: the boxes, terminals and busbars; the 15 PSI of compression the maker recommends; cooling; the crush zone and the vent path, down and away from the body; the cable between the two boxes, across the trunk's coupled joint. **Whether the 12 to 16% left is enough for them is not shown.**
-- **The series count is D-4's.** SA03 is 3.4 V nominal, 2.5–4.2: 62 cells are not a rectangle of series and parallel, and the modules' 48 V, the fan's 28–53 V and 4.2 V a cell pull against one another — 12 in series is 40.8 V and 50.4 full, 14 is 47.6 and 58.8.
-- **The compute, the converters and the battery management are not placed.**
+- **The back is at x = −150 mm**, a trunk 250 mm deep before the shell, where women of 1.63–1.67 m have a chest of 249 mm (206–297, 5th to 95th percentile) and a waist of 214 (169–276) in ANSUR II. There the symmetric fill holds 46 and 28 cells, so 87% of the upper box and 71% of the lower are used, 81% of both; the earlier estimate of 72% was at −125 mm without walls, symmetry or the neck's sweep.
+- **The audit**: 60 cells, whole groups in each box, none overlapping, neither a cell nor a wall inside a module, left mirroring right. Turned alone, the trunk, the neck, the shoulder and the hip clear the cells through their whole travel with 3 mm kept.
+- **What is not drawn**: terminals and busbars; the 15 PSI of compression the maker recommends; cooling; the crush zone and the vent path, down and away from the body; the cable between the two boxes, across the trunk's coupled joint. The walls are illustration. **Whether the room left is enough for all that is not shown.**
+- **The compute, the converters and the battery management, 181 × 102 × 38 mm, are not placed.**

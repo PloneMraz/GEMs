@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-24T11:59:01Z",
+    "timestamp": "2026-11-24T12:14:37Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -91,7 +91,7 @@
       "type": "application",
       "bom-ref": "hardware/electrical/actuator_sizing.py",
       "name": "hardware/electrical/actuator_sizing.py",
-      "version": "sha256:8d8f610249cf",
+      "version": "sha256:c41873018358",
       "description": "Joint torque table and actuator sizing",
       "supplier": {
         "name": "Plone Mraz"
@@ -106,7 +106,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "8d8f610249cfd0262c76c9ce43aab1486ea48dccaf4036844f53ccd88a09ae78"
+          "content": "c41873018358a3d0cde2b8edb4bad05608c57b60d22eb85c2b2f396a67e3fd7a"
         }
       ],
       "scope": "excluded",
@@ -121,7 +121,7 @@
       "type": "application",
       "bom-ref": "scripts/gems_budget.py",
       "name": "scripts/gems_budget.py",
-      "version": "sha256:e75e8bded0c1",
+      "version": "sha256:c382b8ab83c7",
       "description": "Mass-energy-power budget model and spec check",
       "supplier": {
         "name": "Plone Mraz"
@@ -136,7 +136,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "e75e8bded0c1aa0d150388cec7bff7a119034cb697562fcf03202e27e400399c"
+          "content": "c382b8ab83c7fb6eb0325fd4dbe3c4928a1ac632c84aef661876e5813c2d46b3"
         }
       ],
       "scope": "excluded",
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:818ac9747415",
+      "version": "sha256:1ba8d6443ad9",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "818ac9747415ff0cd4426913eb642dd4a0691cc186d2880ed25d81d5f451d062"
+          "content": "1ba8d6443ad94b0a7189493ee86354d5cc28ca8a3390f475522334210a8390d0"
         }
       ],
       "scope": "excluded",

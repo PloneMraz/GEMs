@@ -64,7 +64,7 @@ LIFECYCLE = {"CONCEPT", "UPG"}
 # it is ranked first in avl.csv with the alternates. Only the leg and trunk
 # density, derived from those modules, is quoted for a joint not yet sized.
 LEG_DENSITY = densities()[0]
-PACK_KWH, CELLS_KG = 2.46, 6.2            # gems_budget at the D-8 point: 2 h, 65%, 1.65 m
+PACK_KWH, CELLS_KG = 2.42, 6.1            # 12 SA03 in series, 5 in parallel (D-4); gems_budget asks 2.46
 ARMOUR_M2, ARMOUR_KG_M2 = 1.04, 7.5       # 65% of 1.6 m2; held at 7.5 (2026-11-22), see GEM-18010
 SKIN_M2, FINE_CM2 = 1.60, 500             # skin area at 1.65 m and the fine region of spec 05.2
 ORDINARY_CM2 = round(SKIN_M2 * 1e4 - FINE_CM2)
@@ -74,7 +74,7 @@ BODY_MASS_BUDGET = 102.3    # scripts/gems_budget.py at the D-8 point
 # seller states for that part; comparables stay in the README, not here.
 SOURCED_MASS = {
     "GEM-11100": ("0.045", "Connect Tech JCB022 datasheet: 45 g, board only"),
-    "GEM-13120": ("1.13", "Orion BMS 2 specification, 24-72 cells, with heatsink: 2.50 lb"),
+    "GEM-13120": ("0.21", "Orion Jr 2 specification: 7.6 oz, BMS only"),
     "GEM-13210": ("0.31", "NVIDIA Jetson T5000: a retailer's listed item weight; NVIDIA's datasheet DS-11945 states none"),
 }
 
@@ -260,19 +260,19 @@ def build():
     power = b.part("GEM-13100", "Power assembly", "ASSY", "MAKE", level="L1", ref="plan E-2")
     b.use(torso, power)
     stack = b.part("GEM-13110", "Cell stack", "ASSY", "MAKE", mass="%.1f" % CELLS_KG,
-                   basis="cells only: %.2f kWh at 395 Wh/kg (gems_budget)" % PACK_KWH,
+                   basis="cells only: 60 x 102 g, %.2f kWh (Amprius SA03)" % PACK_KWH,
                    level="L2", ref="spec 03.1; hardware/electrical 3", req="400-500 Wh/kg")
     b.use(power, stack)
     b.use(stack, b.part("GEM-13111", "Cell, durable tier", "OTS", "BUY", level="L2",
                         ref="spec 03.1; hardware/electrical 3", req="400-500 Wh/kg",
-                        notes="D-5 open"),
-          "", "%.2f kWh / per-cell energy of the part chosen" % PACK_KWH)
+                        notes="SA03, 12 in series and 5 in parallel (D-4, D-5, 2026-11-24)"),
+          "", "60: 12 in series, 5 in parallel")
     for pn, d, cat, ref, req, n in [
         ("GEM-13120", "Battery management system", "OTS", "plan E-2", "monitoring, balancing, protection",
-         "bought, configured (plan F-9); cell count follows D-4"),
+         "bought, configured (plan F-9); 12 cells in series (D-4)"),
         ("GEM-13130", "Pack enclosure", "MFG", "plan M-2", "", ""),
         ("GEM-13140", "Supercapacitor bank", "OTS", "spec 03.2 measure 3", "burst power", ""),
-        ("GEM-13150", "Pre-charge, contactor and fuse set", "OTS", "plan E-2", "bus voltage D-4", ""),
+        ("GEM-13150", "Pre-charge, contactor and fuse set", "OTS", "plan E-2", "30.0-50.4 V; 58 A continuous, 174 A for 30 s (D-4)", ""),
         ("GEM-13160", "DC-DC converter set, HV to logic rails", "OTS", "plan E-4", "HV to logic rails",
          "bought modules, one per rail: rails and count IMPL (plan E-4)"),
         ("GEM-13170", "Always-on rail regulator", "OTS", "spec 03.6", "tens of microwatts",

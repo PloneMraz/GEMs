@@ -50,7 +50,7 @@ GAP = 3.0                 # mm between neighbouring modules, a choice
 ENV_MODE, ENV_OUT, ENV_MESH = "GEMS_MODULES_MODE", "GEMS_MODULES_OUT", "GEMS_MODULES_MESH"
 STEP_MODULES, STEP_LAYOUT, CSV_LAYOUT = "gems-modules.step", "gems-module-layout.step", "layout.csv"
 STEP_PACK, CSV_PACK = "gems-pack.step", "pack.csv"
-CELL_WH = 40.26           # Amprius SA03, typical (hardware/electrical ref 4)
+WALL = 3.0                # mm of pack wall, illustration
 
 # Each module along its axis, z = 0 at the rear face, output at the top.
 # cap, body, boss, output: (diameter, z from, z to); flats: width across the
@@ -358,6 +358,21 @@ def pack_cells():
                 for r in csv.DictReader(f)]
 
 
+def pack_blocks(cells):
+    """The pack's blocks, each the bounding box of cells that lie alike: name,
+    centre, size. The walls drawn are WALL outside them."""
+    groups = {}
+    for box, c, d in cells:
+        side = 0 if box == "upper" or d[1] > 20 else (1 if c[1] > 0 else -1)
+        groups.setdefault((box, "" if box == "upper" else d, side), []).append((c, d))
+    out = []
+    for (box, _, side), m in sorted(groups.items(), key=str):
+        lo = [min(c[k] - d[k] / 2 for c, d in m) for k in range(3)]
+        hi = [max(c[k] + d[k] / 2 for c, d in m) for k in range(3)]
+        out.append((box, tuple((a + b) / 2 for a, b in zip(lo, hi)), tuple(b - a for a, b in zip(lo, hi))))
+    return out
+
+
 def cell_clashes(cells, rows):
     """(cells that overlap another cell, cells a module's envelope enters)"""
     a = sum(1 for i, (_, c, d) in enumerate(cells) for _, e, f in cells[i + 1:] if all(abs(c[k] - e[k]) < (d[k] + f[k]) / 2 - 0.6 for k in range(3)))
@@ -494,11 +509,17 @@ def build(mode, out, mesh):
     # 4. the pack
     cells = pack_cells()
     need = asz.REF_MASS * gb.P_REF * gb.REF_ENDURANCE_H / 1000.0
-    kwh = len(cells) * CELL_WH / 1000.0
-    ok("pack energy kWh", "%.2f" % kwh, ">= %.2f" % need, kwh >= need)
+    kwh = len(cells) * gb.CELL_WH / 1000.0
+    ok("cells", len(cells), gb.PACK_SERIES * gb.PACK_PARALLEL, len(cells) == gb.PACK_SERIES * gb.PACK_PARALLEL)
+    ok("cells per box / parallel", sorted({sum(1 for b, _, _ in cells if b == n) % gb.PACK_PARALLEL for n in ("upper", "lower")}), [0],
+       all(sum(1 for b, _, _ in cells if b == n) % gb.PACK_PARALLEL == 0 for n in ("upper", "lower")))
+    ok("pack endurance h", "%.2f" % (kwh / need * gb.REF_ENDURANCE_H), "%.2f - 2%%" % gb.REF_ENDURANCE_H, kwh >= 0.98 * need)
     cc, cm = cell_clashes(cells, rows)
     ok("cells on cells", cc, 0, cc == 0)
     ok("cells in modules", cm, 0, cm == 0)
+    blocks = pack_blocks(cells)
+    walls = [(b, c, tuple(v + 2 * WALL for v in d)) for b, c, d in blocks]
+    ok("walls in modules", cell_clashes(walls, rows)[1], 0, cell_clashes(walls, rows)[1] == 0)
     sym = sorted((round(c[0], 2), round(abs(c[1]), 2), round(c[2], 2)) for _, c, _ in cells)
     ok("pack mirrored", all(sym.count(v) % 2 == 0 for v in sym), True, all(sym.count(v) % 2 == 0 for v in sym))
 
@@ -563,6 +584,14 @@ def build(mode, out, mesh):
         o.Shape = s
         o.Label = "SA03 %s %02d" % (box, i)
         objs.append(o)
+    for n, (box, c, d) in enumerate(blocks):
+        o = doc.addObject("Part::Feature", "wall_%d" % n)
+        outer = Part.makeBox(*(v + 2 * WALL for v in d), V(*(c[k] - d[k] / 2 - WALL for k in range(3))))
+        s = outer.cut(Part.makeBox(*d, V(*(c[k] - d[k] / 2 for k in range(3)))))
+        s.Placement = turn.multiply(s.Placement)
+        o.Shape = s
+        o.Label = "pack wall, %s, illustration" % box
+        objs.append(o)
     Import.export(objs, str(out / STEP_PACK))
     set_header(out / STEP_PACK, "gems-pack")
     (out / CSV_LAYOUT).write_text(text, encoding="utf-8", newline="")
@@ -574,7 +603,7 @@ def build(mode, out, mesh):
                 MeshPart.meshFromShape(Shape=s, LinearDeflection=0.12, AngularDeflection=0.35).write(str(md / ("%s__%s.stl" % (n, part))))
         segs = [dict(e, centre=list(e["centre"])) for e in gs.skeleton(robot)[1]]
         (md / "layout.json").write_text(json.dumps(dict(
-            modules=[dict(name=m["name"], module=m["module"], centre=m["centre"], out=m["out"], link=m["link"]) for m in rows], segments=segs, cells=[dict(box=b, centre=c, size=d) for b, c, d in cells],
+            modules=[dict(name=m["name"], module=m["module"], centre=m["centre"], out=m["out"], link=m["link"]) for m in rows], segments=segs, cells=[dict(box=b, centre=c, size=d) for b, c, d in cells], walls=[dict(box=b, centre=c, size=d) for b, c, d in walls],
             outside={k: v[0] for k, v in pro.items()})), encoding="utf-8")
     for f in (STEP_MODULES, STEP_LAYOUT, STEP_PACK, CSV_LAYOUT):
         print("Wrote %s (%d bytes)" % (f, (out / f).stat().st_size))

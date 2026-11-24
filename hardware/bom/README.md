@@ -93,7 +93,7 @@ The firmware images and the edge module's OS image are in the EBOM as virtual pa
 
 ## Where it stands
 
-The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 216 part numbers, including 10 software images and 5 consumables; 2 parts left open and 9 on the upgrade path; 368 operations across 59 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 34 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 55.4 kg out of the 102.3 kg budget — the rest is blank rather than guessed.
+The summary at the top of [`EBOM.md`](EBOM.md) is the current count. At the time of writing: 216 part numbers, including 10 software images and 5 consumables; 2 parts left open and 9 on the upgrade path; 368 operations across 59 routings; one selected manufacturer part (the Jetson T5000 module), candidates for 34 parts, **one verified price** (the AKH70-16, on eight candidate lines), and a mass roll-up of 54.4 kg out of the 102.3 kg budget — the rest is blank rather than guessed.
 
 Prices were looked for on 2026-09-26. Most supplier pages were unreachable from the environment this was written in, so the AVL rests on search results and on the pages that could be read, and each entry's notes say which. The candidates for the boards bought instead of designed were looked for on 2026-11-05, from search excerpts; no price among them is recorded as verified.
 
@@ -108,14 +108,14 @@ The mass loop holds **20 kg** of fixed mass — compute, sensors, hands, the she
 | LiDAR (`GEM-11040`) | 1 | 0.245–0.265 | comparable: Livox Mid-360, 265 g (maker's page); Mid-360L, 245 g |
 | Head sensor interface set (`GEM-11100`) | 1 | 0.045 | candidate Connect Tech JCB022, 45 g, datasheet |
 | Edge AI module (`GEM-13210`) | 1 | 0.28–0.31 | candidate NVIDIA Jetson T5000: 0.31 kg, a retailer's item weight; 0.28 kg without packaging in an NVIDIA set-up document a reseller hosts; NVIDIA's datasheet DS-11945 states none |
-| Battery management system (`GEM-13120`) | 1 | 1.13 | candidate Orion BMS 2, 24–72 cells, with heatsink: 2.50 lb, maker's specification; the Orion Jr 2's weight not read |
+| Battery management system (`GEM-13120`) | 1 | 0.21 | candidate Orion Jr 2, 1–16 cells, 7.6 oz, BMS only, maker's specification (the Orion BMS 2, 1.13 kg, until D-4 put 12 cells in series) |
 | DC-DC converter (`GEM-13160`) | one per rail | 0.111 each | candidate Vicor V48B12M250BN3, 110.6 g (distributor listing, the family's weight table); the rail count is `⟦IMPL⟧` (plan E-4), so one is counted |
 | Joint torque sensor (`GEM-2xx06`) | 31 | 3.4–6.2 | comparable, no candidate: Hangkai HKVN-70, 110 g at 100 Nm and 120 g at 200 Nm (a reseller's listing); TE Connectivity's custom safety sensor under 200 g at 100 Nm. The knee's 274 Nm and the ankle's 203 Nm lie above that range, the wrists' 20 Nm and the neck's 15 below it; neither end was read |
 | Hand assembly (`GEM-14900`, `GEM-15900`) | 2 | 0.94–1.58 | comparable, the hand not chosen (D-6): Inspire RH56 hands, six actuators, 470 g (RH56H1, tactile) to 790 g (RH56E2), retailers' figures |
 | Impact protector set (`GEM-18120`) | 1 | 1.10 | candidate D3O, maker's data sheets: eight Diablo L2 limb protectors and a BP4 L1 back protector, size M (EBOM; spec 04.1). The alternate Ghost L2 makes it 1.26 |
 | Outer textile (`GEM-18130`) | 1 | 0.32 | fabric only, 200 g/m² over 1.6 m² (EBOM) |
 | Cooling fan (`GEM-18510`) | 7 | 0.90 | candidate Delta FFB0948VH-F00, 128 g each, maker's specification (EBOM; spec 04.8) |
-| **Parts with a figure** | | **8.5–12.1** | |
+| **Parts with a figure** | | **7.6–11.2** | |
 
 **Parts with no figure:**
 - Foam padding at pinch points and over hot modules (`GEM-18110`): Rogers PORON XRD is 0.14–0.40 kg/m² per millimetre. Thickness and the area padded are `⟦IMPL⟧` (plan M-8); the protectors above now cover where falls land, so this is no longer the whole 1.60 m².
@@ -125,14 +125,14 @@ The mass loop holds **20 kg** of fixed mass — compute, sensors, hands, the she
 - Power: the pack enclosure, the supercapacitor bank (optional, spec 03.2), the pre-charge and fuse set, the always-on regulator, the DC-DC converters beyond one.
 - Head: the microphone array (16), electronic nose, taste analyser, speaker, facial actuator set. Torso: the IMU, the five communications parts, the cardiac module. Feet: contact sensing. Twelve fastener sets.
 
-**What it says.** The parts with a figure take 8.5–12.1 kg of the 20 kg allowance, which leaves 7.9–11.5 kg for everything above. That includes the harness, the foam padding, the skin, the slot filters, the ducts and shrouds, and the module fans, none of which has a figure. Whether 20 kg is enough is therefore not shown: neither confirmed nor refuted.
+**What it says.** The parts with a figure take 7.6–11.2 kg of the 20 kg allowance, which leaves 8.8–12.4 kg for everything above. That includes the harness, the foam padding, the skin, the slot filters, the ducts and shrouds, and the module fans, none of which has a figure. Whether 20 kg is enough is therefore not shown: neither confirmed nor refuted.
 
 **What the fixed mass does to the body.** This is the mass loop of spec 02.1, run on the bought modules of spec 02.6, with the modules chosen again at each point by the rule of [electrical §6f](../electrical/README.md#6f-modules-declared-at-the-joint--d-2-2026-11-23), the walking and frontal-plane checks of [§6g](../electrical/README.md#6g-walking-rms-and-the-frontal-plane--d-2-2026-11-23) the static lift of [§6k](../electrical/README.md#6k-static-holds--d-2-2026-11-24) and the 5% margin of [§6m](../electrical/README.md#6m-specific-power-the-cell-and-the-modules-margin--2026-11-24), at 12 W/kg and 395 Wh/kg. Where the loop closes on more than one body, the lightest is given. It is 2 h, 65% armour at 7.5 kg/m², f_str 0.30:
 
 | Fixed mass | Body | Actuators | `f_act` | Pack |
 |---|---|---|---|---|
-| 8.5 kg, every blank at zero — a floor, not a design | 82.3 kg | 36.3 kg | 0.44 | 1.98 kWh |
-| 12.1 kg, every blank at zero | 88.9 kg | 36.9 kg | 0.42 | 2.13 kWh |
+| 7.6 kg, every blank at zero — a floor, not a design | 80.9 kg | 36.3 kg | 0.45 | 1.94 kWh |
+| 11.2 kg, every blank at zero | 87.4 kg | 36.9 kg | 0.42 | 2.10 kWh |
 | 15 kg, the bottom of spec 02.5's band | 93.4 kg | 36.9 kg | 0.40 | 2.24 kWh |
 | **20 kg, the reference point** | **102.3 kg** | 37.6 kg | 0.37 | 2.46 kWh |
 | 25 kg, the top of the band | 112.5 kg | 39.1 kg | 0.35 | 2.70 kWh |

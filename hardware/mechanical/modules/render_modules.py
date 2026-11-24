@@ -61,6 +61,12 @@ for i, c in enumerate(L.get("cells", [])):
     if k not in seen:
         me = bpy.data.meshes.new("SA03 %d" % len(seen)); bm = bmesh.new(); bmesh.ops.create_cube(bm, size=1); bmesh.ops.scale(bm, vec=[(v - .5) * MM for v in k], verts=bm.verts); bmesh.ops.bevel(bm, geom=bm.edges[:], offset=.0008, segments=2, affect="EDGES"); bm.to_mesh(me); bm.free(); me.materials.append(M["cell"]); seen[k] = me
     o = bpy.data.objects.new("cell %02d %s" % (i, c["box"]), seen[k]); cp.objects.link(o); o.parent = ep; o.matrix_world = turn @ Matrix.Translation(Vector(c["centre"]) * MM)
+M["wall"] = mat("pack wall", (.42, .22, .04), 0, .5)
+for i, s in enumerate(L.get("walls", [])):
+    a, b, c = (v * MM / 2 for v in s["size"]); P = []
+    for z in (-c, c): P.append(([(-a, -b, z), (a, -b, z), (a, b, z), (-a, b, z)], True))
+    for x, y in ((-a, -b), (a, -b), (a, b), (-a, b)): P.append(([(x, y, -c), (x, y, c)], False))
+    me = wire("wall %d" % i, P, .0016); me.materials.append(M["wall"]); o = bpy.data.objects.new("pack wall %d" % i, me); cp.objects.link(o); o.parent = ep; o.matrix_world = turn @ Matrix.Translation(Vector(s["centre"]) * MM)
 bpy.context.view_layer.update()
 print("OBJ", len(bpy.data.objects), "unique tris", sum(len(me.loop_triangles) if me.calc_loop_triangles() is None else 0 for d in meshes.values() for me in d.values()))
 if MODE == "glb":

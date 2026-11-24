@@ -31,12 +31,14 @@ What is fixed here is what the CAD will be made of and what the joints will be m
 | Class | Mechanism | Why |
 |---|---|---|
 | **Hip, knee** | Cycloidal / RV or planetary — not strain-wave | Footfall delivers shock, and strain-wave gears are damaged by it [5][6]. Cycloidal shares the load across many pins at ~85% efficiency [5]; planetary is not ruled out by that reason, and three of the four bought candidates found at the legs' torque and speed are planetary ([electrical §6d](../electrical/README.md#6d-actuator-candidates--d-2-2026-11-22)) |
-| **Shoulder, elbow** | QDD planetary, 6:1–15:1 | Backdrivable — see below |
+| **Shoulder, elbow** | QDD planetary, 6:1–15:1; up to 18:1 at shoulder yaw and elbow | Backdrivable — see below |
 | **Wrist, neck** | Harmonic | Smallest and lightest at high ratio, best precision, and these joints see no shock [5][6] |
 
 **The arms are the interesting case, and the specification decides it.** Harmonic drives are the industry standard for robot arms [6] and are lighter than cycloidal at the same ratio — but at high ratio they are effectively non-backdrivable. A stalled arm cannot yield: contact force becomes whatever the controller commands, with nothing mechanical setting a ceiling.
 
 [Spec 01](../../spec/01-architecture.md#application-frame) puts safe human contact in the core group. QDD at 6:1–15:1 keeps the arm backdrivable, which makes compliance a property of the mechanism rather than a promise made by software that can fail. The cost is torque density, and §1 of the electrical selection shows there is very little of that to spare — so this is a real trade made deliberately, not a free choice.
+
+**Shoulder yaw and elbow, up to 18:1, since 2026-11-24 (Plone).** The lightest bought module whose sheet holds the static lift there is the EC-A8116-P1-18. Its rotor inertia seen at the output is 0.061 kg·m², below the 0.070 of the shoulder's EC-A10020-P1-12 at 12:1; the friction a person would push against is not published for either ([electrical §6k](../electrical/README.md#6k-static-holds--d-2-2026-11-24)). The shoulder's other axes keep 6:1–15:1.
 
 Cycloidal reducers are heavier and bulkier with more parts [5], which is acceptable in the legs and not in the wrists.
 

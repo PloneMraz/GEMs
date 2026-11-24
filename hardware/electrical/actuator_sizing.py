@@ -25,7 +25,7 @@ import argparse
 import sys
 
 G = 9.81
-REF_MASS = 105.6           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
+REF_MASS = 107.0           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
 
 # Bought module per joint (spec 02.6, decided 2026-11-23: the actuator mass is
 # declared at the joint, not as one density). Each is the lightest module that
@@ -41,6 +41,7 @@ REF_MASS = 105.6           # the reference point of D-8 (2 h, 65% armour, 1.65 m
 MODULE_CATALOGUE = {
     "EC-A4315-P2-36":   ("ENCOS", "EC-A4315-P2-36", 75.0, 25.0, 117.0, 0.485, "56 x 69.5", "planetary", 36),
     "EC-A6416-P2-25":   ("ENCOS", "EC-A6416-P2-25", 120.0, 40.0, 120.0, 0.805, "88 x 67.5", "planetary", 25),
+    "EC-A8116-P1-18":   ("ENCOS", "EC-A8116-P1-18", 130.0, 40.0, 140.0, 0.961, "105 x 57", "planetary", 18),
     "EC-A10020-P1-12":  ("ENCOS", "EC-A10020-P1-12", 150.0, 50.0, 140.0, 1.373, "124 x 60", "planetary", 12),
     "EC-A10020-P2-24":  ("ENCOS", "EC-A10020-P2-24", 330.0, 100.0, 123.0, 2.211, "124 x 85", "planetary", 24),
     "EC-A13715-P1-12.67": ("ENCOS", "EC-A13715-P1-12.67", 320.0, 110.0, 135.0, 2.695, "170 x 73", "planetary", 12.67),
@@ -62,12 +63,36 @@ HOLD_60S = {
 JOINT_MODULE = {
     "hip_pitch": "EC-A10020-P2-24", "hip_roll": "EC-A10020-P2-24", "hip_yaw": "EC-A4315-P2-36",
     "knee": "EC-A13715-P1-12.67", "ankle_pitch": "RMD-X12-P20-320", "ankle_roll": "EC-A4315-P2-36",
-    "trunk_pitch": "SETZ70CI-1HA", "trunk_roll": "SEAF70A16NG02", "trunk_yaw": "EC-A6416-P2-25",
+    "trunk_pitch": "EC-A10020-P2-24", "trunk_roll": "SEAF70A16NG02", "trunk_yaw": "EC-A6416-P2-25",
     "shoulder_pitch": "EC-A10020-P1-12", "shoulder_roll": "EC-A10020-P1-12",
-    "shoulder_yaw": "EC-A10020-P1-12", "elbow": "SETZ70CI-1DA",
+    "shoulder_yaw": "EC-A8116-P1-18", "elbow": "EC-A8116-P1-18",
     "wrist_yaw": "EC-A3814-H14-107", "wrist_pitch": "EC-A3814-H14-107", "wrist_roll": "EC-A3814-H14-107",
     "neck_yaw": "EC-A3814-H14-107", "neck_pitch": "EC-A3814-H14-107",
 }
+# The arm's reducer class is planetary, 6:1 to 15:1 (hardware/mechanical §2); at
+# these joints up to 18:1 is allowed (Plone, 2026-11-24; README §6k).
+ARM_RATIO_MAX = {"elbow": 18, "shoulder_yaw": 18}
+# Time a module holds a torque standing still, 30 to 100 °C on its maker's
+# bench, (Nm, s): the stall temperature-rise tables of the ENCOS manual
+# (README ref 35). None in place of seconds: the row is marked sustainable.
+# SEmotor and MyActuator publish no such table.
+STALL_HOLD = {
+    "EC-A8116-P1-18":  [(25.0, None), (30.0, 483), (35.0, 228), (40.0, 162), (50.0, 112), (60.0, 15), (70.0, 3)],
+    "EC-A10020-P1-12": [(50.0, 1133), (53.0, 827), (55.0, 621), (58.0, 512), (61.5, 318)],
+    "EC-A10020-P2-24": [(80.0, 1335), (86.0, 969), (90.0, 720), (96.0, 370), (100.0, 254), (110.0, 148), (122.0, 66), (127.0, 21)],
+}
+# Static holds, decided 2026-11-24 (Plone; spec 02.6, README §6k): a load at full
+# reach is passed through, 2 s at most; picking up and setting down, 10 s at
+# most; anything longer only where the module's table starts.
+PASS_S, LIFT_S = 2.0, 10.0
+# Trunk, straight and leaning as a whole, arms hanging: the moment at the lowest
+# of the three pitch axes, the heavier case, since how the coupling shares it is
+# not designed (⟦IMPL⟧). Geometry and mass fractions of the URDF (Winter's, a
+# human's): the mass above the pelvis as a share of the body, its centre above
+# that axis, and the shoulders above that axis, m.
+UPPER_FRAC, UPPER_COM, SHOULDER_HEIGHT = 0.536, 0.3035, 0.430
+LIFT_LEAN_DEG = 30.0       # trunk lean allowed with PAYLOAD_KG in the hands
+HUG_KG, HUG_SHOULDER, HUG_ELBOW = 20.0, 0.30, 0.20   # LOAD_CASES, two hands
 # Speed a joint's module must reach, output rpm (README §6e): the knee's 11 rad/s
 # in running, hip pitch's 7.4 rad/s (the hip's highest in running at 2.5 m/s),
 # ankle pitch's 3.7 rad/s (walking; no running figure).
@@ -310,10 +335,14 @@ def densities(body_mass=REF_MASS):
 
 def module_check(body_mass):
     """Each joint's module against its joint at `body_mass`: peak, reducer
-    class, speed, running RMS and walking RMS. Returns (failures, body mass up
+    class, speed, running RMS, walking RMS and static lift. Returns (failures, body mass up
     to which every module still meets its joint's peak and RMS)."""
     rows = {name: t for name, _, t, _ in torque_table(body_mass)}
     bad, limit = [], float("inf")
+    for joint, level, what, t, need, held in static_holds(body_mass):
+        if level == "lift" and (held is None or held < need):
+            bad.append("%s: %s holds %.0f Nm (%s) %s < %.0f s" % (
+                joint, module(joint)[1], t, what, "no figure" if held is None else "%.0f s" % held, need))
     for name, n, basis, val in JOINTS:
         mk, model, peak, cont, rpm, kg, size, red, ratio = module(name)
         t = rows[name]
@@ -321,7 +350,7 @@ def module_check(body_mass):
             bad.append("%s: %s peak %.0f Nm < %.0f Nm" % (name, model, peak, t))
         cls = "legs" if basis == "per_kg" else ("wrist" if name.startswith(("wrist", "neck")) else "arm")
         if cls == "legs" and red == "harmonic" or cls == "wrist" and red != "harmonic" \
-                or cls == "arm" and not (red == "planetary" and 6 <= ratio <= 15):
+                or cls == "arm" and not (red == "planetary" and 6 <= ratio <= ARM_RATIO_MAX.get(name, 15)):
             bad.append("%s: %s reducer %s %s:1 outside its class" % (name, model, red, ratio))
         if name in MIN_RPM and rpm < MIN_RPM[name]:
             bad.append("%s: %s %.0f rpm < %.0f rpm" % (name, model, rpm, MIN_RPM[name]))
@@ -341,6 +370,54 @@ def module_check(body_mass):
             if walk:
                 limit = min(limit, cont / walk)
     return bad, limit
+
+
+def stall_hold(model, torque):
+    """Seconds a module holds `torque` standing still, from STALL_HOLD,
+    interpolated log-log between its rows. inf at or below a row marked
+    sustainable; the lowest row's seconds below a lowest row with a time (the
+    table says no more); None above the table or without one."""
+    from math import exp, log
+    rows = STALL_HOLD.get(model)
+    if not rows or torque > rows[-1][0] + 1e-9:
+        return None
+    if torque <= rows[0][0]:
+        return float("inf") if rows[0][1] is None else float(rows[0][1])
+    for (t0, s0), (t1, s1) in zip(rows, rows[1:]):
+        if t0 < torque <= t1:
+            if s0 is None:         # above a sustainable row: the next row's time, a floor
+                return float(s1)
+            f = (log(torque) - log(t0)) / (log(t1) - log(t0))
+            return exp(log(s0) + f * (log(s1) - log(s0)))
+
+
+def trunk_lean(body_mass, deg, load_kg):
+    """Moment at the lowest trunk pitch axis, Nm: the trunk straight and leaning
+    `deg`, the arms hanging, `load_kg` in the hands."""
+    from math import radians, sin
+    return G * sin(radians(deg)) * (UPPER_FRAC * body_mass * UPPER_COM + load_kg * SHOULDER_HEIGHT)
+
+
+def static_holds(body_mass):
+    """(joint, level, what, Nm, seconds required, seconds held). A pass-through
+    above the module's table is reported, not failed: no maker's figure reaches it."""
+    arms = arm_torques()
+    e_self = arms["elbow"][1]
+    s_self = arms["shoulder"][1]
+    yaw = next(v for n, _, _, v in JOINTS if n == "shoulder_yaw")
+    rows = [
+        ("shoulder_pitch", "pass", "%.0f kg at full reach" % PAYLOAD_KG, sum(arms["shoulder"]), PASS_S),
+        ("shoulder_roll", "pass", "%.0f kg at full reach, abducted" % PAYLOAD_ROLL_KG, sum(arms["shoulder_roll"]), PASS_S),
+        ("shoulder_pitch", "lift", "%.0f kg, upper arm down, forearm level" % PAYLOAD_KG, sum(arms["elbow"]), LIFT_S),
+        ("shoulder_yaw", "lift", "its declared torque", yaw, LIFT_S),
+        ("elbow", "lift", "%.0f kg, forearm level" % PAYLOAD_KG, sum(arms["elbow"]), LIFT_S),
+        ("trunk_pitch", "lift", "%.0f kg in the hands, leaning %.0f deg" % (PAYLOAD_KG, LIFT_LEAN_DEG),
+         trunk_lean(body_mass, LIFT_LEAN_DEG, PAYLOAD_KG), LIFT_S),
+        ("shoulder_pitch", "held", "%.0f kg hugged, two hands" % HUG_KG, HUG_KG / 2 * G * HUG_SHOULDER + s_self, None),
+        ("elbow", "held", "%.0f kg hugged, two hands" % HUG_KG, HUG_KG / 2 * G * HUG_ELBOW + e_self, None),
+        ("trunk_pitch", "held", "%.0f kg hugged, upright" % HUG_KG, HUG_KG * G * HUG_SHOULDER, None),
+    ]
+    return [(j, lv, w, t, need, stall_hold(module(j)[1], t)) for j, lv, w, t, need in rows]
 
 
 def main(argv=None):
@@ -374,8 +451,16 @@ def main(argv=None):
         for b in bad:
             print("  " + b)
     else:
-        print("Every module meets its joint's peak, reducer class, speed, running and walking RMS (people's and the robot's)")
+        print("Every module meets its joint's peak, reducer class, speed, running and walking RMS (people's and the robot's), lift hold")
         print("at %.1f kg; the set holds up to %.1f kg of body." % (a.mass + a.carry, limit))
+
+    print()
+    print("Static holds (maker's stall table, 30 to 100 °C on the bench; README §6k):")
+    for joint, level, what, t, need, held in static_holds(a.mass):
+        print("  %-15s %-5s %-38s %5.0f Nm  %-16s %s" % (
+            joint, level, what, t, module(joint)[1],
+            "not in the table" if held is None else "sustainable" if held == float("inf") else "%.0f s" % held
+            + (" or more" if t <= STALL_HOLD[module(joint)[1]][0 if STALL_HOLD[module(joint)[1]][0][1] else 1][0] else "")))
 
     per_kg, fixed = split(a.mass)
     d_legs, d_fixed = densities(a.mass)
@@ -414,16 +499,16 @@ def main(argv=None):
     print("arms, wrists and neck on their bought modules (%.1f kg)" % fixed_kg)
     print("=" * 66)
     print("  %8s  %9s  %7s  %-28s" % ("Nm/kg", "mass kg", "f_act", "source"))
-    band_lo, band_hi = 0.25, 0.35
+    band_lo, band_hi = 0.25, 0.36   # top raised from 0.35 on 2026-11-24 (Plone); the band has no source (spec 02.2)
     for d, label in DENSITIES + [(d_legs, "the bought modules of JOINT_MODULE")]:
         m = per_kg * a.mass / d + fixed_kg
         f = m / a.mass
-        print("  %8.1f  %9.1f  %7.2f  %-28s %s"
+        print("  %8.1f  %9.1f  %7.3f  %-28s %s"
               % (d, m, f, label, "in range" if band_lo <= f <= band_hi else ""))
     print()
     print("spec 02.2 assumes f_act in %.2f-%.2f (scaling part + fixed part / body)." % (band_lo, band_hi))
     f_bought = (legs + fixed_kg) / a.mass
-    print("With the bought modules f_act is %.2f%s." % (f_bought, "" if band_lo <= f_bought <= band_hi else ", OUTSIDE that range"))
+    print("With the bought modules f_act is %.3f%s." % (f_bought, "" if band_lo <= f_bought <= band_hi else ", OUTSIDE that range"))
     return 1 if bad or not band_lo <= f_bought <= band_hi else 0
 
 

@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-24T05:39:45Z",
+    "timestamp": "2026-11-24T06:10:00Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -91,7 +91,7 @@
       "type": "application",
       "bom-ref": "hardware/electrical/actuator_sizing.py",
       "name": "hardware/electrical/actuator_sizing.py",
-      "version": "sha256:1b0cf023964e",
+      "version": "sha256:f2ac8f025bb9",
       "description": "Joint torque table and actuator sizing",
       "supplier": {
         "name": "Plone Mraz"
@@ -106,7 +106,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "1b0cf023964e37ea8e1db11368079e0f96bfa41bf06ad2f50781cb226e1af82a"
+          "content": "f2ac8f025bb949c59218ab7971f7c7143b0bdb7c3642ea3f0d14d45e269f88b4"
         }
       ],
       "scope": "excluded",
@@ -121,7 +121,7 @@
       "type": "application",
       "bom-ref": "scripts/gems_budget.py",
       "name": "scripts/gems_budget.py",
-      "version": "sha256:17be1c26b48f",
+      "version": "sha256:d2a697a88420",
       "description": "Mass-energy-power budget model and spec check",
       "supplier": {
         "name": "Plone Mraz"
@@ -136,7 +136,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "17be1c26b48f3bc0d1dcd81b051d0c108b4bc72b094bb98994154d3f782e47c2"
+          "content": "d2a697a88420bd584d58f5e5bee591aafec8cb36f2ebbf8bdc7f33b51e4f4239"
         }
       ],
       "scope": "excluded",
@@ -181,7 +181,7 @@
       "type": "application",
       "bom-ref": "hardware/sim-model/generate_urdf.py",
       "name": "hardware/sim-model/generate_urdf.py",
-      "version": "sha256:3eb92d74dec2",
+      "version": "sha256:2dc8fa1e5ea5",
       "description": "URDF generator and audit",
       "supplier": {
         "name": "Plone Mraz"
@@ -196,7 +196,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "3eb92d74dec2925fdb92a0bfd0e550a7f40e6dac003fa3d564dd588f8b8aac33"
+          "content": "2dc8fa1e5ea5c0fa5654119fc348669ff604da323286aedfee8dfc557b00d613"
         }
       ],
       "scope": "excluded",
@@ -211,7 +211,7 @@
       "type": "application",
       "bom-ref": "hardware/mechanical/skeleton/generate_skeleton.py",
       "name": "hardware/mechanical/skeleton/generate_skeleton.py",
-      "version": "sha256:8deb35632fbd",
+      "version": "sha256:5f4ad49685ce",
       "description": "CAD skeleton generator (FreeCAD) and audit against the URDF",
       "supplier": {
         "name": "Plone Mraz"
@@ -226,7 +226,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "8deb35632fbdcc417c501c4b9a4a198f8e47d493107c7aa4114d6a19ccaf1b79"
+          "content": "5f4ad49685ceeb4b5902bcf2c348fcc85cc842f2bc0003ffd69634309024b8c7"
         }
       ],
       "scope": "excluded",
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:55ebc6a351cd",
+      "version": "sha256:f46357f6724a",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "55ebc6a351cd8549afd4200c327b23152af128b3ec2e26d43046def87d682c14"
+          "content": "f46357f6724a0dc2ab0dc5b92f322593b037add17f21d5a10f8a58149d65e5c9"
         }
       ],
       "scope": "excluded",

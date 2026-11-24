@@ -21,7 +21,7 @@ These are inputs to the design brief (ID-1) and to colour, material and finish (
 
 ## Where it meets the specification
 
-Read against the reference design at the declared operating point — 1.65 m, ~106 kg, 2 h with a dock, 65% armour coverage (D-8, 2026-09-26; ~106 kg since 2026-11-23, when walking's RMS and the hip's frontal plane entered the module check, ~98 kg earlier that day when a bought module was declared at each joint, ~82 kg before that, ~96 kg before; 1.75 m, 129.5 kg and 4 h when the concept was first compared). None of these is a verdict on the concept; each is a point ID-2 and the packaging study M-2 must resolve, by changing the form or by choosing a different operating point (D-8).
+Read against the reference design at the declared operating point — 1.65 m, ~107 kg, 2 h with a dock, 65% armour coverage (D-8, 2026-09-26; ~107 kg since 2026-11-24, when static holds did too, ~106 kg from 2026-11-23, when walking's RMS and the hip's frontal plane entered the module check, ~98 kg earlier that day when a bought module was declared at each joint, ~82 kg before that, ~96 kg before; 1.75 m, 129.5 kg and 4 h when the concept was first compared). None of these is a verdict on the concept; each is a point ID-2 and the packaging study M-2 must resolve, by changing the form or by choosing a different operating point (D-8).
 
 | Concept | Specification | Tension |
 |---|---|---|

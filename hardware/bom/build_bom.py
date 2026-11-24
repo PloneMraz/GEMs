@@ -64,11 +64,11 @@ LIFECYCLE = {"CONCEPT", "UPG"}
 # it is ranked first in avl.csv with the alternates. Only the leg and trunk
 # density, derived from those modules, is quoted for a joint not yet sized.
 LEG_DENSITY = densities()[0]
-PACK_KWH, CELLS_KG = 4.22, 9.4            # gems_budget at the D-8 point: 2 h, 65%, 1.65 m
+PACK_KWH, CELLS_KG = 4.28, 9.5            # gems_budget at the D-8 point: 2 h, 65%, 1.65 m
 ARMOUR_M2, ARMOUR_KG_M2 = 1.04, 7.5       # 65% of 1.6 m2; held at 7.5 (2026-11-22), see GEM-18010
 SKIN_M2, FINE_CM2 = 1.60, 500             # skin area at 1.65 m and the fine region of spec 05.2
 ORDINARY_CM2 = round(SKIN_M2 * 1e4 - FINE_CM2)
-BODY_MASS_BUDGET = 105.6    # scripts/gems_budget.py at the D-8 point
+BODY_MASS_BUDGET = 107.0    # scripts/gems_budget.py at the D-8 point
 # Masses read for the rank-1 candidate of a part (hardware/bom/README.md, "The
 # fixed mass, bottom-up", 2026-11-23): (kg, basis). Only a figure the maker or a
 # seller states for that part; comparables stay in the README, not here.
@@ -209,7 +209,7 @@ def build():
     S = lambda pn, d: b.part(pn, d, "MFG", "MAKE", level="L2",
                              ref="hardware/mechanical 1",
                              req="CFRP long members, 7075-T6 at joints",
-                             notes="Section sizing IMPL; structure allowance 31.7 kg in total (gems_budget, f_str 0.30)")
+                             notes="Section sizing IMPL; structure allowance 32.1 kg in total (gems_budget, f_str 0.30)")
 
     top = b.part("GEM-10000", "GEMs body, reference design A (2 h with dock, 65% armour, 1.65 m)",
                  "ASSY", "MAKE", level="L1", ref="spec 02.5; protocol/conformance-record.md",
@@ -412,7 +412,7 @@ def build():
     b.use(vent, b.part("GEM-18510", "Cooling fan, axial, 48 V", "OTS", "BUY", mass="0.128",
                        basis="candidate Delta FFB0948VH-F00, 128 g, maker's specification",
                        level="L1", ref="spec 04.8; hardware/electrical 6i",
-                       req="~147 CFM in all at 1.0 m/s, ~89 at 0.5 m/s, against filters, louvres and ducts; "
+                       req="~152 CFM in all at 1.0 m/s, ~92 at 0.5 m/s, against filters, louvres and ducts; "
                            "-10 to +60 C; all fans together <= 57 dB(A) at 1 m at full flow (spec 04.8)",
                        notes="count from the zones of spec 04.8, a first figure; module fans at the shrouds "
                              "not yet chosen; candidates in avl.csv"),

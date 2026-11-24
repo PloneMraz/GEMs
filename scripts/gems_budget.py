@@ -386,8 +386,8 @@ def collect_claims():
                   ("| the bought modules, %d Nm/kg | %.1f kg | **%.2f** |" % (round(d), m, m / REF_MASS)),
                   "actuator mass and f_act, legs and trunk at %d Nm/kg" % d))
     c.append(("f_act floor", "spec/02-structure-and-motion.md",
-              "a leg and trunk density near %d Nm/kg" % round(per_kg * REF_MASS / (0.35 * REF_MASS - fixed_nm / ARM_DENSITY)),
-              "the leg and trunk density at which f_act touches 0.35"))
+              "a leg and trunk density near %d Nm/kg" % round(per_kg * REF_MASS / (0.36 * REF_MASS - fixed_nm / ARM_DENSITY)),
+              "the leg and trunk density at which f_act touches 0.36"))
 
     # 02.6 carry capacity at both operating points
     for t in (2, 4):

@@ -485,7 +485,7 @@ def audit(robot, total_mass):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[1],
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--mass", type=float, default=103.6,
+    ap.add_argument("--mass", type=float, default=105.6,
                     help="total body mass in kg (default: the D-8 reference point)")
     ap.add_argument("--out", default=None, help="output path")
     ap.add_argument("--check", action="store_true",

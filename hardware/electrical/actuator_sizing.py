@@ -25,7 +25,7 @@ import argparse
 import sys
 
 G = 9.81
-REF_MASS = 103.6           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
+REF_MASS = 105.6           # the reference point of D-8 (2 h, 65% armour, 1.65 m), scripts/gems_budget.py; checked there
 
 # Bought module per joint (spec 02.6, decided 2026-11-23: the actuator mass is
 # declared at the joint, not as one density). Each is the lightest module that
@@ -60,7 +60,7 @@ HOLD_60S = {
     "EC-A10020-P2-24": 79.1, "EC-A13715-P1-12.67": 150.0,
 }
 JOINT_MODULE = {
-    "hip_pitch": "SETZ90CI-1FG", "hip_roll": "EC-A10020-P2-24", "hip_yaw": "EC-A4315-P2-36",
+    "hip_pitch": "EC-A10020-P2-24", "hip_roll": "EC-A10020-P2-24", "hip_yaw": "EC-A4315-P2-36",
     "knee": "EC-A13715-P1-12.67", "ankle_pitch": "RMD-X12-P20-320", "ankle_roll": "EC-A4315-P2-36",
     "trunk_pitch": "SETZ70CI-1HA", "trunk_roll": "SEAF70A16NG02", "trunk_yaw": "EC-A6416-P2-25",
     "shoulder_pitch": "EC-A10020-P1-12", "shoulder_roll": "EC-A10020-P1-12",
@@ -90,8 +90,9 @@ RUN_RMS = {"hip_pitch": 0.56, "knee": 0.96, "ankle_pitch": 0.77,
 WALK_RMS = {"hip_pitch": 0.400, "hip_roll": 0.536, "hip_yaw": 0.118, "knee": 0.334,
             "ankle_pitch": 0.760, "ankle_roll": 0.124,
             "trunk_pitch": 0.127, "trunk_roll": 0.147, "trunk_yaw": 0.224}
-# The simulated robot's walking RMS, the stress case (README §6g, §6j): reported,
-# not required. A module below it cannot hold that gait, whatever the cooling.
+# The simulated robot's walking RMS, the stress case: required of the legs as
+# well (Plone, 2026-11-24; README §6j), since no controller yet walks this body
+# like a person, and no cooling helps a module below the torque it must hold.
 WALK_RMS_OLI = {"hip_pitch": 0.824, "hip_roll": 0.796, "hip_yaw": 0.183, "knee": 0.736,
                 "ankle_pitch": 0.683, "ankle_roll": 0.183}
 
@@ -329,15 +330,16 @@ def module_check(body_mass):
             bad.append("%s: %s %s %.0f Nm < running RMS %.0f Nm"
                        % (name, model, "60 s" if model in HOLD_60S else "continuous",
                           held, RUN_RMS[name] * body_mass))
-        if name in WALK_RMS and cont < WALK_RMS[name] * body_mass:
+        walk = max(WALK_RMS.get(name, 0.0), WALK_RMS_OLI.get(name, 0.0))
+        if cont < walk * body_mass:
             bad.append("%s: %s continuous %.0f Nm < walking RMS %.0f Nm"
-                       % (name, model, cont, WALK_RMS[name] * body_mass))
+                       % (name, model, cont, walk * body_mass))
         if basis == "per_kg":
             limit = min(limit, peak / val)
             if name in RUN_RMS:
                 limit = min(limit, held / RUN_RMS[name])
-            if name in WALK_RMS:
-                limit = min(limit, cont / WALK_RMS[name])
+            if walk:
+                limit = min(limit, cont / walk)
     return bad, limit
 
 
@@ -372,13 +374,8 @@ def main(argv=None):
         for b in bad:
             print("  " + b)
     else:
-        print("Every module meets its joint's peak, reducer class, speed, running and walking RMS")
+        print("Every module meets its joint's peak, reducer class, speed, running and walking RMS (people's and the robot's)")
         print("at %.1f kg; the set holds up to %.1f kg of body." % (a.mass + a.carry, limit))
-
-    short = [(n, module(n)[1], module(n)[3], v * a.mass) for n, v in WALK_RMS_OLI.items() if module(n)[3] < v * a.mass]
-    print()
-    print("Stress case, the simulated robot's gait at 1.0 m/s (not required): "
-          + ("; ".join("%s %s %.0f Nm continuous < %.0f Nm RMS" % x for x in short) if short else "held by every leg module"))
 
     per_kg, fixed = split(a.mass)
     d_legs, d_fixed = densities(a.mass)

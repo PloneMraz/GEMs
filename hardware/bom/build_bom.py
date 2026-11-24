@@ -413,7 +413,7 @@ def build():
                        basis="candidate Delta FFB0948VH-F00, 128 g, maker's specification",
                        level="L1", ref="spec 04.8; hardware/electrical 6i",
                        req="~147 CFM in all at 1.0 m/s, ~89 at 0.5 m/s, against filters, louvres and ducts; "
-                           "-10 to +60 C; noise limit open",
+                           "-10 to +60 C; all fans together <= 57 dB(A) at 1 m at full flow (spec 04.8)",
                        notes="count from the zones of spec 04.8, a first figure; module fans at the shrouds "
                              "not yet chosen; candidates in avl.csv"),
           "7", "2 intake, 2 exhaust, 1 per lower leg, 1 for the compute branch")

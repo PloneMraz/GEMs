@@ -91,7 +91,7 @@ What the laboratory can do and the market cannot — self-healing skin, variable
 | Armour shell: the hybrid's areal density as moulded, with finish and curvature; the use-temperature limit of SJ100-240H itself (≤ 70 °C is Dyneema's [29]); spike level 1 with the aramid plies on the outer face | A moulder's data and test (plan M-7) |
 | Padding thickness that keeps the armour shell below 70 °C over hot modules | The module temperatures of [electrical §6e](../electrical/README.md), up to 100 °C; plan M-8 |
 | Heat reaching the armour shell's face, through the textile in a fire and through the outer aramid plies | No heat-transfer or conductivity figure on the data sheets read [27][28] |
-| Ventilation (spec 04.8): louvred slots through the armour shell, shrouds at the hot modules, ducts along the spine, local loops at knees and ankles; the fans, their noise and power; the filter layer on every slot and its maintenance; protection against water | A thermal network at 35 °C, bought fans and filters (plan M-11); the modules' mounting faces; water, for discussion |
+| Ventilation (spec 04.8): louvred slots through the armour shell, shrouds at the hot modules, ducts along the spine, local loops at knees and ankles; the fans and their power, inside 57 dB(A) at 1 m; the filter layer on every slot, about 16 × 10 cm at each end of the main path, and its maintenance; protection against water | A thermal network at 35 °C, bought fans and filters (plan M-11); the modules' mounting faces; water, for discussion |
 
 ## 6. References
 

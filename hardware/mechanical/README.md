@@ -74,7 +74,7 @@ Against 1.6 m² of skin area at 1.65 m, at the coverage bands of [spec 02.4](../
 | Impact padding, pinch points and heat break | Rogers PORON XRD, foam [14]; Figure 03 and 1X NEO use multi-density foam and a polymer lattice [11][12][13] | 0.14–0.40 kg/m² per mm, typical; thickness `⟦IMPL⟧` |
 | Armour shell | Hybrid laminate, UHMWPE (Sinofibra SJ100-240H [24]) with aramid spike plies, moulded to the GEMs drawing | 7.5 kg/m² in the loop; 7.22 from the data sheets |
 | Tactile skin | Ensuring Technology HexSkin [20] | `⟦IMPL⟧` — not stated by the vendor |
-| Textile | Aramid outer-shell fabric, TenCate Nomex Advance Truecolor AV 9400 [27], certified to EN 469; the requirement is NFPA 1970 (2025) [19] | **0.20 kg/m²** |
+| Textile | Aramid outer-shell fabric, TenCate Nomex Advance Truecolor AV 9400 [27], EN ISO 15025 compliant, certified to EN 469; the requirement is EN ISO 15025 since 2026-11-24, NFPA 1970 (2025) [19] moving with group 3 of spec 01 to the upgrade path | **0.20 kg/m²** |
 
 What the laboratory can do and the market cannot — self-healing skin, variable stiffness, electrochromic colour, whole-body touch at the density of spec 05.2, responsive padding [23] — is on the upgrade path of [spec 04.7](../../spec/04-shell.md#47-upgrade-path), with no place reserved for it.
 
@@ -91,7 +91,6 @@ What the laboratory can do and the market cannot — self-healing skin, variable
 | Armour shell: the hybrid's areal density as moulded, with finish and curvature; the use-temperature limit of SJ100-240H itself (≤ 70 °C is Dyneema's [29]); spike level 1 with the aramid plies on the outer face | A moulder's data and test (plan M-7) |
 | Padding thickness that keeps the armour shell below 70 °C over hot modules | The module temperatures of [electrical §6e](../electrical/README.md), up to 100 °C; plan M-8 |
 | Heat reaching the armour shell's face, through the textile in a fire and through the outer aramid plies | No heat-transfer or conductivity figure on the data sheets read [27][28] |
-| Textile: NFPA 1970 certification | The candidate fabric holds EN 469 [27] |
 | Ventilation (spec 04.8): louvred slots through the armour shell, shrouds at the hot modules, ducts along the spine, local loops at knees and ankles; the fans, their noise and power; the filter layer on every slot and its maintenance; protection against water | A thermal network at 35 °C, bought fans and filters (plan M-11); the modules' mounting faces; water, for discussion |
 
 ## 6. References

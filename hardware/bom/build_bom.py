@@ -398,10 +398,10 @@ def build():
                         uom="SET", mass="%.2f" % (0.200 * SKIN_M2),
                         basis="fabric only: 200 g/m2 over %.1f m2, seams and fastenings not counted" % SKIN_M2,
                         level="L2", ref="spec 04.3; spec 04.4",
-                        req="fabric to NFPA 1970 (2025) outer-shell flame resistance; removable; "
+                        req="fabric to EN ISO 15025 limited flame spread (spec 04.4; NFPA 1970 is UPG with spec 01 group 3); removable; "
                             "joints in textile; colour fixed",
                         notes="patterned by GEMs on the surfaces of ID-2, sewn to drawing from bought "
-                              "fabric (plan M-8); candidate fabric in avl.csv holds EN 469, not NFPA 1970"))
+                              "fabric (plan M-8); candidate fabric in avl.csv meets EN ISO 15025 and holds EN 469"))
 
     # Upgrade path (spec 04.7): in the item master, not in the structure.
     for pn, d, cat, ref, req in [

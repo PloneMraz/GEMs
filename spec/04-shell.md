@@ -57,15 +57,13 @@ The skin lies under the textile and on the hard shell because the alternatives e
 
 ## 4.4 Fire resistance
 
-The body takes **limited heat, and does not fight fire directly at this level** (2026-11-22). Group 3 of [01](01-architecture.md) keeps house fires, with the body wearing an outer protective garment over the shell and calling for support; fighting fire directly is on the [upgrade path](#47-upgrade-path).
+**The baseline does not enter fires** (2026-11-24). Civil rescue in house fires, group 3 of [01](01-architecture.md), is on the [upgrade path](#civil-rescue-in-fires-and-water), and with it the outer protective garment and NFPA 1970, the firefighting standard the textile was held to until then. What stays is a shell that does not feed a flame indoors: the textile flame-resistant, the layers under it shielded.
 
 | Layer | Anchor | Status |
 |---|---|---|
-| Outer textile | **NFPA 1970 (2025)**, the standard for structural firefighting ensembles. Its flame resistance test admits an average char length of no more than 100 mm, an average afterflame of no more than 2.0 s, and no melting or dripping [19] | The requirement, kept. The candidate fabric is certified to **EN 469** [27], the European firefighting standard, not to NFPA 1970: an equivalent certification, recorded as such until an NFPA 1970 one is in hand |
-| Armour shell | No fire standard of its own (2026-11-22): it lies under the textile, and the body leaves a fire rather than staying in it. What bounds it is its UHMWPE, ≤ 70 °C continuous and melting at 144–152 °C [29]; the aramid plies, on its outer face, keep their strength to 250 °C in short peaks [28] (4.2) | — |
+| Outer textile | **EN ISO 15025** limited flame spread, which the candidate fabric meets before and after five launderings [27] | The baseline's requirement since 2026-11-24. The candidate is also certified to EN 469, the European firefighting standard [27]. NFPA 1970 (2025), the requirement until that date [19], moves with group 3 to the upgrade path |
+| Armour shell | No fire standard of its own (2026-11-22): it lies under the textile. What bounds it is its UHMWPE, ≤ 70 °C continuous and melting at 144–152 °C [29]; the aramid plies, on its outer face, keep their strength to 250 °C in short peaks [28] (4.2) | — |
 | Tactile skin | Shielded by the textile | — |
-
-Temperatures and durations beyond what the standard sets stay `⟦IMPL⟧`, anchored to the standard rather than derived here. So does the temperature reaching the armour shell's face while the body leaves a fire: the textile's data sheet gives flame spread and shrinkage, not heat transfer [27].
 
 ## 4.5 The three-layer division
 
@@ -73,7 +71,7 @@ Temperatures and durations beyond what the standard sets stay `⟦IMPL⟧`, anch
 |---|---|---|---|
 | **Impact padding** | Falls, by certified protectors at knees, elbows, shoulders, hips and back; pinch points and the heat break between the shell and the modules, by foam | TM | Protectors 1.10 kg as a set [35][37]; foam 0.14–0.40 kg/m² per mm [14], thickness `⟦IMPL⟧` |
 | **Armour shell** | Group 5 protection and the body's form | TM | 7.5 kg/m² in the loop; 7.22 for the hybrid [24][16] |
-| **Outer layer** | Contact force over the body; textile cover and colour; the fire anchor | TM | Textile 0.20 kg/m² [27], ~0.32 kg over 1.6 m²; skin `⟦IMPL⟧` |
+| **Outer layer** | Contact force over the body; textile cover and colour; flame resistance | TM | Textile 0.20 kg/m² [27], ~0.32 kg over 1.6 m²; skin `⟦IMPL⟧` |
 
 > **This connects straight back to the mass loop.** All three layers are **non-scaling mass**: they enter `m_ext` and are **multiplied by `γ`**. The armour shell is the armour term of [02.5](02-structure-and-motion.md#25-mass-envelope), 7.8 kg at 65% coverage. The padding, the tactile skin and the textile sit in its fixed mass, 15–25 kg, `⟦IMPL⟧`, where "shell" stands. Each of their kilograms costs `γ` kg of body, as the armour's does.
 
@@ -126,9 +124,15 @@ The layout of [05.2](05-sensing.md#52-tactile-layout) — ~300/cm² at the hands
 
 A non-Newtonian, fluid-based material that stays compliant in ordinary interaction and stiffens under impact; on a 42 kg humanoid it let the robot take repeated falls, from 3 m among them, without damage [23]. **LAB**, 2026; the abstract gives no thickness or mass.
 
+### Civil rescue in fires and water
+
+Group 3 of [01](01-architecture.md), moved here on 2026-11-24 (Plone): rescue in house fires and in ordinary-depth water. With the robotics of today an independent author cannot build a body that serves it. What it would ask of the body, as far as this specification has met it:
+- **Fire.** An outer protective garment over the shell, its textile to NFPA 1970 (2025), the standard for structural firefighting ensembles — an average char length of no more than 100 mm, an average afterflame of no more than 2.0 s, no melting or dripping [19] — and the body calling for support rather than fighting the fire. The garment covers the ventilation slots of 4.8, so cooling stops while it is on: the time in a fire is the time the modules can store their heat. The temperature reaching the armour shell's face through the textile is not known: the fabric's data sheet gives flame spread and shrinkage, not heat transfer [27].
+- **Water.** A ventilated body takes water in through its slots; wading needs protection against water that the baseline does not declare (4.8).
+
 ### Fighting fire directly
 
-A shell that takes a fire itself, rather than through an outer garment (4.4).
+A shell that takes a fire itself, rather than through an outer garment (civil rescue above).
 
 **Operating point: `⟦CTRL⟧`.** The baseline sets the layers; armour coverage and level, and the operating point an upgrade lands on, are the operator's.
 
@@ -140,7 +144,7 @@ A shell that takes a fire itself, rather than through an outer garment (4.4).
 
 **Dust: filters on every slot, and maintenance** (2026-11-24). A filter layer, bought media, covers each intake and exhaust slot behind the textile mesh, replaceable from outside when the textile cover comes off (4.3). Its pressure drop enters the sizing of the fans, and as it loads with dust the flow falls: the firmware sees it as fan power or speed rising against module temperature, and calls for service. A maintenance procedure goes with it — the slots and filters checked clear before use, as the G1's checklist checks its fan's intake and exhaust [41], and the filters replaced at an interval set from the media's data and the dust of the space, `⟦IMPL⟧`.
 
-**Water: open**, for discussion. Group 3 of [01](01-architecture.md) still lists house fires and ordinary-depth water; a ventilated body meets the second only with protection not yet declared, and in a fire its outer protective garment (4.4) covers the slots, so that cooling stops while the garment is on.
+**Water: open**, for discussion — splashes and spills indoors, since rescue in water is on the [upgrade path](#civil-rescue-in-fires-and-water) with group 3 of [01](01-architecture.md) (2026-11-24).
 
 **Why not the surface alone.** The joints give off about 0.6 kW walking at 0.5 m/s and 1.1 kW at 1.0 m/s [electrical §6h](../hardware/electrical/README.md#6h-walking-heat-by-speed-and-the-hip-roll-lever--m-11-2026-11-24). Through the skin of 1.60 m² by radiation, 4.5 W/m²K, and natural convection, 3.4 W/m²K [43], 0.7 kW would need the outer surface some 56 K above ambient standing and about 39 K walking at 0.5 m/s, before the padding adds 4.5–6.6 K per millimetre; the shell is an insulator, and its UHMWPE stops at 70 °C (4.1). So the heat leaves by its own path.
 

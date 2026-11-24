@@ -376,7 +376,8 @@ def build():
                               "2 x 75 g hip (D3O Diablo L2); 336 g back (D3O BP4 L1, size M)",
                         level="L2", ref="spec 04.1; spec 02.6 row 8",
                         req="EN 1621-1 Level 2 at the limbs, EN 1621-2 Level 1 at the back, "
-                            "held provisionally (2026-11-23) until a fall model sizes the protection",
+                            "held provisionally (2026-11-23) until a fall model sizes the protection; at the knees "
+                            "also one-knee kneeling, up to 1.25 kN static (2026-11-24, spec 04.1), no maker figure",
                         notes="upper service temperature not stated by the maker, over modules to 100 C "
                               "(plan M-11); held on the body by GEMs integration (plan M-8); candidates in avl.csv"))
     b.use(shell, b.part("GEM-18010", "Armour shell, moulded hybrid laminate, UHMWPE and aramid spike plies",

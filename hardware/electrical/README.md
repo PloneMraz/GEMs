@@ -619,7 +619,7 @@ The network of §6i on these heats, with Oli's trunk and shoulders: about **85 C
 
 ## 6k. Static holds — D-2, 2026-11-24
 
-**Decided 2026-11-24 (Plone).** A load is held as briefly as possible, at three levels ([spec 02.6](../../spec/02-structure-and-motion.md#static-holds)): at most 2 s passing through full reach, at most 10 s picking up or setting down, and no declared limit where the load is close and the torque low. The 2 s and 10 s are design choices; no source gives them. This closes what §6f left open for the arms and trunk pitch, and not for the knee (a squat or a kneel held).
+**Decided 2026-11-24 (Plone).** A load is held as briefly as possible, at three levels ([spec 02.6](../../spec/02-structure-and-motion.md#static-holds)): at most 2 s passing through full reach, at most 10 s picking up or setting down, and no declared limit where the load is close and the torque low. The 2 s and 10 s are design choices; no source gives them. This closes what §6f left open for the arms and trunk pitch; the knee, in a squat or a kneel, is in [§6l](#6l-squatting-and-kneeling--d-2-2026-11-24).
 
 **Why shortening the hold was not enough.** SEmotor's sheet gives a peak held 1 s or less and a continuous torque, and nothing between. The elbow's SETZ70CI-1DA holds 9 Nm, of which the level forearm takes 6, so about 1 kg is left; two hands hugging 20 kg ask each elbow 25. Trunk pitch's SETZ70CI-1HA holds 35 Nm, and 20 kg hugged upright asks 59. Lifts and carries last longer than 1 s, so no maker's figure covers them.
 
@@ -653,6 +653,47 @@ The network of §6i on these heats, with Oli's trunk and shoulders: about **85 C
 - Shoulder yaw's 60 Nm, a declared figure with no source.
 - The trunk's mass fractions and the coupling's share.
 - The fit: the EC-A8116-P1-18 is Φ105 mm at the elbow, against a 90 mm upper arm and a 76 mm forearm in the URDF (plan M-2).
+
+## 6l. Squatting and kneeling — D-2, 2026-11-24
+
+**Decided 2026-11-24 (Plone).** The body squats and kneels to work for as long as the situation asks ([spec 02.6](../../spec/02-structure-and-motion.md#static-holds)). The controller picks the posture by the time expected and ends it on measured temperature, with a reserve for standing up. The hardware must hold a squat for at least 5 min with no load, the trunk leaning 30° at most, and 30 s with 20 kg hugged, leaning 10° at most — design choices, under half and a third of what the bench shows, since the body is not the bench. Kneeling is on one knee by preference, always, over both.
+
+**The squat.** Planar, both legs alike, feet flat, the URDF's lengths and Winter's mass fractions, the shank to the ankle's 30°, the centre of mass 3 cm inside the heel and 6 inside the toe; at each knee bend to 135° the lean and shank that ask least of the knee, and the worst bend of those, 115° (`squat` in `actuator_sizing.py`). Held on the makers' benches, from the stall tables:
+
+| Squat | Knee (EC-A13715) | Hip pitch (P2-24) | Trunk pitch (P2-24) |
+|---|---|---|---|
+| No load, leaning 30° at most — 5 min asked | 106 Nm, 669 s | 56 Nm, 1335 s or more | 85 Nm, 1001 s |
+| 20 kg hugged, leaning 10° at most — 30 s asked | 144 Nm, 95 s | 58 Nm, 1335 s or more | 102 Nm, 224 s |
+
+With no load, leaning takes torque off the knee: at 10° at most, the same squat asks 144 Nm, 95 s. With 20 kg hugged it puts it on trunk pitch: at 15° the trunk asks 123 Nm, 53 s. So the lean allowed depends on the load, and the knee's module stays. The limit is the reference point's: at the 4-hour body, 136.0 kg, the squats ask the knee 135 and 183 Nm, which the EC-A13720-P1-11.4 holds for about 178 and 24 s — no module read meets them there — and at 30 kg of fixed mass, 131 kg, it is at their edge, 292 s.
+
+**Kneeling on one knee.** In three dimensions, on the URDF with Winter's fractions: the rear knee's axis 0.10 m above the ground (the module's 85 mm radius and padding, an assumption), the rear toes on the ground and the front foot flat; a few hundred postures sampled, and in each the contact forces, friction 0.4, chosen by linear programming so that the largest torque over its module's long hold is least. The figures are upper bounds of what the best posture asks.
+
+| Posture | Largest joint torque | On the knee(s) |
+|---|---|---|
+| One knee, no load | 22–26 Nm: both knees, the front hip pitch, the rear hip roll | 700–760 N on the one; front foot 230–260, rear toes 50–90 |
+| One knee, 20 kg hugged | 34–38 Nm: front knee and hip pitch, rear hip roll; trunk pitch 31 | 820–890 N |
+| Both knees, no load | under 5 Nm | about 460 N each |
+| Both knees, 20 kg | 20 Nm | — |
+
+Both knees asks less, and it is not preferred: standing up passes through one knee in any case, and from one knee it is one movement. What one knee costs is a contact load of nearly twice, which the knee's pad must carry ([spec 04.1](../../spec/04-shell.md#41-impact-padding)), and a torque every module holds without trouble.
+
+**Standing up from one knee**, as a static, the rear knee just off the ground (0.12–0.18 m), which is the heaviest part:
+
+| Rise | Front knee | Rear knee | Front hip pitch | On the ground |
+|---|---|---|---|---|
+| No load, rear toes pushing | 97–109 Nm | 91–102 Nm | 100–112 Nm | front foot 706–736 N, rear toes 313–344 |
+| 20 kg hugged, rear toes pushing | 117–134 Nm | 105–137 Nm | 122–143 Nm | 822–871 N; 375–424 |
+| No load, rear toes doing nothing | about 298 Nm | — | — | one foot carries all |
+| 20 kg hugged, rear toes doing nothing | about 313 Nm | — | — | one foot carries all |
+
+The last two are at the knee's 320 Nm peak before any acceleration, so the controller must keep the rear toes pushing. The first two leave more than half the peaks to the movement, whose dynamics are not computed.
+
+**What it does not settle.**
+- The dynamics of rising, from one knee, a deep squat or the floor, and no published figure for them (§6c); the temperature reserve kept for standing up.
+- The ankle pitch in a squat carries up to about 60 Nm of the X12's 85 rated, with no stall table; the URDF's foot is 12.5 cm either side of the ankle, so the heel reaches further back than a person's.
+- What the knee kneels on: the pad, the skin and the Φ170 mm module under it (plan M-8).
+- The bench's conditions, as in §6k.
 
 ## 7. References
 

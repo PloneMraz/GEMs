@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-24T06:10:00Z",
+    "timestamp": "2026-11-24T07:06:28Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -91,7 +91,7 @@
       "type": "application",
       "bom-ref": "hardware/electrical/actuator_sizing.py",
       "name": "hardware/electrical/actuator_sizing.py",
-      "version": "sha256:f2ac8f025bb9",
+      "version": "sha256:4cf78e5552d1",
       "description": "Joint torque table and actuator sizing",
       "supplier": {
         "name": "Plone Mraz"
@@ -106,7 +106,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "f2ac8f025bb949c59218ab7971f7c7143b0bdb7c3642ea3f0d14d45e269f88b4"
+          "content": "4cf78e5552d13c9b1923892be79f66d985dfe40bfa3b07162ad5e160946972bc"
         }
       ],
       "scope": "excluded",
@@ -241,7 +241,7 @@
       "type": "application",
       "bom-ref": "hardware/bom/build_bom.py",
       "name": "hardware/bom/build_bom.py",
-      "version": "sha256:f46357f6724a",
+      "version": "sha256:bc7d496606b4",
       "description": "EBOM, MBOM and SBOM generator and check",
       "supplier": {
         "name": "Plone Mraz"
@@ -256,7 +256,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "f46357f6724a0dc2ab0dc5b92f322593b037add17f21d5a10f8a58149d65e5c9"
+          "content": "bc7d496606b4373fff3eb741e796057ff9cab34f37e7d153a73d31ec804c924d"
         }
       ],
       "scope": "excluded",

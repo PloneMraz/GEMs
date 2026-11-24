@@ -22,6 +22,7 @@ number counts the motor or the whole actuator.
 from __future__ import annotations
 
 import argparse
+import functools
 import sys
 
 G = 9.81
@@ -79,6 +80,7 @@ ARM_RATIO_MAX = {"elbow": 18, "shoulder_yaw": 18}
 STALL_HOLD = {
     "EC-A8116-P1-18":  [(25.0, None), (30.0, 483), (35.0, 228), (40.0, 162), (50.0, 112), (60.0, 15), (70.0, 3)],
     "EC-A10020-P1-12": [(50.0, 1133), (53.0, 827), (55.0, 621), (58.0, 512), (61.5, 318)],
+    "EC-A13715-P1-12.67": [(80.0, 1670), (105.0, 710), (130.0, 181), (160.0, 49), (170.0, 44), (195.0, 13)],
     "EC-A10020-P2-24": [(80.0, 1335), (86.0, 969), (90.0, 720), (96.0, 370), (100.0, 254), (110.0, 148), (122.0, 66), (127.0, 21)],
 }
 # Static holds, decided 2026-11-24 (Plone; spec 02.6, README §6k): a load at full
@@ -93,6 +95,15 @@ PASS_S, LIFT_S = 2.0, 10.0
 UPPER_FRAC, UPPER_COM, SHOULDER_HEIGHT = 0.536, 0.3035, 0.430
 LIFT_LEAN_DEG = 30.0       # trunk lean allowed with PAYLOAD_KG in the hands
 HUG_KG, HUG_SHOULDER, HUG_ELBOW = 20.0, 0.30, 0.20   # LOAD_CASES, two hands
+# Squatting to work, decided 2026-11-24 (Plone; README §6l): how long is the
+# situation's, and what the hardware must hold at least is (load kg, trunk lean
+# limit deg, seconds). Kneeling, on one knee by preference, is in README §6l.
+SQUATS = [(0.0, 30.0, 300.0), (HUG_KG, 10.0, 30.0)]
+# The squat: planar, both legs alike, feet flat. Lengths of the URDF and
+# Winter's mass fractions; shank tilt to the ankle's 30 deg, and the centre of
+# mass kept 3 cm inside the heel and 6 cm inside the toe.
+THIGH, SHANK, FOOT_HALF, UPPER_ABOVE_HIP, SHOULDER_ABOVE_HIP = 0.40, 0.40, 0.125, 0.399, 0.526
+PELVIS_FRAC, THIGH_FRAC, SHANK_FRAC = 0.142, 0.100, 0.0465
 # Speed a joint's module must reach, output rpm (README §6e): the knee's 11 rad/s
 # in running, hip pitch's 7.4 rad/s (the hip's highest in running at 2.5 m/s),
 # ankle pitch's 3.7 rad/s (walking; no running figure).
@@ -335,12 +346,12 @@ def densities(body_mass=REF_MASS):
 
 def module_check(body_mass):
     """Each joint's module against its joint at `body_mass`: peak, reducer
-    class, speed, running RMS, walking RMS and static lift. Returns (failures, body mass up
+    class, speed, running RMS, walking RMS and static holds. Returns (failures, body mass up
     to which every module still meets its joint's peak and RMS)."""
     rows = {name: t for name, _, t, _ in torque_table(body_mass)}
     bad, limit = [], float("inf")
     for joint, level, what, t, need, held in static_holds(body_mass):
-        if level == "lift" and (held is None or held < need):
+        if level in ("lift", "squat") and (held is None or held < need):
             bad.append("%s: %s holds %.0f Nm (%s) %s < %.0f s" % (
                 joint, module(joint)[1], t, what, "no figure" if held is None else "%.0f s" % held, need))
     for name, n, basis, val in JOINTS:
@@ -398,6 +409,42 @@ def trunk_lean(body_mass, deg, load_kg):
     return G * sin(radians(deg)) * (UPPER_FRAC * body_mass * UPPER_COM + load_kg * SHOULDER_HEIGHT)
 
 
+@functools.lru_cache(maxsize=64)
+def squat(body_mass, load_kg, lean_deg):
+    """The worst knee torque of a squat, per leg, over knee bends to 135 deg,
+    with the trunk lean (up to `lean_deg`) and shank tilt that make it least at
+    each bend. Returns (knee Nm, hip Nm of that posture, trunk pitch Nm at
+    `lean_deg`, knee bend deg)."""
+    from math import cos, radians, sin
+    mu, mp = UPPER_FRAC * body_mass, PELVIS_FRAC * body_mass
+    mt, ms = 2 * THIGH_FRAC * body_mass, 2 * SHANK_FRAC * body_mass
+    worst = (0.0, 0.0, 0)
+    for bend in range(15, 136, 5):
+        best = None
+        for tilt in range(0, min(30, bend) + 1):
+            kx = SHANK * sin(radians(tilt))
+            back = radians(bend - tilt)
+            hx, tx = kx - THIGH * sin(back), kx - THIGH / 2 * sin(back)
+            for lean in range(-5, int(lean_deg) + 1):
+                a = radians(lean)
+                ux = hx + UPPER_ABOVE_HIP * sin(a)
+                lx = hx + SHOULDER_ABOVE_HIP * sin(a) + HUG_SHOULDER
+                above = mu + mp + load_kg + mt
+                xa = (mu * ux + mp * hx + load_kg * lx + mt * tx) / above
+                com = (above * xa + ms * kx / 2) / (above + ms)
+                if not -FOOT_HALF + 0.03 <= com <= FOOT_HALF - 0.06:
+                    continue
+                knee = abs(above * G * (kx - xa) / 2)
+                if best is None or knee < best[0]:
+                    best = (knee, (mu * (ux - hx) + load_kg * (lx - hx)) * G / 2, bend)
+        if best and best[0] > worst[0]:
+            worst = best
+    a = radians(lean_deg)
+    trunk = G * (sin(a) * UPPER_FRAC * body_mass * UPPER_COM
+                 + load_kg * (SHOULDER_HEIGHT * sin(a) + HUG_SHOULDER * cos(a)))
+    return worst[0], worst[1], trunk, worst[2]
+
+
 def static_holds(body_mass):
     """(joint, level, what, Nm, seconds required, seconds held). A pass-through
     above the module's table is reported, not failed: no maker's figure reaches it."""
@@ -417,6 +464,11 @@ def static_holds(body_mass):
         ("elbow", "held", "%.0f kg hugged, two hands" % HUG_KG, HUG_KG / 2 * G * HUG_ELBOW + e_self, None),
         ("trunk_pitch", "held", "%.0f kg hugged, upright" % HUG_KG, HUG_KG * G * HUG_SHOULDER, None),
     ]
+    for load, lean, secs in SQUATS:
+        knee, hip, trunk, bend = squat(body_mass, load, lean)
+        what = ("%.0f kg hugged" % load if load else "no load") + ", leaning %.0f deg at most" % lean
+        rows += [("knee", "squat", what, knee, secs), ("hip_pitch", "squat", what, hip, secs),
+                 ("trunk_pitch", "squat", what, trunk, secs)]
     return [(j, lv, w, t, need, stall_hold(module(j)[1], t)) for j, lv, w, t, need in rows]
 
 
@@ -451,11 +503,11 @@ def main(argv=None):
         for b in bad:
             print("  " + b)
     else:
-        print("Every module meets its joint's peak, reducer class, speed, running and walking RMS (people's and the robot's), lift hold")
+        print("Every module meets its joint's peak, reducer class, speed, running and walking RMS (people's and the robot's), static holds")
         print("at %.1f kg; the set holds up to %.1f kg of body." % (a.mass + a.carry, limit))
 
     print()
-    print("Static holds (maker's stall table, 30 to 100 °C on the bench; README §6k):")
+    print("Static holds (maker's stall table, 30 to 100 °C on the bench; README §6k, §6l):")
     for joint, level, what, t, need, held in static_holds(a.mass):
         print("  %-15s %-5s %-38s %5.0f Nm  %-16s %s" % (
             joint, level, what, t, module(joint)[1],

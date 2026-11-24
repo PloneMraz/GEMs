@@ -92,7 +92,7 @@ PASS_S, LIFT_S = 2.0, 10.0
 # not designed (⟦IMPL⟧). Geometry and mass fractions of the URDF (Winter's, a
 # human's): the mass above the pelvis as a share of the body, its centre above
 # that axis, and the shoulders above that axis, m.
-UPPER_FRAC, UPPER_COM, SHOULDER_HEIGHT = 0.536, 0.3035, 0.430
+UPPER_FRAC, UPPER_COM, SHOULDER_HEIGHT = 0.536, 0.2857, 0.335
 LIFT_LEAN_DEG = 30.0       # trunk lean allowed with PAYLOAD_KG in the hands
 HUG_KG, HUG_SHOULDER, HUG_ELBOW = 20.0, 0.30, 0.20   # LOAD_CASES, two hands
 # Squatting to work, decided 2026-11-24 (Plone; README §6l): how long is the
@@ -102,7 +102,7 @@ SQUATS = [(0.0, 30.0, 300.0), (HUG_KG, 10.0, 30.0)]
 # The squat: planar, both legs alike, feet flat. Lengths of the URDF and
 # Winter's mass fractions; shank tilt to the ankle's 30 deg, and the centre of
 # mass kept 3 cm inside the heel and 6 cm inside the toe.
-THIGH, SHANK, FOOT_HALF, UPPER_ABOVE_HIP, SHOULDER_ABOVE_HIP = 0.40, 0.40, 0.125, 0.399, 0.526
+THIGH, SHANK, FOOT_HALF, UPPER_ABOVE_HIP, SHOULDER_ABOVE_HIP = 0.40, 0.40, 0.125, 0.4357, 0.485
 PELVIS_FRAC, THIGH_FRAC, SHANK_FRAC = 0.142, 0.100, 0.0465
 # Speed a joint's module must reach, output rpm (README §6e): the knee's 11 rad/s
 # in running, hip pitch's 7.4 rad/s (the hip's highest in running at 2.5 m/s),

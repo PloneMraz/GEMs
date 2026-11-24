@@ -136,9 +136,9 @@ The mass loop holds **20 kg** of fixed mass — compute, sensors, hands, the she
 | 15 kg, the bottom of spec 02.5's band | 97.7 kg | 36.9 kg | 0.38 | 3.91 kWh |
 | **20 kg, the reference point** | **107.0 kg** | 37.6 kg | 0.35 | 4.28 kWh |
 | 25 kg, the top of the band | 117.7 kg | 39.1 kg | 0.33 | 4.71 kWh |
-| 30 kg | 131.0 kg | 42.3 kg | 0.32 | 5.24 kWh |
+| 30 kg | 130.2 kg | 41.8 kg | 0.32 | 5.21 kWh |
 
-Each kilogram of fixed mass costs about 2 kg of body here, in steps as modules change. Above about 21.1 kg of fixed mass the body passes 108.8 kg, where the reference set of modules stops holding, and heavier modules come in. Below about 18.4 kg, `f_act` leaves the 0.25–0.36 band of spec 02.2 upward, its top raised from 0.35 on 2026-11-24: the modules do not get lighter in step with the body, and the reference point's 20 kg is 1.6 kg above that edge. The squat of [§6l](../electrical/README.md#6l-squatting-and-kneeling--d-2-2026-11-24) is checked at the reference point, not in this table; at 30 kg of fixed mass the knee's module is at its edge, 292 s of the 300 asked. Before walking's RMS entered the check (2026-11-23) the reference point was 98.2 kg and the edge was at about 16 kg.
+Each kilogram of fixed mass costs about 2 kg of body here, in steps as modules change. Above about 21.1 kg of fixed mass the body passes 108.8 kg, where the reference set of modules stops holding, and heavier modules come in. Below about 18.4 kg, `f_act` leaves the 0.25–0.36 band of spec 02.2 upward, its top raised from 0.35 on 2026-11-24: the modules do not get lighter in step with the body, and the reference point's 20 kg is 1.6 kg above that edge. The squat of [§6l](../electrical/README.md#6l-squatting-and-kneeling--d-2-2026-11-24) is checked at the reference point, not in this table; at 30 kg of fixed mass trunk pitch is at its edge, 311 s of the 300 asked. Before walking's RMS entered the check (2026-11-23) the reference point was 98.2 kg and the edge was at about 16 kg.
 
 ## What building it turned up
 

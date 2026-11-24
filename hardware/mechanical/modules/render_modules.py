@@ -70,7 +70,7 @@ def look(az, el, dist, tgt, lens=70):
     cd.lens = lens; t = Vector(tgt); a, e = math.radians(az), math.radians(el); cam.location = t + Vector((math.sin(a) * math.cos(e), -math.cos(a) * math.cos(e), math.sin(e))) * dist; cam.rotation_euler = (t - cam.location).to_track_quat("-Z", "Y").to_euler()
 r = sc.render; r.engine = "BLENDER_EEVEE"; sc.eevee.taa_render_samples = 48 if MODE != "turn" else 24; sc.eevee.use_raytracing = True
 r.film_transparent = True; r.image_settings.color_mode = "RGBA"; sc.view_settings.view_transform = "Khronos PBR Neutral"; r.image_settings.file_format = "PNG"
-V = dict(whole=(28, 6, 3.95, (0, 0, -.175), 70), hip=(38, 12, 1.5, (0, 0, -.14), 70), leg=(52, 6, 2.1, (0, 0, -.62), 70), shoulder=(30, 14, 1.7, (0, 0, .33), 70))
+V = dict(whole=(28, 6, 3.95, (0, 0, -.175), 70), hip=(38, 12, 1.5, (0, 0, -.14), 70), leg=(52, 6, 2.1, (0, 0, -.62), 70), shoulder=(30, 14, 1.7, (0, 0, .24), 70), wrist=(62, 10, .95, (.02, -.0, -.12), 70))
 def shot(n, name, res): r.resolution_x, r.resolution_y = res; look(*V[n]); r.filepath = str(OUT / name); bpy.ops.render.render(write_still=True)
 if MODE == "still":
     for n in V: shot(n, "still_%s.png" % n, (1000, 1500) if n == "whole" else (1400, 1050))

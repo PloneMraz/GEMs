@@ -108,6 +108,8 @@ For a ~1.65 m body (D-8, 2026-09-26; 1.75 m before), taken from ordinary human p
 | Shoulder to grip centre | **~0.61 m** — the lever a held object acts on |
 | Elbow to grip centre | ~0.31 m |
 | Shoulder width | ~0.38 m |
+| Shoulder height | **~1.35 m** above the ground, 0.095 m below the top of the torso — since 2026-11-24: women of 1.63–1.67 m in ANSUR II have the acromion at 1.353 m, the mean of 442 ([data](https://www.openlab.psu.edu/ansur2/)); it stood at 1.446 m before, level with the base of the neck, and the wrist at 0.90 m against the 0.805 m measured there, now 0.80 |
+| Wrist pitch to wrist roll | **0.056 m** along the forearm, pitch above roll — since 2026-11-24, so that each axis has room for its own module ([modules](mechanical/modules/README.md#wrist-hip-and-shoulder-2026-11-24)); the three wrist axes no longer meet at one point, and the elbow-to-wrist 0.25 m is to the roll axis |
 | Hip joint spacing | **0.18 m**, centre to centre — held as a constraint since 2026-11-24: hip roll's torque in walking grows with it ([electrical §6h](electrical/README.md#6h-walking-heat-by-speed-and-the-hip-roll-lever--m-11-2026-11-24)) |
 | Hip to knee | ~0.40 m |
 | Knee to ankle | ~0.40 m |

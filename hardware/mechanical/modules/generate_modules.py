@@ -122,7 +122,7 @@ R = lambda n: MODULES[asz.JOINT_MODULE[n]]["od"] / 2.0
 def layout_rules():
     return {
         "hip_pitch": (0.0, "out", "hip_roll_link", "centred on the hip"),
-        "hip_roll": (-(R("hip_pitch") + GAP + L("hip_roll")), 1, "pelvis", "behind the hip pitch module"),
+        "hip_roll": (0.0, 1, "pelvis", "above the hip pitch module, in the pelvis, by a parallelogram"),
         "hip_yaw": (-(R("hip_pitch") + GAP + L("hip_yaw")), -1, "hip_pitch_link", "below it, in the thigh"),
         "knee": (0.0, "out", "thigh", "centred on the knee"),
         "ankle_pitch": (0.0, "out", "shank", "centred on the ankle"),
@@ -133,16 +133,20 @@ def layout_rules():
         "elbow": (0.0, "out", "upper_arm", "centred on the elbow"),
         "wrist_pitch": (0.0, "out", "wrist_yaw_link", "centred on the wrist"),
         "wrist_yaw": (R("wrist_pitch") + GAP + L("wrist_yaw"), -1, "forearm", "above it, in the forearm"),
-        "wrist_roll": (R("wrist_pitch") + GAP + L("wrist_roll"), -1, "wrist_pitch_link", "in front of the wrist pitch module"),
-        "trunk_pitch": (0.0, 1, "trunk_yaw_link", "on the lowest segment's axis"),
+        "wrist_roll": (0.0, 1, "wrist_pitch_link", "centred on the wrist roll axis, below wrist pitch"),
+        "trunk_pitch": (0.0, 1, "trunk_pitch_2_link", "on the middle segment's axis"),
         "trunk_yaw": (0.0, 1, "spine_thoracic", "on the upper segment's axis"),
-        "trunk_roll": (0.0, 1, "spine_lumbar", "on the middle segment's axis"),
+        "trunk_roll": (R("trunk_yaw") + 11.0 + L("trunk_roll"), 1, "trunk_pitch_3_link", "on the upper segment's axis, in front of trunk yaw, 11 mm off for trunk pitch"),
         "neck_pitch": (0.0, 1, "neck_yaw_link", "centred on the neck"),
         "neck_yaw": (-(R("neck_pitch") + GAP + L("neck_yaw")), 1, "torso", "below it, in the torso"),
     }
 
 
-DRIVES = {"trunk_roll": "trunk_roll_2", "trunk_yaw": "trunk_yaw_3"}      # the coupled segment joint the module sits on
+DRIVES = {"trunk_pitch": "trunk_pitch_2", "trunk_yaw": "trunk_yaw_3", "trunk_roll": "trunk_roll_3"}      # the coupled segment joint the module sits on
+# Off their joint's axis, parallel to it: the module's centre in the URDF frame,
+# mm, left side. The hip's roll module drives its axis through a parallelogram of
+# rods, whose travel is hip roll's own and whose ratio is 1.
+REMOTE = {"hip_roll": (0.0, 74.0, -14.0)}
 
 
 def place():
@@ -165,10 +169,12 @@ def place():
             if face == "out" and not sided:
                 out = 1.0
             c = tuple(p + o * v for p, v in zip(j["origin"], a))
+            if base in REMOTE:
+                c = tuple(v * (-1.0 if side == "r_" and k == 1 else 1.0) for k, v in enumerate(REMOTE[base]))
             d = tuple(out * v for v in a)
             rows.append(dict(name=name, joint=j["name"], module=asz.JOINT_MODULE[base], centre=c, out=d,
                              link=(side + link) if (side + link) in {x["child"] for x in joints.values()} | {"pelvis"} else link,
-                             origin=j["origin"], axis=a, why=why))
+                             origin=j["origin"], axis=a, why=why, remote=base in REMOTE))
     return robot, joints, rows
 
 
@@ -228,17 +234,34 @@ def overlap(a, b):
     return False
 
 
-def below(joints, joint):
-    """Links that move when `joint` (and the joints coupled to it) turns."""
-    kids = {}
-    for j in joints.values():
-        kids.setdefault(j["parent"], []).append(j["child"])
-    out, todo = set(), [joints[joint]["child"]]
+def fk(joints, angles):
+    """Pose of every link with `angles` (radians) at the actuated joints, the
+    coupled ones following: link -> (rotation rows, translation mm) that carries a
+    zero-pose point to its posed place."""
+    pose = {"pelvis": (((1, 0, 0), (0, 1, 0), (0, 0, 1)), (0.0, 0.0, 0.0))}
+    todo = list(joints.values())
     while todo:
-        k = todo.pop()
-        out.add(k)
-        todo += kids.get(k, [])
-    return out
+        rest = []
+        for j in todo:
+            if j["parent"] not in pose:
+                rest.append(j)
+                continue
+            m, t = pose[j["parent"]]
+            q = angles.get(j["mimic"] or j["name"], 0.0)
+            r = _rot(j["axis"], q)
+            o = j["origin"]
+            # x -> M (R (x - o) + o) + t
+            mr = tuple(tuple(sum(m[i][k] * r[k][c] for k in range(3)) for c in range(3)) for i in range(3))
+            d = tuple(a - b for a, b in zip(o, _mul(r, o)))
+            pose[j["child"]] = (mr, tuple(a + b for a, b in zip(_mul(m, d), t)))
+        todo = rest
+    return pose
+
+
+def posed(m, pose):
+    c, d, r, h = cyl(m)
+    mat, t = pose[m["link"]]
+    return (tuple(a + b for a, b in zip(_mul(mat, c), t)), _mul(mat, d), r, h)
 
 
 def cyl(m):
@@ -246,32 +269,33 @@ def cyl(m):
     return (m["centre"], m["out"], d["od"] / 2.0, d["length"])
 
 
+ACCEPTED = set()
+
+
 def travel_report(robot, joints, rows, step_deg=2.0):
-    """For each joint turned alone from the zero pose, the angles within its
-    mechanical travel where no two module envelopes overlap, and the pair that
-    stops it. The drive modules only: no segment, no structure."""
+    """For each actuated joint turned alone from the zero pose — a trunk axis with
+    the two segments coupled to it — the angles within its mechanical travel
+    where no two module envelopes overlap, and the pair that stops it. The
+    modules only: no segment, no structure, no rod."""
     limits = {j.get("name"): tuple(math.degrees(float(j.find("limit").get(k))) for k in ("lower", "upper")) for j in robot.findall("joint")}
     rep = {}
     for j in joints.values():
-        if j["mimic"] or j["name"].startswith("trunk"):
+        if j["mimic"]:
             continue
-        moved = below(joints, j["name"])
-        A = [m for m in rows if m["link"] in moved]
-        B = [m for m in rows if m["link"] not in moved]
-        lo, hi = limits[j["name"]]
-        res = []
+        share = sum(1 for k in joints.values() if k["mimic"] == j["name"]) + 1
+        lo, hi = (v * share for v in limits[j["name"]])
+        zero, res = fk(joints, {}), []
         for end in (lo, hi):
             ang, hit = 0.0, ""
             while abs(ang) < abs(end) - 1e-9:
                 nxt = max(end, ang - step_deg) if end < 0 else min(end, ang + step_deg)
-                t = math.radians(nxt)
-                R_ = _rot(j["axis"], t)
-                for m in A:
-                    c, d, r, h = cyl(m)
-                    pm = (_about(c, j["origin"], j["axis"], t), _mul(R_, d), r, h)
-                    for k in B:
-                        if overlap(pm, cyl(k)):
-                            hit = "%s / %s" % (m["name"], k["name"])
+                pose = fk(joints, {j["name"]: math.radians(nxt) / share})
+                P = [(m, posed(m, pose)) for m in rows]
+                moved = {m["name"] for m in rows if pose[m["link"]] != zero[m["link"]]}
+                for x, (a, pa) in enumerate(P):
+                    for b, pb in P[x + 1:]:
+                        if (a["name"] in moved or b["name"] in moved) and pose[a["link"]] != pose[b["link"]] and overlap(pa, pb):
+                            hit = "%s / %s" % (a["name"], b["name"])
                             break
                     if hit:
                         break
@@ -320,7 +344,7 @@ def layout_csv(robot, joints, rows, rep, pro):
         t = rep.get(m["name"])
         w.writerow([m["name"], m["module"]] + ["%.2f" % (v + 0.0) for v in m["centre"]] + ["%d" % round(v) for v in m["out"]]
                    + [m["link"], m["why"], "%.1f" % pro[m["name"]][0]]
-                   + (["%.0f" % t[0], "%.0f" % t[1], "%.0f" % t[2][0], "%.0f" % t[3][0], "; ".join(sorted({x for x in (t[2][1], t[3][1]) if x}))] if t else ["", "", "", "", "not checked: coupled trunk axes"]))
+                   + (["%.0f" % t[0], "%.0f" % t[1], "%.0f" % t[2][0], "%.0f" % t[3][0], "; ".join(sorted({x for x in (t[2][1], t[3][1]) if x}))] if t else ["", "", "", "", ""]))
     return f.getvalue()
 
 
@@ -421,7 +445,7 @@ def build(mode, out, mesh):
     size_ok = all(tuple(float(v) for v in asz.MODULE_CATALOGUE[n][6].split(" x ")) == (d["od"], d["length"]) for n, d in MODULES.items())
     ok("envelopes = spec 02.6", size_ok, True, size_ok)
     ok("modules placed", len(rows), 31, len(rows) == 31)
-    off = max(math.sqrt(max(0.0, sum((c - o) ** 2 for c, o in zip(m["centre"], m["origin"])) - sum((c - o) * a for c, o, a in zip(m["centre"], m["origin"], m["axis"])) ** 2)) for m in rows)
+    off = max(math.sqrt(max(0.0, sum((c - o) ** 2 for c, o in zip(m["centre"], m["origin"])) - sum((c - o) * a for c, o, a in zip(m["centre"], m["origin"], m["axis"])) ** 2)) for m in rows if not m["remote"])
     ok("on their joint's axis mm", round(off, 6), 0.0, off < 1e-6)
     z = zero_clashes(rows)
     ok("overlaps, zero pose", len(z), 0, not z)

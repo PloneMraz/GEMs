@@ -65,6 +65,8 @@ UPWARD = {"spine_lumbar", "spine_thoracic", "torso", "head"}
 TRUNK = ("spine_lumbar", "spine_thoracic", "torso")
 TRUNK_HEIGHT = sum(SEG[k]["h"] for k in TRUNK)
 SHOULDER_WIDTH = 0.38       # declared
+SHOULDER_DROP = 0.095      # declared: shoulder below the top of the torso, 1.35 m above the ground (kinematics §2, 2026-11-24)
+WRIST_OFFSET = 0.056       # declared: wrist pitch above wrist roll (kinematics §2, 2026-11-24)
 HIP_WIDTH = 0.18           # declared: hip joint spacing, held since 2026-11-24 (kinematics §2)
 DECLARED_REACH = 0.66       # declared: shoulder to fingertip, 1.65 m body
 DECLARED_HEIGHT = 1.65
@@ -273,7 +275,7 @@ def build(total_mass):
         # arm: 7 DOF
         add_dummy(robot, p + "shoulder_pitch_link")
         add_joint(robot, p + "shoulder_pitch", "torso", p + "shoulder_pitch_link",
-                  "0 %.4f %.4f" % (sy, th), Y)
+                  "0 %.4f %.4f" % (sy, th - SHOULDER_DROP), Y)
         add_dummy(robot, p + "shoulder_roll_link")
         add_joint(robot, p + "shoulder_roll", p + "shoulder_pitch_link",
                   p + "shoulder_roll_link", "0 0 0", X)
@@ -285,13 +287,13 @@ def build(total_mass):
                   "0 0 %.4f" % -seg_length("upper_arm"), Y)
         add_dummy(robot, p + "wrist_yaw_link")
         add_joint(robot, p + "wrist_yaw", p + "forearm", p + "wrist_yaw_link",
-                  "0 0 %.4f" % -seg_length("forearm"), Z)
+                  "0 0 %.4f" % -(seg_length("forearm") - WRIST_OFFSET), Z)
         add_dummy(robot, p + "wrist_pitch_link")
         add_joint(robot, p + "wrist_pitch", p + "wrist_yaw_link",
                   p + "wrist_pitch_link", "0 0 0", Y)
         add_link(robot, p + "hand", "hand", masses["hand"])
         add_joint(robot, p + "wrist_roll", p + "wrist_pitch_link", p + "hand",
-                  "0 0 0", X)
+                  "0 0 %.4f" % -WRIST_OFFSET, X)
 
         # leg: 6 DOF
         hy = sgn * HIP_WIDTH / 2.0

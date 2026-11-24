@@ -4,7 +4,7 @@
   "specVersion": "1.7",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-24T07:06:28Z",
+    "timestamp": "2026-11-24T07:45:17Z",
     "authors": [
       {
         "name": "Plone Mraz"
@@ -91,7 +91,7 @@
       "type": "application",
       "bom-ref": "hardware/electrical/actuator_sizing.py",
       "name": "hardware/electrical/actuator_sizing.py",
-      "version": "sha256:4cf78e5552d1",
+      "version": "sha256:c2a5137d295a",
       "description": "Joint torque table and actuator sizing",
       "supplier": {
         "name": "Plone Mraz"
@@ -106,7 +106,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "4cf78e5552d13c9b1923892be79f66d985dfe40bfa3b07162ad5e160946972bc"
+          "content": "c2a5137d295a33767bf3e9a327cf3d36d0f361ec1b24556ba6499c9cde341dc7"
         }
       ],
       "scope": "excluded",
@@ -181,7 +181,7 @@
       "type": "application",
       "bom-ref": "hardware/sim-model/generate_urdf.py",
       "name": "hardware/sim-model/generate_urdf.py",
-      "version": "sha256:2dc8fa1e5ea5",
+      "version": "sha256:3605cc2a0c02",
       "description": "URDF generator and audit",
       "supplier": {
         "name": "Plone Mraz"
@@ -196,7 +196,7 @@
       "hashes": [
         {
           "alg": "SHA-256",
-          "content": "2dc8fa1e5ea5c0fa5654119fc348669ff604da323286aedfee8dfc557b00d613"
+          "content": "3605cc2a0c021723783f5a82dd9cd0b52cb8431af249e4d71a108c51c14368ae"
         }
       ],
       "scope": "excluded",

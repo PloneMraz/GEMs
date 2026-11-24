@@ -92,7 +92,7 @@ What the laboratory can do and the market cannot — self-healing skin, variable
 | Padding thickness that keeps the armour shell below 70 °C over hot modules | The module temperatures of [electrical §6e](../electrical/README.md), up to 100 °C; plan M-8 |
 | Heat reaching the armour shell's face, through the textile in a fire and through the outer aramid plies | No heat-transfer or conductivity figure on the data sheets read [27][28] |
 | Textile: NFPA 1970 certification | The candidate fabric holds EN 469 [27] |
-| Ventilation (spec 04.8): louvred slots through the armour shell, shrouds at the hot modules, ducts along the spine, local loops at knees and ankles; the fans, their noise and power; protection against water and dust | A thermal network at 35 °C and bought fans (plan M-11); the modules' mounting faces; the author's declaration of water and dust exposure |
+| Ventilation (spec 04.8): louvred slots through the armour shell, shrouds at the hot modules, ducts along the spine, local loops at knees and ankles; the fans, their noise and power; the filter layer on every slot and its maintenance; protection against water | A thermal network at 35 °C, bought fans and filters (plan M-11); the modules' mounting faces; water, for discussion |
 
 ## 6. References
 

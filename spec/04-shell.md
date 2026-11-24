@@ -136,7 +136,11 @@ A shell that takes a fire itself, rather than through an outer garment (4.4).
 
 **Decided 2026-11-24 (Plone).** The body is ventilated: forced air enters through slots, passes the hot modules and leaves through slots, as Unitree's G1 does with "a localized forced air-cooling system", fans with an intake and an exhaust [41]. No liquid loop. The thermal design of plan M-11 works to this section.
 
-**Operating environment.** Ambient **20–40 °C**; the thermal design is simulated at **30–35 °C**. The G1 is run at 0–40 °C, is neither waterproof nor dustproof, and is not to be run in rain or dust [41]; this body's protection against water and dust is `⟦IMPL⟧`, not yet declared.
+**Operating environment.** Ambient **20–40 °C**; the thermal design is simulated at **30–35 °C**. **Mainly indoors** (2026-11-24): rain, standing in or wading through water, and direct contact with strong heat sources are to be limited. The G1 is run at 0–40 °C, is neither waterproof nor dustproof, and is not to be run in rain or dust [41].
+
+**Dust: filters on every slot, and maintenance** (2026-11-24). A filter layer, bought media, covers each intake and exhaust slot behind the textile mesh, replaceable from outside when the textile cover comes off (4.3). Its pressure drop enters the sizing of the fans, and as it loads with dust the flow falls: the firmware sees it as fan power or speed rising against module temperature, and calls for service. A maintenance procedure goes with it — the slots and filters checked clear before use, as the G1's checklist checks its fan's intake and exhaust [41], and the filters replaced at an interval set from the media's data and the dust of the space, `⟦IMPL⟧`.
+
+**Water: open**, for discussion. Group 3 of [01](01-architecture.md) still lists house fires and ordinary-depth water; a ventilated body meets the second only with protection not yet declared, and in a fire its outer protective garment (4.4) covers the slots, so that cooling stops while the garment is on.
 
 **Why not the surface alone.** The joints give off about 0.6 kW walking at 0.5 m/s and 1.1 kW at 1.0 m/s [electrical §6h](../hardware/electrical/README.md#6h-walking-heat-by-speed-and-the-hip-roll-lever--m-11-2026-11-24). Through the skin of 1.60 m² by radiation, 4.5 W/m²K, and natural convection, 3.4 W/m²K [43], 0.7 kW would need the outer surface some 56 K above ambient standing and about 39 K walking at 0.5 m/s, before the padding adds 4.5–6.6 K per millimetre; the shell is an insulator, and its UHMWPE stops at 70 °C (4.1). So the heat leaves by its own path.
 
@@ -165,4 +169,4 @@ With the air allowed to rise 15 K, the joints and the edge computer together nee
 
 **Not cooling the intake.** Taking 10 K off 140 CFM is about 800 W of cooling, of the order of the heat itself: by evaporation it needs water carried and brings damp air in; thermoelectrically it costs about as much power again, rejected downstream. The intake air is the coolest air the body has; the hottest modules come first in it. A cold store — a phase-change pack recharged at the dock — is an option for the 10 min at 1.0 m/s and for the front of the trunk, `⟦IMPL⟧` until a sourced material and mass are found (plan M-11).
 
-`⟦IMPL⟧` here: the fans (bought), their power, which adds to `p`, and their noise; the duct areas; the protection against water and dust; the flows per zone, from a thermal network of plan M-11 at 35 °C.
+`⟦IMPL⟧` here: the fans (bought), their power, which adds to `p`, and their noise, discussed with the search for fans; the filter media, their pressure drop and replacement interval; the duct areas; the protection against water; the flows per zone, from a thermal network of plan M-11 at 35 °C.

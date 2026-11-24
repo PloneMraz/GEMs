@@ -82,13 +82,17 @@ This was a decision for the author, not something to be silently patched. The op
 
 | Property | Figure | Source |
 |---|---|---|
-| Silicon-anode cell, commercially available | **450 Wh/kg**, 1150 Wh/L | Amprius [4] |
+| Silicon-anode pouch, in the catalogue with certifications | **400 Wh/kg**, 875 Wh/L at C/5 — SA03, 40.26 Wh, 102 g, 139 × 52.5 × 6.32 mm; 1C continuous, 3C for 30 s; 300 cycles to 80% at +0.3C/−1C, full depth; 15 PSI compression recommended | Amprius [4], Q4 2026 |
+| Silicon-anode pouch, **preliminary** | **445 Wh/kg**, 955 Wh/L at C/10 — SA147, 15 Wh, 33.6 g, 56.5 × 49.5 × 5.6 mm; 1C continuous and pulse; 300 cycles at 0.2C, 200 at 1C; no compression | Amprius [4], Q4 2026 |
+| Silicon-anode, the maker's platform claim | up to 500 Wh/kg and 1150 Wh/L, no cell named | Amprius [4], Q4 2026 |
 | Solid-state pouch, stack level | **465 Wh/kg**, 1400 Wh/L | SOLiTHOR [5] |
 | Semi-solid pouch, validated | ~347 Wh/kg | [6] |
 | All-solid-state pouch for robots | mass production targeted 2027, robots first | Samsung SDI [6] |
 | Rate capability demonstrated | 80% retention after 400 cycles at 4C | QuantumScape [6] |
 
-> **The durable tier's density can be bought; its preferred chemistry cannot yet.** [Spec 03.1](../../spec/03-energy.md#31-source) declares 400–500 Wh/kg, solid-state preferred but not required (Plone, 2026-11-05). At 450 Wh/kg the cell on sale is silicon-anode with a liquid electrolyte (Amprius [4]); solid-state at that density is at validated stack level, not a product (SOLiTHOR [5]), and Samsung SDI targets mass production in 2027 [6]. So under present technology the tier is filled by silicon-anode, and the pack carries the safety a solid electrolyte would. Neither the Amprius cell's cycle life nor an abuse-test result is in hand: its row in the AVL leaves them blank. The ceiling tier at 700–1100 Wh/kg remains laboratory-only, exactly as the specification states.
+> **The durable tier's density can be bought; its preferred chemistry cannot yet.** [Spec 03.1](../../spec/03-energy.md#31-source) declares 400–500 Wh/kg, solid-state preferred but not required (Plone, 2026-11-05). At 400 Wh/kg the cell on sale is silicon-anode with a liquid electrolyte (Amprius [4]); the 450 Wh/kg and 1150 Wh/L that stood here as one cell until 2026-11-24 are not in the maker's Q4 2026 catalogue, whose nearest cell is preliminary at 445 and 955; solid-state at that density is at validated stack level, not a product (SOLiTHOR [5]), and Samsung SDI targets mass production in 2027 [6]. So under present technology the tier is filled by silicon-anode, and the pack carries the safety a solid electrolyte would. The catalogue gives cycle life, 300 cycles or fewer at these densities, and no abuse-test result beyond UN 38.3 and IEC 62133.
+>
+> **What 400 Wh/kg would do to the loop (2026-11-24), for D-5.** The loop holds `e` = 450. At SA03's 395 Wh/kg (40.26 Wh over 102 g) the body is 109.2 kg, past the 108.8 kg to which the module set holds, and trunk roll takes the next module: 109.4 kg, pack 4.38 kWh, 11.1 kg of cells. At SA147's 446 it is 107.2 kg, within the set. Neither is decided. The ceiling tier at 700–1100 Wh/kg remains laboratory-only, exactly as the specification states.
 >
 > **The rate trade the specification asserts is confirmed.** The literature frames it as a straight choice between high C-rate and high energy density [7], which is the mechanism behind [spec 02.7](../../spec/02-structure-and-motion.md#27-peak-power-is-limited-by-the-source-not-the-actuators): choosing the ceiling pack widens the peak-power shortfall rather than closing it.
 

@@ -11,6 +11,7 @@ The nine joint modules [spec 02.6](../../../spec/02-structure-and-motion.md#the-
 | `gems-module-layout.step` | Generated — the 31 module envelopes in place, facing FreeCAD's *Front* as the [skeleton](../skeleton/README.md#two-frames-one-rotation) does |
 | [`layout.csv`](layout.csv) | Generated — where each module sits, how far it stands outside the segment envelopes, how far its joint turns before two modules touch |
 | [`render_modules.py`](render_modules.py) | The Blender scene behind the files of `media/` |
+| [`pack_fit.py`](pack_fit.py) | How many pouch cells fit in each part of the trunk around the modules; needs numpy |
 | `media/` | `gems-module-layout.glb`, for a viewer on the web; a turntable in WEBM; five stills in WebP |
 
 ```bash
@@ -59,3 +60,19 @@ Outside the segment envelopes:
 Part of each figure is the URDF's, whose segments are thinner than a person's: a thigh of 116 mm where the file's circumference gives 197 at the top, a shank of 94 against 120. The widths across are circumference over π. What is wide in itself is the shoulder, the knee and the ankle.
 
 The check turns one joint at a time, in steps of 2°, with plain cylinders for the modules and nothing else of the body — no segment, no rod, no pack — so a clear figure is not a promise. The shoulder pitch modules now stand where the battery pack is to lie, in the upper back ([plan](../../../plan/PLAN.md#pack-location-decided)): 38 mm is left behind them within the torso envelope, for M-2 to check.
+
+## Room for the pack
+
+Where cells fit around the modules, counted by [`pack_fit.py`](pack_fit.py) with the two pouch cells nearest the durable tier in Amprius's Q4 2026 catalogue ([electrical §3](../../electrical/README.md#3-power)). The reference body asks 4.28 kWh.
+
+| Part of the trunk, back at x | Free | SA147, preliminary | SA03 |
+|---|---|---|---|
+| Upper torso, −100 mm, the envelope | 4.2 L | 102 cells, 1.53 kWh | 34, 1.37 kWh |
+| Upper torso, −125 | 5.4 L | 164, 2.46 | 49, 1.97 |
+| Upper torso, −150 | 6.5 L | 200, 3.00 | 62, 2.50 |
+| Upper torso, −180 | 7.9 L | 263, 3.94 | 85, 3.42 |
+| Lower thoracic, −125 | 4.2 L | 128, 1.92 | 36, 1.45 |
+| Lumbar, −125 | 4.1 L | 107, 1.60 | 26, 1.05 |
+| Pelvis, −125 | 4.9 L | 133, 2.00 | 29, 1.17 |
+
+Cells are boxes at their largest tolerance with 0.5 mm between faces. Nothing is kept for walls, terminals, compression, cooling, the crush zone or the vent path, so a real pack holds less; how much less is not sourced. The fill is a greedy one, so a better lattice holds somewhat more. The compute, the converters and the battery management share the same space and are not placed. The upper back, where the pack was decided on 2026-09-26, does not hold it alone; where it goes is the author's ([plan](../../../plan/PLAN.md#pack-location-decided)).
